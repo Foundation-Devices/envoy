@@ -297,7 +297,9 @@ class NgAccountManager extends ChangeNotifier {
 
   bool hotWalletAccountsEmpty() {
     for (var account in accounts) {
-      if (account.isHot && account.balance != BigInt.zero) {
+      if (account.isHot &&
+          account.network == Network.bitcoin &&
+          account.balance != BigInt.zero) {
         return false;
       }
     }
