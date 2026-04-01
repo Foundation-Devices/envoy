@@ -803,9 +803,9 @@ void showWarningOnTxIdCopy(BuildContext context, String txId) {
     checkBoxText: S().component_dontShowAgain,
     checkedValue: false,
     onCheckBoxChanged: (checkedValue) {
-      if (!checkedValue) {
+      if (checkedValue) {
         EnvoyStorage().addPromptState(DismissiblePrompt.copyTxId);
-      } else if (checkedValue) {
+      } else {
         EnvoyStorage().removePromptState(DismissiblePrompt.copyTxId);
       }
     },

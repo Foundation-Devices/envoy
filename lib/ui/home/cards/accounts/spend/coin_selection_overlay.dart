@@ -930,7 +930,7 @@ class _SpendSelectionCancelWarningState
       checkBoxText: S().component_dontShowAgain,
       checkedValue: isDismissed,
       onCheckBoxChanged: (checkedValue) async {
-        if (!checkedValue) {
+        if (checkedValue) {
           await EnvoyStorage().addPromptState(
             DismissiblePrompt.txDiscardWarning,
           );

@@ -182,9 +182,9 @@ void showWarningOnAddressCopy(BuildContext context, String address) {
       checkBoxText: S().component_dontShowAgain,
       checkedValue: false,
       onCheckBoxChanged: (checkedValue) {
-        if (!checkedValue) {
+        if (checkedValue) {
           EnvoyStorage().addPromptState(DismissiblePrompt.copyAddressWarning);
-        } else if (checkedValue) {
+        } else {
           EnvoyStorage()
               .removePromptState(DismissiblePrompt.copyAddressWarning);
         }
