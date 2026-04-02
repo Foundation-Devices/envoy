@@ -72,7 +72,7 @@ class MessageLookup extends MessageLookupByLibrary {
 
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
-        "_": MessageLookupByLibrary.simpleMessage("a day ago"),
+        "_": MessageLookupByLibrary.simpleMessage("6:15"),
         "about_appVersion": MessageLookupByLibrary.simpleMessage(
           "Versão da Aplicação",
         ),
@@ -1541,8 +1541,12 @@ class MessageLookup extends MessageLookupByLibrary {
         ),
         "firmware_connectionModalCancelUpdate_header":
             MessageLookupByLibrary.simpleMessage("Cancel Update?"),
+        "firmware_downloadingUpdate_aboutOneMin":
+            MessageLookupByLibrary.simpleMessage("About 1 minute remains"),
         "firmware_downloadingUpdate_downloaded":
             MessageLookupByLibrary.simpleMessage("Update Downloaded"),
+        "firmware_downloadingUpdate_estimating":
+            MessageLookupByLibrary.simpleMessage("Estimating remaining time…"),
         "firmware_downloadingUpdate_header":
             MessageLookupByLibrary.simpleMessage(
           "Downloading Update",
@@ -2250,7 +2254,7 @@ class MessageLookup extends MessageLookupByLibrary {
         ),
         "onboarding_bluetoothIntro_content":
             MessageLookupByLibrary.simpleMessage(
-          "Passport Prime uses a new, secure Bluetooth-based protocol for real time communication with Envoy.\n\nQuantumLink creates and end-to-end encrypted tunnel between Passport and Envoy, ensuring a secure connection.",
+          "Passport Prime uses a new, secure Bluetooth-based protocol for real time communication with Envoy.\n\nQuantumLink creates an end-to-end encrypted tunnel between Passport and Envoy, ensuring a secure connection.",
         ),
         "onboarding_bluetoothIntro_header":
             MessageLookupByLibrary.simpleMessage(
@@ -2498,6 +2502,14 @@ class MessageLookup extends MessageLookupByLibrary {
         "privacy_explorer_title": MessageLookupByLibrary.simpleMessage(
           "Block Explorer",
         ),
+        "privacy_invalidCertificateModal_connectAnyway":
+            MessageLookupByLibrary.simpleMessage("Connect Anyway"),
+        "privacy_invalidCertificateModal_content":
+            MessageLookupByLibrary.simpleMessage(
+          "This node has an invalid or self-signed certificate. Your connection may not be secure.\nDo you want to connect anyway?",
+        ),
+        "privacy_invalidCertificateModal_header":
+            MessageLookupByLibrary.simpleMessage("Invalid Certificate"),
         "privacy_node_configure": MessageLookupByLibrary.simpleMessage(
           "Aumenta a tua privacidade ao correres o teu próprio nó. Toca em mais informações no canto superior direito para saber mais.",
         ),
@@ -2591,11 +2603,11 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Utilizar Endereço Taproot"),
         "receive_mobileWallet_multiplePassportContent":
             MessageLookupByLibrary.simpleMessage(
-          "Funds sent to this address can be spent using only your phone. To secure funds offline, choose a Passport account here.",
+          "Funds sent to this address can be spent using only your phone. To secure funds offline, choose a Passport account [[here]].",
         ),
         "receive_mobileWallet_singlePassportContent":
             MessageLookupByLibrary.simpleMessage(
-          "Funds sent to this address can be spent using only your phone. To secure funds offline with Passport  tap here.",
+          "Funds sent to this address can be spent using only your phone. To secure funds offline with Passport  [[tap here]].",
         ),
         "receive_qr_code_heading":
             MessageLookupByLibrary.simpleMessage("RECEBER"),
