@@ -251,7 +251,7 @@ class _FeeChooserState extends ConsumerState<FeeChooser>
         "totalFeeSuggestion $totalFeeSuggestion (${feeChooserState.minFeeRate} to ${feeChooserState.maxFeeRate})",
       );
       if (totalFeeSuggestion <= 1) {
-        feeList.add(feeChooserState.minFeeRate);
+        feeList = [feeChooserState.minFeeRate];
       } else {
         feeList = List.generate(
           totalFeeSuggestion,
