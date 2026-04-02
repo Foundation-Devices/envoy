@@ -208,13 +208,26 @@ class _DeviceCardState extends ConsumerState<DeviceCard> {
                         contentPadding: EdgeInsets.symmetric(
                           horizontal: EnvoySpacing.xs,
                         ),
-                        title: Text(
-                          S().manage_device_details_deviceSerial,
-                          style: listItemTheme,
-                        ),
-                        trailing: Text(
-                          widget.device.serial,
-                          style: listItemTheme,
+                        title: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Flexible(
+                              child: MediaQuery.withClampedTextScaling(
+                                maxScaleFactor: 1.3,
+                                child: Text(
+                                  S().manage_device_details_deviceSerial,
+                                  style: listItemTheme,
+                                ),
+                              ),
+                            ),
+                            MediaQuery.withClampedTextScaling(
+                              maxScaleFactor: 1.3,
+                              child: Text(
+                                widget.device.serial,
+                                style: listItemTheme,
+                              ),
+                            ),
+                          ],
                         ),
                       ),
                       Divider(color: NewEnvoyColor.neutral200, height: 1),
