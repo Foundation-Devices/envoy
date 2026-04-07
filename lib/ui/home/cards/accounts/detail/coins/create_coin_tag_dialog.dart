@@ -262,6 +262,7 @@ class _CreateCoinTagState extends ConsumerState<CreateCoinTag> {
   Future tagSelected(BuildContext context, WidgetRef ref) async {
     if (!context.mounted) return;
 
+    bool isUntagged = false;
     try {
       final selectedAccount = ref.read(selectedAccountProvider);
       if (selectedAccount == null) {
@@ -275,6 +276,7 @@ class _CreateCoinTagState extends ConsumerState<CreateCoinTag> {
       }
       if (isUntaggedName(tag)) {
         tag = "";
+        isUntagged = true;
       }
       setState(() {
         _isLoading = true;
@@ -288,6 +290,9 @@ class _CreateCoinTagState extends ConsumerState<CreateCoinTag> {
       });
       if (context.mounted) {
         Navigator.of(context).pop();
+        if (isUntagged) {
+          Navigator.of(context).pop();
+        }
       }
     }
   }
