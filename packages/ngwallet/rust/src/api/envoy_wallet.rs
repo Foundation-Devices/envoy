@@ -340,8 +340,15 @@ impl EnvoyAccountHandler {
                 let config = account.config.read().unwrap().clone();
                 let balance = account.balance().unwrap_or_default().total().to_sat();
                 let wallet_transactions = account.transactions().unwrap_or_default();
-                let utxo = account.utxos().unwrap_or_default();
+                let mut utxo = account.utxos().unwrap_or_default();
                 let tags = account.list_tags().unwrap_or_default();
+                for u in utxo.iter_mut() {
+                    if let Some(ref t) = u.tag {
+                        if !t.is_empty() && !tags.iter().any(|reg| reg.eq_ignore_ascii_case(t)) {
+                            u.tag = None;
+                        }
+                    }
+                }
                 let mut transactions = vec![];
 
                 wallet_transactions.clone().iter().for_each(|tx| {
@@ -665,7 +672,11 @@ impl EnvoyAccountHandler {
                 let mut current_state = current_state.clone();
                 current_state.utxo.iter_mut().for_each(|x| {
                     if utxos.iter().any(|u| u.get_id() == x.get_id()) {
-                        x.tag = Some(tag.to_string());
+                        x.tag = if tag.is_empty() {
+                            None
+                        } else {
+                            Some(tag.to_string())
+                        };
                     }
                 });
                 if let Some(sink) = self.stream_sink.clone() {
@@ -673,6 +684,13 @@ impl EnvoyAccountHandler {
                 };
             }
         }
+        // Collect old tag names before clearing, so we can clean TAGS_LIST if needed.
+        let unique_old_tags: std::collections::HashSet<String> = utxos
+            .iter()
+            .filter_map(|u| u.tag.clone())
+            .filter(|t| !t.is_empty())
+            .collect();
+
         utxos.iter().for_each(|output| {
             self.ng_account
                 .lock()
@@ -680,6 +698,25 @@ impl EnvoyAccountHandler {
                 .set_tag(output.get_id().as_str(), tag)
                 .unwrap();
         });
+
+        if tag.is_empty() {
+            let all_utxos = self.ng_account.lock().unwrap().utxos().unwrap();
+            for old_tag in &unique_old_tags {
+                let still_used = all_utxos.iter().any(|u| {
+                    u.tag
+                        .as_ref()
+                        .map(|t| !t.is_empty() && t.to_lowercase() == old_tag.to_lowercase())
+                        .unwrap_or(false)
+                });
+                if !still_used {
+                    self.ng_account
+                        .lock()
+                        .unwrap()
+                        .remove_tag(old_tag.as_str(), None)
+                        .unwrap();
+                }
+            }
+        }
         self.send_update();
         Ok(())
     }
