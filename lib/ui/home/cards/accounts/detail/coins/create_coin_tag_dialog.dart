@@ -101,6 +101,12 @@ class _CreateCoinTagState extends ConsumerState<CreateCoinTag> {
         List<String> suggestions =
             tags.isEmpty ? tagSuggestions : tags.map((e) => e.name).toList();
         suggestions = suggestions.toSet().toList();
+        if (tags.isNotEmpty) {
+          final untaggedLabel = S().account_details_untagged_card;
+          if (!suggestions.contains(untaggedLabel)) {
+            suggestions.insert(0, untaggedLabel);
+          }
+        }
         List<String> firstRowContent = [];
         List<String> secondRowContent = [];
 
@@ -267,9 +273,7 @@ class _CreateCoinTagState extends ConsumerState<CreateCoinTag> {
       if (tag.toLowerCase().trim().isEmpty) {
         return;
       }
-      if (tag.toLowerCase().trim() ==
-              S().account_details_untagged_card.toLowerCase().trim() ||
-          tag.toLowerCase().trim() == "untagged") {
+      if (isUntaggedName(tag)) {
         tag = "";
       }
       setState(() {

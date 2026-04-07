@@ -773,6 +773,9 @@ class _CoinTagWidgetState extends ConsumerState<CoinTagDetailsScreen> {
                       if (newTagName.isEmpty) {
                         return;
                       }
+                      if (isUntaggedName(newTagName)) {
+                        newTagName = "";
+                      }
                       stateSetter(() {
                         renameInProgress = true;
                       });
@@ -780,7 +783,7 @@ class _CoinTagWidgetState extends ConsumerState<CoinTagDetailsScreen> {
                       if (selectedAccount != null) {
                         await selectedAccount.handler?.renameTag(
                           existingTag: widget.coinTag.name,
-                          newTag: textEntry.enteredText,
+                          newTag: newTagName,
                         );
                       }
                       stateSetter(() {
@@ -788,15 +791,19 @@ class _CoinTagWidgetState extends ConsumerState<CoinTagDetailsScreen> {
                       });
                       await Future.delayed(const Duration(milliseconds: 100));
                       if (context.mounted) {
-                        setState(() {
-                          //update local tag name so it will be used to update instance from provider
-                          widget.coinTag.name = textEntry.enteredText;
-                          _menuVisible = false;
-                        });
                         Navigator.of(context).pop();
-                        setState(() {
-                          _menuVisible = false;
-                        });
+                        if (newTagName.isEmpty) {
+                          setState(() {
+                            _menuVisible = false;
+                          });
+                          Navigator.of(context).pop();
+                        } else {
+                          setState(() {
+                            //update local tag name so it will be used to update instance from provider
+                            widget.coinTag.name = newTagName;
+                            _menuVisible = false;
+                          });
+                        }
                       }
                     },
                   ),
