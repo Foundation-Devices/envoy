@@ -5,6 +5,7 @@
 import 'dart:convert';
 import 'dart:typed_data';
 import 'package:envoy/generated/l10n.dart';
+import 'package:envoy/util/console.dart';
 import 'package:flutter/material.dart';
 import 'package:envoy/ui/theme/envoy_spacing.dart';
 import 'package:envoy/ui/theme/envoy_colors.dart';
@@ -19,6 +20,8 @@ import 'package:html/parser.dart' as html_parser;
 import 'package:url_launcher/url_launcher_string.dart';
 import 'package:envoy/business/locale.dart';
 import 'package:envoy/ui/components/linear_gradient.dart';
+import 'package:envoy/business/feed_manager.dart';
+import 'package:envoy/business/settings.dart';
 
 const double blogThumbnailHeight = 172.0;
 const double containerWidth = 309.0;
@@ -172,24 +175,57 @@ class BlogPostCardState extends State<BlogPostCard> {
                     final imageTags = document.getElementsByTagName('img');
                     final torClient = HttpTor();
 
-                    for (final imgTag in imageTags) {
-                      imgTag.attributes['width'] = 'auto';
-                      imgTag.attributes['height'] = 'auto';
+                    if (Settings().torEnabled()) {
+                      // When Tor is enabled, fetch all images via HttpTor
+                      // using .onion URLs and inline them as base64 data URIs
+                      // so the Html widget doesn't make direct network requests.
+                      for (final imgTag in imageTags) {
+                        imgTag.attributes['width'] = 'auto';
+                        imgTag.attributes['height'] = 'auto';
 
-                      final srcset = imgTag.attributes['srcset'];
-                      if (srcset != null && srcset.isNotEmpty) {
-                        final srcsetUrls = srcset.split(',').map((e) {
-                          final parts = e.trim().split(' ');
-                          return parts.first;
-                        }).toList();
+                        try {
+                          final srcset = imgTag.attributes['srcset'];
+                          if (srcset != null && srcset.isNotEmpty) {
+                            final srcsetUrls = srcset.split(',').map((e) {
+                              final parts = e.trim().split(' ');
+                              return parts.first;
+                            }).toList();
 
-                        if (srcsetUrls.isNotEmpty) {
-                          final firstSrcsetUrl = srcsetUrls.first;
-                          final img = await torClient.get(firstSrcsetUrl);
-                          final dataUri =
-                              'data:image/png;base64,${base64Encode(img.bodyBytes)}';
-                          imgTag.attributes['src'] = dataUri;
-                          imgTag.attributes['style'] = 'border-radius: 16;';
+                            if (srcsetUrls.isNotEmpty) {
+                              final firstSrcsetUrl =
+                                  FeedManager.rewriteToOnionIfUsingTor(
+                                          srcsetUrls.first)
+                                      .toString();
+                              final img = await torClient.get(firstSrcsetUrl);
+                              final dataUri =
+                                  'data:image/png;base64,${base64Encode(img.bodyBytes)}';
+                              imgTag.attributes['src'] = dataUri;
+                              imgTag.attributes['style'] =
+                                  'border-radius: 16px;';
+                            }
+                          }
+                        } catch (e) {
+                          kPrint(e);
+                        }
+                      }
+                    } else {
+                      // Without Tor, just pick the first srcset URL and set
+                      // it as src. Let flutter_html load all images directly.
+                      for (final imgTag in imageTags) {
+                        imgTag.attributes['width'] = 'auto';
+                        imgTag.attributes['height'] = 'auto';
+
+                        final srcset = imgTag.attributes['srcset'];
+                        if (srcset != null && srcset.isNotEmpty) {
+                          final srcsetUrls = srcset.split(',').map((e) {
+                            final parts = e.trim().split(' ');
+                            return parts.first;
+                          }).toList();
+
+                          if (srcsetUrls.isNotEmpty) {
+                            imgTag.attributes['src'] = srcsetUrls.first;
+                            imgTag.attributes['style'] = 'border-radius: 16;';
+                          }
                         }
                       }
                     }

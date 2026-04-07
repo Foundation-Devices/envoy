@@ -157,7 +157,7 @@ class FeedManager {
     return currentVideos;
   }
 
-  static Uri _rewriteToOnionIfUsingTor(String url) {
+  static Uri rewriteToOnionIfUsingTor(String url) {
     final originalUri = Uri.parse(url);
 
     // Only rewrite when we’re in Tor mode
@@ -176,7 +176,7 @@ class FeedManager {
     for (RssItem item in feed.items!) {
       String? thumbnailUrl = item.content?.images.firstOrNull;
       if (thumbnailUrl != null) {
-        thumbnailUrl = _rewriteToOnionIfUsingTor(thumbnailUrl).toString();
+        thumbnailUrl = rewriteToOnionIfUsingTor(thumbnailUrl).toString();
       }
       String htmlContent = item.content!.value;
 
