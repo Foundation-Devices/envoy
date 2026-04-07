@@ -90,6 +90,8 @@ class _SendCardState extends ConsumerState<SendCard>
 
   void setAmount(int amount) {
     ref.read(spendAmountProvider.notifier).state = amount;
+    ref.read(displayFiatSendAmountProvider.notifier).state =
+        ExchangeRate().convertSatsToFiat(amount);
     setState(() {
       _amountEntry = AmountEntry(
         onAmountChanged: _updateAmount,

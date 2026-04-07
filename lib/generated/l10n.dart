@@ -56,9 +56,9 @@ class S {
 
   // skipped getter for the ':' key
 
-  /// `a day ago`
+  /// `6:15`
   String get _ {
-    return Intl.message('a day ago', name: '_', desc: '', args: []);
+    return Intl.message('6:15', name: '_', desc: '', args: []);
   }
 
   /// `App Version`
@@ -5043,11 +5043,31 @@ class S {
     );
   }
 
+  /// `About 1 minute remains`
+  String get firmware_downloadingUpdate_aboutOneMin {
+    return Intl.message(
+      'About 1 minute remains',
+      name: 'firmware_downloadingUpdate_aboutOneMin',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Update Downloaded`
   String get firmware_downloadingUpdate_downloaded {
     return Intl.message(
       'Update Downloaded',
       name: 'firmware_downloadingUpdate_downloaded',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Estimating remaining time…`
+  String get firmware_downloadingUpdate_estimating {
+    return Intl.message(
+      'Estimating remaining time…',
+      name: 'firmware_downloadingUpdate_estimating',
       desc: '',
       args: [],
     );
@@ -7273,10 +7293,10 @@ class S {
     );
   }
 
-  /// `Passport Prime uses a new, secure Bluetooth-based protocol for real time communication with Envoy.\n\nQuantumLink creates and end-to-end encrypted tunnel between Passport and Envoy, ensuring a secure connection.`
+  /// `Passport Prime uses a new, secure Bluetooth-based protocol for real time communication with Envoy.\n\nQuantumLink creates an end-to-end encrypted tunnel between Passport and Envoy, ensuring a secure connection.`
   String get onboarding_bluetoothIntro_content {
     return Intl.message(
-      'Passport Prime uses a new, secure Bluetooth-based protocol for real time communication with Envoy.\n\nQuantumLink creates and end-to-end encrypted tunnel between Passport and Envoy, ensuring a secure connection.',
+      'Passport Prime uses a new, secure Bluetooth-based protocol for real time communication with Envoy.\n\nQuantumLink creates an end-to-end encrypted tunnel between Passport and Envoy, ensuring a secure connection.',
       name: 'onboarding_bluetoothIntro_content',
       desc: '',
       args: [],
@@ -8103,6 +8123,36 @@ class S {
     );
   }
 
+  /// `Connect Anyway`
+  String get privacy_invalidCertificateModal_connectAnyway {
+    return Intl.message(
+      'Connect Anyway',
+      name: 'privacy_invalidCertificateModal_connectAnyway',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `This node has an invalid or self-signed certificate. Your connection may not be secure.\nDo you want to connect anyway?`
+  String get privacy_invalidCertificateModal_content {
+    return Intl.message(
+      'This node has an invalid or self-signed certificate. Your connection may not be secure.\nDo you want to connect anyway?',
+      name: 'privacy_invalidCertificateModal_content',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Invalid Certificate`
+  String get privacy_invalidCertificateModal_header {
+    return Intl.message(
+      'Invalid Certificate',
+      name: 'privacy_invalidCertificateModal_header',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Improve your privacy by running your own node. Tap learn more above. `
   String get privacy_node_configure {
     return Intl.message(
@@ -8393,20 +8443,20 @@ class S {
     );
   }
 
-  /// `Funds sent to this address can be spent using only your phone. To secure funds offline, choose a Passport account here.`
+  /// `Funds sent to this address can be spent using only your phone. To secure funds offline, choose a Passport account [[here]].`
   String get receive_mobileWallet_multiplePassportContent {
     return Intl.message(
-      'Funds sent to this address can be spent using only your phone. To secure funds offline, choose a Passport account here.',
+      'Funds sent to this address can be spent using only your phone. To secure funds offline, choose a Passport account [[here]].',
       name: 'receive_mobileWallet_multiplePassportContent',
       desc: '',
       args: [],
     );
   }
 
-  /// `Funds sent to this address can be spent using only your phone. To secure funds offline with Passport  tap here.`
+  /// `Funds sent to this address can be spent using only your phone. To secure funds offline with Passport  [[tap here]].`
   String get receive_mobileWallet_singlePassportContent {
     return Intl.message(
-      'Funds sent to this address can be spent using only your phone. To secure funds offline with Passport  tap here.',
+      'Funds sent to this address can be spent using only your phone. To secure funds offline with Passport  [[tap here]].',
       name: 'receive_mobileWallet_singlePassportContent',
       desc: '',
       args: [],

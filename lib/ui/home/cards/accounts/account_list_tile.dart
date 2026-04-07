@@ -50,11 +50,13 @@ class _AccountListTileState extends ConsumerState<AccountListTile> {
     super.initState();
     // Redraw when we fetch exchange rate
     ExchangeRate().addListener(_redraw);
+    Devices().addListener(_redraw);
   }
 
   @override
   void dispose() {
     ExchangeRate().removeListener(_redraw);
+    Devices().removeListener(_redraw);
     super.dispose();
   }
 

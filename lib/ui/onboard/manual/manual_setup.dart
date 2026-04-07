@@ -34,11 +34,9 @@ class SeedIntroScreen extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Column(
-              mainAxisSize: MainAxisSize.min,
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Column(
+            Expanded(
+              child: SingleChildScrollView(
+                child: Column(
                   mainAxisSize: MainAxisSize.min,
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: [
@@ -68,11 +66,7 @@ class SeedIntroScreen extends StatelessWidget {
                               height: 150,
                             ),
                     ),
-                  ],
-                ),
-                Flexible(
-                  child: SingleChildScrollView(
-                    child: Padding(
+                    Padding(
                       padding: const EdgeInsets.symmetric(
                         horizontal: EnvoySpacing.medium1,
                         vertical: EnvoySpacing.medium3,
@@ -123,9 +117,9 @@ class SeedIntroScreen extends StatelessWidget {
                         ],
                       ),
                     ),
-                  ),
+                  ],
                 ),
-              ],
+              ),
             ),
             Padding(
               padding: const EdgeInsets.symmetric(

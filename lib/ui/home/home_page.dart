@@ -330,9 +330,9 @@ class HomePageState extends ConsumerState<HomePage>
         checkBoxText: S().component_dontShowAgain,
         checkedValue: dismissed,
         onCheckBoxChanged: (checkedValue) {
-          if (!checkedValue) {
+          if (checkedValue) {
             EnvoyStorage().addPromptState(DismissiblePrompt.buyTxWarning);
-          } else if (checkedValue) {
+          } else {
             EnvoyStorage().removePromptState(DismissiblePrompt.buyTxWarning);
           }
         },
