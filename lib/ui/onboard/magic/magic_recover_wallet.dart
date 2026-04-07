@@ -328,28 +328,25 @@ class _MagicRecoverWalletState extends ConsumerState<MagicRecoverWallet> {
       setState(() {
         if (success) {
           Settings().updateAccountsViewSettings();
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => const WalletSetupSuccess()),
-          ).then((_) {
-            //Try automatic recovery if the user press back button
-            if (mounted && !ref.read(triedAutomaticRecovery)) {
-              _tryAutomaticRecovery();
-            }
-          });
         } else if (isValidSeed) {
           _setUnhappyState();
-          setState(() {
-            _magicRecoverWalletState =
-                MagicRecoveryWalletState.validSeedNoBackup;
-          });
+          _magicRecoverWalletState = MagicRecoveryWalletState.validSeedNoBackup;
         } else {
           _setUnhappyState();
-          setState(() {
-            _magicRecoverWalletState = MagicRecoveryWalletState.failure;
-          });
+          _magicRecoverWalletState = MagicRecoveryWalletState.failure;
         }
       });
+      if (success && context.mounted) {
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => const WalletSetupSuccess()),
+        ).then((_) {
+          //Try automatic recovery if the user press back button
+          if (mounted && !ref.read(triedAutomaticRecovery)) {
+            _tryAutomaticRecovery();
+          }
+        });
+      }
     } catch (e) {
       _setUnhappyState();
       if (mounted) {
@@ -520,7 +517,9 @@ class _MagicRecoverWalletState extends ConsumerState<MagicRecoverWallet> {
                   },
                   decoder: SeedQrDecoder(
                     onSeedValidated: (String seed) {
-                      context.pop();
+                      // Close the modal bottom sheet (root navigator),
+                      // not the GoRouter route.
+                      Navigator.of(context, rootNavigator: true).pop();
                       _onSeedDetected(seed, context);
                     },
                   ),
