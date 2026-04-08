@@ -7,7 +7,6 @@ import 'package:envoy/account/envoy_transaction.dart';
 import 'package:envoy/ui/widgets/envoy_amount_widget.dart';
 import 'package:envoy/util/app_store_url.dart';
 import 'package:envoy/util/string_utils.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:envoy/ui/theme/envoy_colors.dart';
 import 'package:envoy/ui/theme/envoy_icons.dart';
@@ -63,7 +62,7 @@ class EnvoyListTile extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: [
                     Padding(
-                      padding: const EdgeInsets.only(top: 2.0),
+                      padding: const EdgeInsets.only(top: EnvoySpacing.xs),
                       child: EnvoyIcon(
                         txIcon!,
                         color: iconColor,

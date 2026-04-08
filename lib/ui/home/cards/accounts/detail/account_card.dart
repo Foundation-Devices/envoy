@@ -50,13 +50,11 @@ import 'package:envoy/ui/widgets/scanner/decoders/payment_qr_decoder.dart';
 import 'package:envoy/ui/widgets/scanner/qr_scanner.dart';
 import 'package:envoy/util/blur_container_transform.dart';
 import 'package:envoy/util/envoy_storage.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:foundation_api/foundation_api.dart' as api;
 import 'package:go_router/go_router.dart';
-import 'package:ngwallet/ngwallet.dart' as ngwallet;
 import 'package:ngwallet/ngwallet.dart';
 
 //ignore: must_be_immutable
@@ -734,7 +732,7 @@ Widget transactionIcon(
         final cancelState = ref.watch(cancelTxStateProvider(transaction.txId));
         return Container(
           padding: const EdgeInsets.only(
-            bottom: EnvoySpacing.medium1,
+            bottom: 22,
             right: 12,
             left: EnvoySpacing.xs,
           ),
