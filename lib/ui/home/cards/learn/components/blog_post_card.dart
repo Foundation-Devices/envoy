@@ -175,23 +175,20 @@ class BlogPostCardState extends State<BlogPostCard> {
                     final imageTags = document.getElementsByTagName('img');
                     final torClient = HttpTor();
 
-                    if (Settings().torEnabled()) {
-                      // When Tor is enabled, fetch all images via HttpTor
-                      // using .onion URLs and inline them as base64 data URIs
-                      // so the Html widget doesn't make direct network requests.
-                      for (final imgTag in imageTags) {
-                        imgTag.attributes['width'] = 'auto';
-                        imgTag.attributes['height'] = 'auto';
+                    for (final imgTag in imageTags) {
+                      imgTag.attributes['width'] = 'auto';
+                      imgTag.attributes['height'] = 'auto';
 
-                        try {
-                          final srcset = imgTag.attributes['srcset'];
-                          if (srcset != null && srcset.isNotEmpty) {
-                            final srcsetUrls = srcset.split(',').map((e) {
-                              final parts = e.trim().split(' ');
-                              return parts.first;
-                            }).toList();
+                      final srcset = imgTag.attributes['srcset'];
+                      if (srcset != null && srcset.isNotEmpty) {
+                        final srcsetUrls = srcset.split(',').map((e) {
+                          final parts = e.trim().split(' ');
+                          return parts.first;
+                        }).toList();
 
-                            if (srcsetUrls.isNotEmpty) {
+                        if (srcsetUrls.isNotEmpty) {
+                          if (Settings().torEnabled()) {
+                            try {
                               final firstSrcsetUrl =
                                   FeedManager.rewriteToOnionIfUsingTor(
                                           srcsetUrls.first)
@@ -200,32 +197,13 @@ class BlogPostCardState extends State<BlogPostCard> {
                               final dataUri =
                                   'data:image/png;base64,${base64Encode(img.bodyBytes)}';
                               imgTag.attributes['src'] = dataUri;
-                              imgTag.attributes['style'] =
-                                  'border-radius: 16px;';
+                            } catch (e) {
+                              kPrint(e);
                             }
-                          }
-                        } catch (e) {
-                          kPrint(e);
-                        }
-                      }
-                    } else {
-                      // Without Tor, just pick the first srcset URL and set
-                      // it as src. Let flutter_html load all images directly.
-                      for (final imgTag in imageTags) {
-                        imgTag.attributes['width'] = 'auto';
-                        imgTag.attributes['height'] = 'auto';
-
-                        final srcset = imgTag.attributes['srcset'];
-                        if (srcset != null && srcset.isNotEmpty) {
-                          final srcsetUrls = srcset.split(',').map((e) {
-                            final parts = e.trim().split(' ');
-                            return parts.first;
-                          }).toList();
-
-                          if (srcsetUrls.isNotEmpty) {
+                          } else {
                             imgTag.attributes['src'] = srcsetUrls.first;
-                            imgTag.attributes['style'] = 'border-radius: 16;';
                           }
+                          imgTag.attributes['style'] = 'border-radius: 16px;';
                         }
                       }
                     }
