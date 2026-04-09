@@ -7,7 +7,6 @@ import 'package:envoy/account/envoy_transaction.dart';
 import 'package:envoy/ui/widgets/envoy_amount_widget.dart';
 import 'package:envoy/util/app_store_url.dart';
 import 'package:envoy/util/string_utils.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:envoy/ui/theme/envoy_colors.dart';
 import 'package:envoy/ui/theme/envoy_icons.dart';
@@ -51,46 +50,61 @@ class EnvoyListTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ListTile(
-        contentPadding: const EdgeInsets.symmetric(horizontal: 0),
-        minLeadingWidth: 0,
-        horizontalTitleGap: EnvoySpacing.medium1,
-        title: Padding(
-          padding: const EdgeInsets.symmetric(vertical: EnvoySpacing.xs),
-          child: Text(
-            titleText,
-            style:
-                EnvoyTypography.body.copyWith(color: EnvoyColors.textPrimary),
-          ),
-        ),
-        subtitle: subtitleText == null
-            ? const Text("")
-            : Text(
-                subtitleText!,
-                style: EnvoyTypography.info
-                    .copyWith(color: EnvoyColors.textSecondary),
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: EnvoySpacing.medium1),
+      child: IntrinsicHeight(
+        child: Row(
+          children: [
+            if (txIcon != null)
+              Padding(
+                padding: const EdgeInsets.only(right: EnvoySpacing.medium1),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.only(top: EnvoySpacing.xs),
+                      child: EnvoyIcon(
+                        txIcon!,
+                        color: iconColor,
+                        size: EnvoyIconSize.small,
+                      ),
+                    ),
+                  ],
+                ),
               ),
-        leading: txIcon == null
-            ? null
-            : Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.center,
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.start,
                 children: [
-                  EnvoyIcon(
-                    txIcon!,
-                    color: iconColor,
-                    size: EnvoyIconSize.small,
+                  Text(
+                    titleText,
+                    style: EnvoyTypography.body
+                        .copyWith(color: EnvoyColors.textPrimary),
                   ),
+                  if (subtitleText != null)
+                    Text(
+                      subtitleText!,
+                      style: EnvoyTypography.info
+                          .copyWith(color: EnvoyColors.textSecondary),
+                    ),
                 ],
               ),
-        trailing: unitIcon == null
-            ? const Text("")
-            : Row(
-                mainAxisSize: MainAxisSize.min,
+            ),
+            if (unitIcon != null) ...[
+              const SizedBox(width: EnvoySpacing.small),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.start,
                 children: [
                   unitIcon!,
                 ],
-              ));
+              ),
+            ],
+          ],
+        ),
+      ),
+    );
   }
 }
 
@@ -195,21 +209,12 @@ class ActivityListTileState extends ConsumerState<ActivityListTile> {
               ],
             );
           } else {
-            return Padding(
-                padding: EdgeInsets.only(
-                    bottom: (s.displayFiat() != null &&
-                            (transactionAccount.network == Network.bitcoin ||
-                                kDebugMode))
-                        ? 6
-                        : EnvoySpacing.medium2),
-                child: FittedBox(
-                  child: EnvoyAmount(
-                    account: transactionAccount,
-                    amountSats: transaction.amount,
-                    amountWidgetStyle: AmountWidgetStyle.normal,
-                    alignToEnd: true,
-                  ),
-                ));
+            return EnvoyAmount(
+              account: transactionAccount,
+              amountSats: transaction.amount,
+              amountWidgetStyle: AmountWidgetStyle.normal,
+              alignToEnd: true,
+            );
           }
         }();
       }
