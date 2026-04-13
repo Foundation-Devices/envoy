@@ -221,9 +221,6 @@ class _QrScannerState extends State<QrScanner>
         if (_lastScan == barcode.code) {
           return;
         }
-      } else {
-        // Identical frame, skip to avoid duplicate processing.
-        return;
       }
 
       try {
