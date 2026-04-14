@@ -103,7 +103,7 @@ class HomePage extends ConsumerStatefulWidget {
 }
 
 class HomePageState extends ConsumerState<HomePage>
-    with TickerProviderStateMixin {
+    with TickerProviderStateMixin, WidgetsBindingObserver {
   final Map<String, bool> transactionIdExpandedState = {};
   bool _backgroundShown = false;
   final bool _modalShown = false;
@@ -185,6 +185,7 @@ class HomePageState extends ConsumerState<HomePage>
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addObserver(this);
     MigrationManager().resetMigrationPrefs();
     _resetTorWarningTimer();
     _resetServerDownWarningTimer();
@@ -477,7 +478,15 @@ class HomePageState extends ConsumerState<HomePage>
   }
 
   @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.resumed) {
+      ConnectivityManager().resetFailureCounters();
+    }
+  }
+
+  @override
   void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
     SessionManager().remove();
     _torWarningTimer?.cancel();
     _serverDownWarningTimer?.cancel();
