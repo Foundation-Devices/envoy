@@ -325,9 +325,11 @@ class _MagicRecoverWalletState extends ConsumerState<MagicRecoverWallet> {
 
       //Enable magic backup by default for seed recovery
       Settings().setSyncToCloud(true);
-      setState(() {
-        if (success) {
+      if (success) {
+        setState(() {
           Settings().updateAccountsViewSettings();
+        });
+        if (context.mounted) {
           Navigator.push(
             context,
             MaterialPageRoute(builder: (context) => const WalletSetupSuccess()),
@@ -337,19 +339,19 @@ class _MagicRecoverWalletState extends ConsumerState<MagicRecoverWallet> {
               _tryAutomaticRecovery();
             }
           });
-        } else if (isValidSeed) {
-          _setUnhappyState();
-          setState(() {
+        }
+      } else {
+        setState(() {
+          if (isValidSeed) {
+            _setUnhappyState();
             _magicRecoverWalletState =
                 MagicRecoveryWalletState.validSeedNoBackup;
-          });
-        } else {
-          _setUnhappyState();
-          setState(() {
+          } else {
+            _setUnhappyState();
             _magicRecoverWalletState = MagicRecoveryWalletState.failure;
-          });
-        }
-      });
+          }
+        });
+      }
     } catch (e) {
       _setUnhappyState();
       if (mounted) {
@@ -520,7 +522,9 @@ class _MagicRecoverWalletState extends ConsumerState<MagicRecoverWallet> {
                   },
                   decoder: SeedQrDecoder(
                     onSeedValidated: (String seed) {
-                      context.pop();
+                      // Close the modal bottom sheet (root navigator),
+                      // not the GoRouter route.
+                      Navigator.of(context, rootNavigator: true).pop();
                       _onSeedDetected(seed, context);
                     },
                   ),
