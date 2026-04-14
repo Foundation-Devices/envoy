@@ -72,9 +72,12 @@ class _SpendTxDetailsState extends ConsumerState<StagingTxDetails>
   }
 
   bool loading = false;
+  bool _choosingCoins = false;
 
   @override
   Widget build(BuildContext context) {
+    if (_choosingCoins) return const SizedBox.shrink();
+
     EnvoyAccount? account = ref.watch(selectedAccountProvider);
     if (account == null) {
       return Container();
@@ -145,26 +148,32 @@ class _SpendTxDetailsState extends ConsumerState<StagingTxDetails>
               if (widget.canEdit)
                 GestureDetector(
                     onTap: () async {
-                      Navigator.of(context).pop();
-
+                      setState(() => _choosingCoins = true);
                       editTransaction(context, ref);
-                      Navigator.of(context, rootNavigator: true).push(
-                          PageRouteBuilder(
-                              pageBuilder:
-                                  (context, animation, secondaryAnimation) {
-                                return ChooseCoinsWidget();
-                              },
-                              transitionDuration:
-                                  const Duration(milliseconds: 100),
-                              transitionsBuilder: (context, animation,
-                                  secondaryAnimation, child) {
-                                return FadeTransition(
-                                  opacity: animation,
-                                  child: child,
-                                );
-                              },
-                              opaque: false,
-                              fullscreenDialog: true));
+                      final applied =
+                          await Navigator.of(context, rootNavigator: true)
+                              .push<bool>(PageRouteBuilder(
+                                  pageBuilder:
+                                      (context, animation, secondaryAnimation) {
+                                    return ChooseCoinsWidget();
+                                  },
+                                  transitionDuration:
+                                      const Duration(milliseconds: 100),
+                                  transitionsBuilder: (context, animation,
+                                      secondaryAnimation, child) {
+                                    return FadeTransition(
+                                      opacity: animation,
+                                      child: child,
+                                    );
+                                  },
+                                  opaque: false,
+                                  fullscreenDialog: true));
+                      if (!context.mounted) return;
+                      if (applied == true) {
+                        Navigator.of(context).pop();
+                      } else {
+                        setState(() => _choosingCoins = false);
+                      }
                     },
                     child: EnvoyIcon(
                       EnvoyIcons.chevron_right,
