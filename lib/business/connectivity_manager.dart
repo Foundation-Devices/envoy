@@ -133,6 +133,18 @@ class ConnectivityManager {
     kPrint("Tor grace period started - ${_torGracePeriod.inSeconds}s");
   }
 
+  /// Reset failure counters to give the network a fresh start.
+  /// Call this when the app resumes from background, since the OS may have
+  /// suspended networking while backgrounded, causing stale failures to
+  /// accumulate and trigger false-positive "server down" toasts on resume.
+  void resetFailureCounters() {
+    _consecutiveElectrumFailures = 0;
+    _consecutiveNguFailures = 0;
+    failedFoundationServerAttempts = 0;
+    electrumConnected = true;
+    nguConnected = true;
+  }
+
   void electrumSuccess() {
     failedFoundationServerAttempts = 0;
     _consecutiveElectrumFailures = 0;
