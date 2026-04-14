@@ -247,7 +247,7 @@ class UpdatesManager {
   Future<Version?> getStoredFirmwareVersion(int deviceId) async {
     final storedVersion = await getStoredFirmwareVersionString(deviceId);
     return storedVersion != null
-        ? Version.parse(storedVersion.replaceAll("v", ""))
+        ? Version.parse(sanitizeVersion(storedVersion))
         : null;
   }
 
@@ -285,13 +285,15 @@ class UpdatesManager {
     if (storedVersionString == null) return false;
 
     final currentVersion = Version.parse(
-      storedVersionString.replaceAll("v", ""),
+      sanitizeVersion(storedVersionString),
     );
     return currentVersion > parsedVersion;
   }
 }
 
 String sanitizeVersion(String version) {
-  // Remove the v and keep only letters and numbers (Prime sends us NULL chars sometimes)
-  return version.replaceAll("v", "").replaceAll(RegExp(r'[^a-zA-Z0-9.]'), '');
+  // Remove the v (and optional dot after it) and keep only letters and numbers (Prime sends us NULL chars sometimes)
+  return version
+      .replaceAll(RegExp(r'^v\.?'), '')
+      .replaceAll(RegExp(r'[^a-zA-Z0-9.]'), '');
 }

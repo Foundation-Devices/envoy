@@ -8,6 +8,7 @@ on:
   push:
     branches:
       - 2.2.13 # Workaround to have this run despite being deprecated on main
+      - 2.2.14 # Doing this for now
   workflow_dispatch:
   schedule:
     - cron: "0 2 * * *" # Run daily at 2 AM UTC

@@ -101,6 +101,12 @@ class _CreateCoinTagState extends ConsumerState<CreateCoinTag> {
         List<String> suggestions =
             tags.isEmpty ? tagSuggestions : tags.map((e) => e.name).toList();
         suggestions = suggestions.toSet().toList();
+        if (tags.isNotEmpty) {
+          final untaggedLabel = S().account_details_untagged_card;
+          if (!suggestions.contains(untaggedLabel)) {
+            suggestions.insert(0, untaggedLabel);
+          }
+        }
         List<String> firstRowContent = [];
         List<String> secondRowContent = [];
 
@@ -256,6 +262,7 @@ class _CreateCoinTagState extends ConsumerState<CreateCoinTag> {
   Future tagSelected(BuildContext context, WidgetRef ref) async {
     if (!context.mounted) return;
 
+    bool isUntagged = false;
     try {
       final selectedAccount = ref.read(selectedAccountProvider);
       if (selectedAccount == null) {
@@ -267,10 +274,9 @@ class _CreateCoinTagState extends ConsumerState<CreateCoinTag> {
       if (tag.toLowerCase().trim().isEmpty) {
         return;
       }
-      if (tag.toLowerCase().trim() ==
-              S().account_details_untagged_card.toLowerCase().trim() ||
-          tag.toLowerCase().trim() == "untagged") {
+      if (isUntaggedName(tag)) {
         tag = "";
+        isUntagged = true;
       }
       setState(() {
         _isLoading = true;
@@ -284,6 +290,9 @@ class _CreateCoinTagState extends ConsumerState<CreateCoinTag> {
       });
       if (context.mounted) {
         Navigator.of(context).pop();
+        if (isUntagged) {
+          Navigator.of(context).pop();
+        }
       }
     }
   }

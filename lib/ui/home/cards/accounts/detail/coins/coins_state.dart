@@ -12,6 +12,12 @@ import 'package:envoy/util/list_utils.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:ngwallet/ngwallet.dart';
 
+bool isUntaggedName(String tagName) {
+  final lower = tagName.toLowerCase().trim();
+  return lower == S().account_details_untagged_card.toLowerCase().trim() ||
+      lower == "untagged";
+}
+
 class Tag {
   String name;
   List<Output> utxo;

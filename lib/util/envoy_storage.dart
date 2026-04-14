@@ -131,6 +131,16 @@ class EnvoyStorage {
 
   bool _backupInProgress = false;
 
+  // In-memory scan status cache + notification since sembast onSnapshot
+  // doesn't reliably propagate updates to StreamProvider listeners
+  final Map<String, bool> _scanStatusCache = {};
+  final Map<String, StreamController<bool>> _scanStatusControllers = {};
+
+  StreamController<bool> _getScanStatusController(String key) {
+    return _scanStatusControllers.putIfAbsent(
+        key, () => StreamController<bool>.broadcast());
+  }
+
   StoreRef<int, Map<String, dynamic>> countryStore =
       intMapStoreFactory.store(selectedCountryStoreName);
   StoreRef<String, String> txNotesStore =
@@ -318,6 +328,10 @@ class EnvoyStorage {
 
   Future clearAccountScanStateStore() async {
     await accountFullsScanStateStore.delete(_db);
+    for (final entry in _scanStatusControllers.entries) {
+      entry.value.add(false);
+    }
+    _scanStatusCache.clear();
   }
 
   Stream<bool> isPromptDismissed(DismissiblePrompt prompt) {
@@ -1112,26 +1126,32 @@ class EnvoyStorage {
 
   Future<bool> setAccountScanStatus(
       String accountId, AddressType addressType, bool isFullScanDone) async {
-    await accountFullsScanStateStore
-        .record("$accountId:${addressType.toString()}")
-        .put(_db, isFullScanDone);
+    final key = "$accountId:${addressType.toString()}";
+    await accountFullsScanStateStore.record(key).put(_db, isFullScanDone);
+    _scanStatusCache[key] = isFullScanDone;
+    _getScanStatusController(key).add(isFullScanDone);
     return true;
   }
 
   Future<bool> removeAccountStatus(
       String accountId, AddressType addressType) async {
-    await accountFullsScanStateStore
-        .record("$accountId:${addressType.toString()}")
-        .delete(_db);
+    final key = "$accountId:${addressType.toString()}";
+    await accountFullsScanStateStore.record(key).delete(_db);
+    _scanStatusCache.remove(key);
+    _getScanStatusController(key).add(false);
     return true;
   }
 
   Future<bool> getAccountScanStatus(
       String accountId, AddressType addressType) async {
-    return await (accountFullsScanStateStore
-            .record("$accountId:${addressType.toString()}")
-            .get(_db)) ??
-        false;
+    final key = "$accountId:${addressType.toString()}";
+    if (_scanStatusCache.containsKey(key)) {
+      return _scanStatusCache[key]!;
+    }
+    final value =
+        await (accountFullsScanStateStore.record(key).get(_db)) ?? false;
+    _scanStatusCache[key] = value;
+    return value;
   }
 
   Future<int> getAccountScanStatusSize() async {
@@ -1139,11 +1159,13 @@ class EnvoyStorage {
   }
 
   Stream<bool> getAccountScanStatusStream(
-      String accountId, AddressType addressType) {
-    return (accountFullsScanStateStore
-        .record("$accountId:${addressType.toString()}")
-        .onSnapshot(_db)
-        .map((event) => event?.value ?? false));
+      String accountId, AddressType addressType) async* {
+    final key = "$accountId:${addressType.toString()}";
+    // Emit initial value from DB
+    final initial = await getAccountScanStatus(accountId, addressType);
+    yield initial;
+    // Then emit updates from our own controller
+    yield* _getScanStatusController(key).stream;
   }
 
   Future setNoBackUpPreference(String key, dynamic value) async {

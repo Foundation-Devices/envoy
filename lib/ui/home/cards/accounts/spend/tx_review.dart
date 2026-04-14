@@ -1254,9 +1254,7 @@ void editTransaction(BuildContext context, WidgetRef ref) async {
     coinSelectionOverlayKey.currentState?.show(SpendOverlayContext.editCoins);
   }
 
-  final scope = ProviderScope.containerOf(context);
   await navigateWithTransition(context, const ChooseCoinsWidget());
-  await ref.read(spendTransactionProvider.notifier).validate(scope);
 }
 
 class DiscardTransactionDialog extends ConsumerStatefulWidget {
