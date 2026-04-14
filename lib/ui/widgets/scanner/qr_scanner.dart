@@ -75,7 +75,7 @@ class _QrScannerState extends State<QrScanner>
   String _lastCodeDetected = "";
   String _lastScan = "";
   double _progress = 0.0;
-  bool _decodeComplete = false;
+
   bool _viewReady = false;
 
   @override
@@ -206,7 +206,6 @@ class _QrScannerState extends State<QrScanner>
     _qrStreamSubscription = controller.scannedDataStream.listen((
       barcode,
     ) async {
-      if (_decodeComplete) return;
       _userInteractionTimer.cancel();
       if (_isScanDialogOpen) {
         navigator.pop();
@@ -224,10 +223,8 @@ class _QrScannerState extends State<QrScanner>
       }
 
       try {
-        _decodeComplete = true;
         await widget.decoder.onDetectBarCode(barcode);
       } catch (e) {
-        _decodeComplete = false;
         if (context.mounted) {
           EnvoyToast(
             replaceExisting: true,
