@@ -73,7 +73,7 @@ class _QrScannerState extends State<QrScanner>
   String _lastCodeDetected = "";
   String _lastScan = "";
   double _progress = 0.0;
-  bool _decodeComplete = false;
+
   bool _viewReady = false;
 
   bool _isProcessingScan = false; //prevent overlapping decodes
@@ -208,7 +208,6 @@ class _QrScannerState extends State<QrScanner>
     _qrStreamSubscription = controller.scannedDataStream.listen((
       barcode,
     ) async {
-      if (_decodeComplete) return;
       _userInteractionTimer.cancel();
 
       // if a decode is already running, ignore new frames
@@ -232,10 +231,8 @@ class _QrScannerState extends State<QrScanner>
       _isProcessingScan = true;
 
       try {
-        _decodeComplete = true;
         await widget.decoder.onDetectBarCode(barcode);
       } catch (e) {
-        _decodeComplete = false;
         if (context.mounted) {
           widget.decoder.onDecodeError(
             context,
