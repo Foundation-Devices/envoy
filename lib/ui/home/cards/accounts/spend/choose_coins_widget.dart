@@ -76,6 +76,7 @@ class _ChooseCoinsWidget extends ConsumerState<ChooseCoinsWidget> {
     }
 
     return DraggableOverlay(
+      closeResult: true,
       child: Column(mainAxisSize: MainAxisSize.min, children: [
         if (!_coinsOpen)
           Row(
@@ -271,7 +272,7 @@ class _ChooseCoinsWidget extends ConsumerState<ChooseCoinsWidget> {
                 ref.read(spendTransactionProvider.notifier).validate(scope);
 
                 await Future.delayed(const Duration(milliseconds: 120));
-                navigator.pop();
+                navigator.pop(true);
               }),
             ],
           ),
@@ -339,23 +340,35 @@ class _CoinsListState extends ConsumerState<CoinsListSpendState> {
     }
 
     // When a tag is selected -> show only that tag's coins
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        // Optional back row to go back to list
-        Row(
-          children: [
-            GestureDetector(
-              child: EnvoyIcon(EnvoyIcons.chevron_left),
-              onTap: () => _setOpenTag(null),
-            ),
-            SizedBox(width: EnvoySpacing.small),
-            Text(S().send_editTxDetails_tagDetails),
-          ],
-        ),
-        SizedBox(height: EnvoySpacing.small),
-        ChooseCoinsFromTagWidget(_openTag!),
-      ],
+    return PopScope<dynamic>(
+      canPop: false,
+      onPopInvokedWithResult: (didPop, result) {
+        if (!didPop) {
+          if (result != null) {
+            Navigator.of(context).pop(result);
+          } else {
+            _setOpenTag(null);
+          }
+        }
+      },
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          // Optional back row to go back to list
+          Row(
+            children: [
+              GestureDetector(
+                child: EnvoyIcon(EnvoyIcons.chevron_left),
+                onTap: () => _setOpenTag(null),
+              ),
+              SizedBox(width: EnvoySpacing.small),
+              Text(S().send_editTxDetails_tagDetails),
+            ],
+          ),
+          SizedBox(height: EnvoySpacing.small),
+          ChooseCoinsFromTagWidget(_openTag!),
+        ],
+      ),
     );
   }
 }
