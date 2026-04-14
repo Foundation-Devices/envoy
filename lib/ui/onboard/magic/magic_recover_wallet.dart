@@ -325,11 +325,9 @@ class _MagicRecoverWalletState extends ConsumerState<MagicRecoverWallet> {
 
       //Enable magic backup by default for seed recovery
       Settings().setSyncToCloud(true);
-      if (success) {
-        setState(() {
+      setState(() {
+        if (success) {
           Settings().updateAccountsViewSettings();
-        });
-        if (context.mounted) {
           Navigator.push(
             context,
             MaterialPageRoute(builder: (context) => const WalletSetupSuccess()),
@@ -339,19 +337,19 @@ class _MagicRecoverWalletState extends ConsumerState<MagicRecoverWallet> {
               _tryAutomaticRecovery();
             }
           });
-        }
-      } else {
-        setState(() {
-          if (isValidSeed) {
-            _setUnhappyState();
+        } else if (isValidSeed) {
+          _setUnhappyState();
+          setState(() {
             _magicRecoverWalletState =
                 MagicRecoveryWalletState.validSeedNoBackup;
-          } else {
-            _setUnhappyState();
+          });
+        } else {
+          _setUnhappyState();
+          setState(() {
             _magicRecoverWalletState = MagicRecoveryWalletState.failure;
-          }
-        });
-      }
+          });
+        }
+      });
     } catch (e) {
       _setUnhappyState();
       if (mounted) {
