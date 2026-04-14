@@ -1548,8 +1548,12 @@ class MessageLookup extends MessageLookupByLibrary {
         ),
         "firmware_connectionModalCancelUpdate_header":
             MessageLookupByLibrary.simpleMessage("Cancel Update?"),
+        "firmware_downloadingUpdate_aboutOneMin":
+            MessageLookupByLibrary.simpleMessage("About 1 minute remains"),
         "firmware_downloadingUpdate_downloaded":
             MessageLookupByLibrary.simpleMessage("Actualización Descargada"),
+        "firmware_downloadingUpdate_estimating":
+            MessageLookupByLibrary.simpleMessage("Estimating remaining time…"),
         "firmware_downloadingUpdate_header":
             MessageLookupByLibrary.simpleMessage(
           "Descargando Actualización",
