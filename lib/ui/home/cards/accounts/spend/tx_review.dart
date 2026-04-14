@@ -51,7 +51,6 @@ import 'package:ngwallet/ngwallet.dart';
 import 'package:rive/rive.dart' as rive;
 import 'package:envoy/ui/components/step_indicator.dart';
 import 'package:envoy/ui/home/cards/accounts/spend/choose_coins_widget.dart';
-import 'package:envoy/ui/home/cards/accounts/spend/coin_selection_overlay.dart';
 
 final transferTransactionStateProvider =
     StateNotifierProvider<StepNotifier, StepModel>((ref) {
