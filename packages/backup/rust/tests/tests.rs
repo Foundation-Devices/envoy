@@ -24,7 +24,7 @@ async fn test_get_and_solve_challenge() {
         -1,
         challenge,
         solution,
-        bitcoin::hashes::sha256::Hash::hash("hey".as_bytes()).to_string(),
+        "hey".to_owned(),
         vec![0, 1, 2],
     )
     .await
