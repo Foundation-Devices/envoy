@@ -81,6 +81,7 @@ class EnvoyInfoCard extends StatelessWidget {
                         padding:
                             const EdgeInsets.only(left: 12, bottom: 6, top: 6),
                         child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.center,
                           children: [
                             if (iconTitleWidget != null) iconTitleWidget!,
                             if (titleWidget != null) titleWidget!,

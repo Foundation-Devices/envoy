@@ -62,7 +62,7 @@ class EnvoyListTile extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: [
                     Padding(
-                      padding: const EdgeInsets.only(top: EnvoySpacing.xs),
+                      padding: const EdgeInsets.only(top: 3),
                       child: EnvoyIcon(
                         txIcon!,
                         color: iconColor,
@@ -294,7 +294,9 @@ class ActivityListTileState extends ConsumerState<ActivityListTile> {
     final accountId = widget.notification.accountId;
     final account = NgAccountManager().getAccountById(accountId!);
 
-    ref.read(selectedAccountProvider.notifier).state = account;
+    Future(() {
+      ref.read(selectedAccountProvider.notifier).state = account;
+    });
 
     return TransactionsDetailsWidget(
       account: account!,
@@ -304,8 +306,8 @@ class ActivityListTileState extends ConsumerState<ActivityListTile> {
         transaction,
         iconColor: EnvoyColors.textPrimaryInverse,
         alignment: Alignment.center,
-        bottomPadding: 0,
         rightPadding: EnvoySpacing.xs,
+        topPadding: 0,
       ),
       titleWidget: transactionTitle(
         context,
