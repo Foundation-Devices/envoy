@@ -1,3 +1,4 @@
+
 # run the APK through SHA256
 verify-sha sha:
   #!/usr/bin/env bash

@@ -166,6 +166,7 @@ class SyncManager {
               null) {
             FullScanRequest request = await account.handler!
                 .requestFullScan(addressType: descriptor.addressType);
+            _fullScanRequests[(account, descriptor.addressType)] = request;
             performFullScan(account.handler!, descriptor.addressType, request);
           }
         }
@@ -297,7 +298,6 @@ class SyncManager {
         continue;
       }
 
-      _activeFullScanOperations.add(accountKey);
       Future sync() async {
         try {
           final fullScanRequest = _fullScanRequests[entry.key];
@@ -350,6 +350,7 @@ class SyncManager {
 
     if (fullScanRequest.isDisposed) {
       _currentLoading.sink.add(None());
+      _activeFullScanOperations.remove((account.id, addressType));
       if (_enableLogging) {
         kPrint("FullScanRequest is disposed");
       }
