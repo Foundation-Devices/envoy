@@ -17,6 +17,12 @@ import 'package:envoy/business/locale.dart';
 String btcSatoshiSeparator = fiatDecimalSeparator;
 String thousandSatSeparator = fiatGroupSeparator;
 
+/// Returns true if the sats amount has 9+ digits (>= 100,000,000)
+/// and should be displayed in BTC even when user prefers sats.
+bool satsExceedDisplayLimit(int amountSats) {
+  return amountSats.abs() >= 100000000;
+}
+
 NumberFormat satsFormatter =
     NumberFormat("###,###,###,###,###,###,###", currentLocale);
 
@@ -53,11 +59,40 @@ String removeFiatTrailingZeros(String fiatAmount) {
 String convertSatsToBtcString(int amountSats, {bool trailingZeros = false}) {
   final amountBtc = amountSats / 100000000;
 
-  NumberFormat formatter = NumberFormat.decimalPattern(currentLocale);
-  formatter.minimumFractionDigits = trailingZeros ? 8 : 0;
-  formatter.maximumFractionDigits = 8; // Always allow up to 8 decimals
+  // 9-digit rule: limit total displayed digits to 9
+  int integerPart = amountBtc.truncate().abs();
+  int integerDigitCount = integerPart == 0 ? 1 : integerPart.toString().length;
+  int maxDecimals =
+      integerDigitCount <= 1 ? 8 : (9 - integerDigitCount).clamp(0, 8);
 
-  return formatter.format(amountBtc);
+  // Truncate (not round) to maxDecimals via string manipulation
+  String fullPrecision = amountBtc.toStringAsFixed(8);
+  List<String> parts = fullPrecision.split('.');
+  String intPart = parts[0];
+  String decPart = parts.length > 1 ? parts[1] : '';
+
+  if (decPart.length > maxDecimals) {
+    decPart = decPart.substring(0, maxDecimals);
+  }
+
+  if (!trailingZeros) {
+    decPart = decPart.replaceAll(RegExp(r'0+$'), '');
+  } else {
+    decPart = decPart.padRight(maxDecimals, '0');
+  }
+
+  // Format integer part with locale grouping
+  NumberFormat intFormatter = NumberFormat.decimalPattern(currentLocale);
+  intFormatter.maximumFractionDigits = 0;
+  String formattedInt = intFormatter.format(int.parse(intPart));
+
+  if (decPart.isEmpty) {
+    return formattedInt;
+  }
+
+  String decSep =
+      NumberFormat.decimalPattern(currentLocale).symbols.DECIMAL_SEP;
+  return '$formattedInt$decSep$decPart';
 }
 
 int convertSatsStringToSats(String amountSats) {
