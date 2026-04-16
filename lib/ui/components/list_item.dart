@@ -57,7 +57,7 @@ class EnvoyListTile extends StatelessWidget {
           children: [
             if (txIcon != null)
               Padding(
-                padding: const EdgeInsets.only(right: EnvoySpacing.medium1),
+                padding: const EdgeInsets.only(right: EnvoySpacing.small),
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: [
@@ -303,6 +303,9 @@ class ActivityListTileState extends ConsumerState<ActivityListTile> {
         context,
         transaction,
         iconColor: EnvoyColors.textPrimaryInverse,
+        alignment: Alignment.center,
+        bottomPadding: 0,
+        rightPadding: EnvoySpacing.xs,
       ),
       titleWidget: transactionTitle(
         context,
