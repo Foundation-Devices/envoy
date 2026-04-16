@@ -670,6 +670,9 @@ class TransactionListTile extends ConsumerWidget {
             context,
             transaction,
             iconColor: _detailsColor,
+            alignment: Alignment.center,
+            bottomPadding: 0,
+            rightPadding: EnvoySpacing.xs,
           ),
           titleWidget: transactionTitle(
             context,
@@ -722,18 +725,21 @@ Widget transactionIcon(
   BuildContext context,
   EnvoyTransaction transaction, {
   Color iconColor = EnvoyColors.textTertiary,
+  Alignment alignment = Alignment.topCenter,
+  double bottomPadding = 22,
+  double rightPadding = EnvoySpacing.small,
 }) {
   return FittedBox(
-    alignment: Alignment.topCenter,
+    alignment: alignment,
     fit: BoxFit.scaleDown,
     child: Consumer(
       builder: (context, ref, child) {
         bool? isBoosted = ref.watch(isTxBoostedProvider(transaction.txId));
         final cancelState = ref.watch(cancelTxStateProvider(transaction.txId));
         return Container(
-          padding: const EdgeInsets.only(
-            bottom: 22,
-            right: 12,
+          padding: EdgeInsets.only(
+            bottom: bottomPadding,
+            right: rightPadding,
             left: EnvoySpacing.xs,
           ),
           child: Transform.scale(
