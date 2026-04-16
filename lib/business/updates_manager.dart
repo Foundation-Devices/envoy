@@ -249,7 +249,7 @@ class UpdatesManager {
   Future<Version?> getStoredFirmwareVersion(int deviceId) async {
     final storedVersion = await getStoredFirmwareVersionString(deviceId);
     return storedVersion != null
-        ? Version.parse(storedVersion.replaceAll("v", ""))
+        ? Version.parse(sanitizeVersion(storedVersion))
         : null;
   }
 
@@ -303,19 +303,17 @@ class UpdatesManager {
     if (isPreRelease(storedVersionString)) return false;
 
     final storedVersion = Version.parse(
-      storedVersionString.replaceAll("v", ""),
+      sanitizeVersion(storedVersionString),
     );
     return storedVersion > parsedVersion;
   }
 }
 
 String sanitizeVersion(String version) {
-  // Remove the v prefix and any non-printable characters (Prime sends us NULL chars sometimes)
-  final cleaned =
-      version.replaceAll("v", "").replaceAll(RegExp(r'[^\x20-\x7E]'), '');
-  // Extract only the MAJOR.MINOR.PATCH numeric portion (strips pre-release like b8, beta8, etc.)
-  final match = RegExp(r'^(\d+\.\d+\.\d+)').firstMatch(cleaned);
-  return match?.group(1) ?? cleaned;
+  // Remove the v (and optional dot after it) and keep only letters and numbers (Prime sends us NULL chars sometimes)
+  return version
+      .replaceAll(RegExp(r'^v\.?'), '')
+      .replaceAll(RegExp(r'[^a-zA-Z0-9.]'), '');
 }
 
 /// Returns true if [version] is a pre-release (e.g. "2.1.1b3", "2.1.1beta3", "2.1.1-rc1").

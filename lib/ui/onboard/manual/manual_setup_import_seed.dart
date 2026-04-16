@@ -4,6 +4,7 @@
 
 import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/envoy_button.dart';
+import 'package:envoy/ui/envoy_method_channel.dart';
 import 'package:envoy/ui/theme/envoy_colors.dart';
 import 'package:envoy/ui/onboard/manual/manual_setup.dart';
 import 'package:envoy/ui/onboard/manual/widgets/mnemonic_grid_widget.dart';
@@ -38,6 +39,18 @@ class _ManualSetupImportSeedState extends ConsumerState<ManualSetupImportSeed> {
   final GlobalKey<MnemonicEntryGridState> _mnemonicEntryGridKey =
       GlobalKey<MnemonicEntryGridState>();
   List<String> currentWords = [];
+
+  @override
+  void initState() {
+    super.initState();
+    enableSecureScreen();
+  }
+
+  @override
+  void dispose() {
+    disableSecureScreen();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {

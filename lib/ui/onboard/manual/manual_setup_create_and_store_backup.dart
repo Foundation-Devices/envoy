@@ -42,25 +42,24 @@ class _ManualSetupCreateAndStoreBackupState
         child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                const SizedBox(height: EnvoySpacing.xl),
-                Padding(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: EnvoySpacing.medium1,
-                  ),
-                  child: Image.asset(
-                    "assets/onboarding_lock_icon.png",
-                    height: 184,
-                  ),
-                ),
-                const SizedBox(height: EnvoySpacing.medium3),
-                Flexible(
-                  child: SingleChildScrollView(
-                    child: Padding(
+            Expanded(
+              child: SingleChildScrollView(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    const SizedBox(height: EnvoySpacing.xl),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: EnvoySpacing.medium1,
+                      ),
+                      child: Image.asset(
+                        "assets/onboarding_lock_icon.png",
+                        height: 184,
+                      ),
+                    ),
+                    const SizedBox(height: EnvoySpacing.medium3),
+                    Padding(
                       padding: const EdgeInsets.symmetric(
                         horizontal: EnvoySpacing.medium3,
                       ),
@@ -82,9 +81,9 @@ class _ManualSetupCreateAndStoreBackupState
                         ],
                       ),
                     ),
-                  ),
+                  ],
                 ),
-              ],
+              ),
             ),
             Padding(
               padding: const EdgeInsets.only(
