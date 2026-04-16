@@ -144,6 +144,7 @@ class Settings extends ChangeNotifier {
     } else {
       displayUnit = DisplayUnit.btc;
     }
+    sendUnit = null;
     notifyListeners();
     store();
   }
@@ -155,7 +156,7 @@ class Settings extends ChangeNotifier {
   void setDisplayFiat(String? displayFiat) {
     selectedFiat = displayFiat;
     ExchangeRate().setCurrency(selectedFiat);
-
+    sendUnit = null;
     notifyListeners();
     store();
   }

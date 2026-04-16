@@ -1300,8 +1300,8 @@ packages:
     dependency: "direct main"
     description:
       path: "."
-      ref: "360893aedfed969a852a147bab6b8689f03e722c"
-      resolved-ref: "360893aedfed969a852a147bab6b8689f03e722c"
+      ref: "973ac30a242486df799f426c4258cdf7ce25a32f"
+      resolved-ref: "973ac30a242486df799f426c4258cdf7ce25a32f"
       url: "https://github.com/Foundation-Devices/qr_code_scanner.git"
     source: git
     version: "2.0.14"

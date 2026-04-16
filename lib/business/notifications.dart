@@ -411,7 +411,7 @@ class Notifications {
     }
 
     var latestGitHubVersion = Version.parse(
-      versionOnGitHub.replaceAll("v", ""),
+      sanitizeVersion(versionOnGitHub),
     );
     return latestGitHubVersion > envoyVersionOnPhone;
   }

@@ -57,7 +57,15 @@ class PassportMessageRouter {
         );
         try {
           //allows multiple handlers to handle same types
-          unawaited(handler.handleMessage(qMessage));
+          unawaited(handler.handleMessage(qMessage).catchError((
+            Object e,
+            StackTrace stack,
+          ) {
+            debugPrintStack(stackTrace: stack);
+            kPrint(
+              "Async error handling message ${qMessage.runtimeType}: $e",
+            );
+          }));
         } catch (e, stack) {
           debugPrintStack(stackTrace: stack);
           kPrint("Error handling message ${message.runtimeType}: $e");

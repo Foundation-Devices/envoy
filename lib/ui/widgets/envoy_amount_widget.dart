@@ -5,6 +5,7 @@
 import 'package:envoy/business/exchange_rate.dart';
 import 'package:envoy/business/settings.dart';
 import 'package:envoy/ui/widgets/color_util.dart';
+import 'package:envoy/util/amount.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:envoy/ui/components/amount_widget.dart';
@@ -49,6 +50,12 @@ class EnvoyAmount extends StatelessWidget {
     // In case we need to override
     if (unit != null) {
       mainUnit = unit!;
+    }
+
+    // "Show in sats when possible": force BTC for amounts with 9+ sats digits
+    if (mainUnit == AmountDisplayUnit.sat &&
+        satsExceedDisplayLimit(amountSats)) {
+      mainUnit = AmountDisplayUnit.btc;
     }
 
     String? selectedFiat = Settings().selectedFiat;

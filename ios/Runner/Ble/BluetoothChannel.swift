@@ -128,6 +128,7 @@ class BluetoothChannel: NSObject, CBCentralManagerDelegate, FlutterStreamHandler
         })
 
         setupAccessorySession()
+        setupBluetoothManager()
     }
 
     override init() {
@@ -186,6 +187,8 @@ class BluetoothChannel: NSObject, CBCentralManagerDelegate, FlutterStreamHandler
             result(FlutterError(code: "INVALID_DEVICE_ID", message: "Device ID is required", details: nil))
             return
         }
+
+        setupBluetoothManager()
 
         // Create QLConnection so its channels are registered
         guard getOrCreateDevice(deviceId: deviceId) != nil else {
@@ -336,6 +339,8 @@ class BluetoothChannel: NSObject, CBCentralManagerDelegate, FlutterStreamHandler
     }
 
     private func setupBluetoothManager() {
+        guard centralManager == nil else { return }
+
         // Use the shared BLE queue for all BLE operations
         centralManager = CBCentralManager(
             delegate: self,
