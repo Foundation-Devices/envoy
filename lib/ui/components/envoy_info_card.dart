@@ -74,25 +74,20 @@ class EnvoyInfoCard extends StatelessWidget {
                 mainAxisSize: MainAxisSize.min,
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Align(
-                    alignment: Alignment.centerLeft,
-                    child: Padding(
-                      padding:
-                          const EdgeInsets.only(left: 12, bottom: 6, top: 6),
-                      child: Row(
-                        children: [
-                          if (iconTitleWidget != null)
-                            iconTitleWidget!
-                          else
-                            const SizedBox.shrink(),
-                          if (titleWidget != null)
-                            titleWidget!
-                          else
-                            const SizedBox.shrink(),
-                        ],
+                  if (iconTitleWidget != null || titleWidget != null)
+                    Align(
+                      alignment: Alignment.centerLeft,
+                      child: Padding(
+                        padding:
+                            const EdgeInsets.only(left: 12, bottom: 6, top: 6),
+                        child: Row(
+                          children: [
+                            if (iconTitleWidget != null) iconTitleWidget!,
+                            if (titleWidget != null) titleWidget!,
+                          ],
+                        ),
                       ),
                     ),
-                  ),
                   Container(
                     height: 32,
                     width: double.infinity,
