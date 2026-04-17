@@ -595,11 +595,6 @@ class TransactionListTile extends ConsumerWidget {
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                transactionIcon(
-                  context,
-                  transaction,
-                  alignment: Alignment.center,
-                ),
                 Expanded(
                   child: IntrinsicHeight(
                     child: Row(
@@ -609,8 +604,28 @@ class TransactionListTile extends ConsumerWidget {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             mainAxisAlignment: MainAxisAlignment.start,
                             children: [
-                              transactionTitle(context, transaction),
-                              txSubtitle(activeLocale),
+                              Row(
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: [
+                                  transactionIcon(
+                                    context,
+                                    transaction,
+                                    alignment: Alignment.center,
+                                  ),
+                                  Expanded(
+                                    child: transactionTitle(
+                                      context,
+                                      transaction,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.only(
+                                  left: _kTxIconSlotWidth,
+                                ),
+                                child: txSubtitle(activeLocale),
+                              ),
                             ],
                           ),
                         ),
@@ -676,7 +691,6 @@ class TransactionListTile extends ConsumerWidget {
             iconColor: _detailsColor,
             alignment: Alignment.center,
             rightPadding: EnvoySpacing.xs,
-            topPadding: 0,
           ),
           titleWidget: transactionTitle(
             context,
@@ -725,13 +739,16 @@ Widget transactionTitle(
   );
 }
 
+// Keep in sync with transactionIcon's layout width:
+// EnvoyIconSize.small (18) + default rightPadding (EnvoySpacing.small).
+const double _kTxIconSlotWidth = 18.0 + EnvoySpacing.small;
+
 Widget transactionIcon(
   BuildContext context,
   EnvoyTransaction transaction, {
   Color iconColor = EnvoyColors.textTertiary,
   Alignment alignment = Alignment.center,
   double rightPadding = EnvoySpacing.small,
-  double topPadding = 3,
 }) {
   return FittedBox(
     alignment: alignment,
@@ -741,10 +758,7 @@ Widget transactionIcon(
         bool? isBoosted = ref.watch(isTxBoostedProvider(transaction.txId));
         final cancelState = ref.watch(cancelTxStateProvider(transaction.txId));
         return Container(
-          padding: EdgeInsets.only(
-            right: rightPadding,
-            top: topPadding,
-          ),
+          padding: EdgeInsets.only(right: rightPadding),
           child: Transform.scale(
             scale: cancelState?.newTxId == transaction.txId ? 0.95 : 1.1,
             child: EnvoyIcon(

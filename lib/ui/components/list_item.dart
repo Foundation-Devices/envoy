@@ -32,6 +32,9 @@ import 'package:envoy/ui/routes/devices_router.dart';
 import 'package:envoy/business/settings.dart';
 import 'package:envoy/ui/home/cards/accounts/accounts_state.dart';
 
+// Matches the icon's layout width: EnvoyIconSize.small (18) + right padding.
+const double _kTxIconSlotWidth = 18.0 + EnvoySpacing.small;
+
 class EnvoyListTile extends StatelessWidget {
   const EnvoyListTile({
     super.key,
@@ -55,38 +58,43 @@ class EnvoyListTile extends StatelessWidget {
       child: IntrinsicHeight(
         child: Row(
           children: [
-            if (txIcon != null)
-              Padding(
-                padding: const EdgeInsets.only(right: EnvoySpacing.small),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.only(top: 3),
-                      child: EnvoyIcon(
-                        txIcon!,
-                        color: iconColor,
-                        size: EnvoyIconSize.small,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
-                  Text(
-                    titleText,
-                    style: EnvoyTypography.body
-                        .copyWith(color: EnvoyColors.textPrimary),
+                  Row(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      if (txIcon != null)
+                        Padding(
+                          padding:
+                              const EdgeInsets.only(right: EnvoySpacing.small),
+                          child: EnvoyIcon(
+                            txIcon!,
+                            color: iconColor,
+                            size: EnvoyIconSize.small,
+                          ),
+                        ),
+                      Expanded(
+                        child: Text(
+                          titleText,
+                          style: EnvoyTypography.body
+                              .copyWith(color: EnvoyColors.textPrimary),
+                        ),
+                      ),
+                    ],
                   ),
                   if (subtitleText != null)
-                    Text(
-                      subtitleText!,
-                      style: EnvoyTypography.info
-                          .copyWith(color: EnvoyColors.textSecondary),
+                    Padding(
+                      padding: EdgeInsets.only(
+                        left: txIcon != null ? _kTxIconSlotWidth : 0,
+                      ),
+                      child: Text(
+                        subtitleText!,
+                        style: EnvoyTypography.info
+                            .copyWith(color: EnvoyColors.textSecondary),
+                      ),
                     ),
                 ],
               ),
@@ -307,7 +315,6 @@ class ActivityListTileState extends ConsumerState<ActivityListTile> {
         iconColor: EnvoyColors.textPrimaryInverse,
         alignment: Alignment.center,
         rightPadding: EnvoySpacing.xs,
-        topPadding: 0,
       ),
       titleWidget: transactionTitle(
         context,
