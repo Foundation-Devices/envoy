@@ -134,6 +134,7 @@ class BluetoothChannel: NSObject, CBCentralManagerDelegate, FlutterStreamHandler
     override init() {
         super.init()
         setupAccessorySession()
+        setupBluetoothManager()
     }
 
     // MARK: - QLConnectionDelegate
@@ -207,7 +208,13 @@ class BluetoothChannel: NSObject, CBCentralManagerDelegate, FlutterStreamHandler
 
     /// Reconnect to a previously paired device.
     /// prepareDevice() should be called first to register native channels.
-    private func reconnect(call: FlutterMethodCall, result: @escaping FlutterResult) {
+    ///
+    /// If the central manager isn't `.poweredOn` yet (e.g. the user just
+    /// toggled Bluetooth and CoreBluetooth is still `.resetting`/`.unknown`),
+    /// we retry for up to ~10s (20 × 0.5s) waiting for `.poweredOn` before
+    /// returning `NO_CENTRAL`. Prime advertises continuously, so the phone
+    /// side was the only thing preventing recovery.
+    private func reconnect(call: FlutterMethodCall, result: @escaping FlutterResult, retriesLeft: Int = 20) {
         guard let arguments = call.arguments as? [String: Any],
               let deviceId = arguments["deviceId"] as? String,
               !deviceId.isEmpty else {
@@ -216,6 +223,13 @@ class BluetoothChannel: NSObject, CBCentralManagerDelegate, FlutterStreamHandler
         }
 
         guard let central = centralManager, central.state == .poweredOn else {
+            if retriesLeft > 0 {
+                print("\(Self.TAG) Central not ready for reconnect (\(retriesLeft) retries left); waiting 0.5s")
+                bleQueue.asyncAfter(deadline: .now() + 0.5) { [weak self] in
+                    self?.reconnect(call: call, result: result, retriesLeft: retriesLeft - 1)
+                }
+                return
+            }
             result(FlutterError(code: "NO_CENTRAL", message: "Central manager not available or not powered on", details: nil))
             return
         }
@@ -570,10 +584,8 @@ class BluetoothChannel: NSObject, CBCentralManagerDelegate, FlutterStreamHandler
         print("\(Self.TAG)   - Bluetooth ID: \(accessory.bluetoothIdentifier?.uuidString ?? "None")")
         print("\(Self.TAG)   - Has Bluetooth ID: \(hasBluetoothId)")
 
-        // Initialize CoreBluetooth manager if needed
-        if centralManager == nil {
-            setupBluetoothManager()
-        }
+        // No-op if already initialized (setupBluetoothManager guards on centralManager == nil).
+        setupBluetoothManager()
 
         // Create QLConnection for this accessory if it has a Bluetooth ID
         var deviceId: String? = nil
@@ -610,10 +622,8 @@ class BluetoothChannel: NSObject, CBCentralManagerDelegate, FlutterStreamHandler
             return
         }
 
-        // Initialize CoreBluetooth manager if needed
-        if centralManager == nil {
-            setupBluetoothManager()
-        }
+        // No-op if already initialized (setupBluetoothManager guards on centralManager == nil).
+        setupBluetoothManager()
 
         for accessory in accessories {
             guard let bluetoothId = accessory.bluetoothIdentifier else {
