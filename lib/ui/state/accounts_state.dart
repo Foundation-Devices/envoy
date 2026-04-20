@@ -220,7 +220,9 @@ final accountsZeroBalanceProvider = Provider<bool>((ref) {
 final hotWalletAccountsEmptyProvider = Provider<bool>((ref) {
   final accounts = ref.watch(accountsProvider);
   for (final account in accounts) {
-    if (account.isHot && account.balance != BigInt.zero) {
+    if (account.isHot &&
+        account.network == Network.bitcoin &&
+        account.balance != BigInt.zero) {
       return false;
     }
   }
