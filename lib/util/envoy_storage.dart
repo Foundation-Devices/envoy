@@ -1139,6 +1139,8 @@ class EnvoyStorage {
     await accountFullsScanStateStore.record(key).delete(_db);
     _scanStatusCache.remove(key);
     _getScanStatusController(key).add(false);
+    final controller = _scanStatusControllers.remove(key);
+    await controller?.close();
     return true;
   }
 
