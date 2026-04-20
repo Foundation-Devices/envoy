@@ -47,7 +47,7 @@ class _SendCardState extends ConsumerState<SendCard>
       }
 
       if (parsed.amountSats != null) {
-        setAmount(parsed.amountSats!);
+        setAmount(parsed.amountSats!, displayFiat: parsed.displayFiat);
 
         if (parsed.unit != null) {
           ref.read(sendUnitProvider.notifier).state = parsed.unit!;
@@ -88,10 +88,12 @@ class _SendCardState extends ConsumerState<SendCard>
     });
   }
 
-  void setAmount(int amount) {
+  void setAmount(int amount, {double? displayFiat}) {
     ref.read(spendAmountProvider.notifier).state = amount;
+    // Preserve the pasted fiat value when provided so small-fiat pastes
+    // (e.g. 7.5 INR) don't get re-derived from sats and lose precision.
     ref.read(displayFiatSendAmountProvider.notifier).state =
-        ExchangeRate().convertSatsToFiat(amount);
+        displayFiat ?? ExchangeRate().convertSatsToFiat(amount);
     setState(() {
       _amountEntry = AmountEntry(
         onAmountChanged: _updateAmount,

@@ -590,13 +590,12 @@ class TransactionListTile extends ConsumerWidget {
           },
           onDoubleTap: () {},
           // Avoids unintended behavior, prevents list item disappearance
-          child: Row(
-            children: [
-              transactionIcon(context, transaction),
-              Expanded(
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(
-                      vertical: EnvoySpacing.medium1),
+          child: Padding(
+            padding: const EdgeInsets.symmetric(vertical: EnvoySpacing.medium1),
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Expanded(
                   child: IntrinsicHeight(
                     child: Row(
                       children: [
@@ -605,8 +604,28 @@ class TransactionListTile extends ConsumerWidget {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             mainAxisAlignment: MainAxisAlignment.start,
                             children: [
-                              transactionTitle(context, transaction),
-                              txSubtitle(activeLocale),
+                              Row(
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: [
+                                  transactionIcon(
+                                    context,
+                                    transaction,
+                                    alignment: Alignment.center,
+                                  ),
+                                  Expanded(
+                                    child: transactionTitle(
+                                      context,
+                                      transaction,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.only(
+                                  left: _kTxIconSlotWidth,
+                                ),
+                                child: txSubtitle(activeLocale),
+                              ),
                             ],
                           ),
                         ),
@@ -657,8 +676,8 @@ class TransactionListTile extends ConsumerWidget {
                     ),
                   ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         );
       },
@@ -670,6 +689,8 @@ class TransactionListTile extends ConsumerWidget {
             context,
             transaction,
             iconColor: _detailsColor,
+            alignment: Alignment.center,
+            rightPadding: EnvoySpacing.xs,
           ),
           titleWidget: transactionTitle(
             context,
@@ -718,24 +739,26 @@ Widget transactionTitle(
   );
 }
 
+// Keep in sync with transactionIcon's layout width:
+// EnvoyIconSize.small (18) + default rightPadding (EnvoySpacing.small).
+const double _kTxIconSlotWidth = 18.0 + EnvoySpacing.small;
+
 Widget transactionIcon(
   BuildContext context,
   EnvoyTransaction transaction, {
   Color iconColor = EnvoyColors.textTertiary,
+  Alignment alignment = Alignment.center,
+  double rightPadding = EnvoySpacing.small,
 }) {
   return FittedBox(
-    alignment: Alignment.topCenter,
+    alignment: alignment,
     fit: BoxFit.scaleDown,
     child: Consumer(
       builder: (context, ref, child) {
         bool? isBoosted = ref.watch(isTxBoostedProvider(transaction.txId));
         final cancelState = ref.watch(cancelTxStateProvider(transaction.txId));
         return Container(
-          padding: const EdgeInsets.only(
-            bottom: 22,
-            right: 12,
-            left: EnvoySpacing.xs,
-          ),
+          padding: EdgeInsets.only(right: rightPadding),
           child: Transform.scale(
             scale: cancelState?.newTxId == transaction.txId ? 0.95 : 1.1,
             child: EnvoyIcon(

@@ -14,11 +14,17 @@ class InvalidSeedQRException implements Exception {
 
 class SeedQrDecoder extends ScannerDecoder {
   final Function(String seed)? onSeedValidated;
+  bool _seedDetected = false;
 
   SeedQrDecoder({required this.onSeedValidated});
 
   @override
   Future<void> onDetectBarCode(Barcode barCode) async {
+    // Once a valid seed has been detected, ignore any further scans so the
+    // scanner doesn't throw/toast while the modal is being torn down.
+    if (_seedDetected) {
+      return;
+    }
     final String code = barCode.code?.toLowerCase() ?? "";
     if (code.isEmpty) {
       return;
@@ -26,6 +32,13 @@ class SeedQrDecoder extends ScannerDecoder {
     final seed = extractSeedFromQRCode(code, rawBytes: barCode.rawBytes);
     if (isValidSeedLength(seed) &&
         await EnvoyBip39.validateSeed(seedWords: seed)) {
+      // Re-check after the async gap: a concurrent decode may have already
+      // claimed the detection. Without this, onSeedValidated can fire twice,
+      // which pops the caller's screen once too many.
+      if (_seedDetected) {
+        return;
+      }
+      _seedDetected = true;
       onSeedValidated!(seed);
       return;
     } else {
