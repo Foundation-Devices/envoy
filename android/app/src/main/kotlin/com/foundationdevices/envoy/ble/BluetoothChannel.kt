@@ -150,8 +150,13 @@ class BluetoothChannel(
             result.success(true)
             return
         }
+        val requiredPermission = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            Manifest.permission.BLUETOOTH_CONNECT
+        } else {
+            Manifest.permission.BLUETOOTH
+        }
         if (ActivityCompat.checkSelfPermission(
-                context, Manifest.permission.BLUETOOTH_CONNECT
+                context, requiredPermission
             ) != PackageManager.PERMISSION_GRANTED
         ) {
             result.error("PERMISSION_ERROR", "Bluetooth connect permission not granted", null)
@@ -600,7 +605,10 @@ class BluetoothChannel(
             val hasBluetoothAdminPermission = ActivityCompat.checkSelfPermission(
                 context, Manifest.permission.BLUETOOTH_ADMIN
             ) == PackageManager.PERMISSION_GRANTED
-            hasBluetoothPermission && hasBluetoothAdminPermission
+            val hasFineLocationPermission = ActivityCompat.checkSelfPermission(
+                context, Manifest.permission.ACCESS_FINE_LOCATION
+            ) == PackageManager.PERMISSION_GRANTED
+            hasBluetoothPermission && hasBluetoothAdminPermission && hasFineLocationPermission
         }
     }
 

@@ -62,6 +62,10 @@ class BluetoothChannel: NSObject, CBCentralManagerDelegate, FlutterStreamHandler
     private var reconnectionAttempts: Int = 0
     private var isShuttingDown = false
 
+    // Reconnect calls received before `centralManager` reaches `.poweredOn`.
+    // Drained from `handleBluetoothPoweredOn`. Only touched on `bleQueue`.
+    private var pendingReconnects: [(FlutterMethodCall, FlutterResult)] = []
+
     private let bleQueue = DispatchQueue(label: "com.envoy.ble", qos: .userInteractive)
 
     let connectOptions: [String: Any] = [
@@ -134,6 +138,7 @@ class BluetoothChannel: NSObject, CBCentralManagerDelegate, FlutterStreamHandler
     override init() {
         super.init()
         setupAccessorySession()
+        setupBluetoothManager()
     }
 
     // MARK: - QLConnectionDelegate
@@ -207,6 +212,14 @@ class BluetoothChannel: NSObject, CBCentralManagerDelegate, FlutterStreamHandler
 
     /// Reconnect to a previously paired device.
     /// prepareDevice() should be called first to register native channels.
+    ///
+    /// If the central manager isn't `.poweredOn` yet (e.g. right after app
+    /// launch when CoreBluetooth is still transitioning from `.unknown`, or
+    /// after the user toggles Bluetooth while `.resetting`), the call is
+    /// parked in `pendingReconnects` and drained from
+    /// `centralManagerDidUpdateState` when the manager transitions to
+    /// `.poweredOn`. Prime advertises continuously, so the phone side is
+    /// the only thing preventing recovery.
     private func reconnect(call: FlutterMethodCall, result: @escaping FlutterResult) {
         guard let arguments = call.arguments as? [String: Any],
               let deviceId = arguments["deviceId"] as? String,
@@ -215,8 +228,15 @@ class BluetoothChannel: NSObject, CBCentralManagerDelegate, FlutterStreamHandler
             return
         }
 
+        // Make sure a CBCentralManager exists so we'll get the
+        // `.poweredOn` transition that drains the parked calls.
+        setupBluetoothManager()
+
         guard let central = centralManager, central.state == .poweredOn else {
-            result(FlutterError(code: "NO_CENTRAL", message: "Central manager not available or not powered on", details: nil))
+            print("\(Self.TAG) Central not ready for reconnect; parking call until .poweredOn")
+            bleQueue.async { [weak self] in
+                self?.pendingReconnects.append((call, result))
+            }
             return
         }
 
@@ -356,6 +376,13 @@ class BluetoothChannel: NSObject, CBCentralManagerDelegate, FlutterStreamHandler
     func cleanup() {
         // Set flag first to prevent any further Flutter channel communication
         isShuttingDown = true
+
+        // Fail any parked reconnect calls so Flutter futures don't leak.
+        let parked = pendingReconnects
+        pendingReconnects.removeAll()
+        for (_, result) in parked {
+            result(FlutterError(code: "NO_CENTRAL", message: "Bluetooth channel shutting down", details: nil))
+        }
 
         // Stop any pending reconnection timers
         stopReconnection()
@@ -570,10 +597,8 @@ class BluetoothChannel: NSObject, CBCentralManagerDelegate, FlutterStreamHandler
         print("\(Self.TAG)   - Bluetooth ID: \(accessory.bluetoothIdentifier?.uuidString ?? "None")")
         print("\(Self.TAG)   - Has Bluetooth ID: \(hasBluetoothId)")
 
-        // Initialize CoreBluetooth manager if needed
-        if centralManager == nil {
-            setupBluetoothManager()
-        }
+        // No-op if already initialized (setupBluetoothManager guards on centralManager == nil).
+        setupBluetoothManager()
 
         // Create QLConnection for this accessory if it has a Bluetooth ID
         var deviceId: String? = nil
@@ -610,10 +635,8 @@ class BluetoothChannel: NSObject, CBCentralManagerDelegate, FlutterStreamHandler
             return
         }
 
-        // Initialize CoreBluetooth manager if needed
-        if centralManager == nil {
-            setupBluetoothManager()
-        }
+        // No-op if already initialized (setupBluetoothManager guards on centralManager == nil).
+        setupBluetoothManager()
 
         for accessory in accessories {
             guard let bluetoothId = accessory.bluetoothIdentifier else {
@@ -721,6 +744,17 @@ class BluetoothChannel: NSObject, CBCentralManagerDelegate, FlutterStreamHandler
     }
 
     private func handleBluetoothPoweredOn(central: CBCentralManager) {
+        // Drain any reconnect calls that arrived before the central was ready.
+        // Already on `bleQueue` here, so no dispatch is needed.
+        if !pendingReconnects.isEmpty {
+            let parked = pendingReconnects
+            pendingReconnects.removeAll()
+            print("\(Self.TAG) Draining \(parked.count) parked reconnect call(s)")
+            for (call, result) in parked {
+                reconnect(call: call, result: result)
+            }
+        }
+
         // Rebuild pairedAccessories from current session state.
         var sessionPaired: [UUID: ASAccessory] = [:]
         for accessory in session.accessories {
