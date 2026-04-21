@@ -1,0 +1,40 @@
+# SPDX-FileCopyrightText: 2022 Foundation Devices Inc.
+#
+# SPDX-License-Identifier: GPL-3.0-or-later
+
+name: Android build
+
+on:
+  push:
+    branches:
+      - 2.2.13 # Workaround to have this run despite being deprecated on main
+      - 2.2.14 # Doing this for now
+  workflow_dispatch:
+  schedule:
+    - cron: "0 2 * * *" # Run daily at 2 AM UTC
+
+jobs:
+  build-android:
+    runs-on: [self-hosted, Linux, X64]
+
+    steps:
+      - uses: extractions/setup-just@v1
+
+      - uses: actions/checkout@v4
+
+      - name: Build APK and AAB
+        env:
+          KEY_JKS: ${{ secrets.KEY_JKS }}
+          KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
+          ALIAS_PASSWORD: ${{ secrets.ALIAS_PASSWORD }}
+        run: echo -n $KEY_JKS | base64 -di > android/key.jks && just docker-build-android-sign
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: envoy-apk
+          path: release/app-release.apk
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: envoy-aab
+          path: release/app-release.aab

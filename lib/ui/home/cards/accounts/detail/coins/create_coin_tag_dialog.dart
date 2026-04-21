@@ -262,6 +262,7 @@ class _CreateCoinTagState extends ConsumerState<CreateCoinTag> {
     if (!context.mounted) return;
 
     bool isUntagged = false;
+    bool isLastUntaggedCoins = false;
     try {
       final selectedAccount = ref.read(selectedAccountProvider);
       if (selectedAccount == null) {
@@ -277,6 +278,19 @@ class _CreateCoinTagState extends ConsumerState<CreateCoinTag> {
         tag = "";
         isUntagged = true;
       }
+
+      // Check if these coins are the last untagged coins before tagging them
+      if (!isUntagged) {
+        final allTags = ref.read(tagsProvider(widget.accountId));
+        final untaggedList = allTags.where((t) => t.untagged).toList();
+        if (untaggedList.isNotEmpty) {
+          final untaggedIds =
+              untaggedList.first.utxo.map((u) => u.getId()).toSet();
+          final coinIds = widget.coins.map((c) => c.getId()).toSet();
+          isLastUntaggedCoins = untaggedIds.every((id) => coinIds.contains(id));
+        }
+      }
+
       setState(() {
         _isLoading = true;
       });
@@ -289,7 +303,7 @@ class _CreateCoinTagState extends ConsumerState<CreateCoinTag> {
       });
       if (context.mounted) {
         Navigator.of(context).pop();
-        if (isUntagged) {
+        if (isUntagged || isLastUntaggedCoins) {
           Navigator.of(context).pop();
         }
       }
