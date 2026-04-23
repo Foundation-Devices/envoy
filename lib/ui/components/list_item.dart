@@ -77,10 +77,13 @@ class EnvoyListTile extends StatelessWidget {
                           ),
                         ),
                       Expanded(
-                        child: Text(
-                          titleText,
-                          style: EnvoyTypography.body
-                              .copyWith(color: EnvoyColors.textPrimary),
+                        child: Semantics(
+                          container: true,
+                          child: Text(
+                            titleText,
+                            style: EnvoyTypography.body
+                                .copyWith(color: EnvoyColors.textPrimary),
+                          ),
                         ),
                       ),
                     ],
