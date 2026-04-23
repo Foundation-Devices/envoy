@@ -153,74 +153,69 @@ class _OnboardEnvoyWelcomeScreenState
             child: Column(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                const SizedBox(height: EnvoySpacing.medium1),
+                const SizedBox(height: EnvoySpacing.large2),
                 Flexible(
                   child: Container(
                     constraints: const BoxConstraints(minHeight: 300),
                     child: SingleChildScrollView(
-                      child: Container(
-                        margin: const EdgeInsets.symmetric(
-                          vertical: EnvoySpacing.large1,
-                        ),
-                        child: Column(
-                          mainAxisSize: MainAxisSize.min,
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Column(
-                              children: [
-                                Padding(
-                                  padding: const EdgeInsets.symmetric(
-                                    horizontal: EnvoySpacing.medium1,
-                                  ),
-                                  child: Column(
-                                    mainAxisSize: MainAxisSize.min,
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceEvenly,
-                                    children: [
-                                      Text(
-                                        magicBackUpEnabled
-                                            ? S()
-                                                .onboarding_magicUserMobileIntro_header
-                                            : S()
-                                                .onboarding_sovereignUserMobileIntro_header,
-                                        textAlign: TextAlign.center,
-                                        style: EnvoyTypography.heading,
-                                      ),
-                                      const SizedBox(
-                                        height: EnvoySpacing.small,
-                                      ),
-                                      Text(
-                                        magicBackUpEnabled
-                                            ? S()
-                                                .onboarding_magicUserMobileIntro_content1
-                                            : S()
-                                                .onboarding_sovereignUserMobileIntro_content1,
-                                        textAlign: TextAlign.center,
-                                        style: EnvoyTypography.body.copyWith(
-                                          color: EnvoyColors.textTertiary,
-                                        ),
-                                      ),
-                                      const SizedBox(
-                                        height: EnvoySpacing.small,
-                                      ),
-                                      Text(
-                                        magicBackUpEnabled
-                                            ? S()
-                                                .onboarding_magicUserMobileIntro_content2
-                                            : S()
-                                                .onboarding_sovereignUserMobileIntro_content2,
-                                        textAlign: TextAlign.center,
-                                        style: EnvoyTypography.body.copyWith(
-                                          color: EnvoyColors.textTertiary,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Column(
+                            children: [
+                              Padding(
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: EnvoySpacing.medium1,
                                 ),
-                              ],
-                            ),
-                          ],
-                        ),
+                                child: Column(
+                                  mainAxisSize: MainAxisSize.min,
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceEvenly,
+                                  children: [
+                                    Text(
+                                      magicBackUpEnabled
+                                          ? S()
+                                              .onboarding_magicUserMobileIntro_header
+                                          : S()
+                                              .onboarding_sovereignUserMobileIntro_header,
+                                      textAlign: TextAlign.center,
+                                      style: EnvoyTypography.heading,
+                                    ),
+                                    const SizedBox(
+                                      height: EnvoySpacing.small,
+                                    ),
+                                    Text(
+                                      magicBackUpEnabled
+                                          ? S()
+                                              .onboarding_magicUserMobileIntro_content1
+                                          : S()
+                                              .onboarding_sovereignUserMobileIntro_content1,
+                                      textAlign: TextAlign.center,
+                                      style: EnvoyTypography.body.copyWith(
+                                        color: EnvoyColors.textTertiary,
+                                      ),
+                                    ),
+                                    const SizedBox(
+                                      height: EnvoySpacing.small,
+                                    ),
+                                    Text(
+                                      magicBackUpEnabled
+                                          ? S()
+                                              .onboarding_magicUserMobileIntro_content2
+                                          : S()
+                                              .onboarding_sovereignUserMobileIntro_content2,
+                                      textAlign: TextAlign.center,
+                                      style: EnvoyTypography.body.copyWith(
+                                        color: EnvoyColors.textTertiary,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ],
+                          ),
+                        ],
                       ),
                     ),
                   ),
