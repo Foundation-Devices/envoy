@@ -6,6 +6,13 @@
 appId: com.foundationdevices.envoy
 ---
 
+# in this test, if you are testing locally (via maestro studio) you
+# should set the setEnabledSystemUIMode in video_payer.dart like this:
+#- SystemChrome.setEnabledSystemUIMode(
+#  _isMaestroTest ? SystemUiMode.immersiveSticky: SystemUiMode.immersiveSticky,
+#  );
+# because you are technically not in maestroMode
+
 # go to learn
 - tapOn: Learn
 

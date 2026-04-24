@@ -303,7 +303,9 @@ class _CreateCoinTagState extends ConsumerState<CreateCoinTag> {
       });
       if (context.mounted) {
         Navigator.of(context).pop();
-        if (isUntagged || isLastUntaggedCoins) {
+        if ((isUntagged || isLastUntaggedCoins) &&
+            context.mounted &&
+            Navigator.of(context).canPop()) {
           Navigator.of(context).pop();
         }
       }
