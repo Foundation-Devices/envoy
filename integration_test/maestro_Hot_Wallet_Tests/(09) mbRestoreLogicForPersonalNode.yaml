@@ -9,9 +9,8 @@ appId: com.foundationdevices.envoy
 - launchApp:
     clearState: true
 
-#    Test 1) During onboarding, don't touch any advanced setting,
-#    load clearnet MB, check that clearnet node is loaded and clearnet setting is selected
-
+# Test 1) During onboarding, don't touch any advanced setting,
+# load clearnet MB, check that clearnet node is loaded and clearnet setting is selected
 
 # turn off MB
 - tapOn: Advanced
@@ -378,3 +377,10 @@ appId: com.foundationdevices.envoy
 - assertVisible: |-
     PRIVACY
     connected
+
+- assertVisible:
+      text: "Foundation (Default)"
+      index: 0
+- assertVisible:
+      text: "Foundation (Default)"
+      index: 1
