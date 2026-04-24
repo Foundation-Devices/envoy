@@ -109,19 +109,43 @@ func getSdCardBookmark() -> URL {
                     let paths = FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask)
                     let localSecretURL = paths[0].appendingPathComponent(localSecretFileName)
                     let localSecret = try String(contentsOf: localSecretURL)
-                    
+
                     let primeSecretsURL = paths[0].appendingPathComponent(primeSecretsFileName)
                     let primeSecret = try String(contentsOf: primeSecretsURL)
-                    
+
                     NSUbiquitousKeyValueStore.default.set(primeSecret, forKey: primeSecretCloudStorageKey)
                     NSUbiquitousKeyValueStore.default.set(localSecret, forKey: localSecretCloudStorageKey)
-                    
+
                     NSUbiquitousKeyValueStore.default.synchronize()
-                    
+
                     result(true)
                 } catch {
                     result(false)
                 }
+            case "get_prime_secret_path":
+                // prime.secret lives in the App Group container so Link can read it directly.
+                // iCloud backs up the container, so data survives uninstalling both apps.
+                guard let container = FileManager.default.containerURL(
+                    forSecurityApplicationGroupIdentifier: appGroupID
+                ) else {
+                    result(nil)
+                    return
+                }
+                let dst = container.appendingPathComponent("prime.secret")
+                let appSupport = FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask)[0]
+                let src = appSupport.appendingPathComponent("prime.secret")
+                // One-time migration for users upgrading from a version that stored
+                // prime.secret in applicationSupportDirectory.
+                if FileManager.default.fileExists(atPath: src.path),
+                   !FileManager.default.fileExists(atPath: dst.path) {
+                    try? FileManager.default.moveItem(at: src, to: dst)
+                    try? (dst as NSURL).setResourceValue(
+                        URLFileProtection.complete,
+                        forKey: .fileProtectionKey
+                    )
+                }
+                result(dst.path)
+
             default:
                 result(FlutterMethodNotImplemented)
             }
