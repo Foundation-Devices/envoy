@@ -24,7 +24,7 @@ class PrimeShard {
   static final PrimeShard _instance = PrimeShard._internal();
   static const _platform = MethodChannel('envoy');
 
-  // iOS only: path to prime.secret inside the App Group shared container.
+  // iOS only: path to prime.secret inside the iCloud Documents container.
   // Cached once during init(); null on Android (uses appSupportDir instead).
   static String? _iosSharedPath;
 
@@ -32,10 +32,10 @@ class PrimeShard {
     try {
       await RustLib.init();
       if (Platform.isIOS) {
-        // Resolves the App Group container path and migrates prime.secret
-        // from applicationSupportDirectory if this is a first launch after upgrade.
+        // Resolves the iCloud Documents path and migrates prime.secret
+        // from previous locations if this is a first launch after upgrade.
         _iosSharedPath =
-        await _platform.invokeMethod<String>('get_prime_secret_path');
+            await _platform.invokeMethod<String>('get_shard_path_icloud');
       }
     } catch (e) {
       EnvoyReport().log("PrimeShard", "Error initializing ShardsLib: $e");
@@ -46,7 +46,7 @@ class PrimeShard {
     return _instance;
   }
 
-  // iOS: returns the App Group container path so Link can read the same file.
+  // iOS: returns the iCloud Documents path so Link can read the same file.
   // Android: returns the private appSupportDir path (Link reads via ContentProvider).
   String getPrimeSecretPath() {
     if (Platform.isIOS && _iosSharedPath != null) {
