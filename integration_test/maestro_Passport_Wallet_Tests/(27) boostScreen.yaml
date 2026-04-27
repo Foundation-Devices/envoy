@@ -11,9 +11,7 @@ appId: com.foundationdevices.envoy
 #      // TODO: when getting more coins you need to wait for the transaction confirmation before running the tests!!!
 
 # go to Hot Signet wallet
-- scrollUntilVisible:
-    element:
-      id: account_card_Mobile Wallet_hot_signet
+- scroll
 
 - tapOn:
     id: account_card_Mobile Wallet_hot_signet

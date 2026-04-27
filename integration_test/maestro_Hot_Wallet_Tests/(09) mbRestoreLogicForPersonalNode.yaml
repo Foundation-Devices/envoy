@@ -9,9 +9,8 @@ appId: com.foundationdevices.envoy
 - launchApp:
     clearState: true
 
-#    Test 1) During onboarding, don't touch any advanced setting,
-#    load clearnet MB, check that clearnet node is loaded and clearnet setting is selected
-
+# Test 1) During onboarding, don't touch any advanced setting,
+# load clearnet MB, check that clearnet node is loaded and clearnet setting is selected
 
 # turn off MB
 - tapOn: Advanced
@@ -378,3 +377,48 @@ appId: com.foundationdevices.envoy
 - assertVisible: |-
     PRIVACY
     connected
+
+- assertVisible:
+      text: "Foundation (Default)"
+      index: 0
+- assertVisible:
+      text: "Foundation (Default)"
+      index: 1
+
+# Return Tor and Node for the next cycle of testing !!!
+
+- tapOn: "Improved\nPrivacy"
+
+- tapOn: "Foundation (Default)"
+- tapOn: "Personal Node"
+- tapOn: "Enter your node address"
+- inputText: "tcp://l7wsl4yghqvdgp4ullod67ydb54ttxs3nnvctblbofl7umw6j72e5did.onion:50001"
+
+- assertVisible: |-
+      PRIVACY
+      connected
+
+# Make MB to save Privacy and Node settings
+
+- tapOn:
+      id: "hamburger_menu"
+- tapOn: "BACKUPS\nBACKUPS"
+- tapOn: "Back up now"
+- tapOn: "Continue"
+
+# wait for MB
+- extendedWaitUntil:
+      visible: "Back up now"
+      timeout: 30000
+
+- extendedWaitUntil:
+      notVisible: "Your Envoy backup is complete.\nYour Envoy backup is complete."
+      timeout: 10000
+
+# go home
+- tapOn:
+      id: "hamburger_menu"
+- tapOn:
+      id: "hamburger_menu"
+- tapOn: "Accounts"
+
