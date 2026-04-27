@@ -469,7 +469,7 @@ dependencies = [
 [[package]]
 name = "bdk_wallet"
 version = "2.1.0-alpha.0"
-source = "git+https://github.com/Foundation-Devices/bdk_wallet?rev=3a983ae313c661c63b2bd6bc8a68551b07d83d8a#3a983ae313c661c63b2bd6bc8a68551b07d83d8a"
+source = "git+https://github.com/Foundation-Devices/bdk_wallet?rev=d6ac65fa180f526de21f9c1333572b6e7c10171d#d6ac65fa180f526de21f9c1333572b6e7c10171d"
 dependencies = [
  "bdk_chain",
  "bip39",
@@ -2356,7 +2356,7 @@ dependencies = [
 [[package]]
 name = "ngwallet"
 version = "1.1.1"
-source = "git+https://github.com/Foundation-Devices/ngwallet?tag=3.1.0#97f0722213207bad670067e68c239d284b40d10d"
+source = "git+https://github.com/Foundation-Devices/ngwallet?tag=3.3.0#b50aa6f89873220ae145434b098874760c0055bd"
 dependencies = [
  "anyhow",
  "bdk_core",
