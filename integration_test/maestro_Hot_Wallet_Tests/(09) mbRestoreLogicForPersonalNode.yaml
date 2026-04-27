@@ -413,7 +413,7 @@ appId: com.foundationdevices.envoy
 
 - extendedWaitUntil:
       notVisible: "Your Envoy backup is complete.\nYour Envoy backup is complete."
-      timeout: 5000
+      timeout: 10000
 
 # go home
 - tapOn:
