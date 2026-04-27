@@ -1278,9 +1278,6 @@ void editTransaction(BuildContext context, WidgetRef ref) async {
   ///make a copy of wallet selected coins so that we can backtrack to it
   ref.read(coinSelectionFromWallet.notifier).reset();
   ref.read(coinSelectionFromWallet.notifier).addAll(inputs);
-
-  final scope = ProviderScope.containerOf(context);
-  await ref.read(spendTransactionProvider.notifier).validate(scope);
 }
 
 class DiscardTransactionDialog extends ConsumerStatefulWidget {
