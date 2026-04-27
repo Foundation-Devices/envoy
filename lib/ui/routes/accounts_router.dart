@@ -82,6 +82,10 @@ const _ACCOUNT_SIGN_MESSAGE_RESULT = 'result';
 const ROUTE_ACCOUNT_SIGN_MESSAGE_RESULT =
     '$ROUTE_ACCOUNT_SIGN_MESSAGE/$_ACCOUNT_SIGN_MESSAGE_RESULT';
 
+const _ACCOUNT_SIGN_MESSAGE_RESULT_QR = 'qr';
+const ROUTE_ACCOUNT_SIGN_MESSAGE_RESULT_QR =
+    '$ROUTE_ACCOUNT_SIGN_MESSAGE_RESULT/$_ACCOUNT_SIGN_MESSAGE_RESULT_QR';
+
 const _ACCOUNT_SEND = 'send';
 const ROUTE_ACCOUNT_SEND = '$ROUTE_ACCOUNT_DETAIL/$_ACCOUNT_SEND';
 
@@ -416,6 +420,26 @@ final accountsRouter = StatefulShellBranch(
                       );
                     }
                   },
+                  routes: [
+                    GoRoute(
+                      path: _ACCOUNT_SIGN_MESSAGE_RESULT_QR,
+                      pageBuilder: (context, state) {
+                        try {
+                          final extra = state.extra as SignMessageResultData;
+                          return wrapWithEnvoyPageAnimation(
+                            child: SignMessageQrCard(data: extra),
+                          );
+                        } catch (e) {
+                          return wrapWithEnvoyPageAnimation(
+                            child: Container(
+                              padding: const EdgeInsets.all(20),
+                              child: Center(child: Text("Error")),
+                            ),
+                          );
+                        }
+                      },
+                    ),
+                  ],
                 ),
               ],
             ),
