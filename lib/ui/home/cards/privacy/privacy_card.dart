@@ -8,6 +8,7 @@ import 'package:envoy/ui/theme/envoy_spacing.dart';
 import 'package:envoy/ui/theme/envoy_typography.dart';
 import 'package:envoy/util/console.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/components/settings_header.dart';
 import 'package:envoy/ui/theme/envoy_icons.dart';
@@ -23,6 +24,9 @@ import 'package:envoy/ui/fading_edge_scroll_view.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:envoy/ui/home/settings/electrum_server_entry.dart';
 import 'package:envoy/ui/home/settings/block_explorer_entry.dart';
+import 'package:envoy/ui/routes/home_router.dart';
+import 'package:envoy/ui/routes/route_state.dart';
+import 'package:envoy/ui/state/home_page_state.dart';
 import 'dart:io';
 
 //ignore: must_be_immutable
@@ -55,6 +59,17 @@ class PrivacyCardState extends ConsumerState<PrivacyCard> {
         });
       }
     });
+  }
+
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
+  }
+
+  void _dismissKeyboard() {
+    FocusManager.instance.primaryFocus?.unfocus();
+    SystemChannels.textInput.invokeMethod('TextInput.hide');
   }
 
   void _handleDropdownChange(EnvoyDropdownOption newOption) {
@@ -115,6 +130,17 @@ class PrivacyCardState extends ConsumerState<PrivacyCard> {
 
   @override
   Widget build(BuildContext context) {
+    // Force-dismiss the keyboard when leaving the privacy screen — either by
+    // switching tabs (route change) or by opening the settings backdrop.
+    // Flutter's focus change alone doesn't reliably close the platform IME,
+    // so we explicitly invoke TextInput.hide.
+    ref.listen<HomePageBackgroundState>(homePageBackgroundProvider, (_, next) {
+      if (next != HomePageBackgroundState.hidden) _dismissKeyboard();
+    });
+    ref.listen<String>(routePathProvider, (_, next) {
+      if (next != ROUTE_PRIVACY) _dismissKeyboard();
+    });
+
     var keyboardHeight = MediaQuery.of(context).viewInsets.bottom;
     var bottomPadding = keyboardHeight - 10 * EnvoySpacing.medium2;
     //popscope added to not popback when pressing back,since theis widget will be in a shell route
