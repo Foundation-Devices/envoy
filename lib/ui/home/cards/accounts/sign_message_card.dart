@@ -561,8 +561,6 @@ class SignMessageResultCard extends ConsumerStatefulWidget {
 }
 
 class _SignMessageResultCardState extends ConsumerState<SignMessageResultCard> {
-  bool _showQr = false;
-
   @override
   void initState() {
     super.initState();
@@ -573,60 +571,7 @@ class _SignMessageResultCardState extends ConsumerState<SignMessageResultCard> {
 
   @override
   Widget build(BuildContext context) {
-    final data = widget.data;
-    if (_showQr) return _buildQrView(data);
-    return _buildResultView(data);
-  }
-
-  Widget _buildQrView(SignMessageResultData data) {
-    final account = NgAccountManager().getAccountById(data.accountId);
-    return Padding(
-      padding: const EdgeInsets.only(top: EnvoySpacing.medium2),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Expanded(
-            child: SingleChildScrollView(
-              padding: const EdgeInsets.symmetric(
-                horizontal: EnvoySpacing.medium1,
-              ),
-              child: Column(
-                children: [
-                  if (account != null)
-                    QrTab(
-                      title: S().signMessage_mainSignedQr_scanQr,
-                      subtitle: S().signMessage_mainSignedQr_scanQrSubheader,
-                      account: account,
-                      qr: EnvoyQR(data: data.signature),
-                    )
-                  else
-                    EnvoyQR(data: data.signature),
-                ],
-              ),
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.symmetric(
-              horizontal: EnvoySpacing.medium1,
-            ),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                SizedBox(
-                  width: double.infinity,
-                  child: EnvoyButton(
-                    S().component_back,
-                    onTap: () => setState(() => _showQr = false),
-                    type: EnvoyButtonTypes.primary,
-                  ),
-                ),
-                const SizedBox(height: EnvoySpacing.large2),
-              ],
-            ),
-          ),
-        ],
-      ),
-    );
+    return _buildResultView(widget.data);
   }
 
   Widget _buildResultView(SignMessageResultData data) {
@@ -728,7 +673,10 @@ class _SignMessageResultCardState extends ConsumerState<SignMessageResultCard> {
                   width: double.infinity,
                   child: EnvoyButton(
                     "Show Signature as QR", // TODO: localize
-                    onTap: () => setState(() => _showQr = true),
+                    onTap: () => context.push(
+                      ROUTE_ACCOUNT_SIGN_MESSAGE_RESULT_QR,
+                      extra: data,
+                    ),
                     type: EnvoyButtonTypes.secondary,
                     leading: const EnvoyIcon(
                       EnvoyIcons.scan,
@@ -798,6 +746,78 @@ class _SignMessageResultCardState extends ConsumerState<SignMessageResultCard> {
               ],
             ),
           )
+        ],
+      ),
+    );
+  }
+}
+
+class SignMessageQrCard extends ConsumerStatefulWidget {
+  final SignMessageResultData data;
+
+  const SignMessageQrCard({super.key, required this.data});
+
+  @override
+  ConsumerState<SignMessageQrCard> createState() => _SignMessageQrCardState();
+}
+
+class _SignMessageQrCardState extends ConsumerState<SignMessageQrCard> {
+  @override
+  void initState() {
+    super.initState();
+    Future.delayed(const Duration(milliseconds: 10)).then((_) {
+      ref.read(homeShellOptionsProvider.notifier).state = null;
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final data = widget.data;
+    final account = NgAccountManager().getAccountById(data.accountId);
+    return Padding(
+      padding: const EdgeInsets.only(top: EnvoySpacing.medium2),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Expanded(
+            child: SingleChildScrollView(
+              padding: const EdgeInsets.symmetric(
+                horizontal: EnvoySpacing.medium1,
+              ),
+              child: Column(
+                children: [
+                  if (account != null)
+                    QrTab(
+                      title: S().signMessage_mainSignedQr_scanQr,
+                      subtitle: S().signMessage_mainSignedQr_scanQrSubheader,
+                      account: account,
+                      qr: EnvoyQR(data: data.signature),
+                    )
+                  else
+                    EnvoyQR(data: data.signature),
+                ],
+              ),
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.symmetric(
+              horizontal: EnvoySpacing.medium1,
+            ),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                SizedBox(
+                  width: double.infinity,
+                  child: EnvoyButton(
+                    S().component_back,
+                    onTap: () => context.pop(),
+                    type: EnvoyButtonTypes.primary,
+                  ),
+                ),
+                const SizedBox(height: EnvoySpacing.large2),
+              ],
+            ),
+          ),
         ],
       ),
     );
