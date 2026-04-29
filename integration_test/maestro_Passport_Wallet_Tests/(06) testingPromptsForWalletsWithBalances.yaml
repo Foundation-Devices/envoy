@@ -60,14 +60,14 @@ appId: com.foundationdevices.envoy
 - tapOn:
     id: hamburger_menu
 
-- scrollUntilVisible:
-    element:
-      text: Tap any of the above cards to receive Bitcoin.
+- scroll
 
 - tapOn: Taproot modal test
 
 - tapOn:
     id: hamburger_menu
+
+- scroll
 
 - assertVisible: Swipe to show and hide your balance.
 

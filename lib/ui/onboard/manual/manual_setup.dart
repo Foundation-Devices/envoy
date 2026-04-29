@@ -2,7 +2,6 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-import 'package:envoy/business/envoy_seed.dart';
 import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/envoy_button.dart';
 import 'package:envoy/ui/onboard/manual/generate_seed.dart';
@@ -18,6 +17,7 @@ import 'package:envoy/ui/widgets/scanner/qr_scanner.dart';
 import 'package:envoy/util/console.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:ngwallet/ngwallet.dart';
 
 enum SeedIntroScreenType { generate, import, verify }
 
@@ -229,7 +229,7 @@ class SeedIntroScreen extends StatelessWidget {
 }
 
 Future<void> checkSeed(BuildContext context, String seed) async {
-  if (!await EnvoySeed().create(seed.split(" ")) && context.mounted) {
+  if (!await EnvoyBip39.validateSeed(seedWords: seed) && context.mounted) {
     showInvalidSeedDialog(context: context);
   } else {
     context.goNamed(ONBOARD_ENVOY_MANUAL_IMPORT_SEED, extra: seed);
