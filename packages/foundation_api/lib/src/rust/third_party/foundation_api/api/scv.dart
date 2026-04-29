@@ -8,58 +8,68 @@ import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated.dart';
 import 'package:freezed_annotation/freezed_annotation.dart' hide protected;
 part 'scv.freezed.dart';
 
-class ChallengeRequest {
-  final Uint8List data;
+            
 
-  const ChallengeRequest({
-    required this.data,
-  });
+            
 
-  @override
-  int get hashCode => data.hashCode;
+            class ChallengeRequest  {
+                final Uint8List data;
 
-  @override
-  bool operator ==(Object other) =>
-      identical(this, other) ||
-      other is ChallengeRequest &&
-          runtimeType == other.runtimeType &&
-          data == other.data;
-}
+                const ChallengeRequest({required this.data ,});
 
-@freezed
-sealed class ChallengeResponseResult with _$ChallengeResponseResult {
-  const ChallengeResponseResult._();
+                
+                
 
-  const factory ChallengeResponseResult.success({
-    required Uint8List data,
-  }) = ChallengeResponseResult_Success;
-  const factory ChallengeResponseResult.error({
-    required String error,
-  }) = ChallengeResponseResult_Error;
-}
+                
+        @override
+        int get hashCode => data.hashCode;
+        
+
+                
+        @override
+        bool operator ==(Object other) =>
+            identical(this, other) ||
+            other is ChallengeRequest &&
+                runtimeType == other.runtimeType
+                && data == other.data;
+        
+            }
 
 @freezed
-sealed class SecurityCheck with _$SecurityCheck {
-  const SecurityCheck._();
+                sealed class ChallengeResponseResult with _$ChallengeResponseResult  {
+                    const ChallengeResponseResult._();
 
-  const factory SecurityCheck.challengeRequest(
-    ChallengeRequest field0,
-  ) = SecurityCheck_ChallengeRequest;
-  const factory SecurityCheck.challengeResponse(
-    ChallengeResponseResult field0,
-  ) = SecurityCheck_ChallengeResponse;
-  const factory SecurityCheck.verificationResult(
-    VerificationResult field0,
-  ) = SecurityCheck_VerificationResult;
-}
+                     const factory ChallengeResponseResult.success({   required Uint8List data , }) = ChallengeResponseResult_Success;
+ const factory ChallengeResponseResult.error({   required String error , }) = ChallengeResponseResult_Error;
+
+                    
+
+                    
+                }
 
 @freezed
-sealed class VerificationResult with _$VerificationResult {
-  const VerificationResult._();
+                sealed class SecurityCheck with _$SecurityCheck  {
+                    const SecurityCheck._();
 
-  const factory VerificationResult.success() = VerificationResult_Success;
-  const factory VerificationResult.error({
-    required String error,
-  }) = VerificationResult_Error;
-  const factory VerificationResult.failure() = VerificationResult_Failure;
-}
+                     const factory SecurityCheck.challengeRequest(  ChallengeRequest field0,) = SecurityCheck_ChallengeRequest;
+ const factory SecurityCheck.challengeResponse(  ChallengeResponseResult field0,) = SecurityCheck_ChallengeResponse;
+ const factory SecurityCheck.verificationResult(  VerificationResult field0,) = SecurityCheck_VerificationResult;
+
+                    
+
+                    
+                }
+
+@freezed
+                sealed class VerificationResult with _$VerificationResult  {
+                    const VerificationResult._();
+
+                     const factory VerificationResult.success() = VerificationResult_Success;
+ const factory VerificationResult.error({   required String error , }) = VerificationResult_Error;
+ const factory VerificationResult.failure() = VerificationResult_Failure;
+
+                    
+
+                    
+                }
+            

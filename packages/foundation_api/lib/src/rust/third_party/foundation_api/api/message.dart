@@ -18,166 +18,105 @@ import 'scv.dart';
 import 'status.dart';
 part 'message.freezed.dart';
 
-class EnvoyMessage {
-  final QuantumLinkMessage message;
-  final int timestamp;
-  final int? protocolVersion;
+            
 
-  const EnvoyMessage({
-    required this.message,
-    required this.timestamp,
-    this.protocolVersion,
-  });
+            
 
-  @override
-  int get hashCode =>
-      message.hashCode ^ timestamp.hashCode ^ protocolVersion.hashCode;
+            class EnvoyMessage  {
+                final QuantumLinkMessage message;
+final int timestamp;
+final int? protocolVersion;
 
-  @override
-  bool operator ==(Object other) =>
-      identical(this, other) ||
-      other is EnvoyMessage &&
-          runtimeType == other.runtimeType &&
-          message == other.message &&
-          timestamp == other.timestamp &&
-          protocolVersion == other.protocolVersion;
-}
+                const EnvoyMessage({required this.message ,required this.timestamp ,this.protocolVersion ,});
 
-class PassportMessage {
-  final QuantumLinkMessage message;
-  final DeviceStatus status;
-  final int? protocolVersion;
+                
+                
 
-  const PassportMessage({
-    required this.message,
-    required this.status,
-    this.protocolVersion,
-  });
+                
+        @override
+        int get hashCode => message.hashCode^timestamp.hashCode^protocolVersion.hashCode;
+        
 
-  @override
-  int get hashCode =>
-      message.hashCode ^ status.hashCode ^ protocolVersion.hashCode;
+                
+        @override
+        bool operator ==(Object other) =>
+            identical(this, other) ||
+            other is EnvoyMessage &&
+                runtimeType == other.runtimeType
+                && message == other.message&& timestamp == other.timestamp&& protocolVersion == other.protocolVersion;
+        
+            }
 
-  @override
-  bool operator ==(Object other) =>
-      identical(this, other) ||
-      other is PassportMessage &&
-          runtimeType == other.runtimeType &&
-          message == other.message &&
-          status == other.status &&
-          protocolVersion == other.protocolVersion;
-}
+class PassportMessage  {
+                final QuantumLinkMessage message;
+final DeviceStatus status;
+final int? protocolVersion;
+
+                const PassportMessage({required this.message ,required this.status ,this.protocolVersion ,});
+
+                
+                
+
+                
+        @override
+        int get hashCode => message.hashCode^status.hashCode^protocolVersion.hashCode;
+        
+
+                
+        @override
+        bool operator ==(Object other) =>
+            identical(this, other) ||
+            other is PassportMessage &&
+                runtimeType == other.runtimeType
+                && message == other.message&& status == other.status&& protocolVersion == other.protocolVersion;
+        
+            }
 
 @freezed
-sealed class QuantumLinkMessage with _$QuantumLinkMessage {
-  const QuantumLinkMessage._();
+                sealed class QuantumLinkMessage with _$QuantumLinkMessage  {
+                    const QuantumLinkMessage._();
 
-  const factory QuantumLinkMessage.exchangeRate(
-    ExchangeRate field0,
-  ) = QuantumLinkMessage_ExchangeRate;
-  const factory QuantumLinkMessage.exchangeRateHistory(
-    ExchangeRateHistory field0,
-  ) = QuantumLinkMessage_ExchangeRateHistory;
-  const factory QuantumLinkMessage.firmwareUpdateCheckRequest(
-    FirmwareUpdateCheckRequest field0,
-  ) = QuantumLinkMessage_FirmwareUpdateCheckRequest;
-  const factory QuantumLinkMessage.firmwareUpdateCheckResponse(
-    FirmwareUpdateCheckResponse field0,
-  ) = QuantumLinkMessage_FirmwareUpdateCheckResponse;
-  const factory QuantumLinkMessage.firmwareFetchRequest(
-    FirmwareFetchRequest field0,
-  ) = QuantumLinkMessage_FirmwareFetchRequest;
-  const factory QuantumLinkMessage.firmwareFetchEvent(
-    FirmwareFetchEvent field0,
-  ) = QuantumLinkMessage_FirmwareFetchEvent;
-  const factory QuantumLinkMessage.firmwareInstallEvent(
-    FirmwareInstallEvent field0,
-  ) = QuantumLinkMessage_FirmwareInstallEvent;
-  const factory QuantumLinkMessage.deviceStatus(
-    DeviceStatus field0,
-  ) = QuantumLinkMessage_DeviceStatus;
-  const factory QuantumLinkMessage.envoyStatus(
-    EnvoyStatus field0,
-  ) = QuantumLinkMessage_EnvoyStatus;
-  const factory QuantumLinkMessage.pairingRequest(
-    PairingRequest field0,
-  ) = QuantumLinkMessage_PairingRequest;
-  const factory QuantumLinkMessage.pairingResponse(
-    PairingResponse field0,
-  ) = QuantumLinkMessage_PairingResponse;
-  const factory QuantumLinkMessage.securityCheck(
-    SecurityCheck field0,
-  ) = QuantumLinkMessage_SecurityCheck;
-  const factory QuantumLinkMessage.onboardingState(
-    OnboardingState field0,
-  ) = QuantumLinkMessage_OnboardingState;
-  const factory QuantumLinkMessage.signPsbt(
-    SignPsbt field0,
-  ) = QuantumLinkMessage_SignPsbt;
-  const factory QuantumLinkMessage.broadcastTransaction(
-    BroadcastTransaction field0,
-  ) = QuantumLinkMessage_BroadcastTransaction;
-  const factory QuantumLinkMessage.accountUpdate(
-    AccountUpdate field0,
-  ) = QuantumLinkMessage_AccountUpdate;
-  const factory QuantumLinkMessage.applyPassphrase(
-    ApplyPassphrase field0,
-  ) = QuantumLinkMessage_ApplyPassphrase;
-  const factory QuantumLinkMessage.envoyMagicBackupEnabledRequest(
-    EnvoyMagicBackupEnabledRequest field0,
-  ) = QuantumLinkMessage_EnvoyMagicBackupEnabledRequest;
-  const factory QuantumLinkMessage.envoyMagicBackupEnabledResponse(
-    EnvoyMagicBackupEnabledResponse field0,
-  ) = QuantumLinkMessage_EnvoyMagicBackupEnabledResponse;
-  const factory QuantumLinkMessage.primeMagicBackupEnabled(
-    PrimeMagicBackupEnabled field0,
-  ) = QuantumLinkMessage_PrimeMagicBackupEnabled;
-  const factory QuantumLinkMessage.primeMagicBackupStatusRequest(
-    PrimeMagicBackupStatusRequest field0,
-  ) = QuantumLinkMessage_PrimeMagicBackupStatusRequest;
-  const factory QuantumLinkMessage.primeMagicBackupStatusResponse(
-    PrimeMagicBackupStatusResponse field0,
-  ) = QuantumLinkMessage_PrimeMagicBackupStatusResponse;
-  const factory QuantumLinkMessage.backupShardRequest(
-    BackupShardRequest field0,
-  ) = QuantumLinkMessage_BackupShardRequest;
-  const factory QuantumLinkMessage.backupShardResponse(
-    BackupShardResponse field0,
-  ) = QuantumLinkMessage_BackupShardResponse;
-  const factory QuantumLinkMessage.restoreShardRequest(
-    RestoreShardRequest field0,
-  ) = QuantumLinkMessage_RestoreShardRequest;
-  const factory QuantumLinkMessage.restoreShardResponse(
-    RestoreShardResponse field0,
-  ) = QuantumLinkMessage_RestoreShardResponse;
-  const factory QuantumLinkMessage.createMagicBackupEvent(
-    CreateMagicBackupEvent field0,
-  ) = QuantumLinkMessage_CreateMagicBackupEvent;
-  const factory QuantumLinkMessage.createMagicBackupResult(
-    CreateMagicBackupResult field0,
-  ) = QuantumLinkMessage_CreateMagicBackupResult;
-  const factory QuantumLinkMessage.restoreMagicBackupRequest(
-    RestoreMagicBackupRequest field0,
-  ) = QuantumLinkMessage_RestoreMagicBackupRequest;
-  const factory QuantumLinkMessage.restoreMagicBackupEvent(
-    RestoreMagicBackupEvent field0,
-  ) = QuantumLinkMessage_RestoreMagicBackupEvent;
-  const factory QuantumLinkMessage.restoreMagicBackupResult(
-    RestoreMagicBackupResult field0,
-  ) = QuantumLinkMessage_RestoreMagicBackupResult;
-  const factory QuantumLinkMessage.heartbeat(
-    Heartbeat field0,
-  ) = QuantumLinkMessage_Heartbeat;
-  const factory QuantumLinkMessage.timezoneRequest(
-    TimezoneRequest field0,
-  ) = QuantumLinkMessage_TimezoneRequest;
-  const factory QuantumLinkMessage.timezoneResponse(
-    TimezoneResponse field0,
-  ) = QuantumLinkMessage_TimezoneResponse;
-  const factory QuantumLinkMessage.unpairingRequest(
-    UnpairingRequest field0,
-  ) = QuantumLinkMessage_UnpairingRequest;
-  const factory QuantumLinkMessage.unpairingResponse(
-    UnpairingResponse field0,
-  ) = QuantumLinkMessage_UnpairingResponse;
-}
+                     const factory QuantumLinkMessage.exchangeRate(  ExchangeRate field0,) = QuantumLinkMessage_ExchangeRate;
+ const factory QuantumLinkMessage.exchangeRateHistory(  ExchangeRateHistory field0,) = QuantumLinkMessage_ExchangeRateHistory;
+ const factory QuantumLinkMessage.firmwareUpdateCheckRequest(  FirmwareUpdateCheckRequest field0,) = QuantumLinkMessage_FirmwareUpdateCheckRequest;
+ const factory QuantumLinkMessage.firmwareUpdateCheckResponse(  FirmwareUpdateCheckResponse field0,) = QuantumLinkMessage_FirmwareUpdateCheckResponse;
+ const factory QuantumLinkMessage.firmwareFetchRequest(  FirmwareFetchRequest field0,) = QuantumLinkMessage_FirmwareFetchRequest;
+ const factory QuantumLinkMessage.firmwareFetchEvent(  FirmwareFetchEvent field0,) = QuantumLinkMessage_FirmwareFetchEvent;
+ const factory QuantumLinkMessage.firmwareInstallEvent(  FirmwareInstallEvent field0,) = QuantumLinkMessage_FirmwareInstallEvent;
+ const factory QuantumLinkMessage.deviceStatus(  DeviceStatus field0,) = QuantumLinkMessage_DeviceStatus;
+ const factory QuantumLinkMessage.envoyStatus(  EnvoyStatus field0,) = QuantumLinkMessage_EnvoyStatus;
+ const factory QuantumLinkMessage.pairingRequest(  PairingRequest field0,) = QuantumLinkMessage_PairingRequest;
+ const factory QuantumLinkMessage.pairingResponse(  PairingResponse field0,) = QuantumLinkMessage_PairingResponse;
+ const factory QuantumLinkMessage.securityCheck(  SecurityCheck field0,) = QuantumLinkMessage_SecurityCheck;
+ const factory QuantumLinkMessage.onboardingState(  OnboardingState field0,) = QuantumLinkMessage_OnboardingState;
+ const factory QuantumLinkMessage.signPsbt(  SignPsbt field0,) = QuantumLinkMessage_SignPsbt;
+ const factory QuantumLinkMessage.broadcastTransaction(  BroadcastTransaction field0,) = QuantumLinkMessage_BroadcastTransaction;
+ const factory QuantumLinkMessage.accountUpdate(  AccountUpdate field0,) = QuantumLinkMessage_AccountUpdate;
+ const factory QuantumLinkMessage.applyPassphrase(  ApplyPassphrase field0,) = QuantumLinkMessage_ApplyPassphrase;
+ const factory QuantumLinkMessage.envoyMagicBackupEnabledRequest(  EnvoyMagicBackupEnabledRequest field0,) = QuantumLinkMessage_EnvoyMagicBackupEnabledRequest;
+ const factory QuantumLinkMessage.envoyMagicBackupEnabledResponse(  EnvoyMagicBackupEnabledResponse field0,) = QuantumLinkMessage_EnvoyMagicBackupEnabledResponse;
+ const factory QuantumLinkMessage.primeMagicBackupEnabled(  PrimeMagicBackupEnabled field0,) = QuantumLinkMessage_PrimeMagicBackupEnabled;
+ const factory QuantumLinkMessage.primeMagicBackupStatusRequest(  PrimeMagicBackupStatusRequest field0,) = QuantumLinkMessage_PrimeMagicBackupStatusRequest;
+ const factory QuantumLinkMessage.primeMagicBackupStatusResponse(  PrimeMagicBackupStatusResponse field0,) = QuantumLinkMessage_PrimeMagicBackupStatusResponse;
+ const factory QuantumLinkMessage.backupShardRequest(  BackupShardRequest field0,) = QuantumLinkMessage_BackupShardRequest;
+ const factory QuantumLinkMessage.backupShardResponse(  BackupShardResponse field0,) = QuantumLinkMessage_BackupShardResponse;
+ const factory QuantumLinkMessage.restoreShardRequest(  RestoreShardRequest field0,) = QuantumLinkMessage_RestoreShardRequest;
+ const factory QuantumLinkMessage.restoreShardResponse(  RestoreShardResponse field0,) = QuantumLinkMessage_RestoreShardResponse;
+ const factory QuantumLinkMessage.createMagicBackupEvent(  CreateMagicBackupEvent field0,) = QuantumLinkMessage_CreateMagicBackupEvent;
+ const factory QuantumLinkMessage.createMagicBackupResult(  CreateMagicBackupResult field0,) = QuantumLinkMessage_CreateMagicBackupResult;
+ const factory QuantumLinkMessage.restoreMagicBackupRequest(  RestoreMagicBackupRequest field0,) = QuantumLinkMessage_RestoreMagicBackupRequest;
+ const factory QuantumLinkMessage.restoreMagicBackupEvent(  RestoreMagicBackupEvent field0,) = QuantumLinkMessage_RestoreMagicBackupEvent;
+ const factory QuantumLinkMessage.restoreMagicBackupResult(  RestoreMagicBackupResult field0,) = QuantumLinkMessage_RestoreMagicBackupResult;
+ const factory QuantumLinkMessage.heartbeat(  Heartbeat field0,) = QuantumLinkMessage_Heartbeat;
+ const factory QuantumLinkMessage.timezoneRequest(  TimezoneRequest field0,) = QuantumLinkMessage_TimezoneRequest;
+ const factory QuantumLinkMessage.timezoneResponse(  TimezoneResponse field0,) = QuantumLinkMessage_TimezoneResponse;
+ const factory QuantumLinkMessage.unpairingRequest(  UnpairingRequest field0,) = QuantumLinkMessage_UnpairingRequest;
+ const factory QuantumLinkMessage.unpairingResponse(  UnpairingResponse field0,) = QuantumLinkMessage_UnpairingResponse;
+ const factory QuantumLinkMessage.magicBackupRequestV2(  MagicBackupRequestV2 field0,) = QuantumLinkMessage_MagicBackupRequestV2;
+ const factory QuantumLinkMessage.magicBackupResponseV2(  MagicBackupResponseV2 field0,) = QuantumLinkMessage_MagicBackupResponseV2;
+
+                    
+
+                    
+                }
+            

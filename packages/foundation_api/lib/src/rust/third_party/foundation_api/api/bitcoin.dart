@@ -6,83 +6,103 @@
 import '../../../frb_generated.dart';
 import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated.dart';
 
-class AccountUpdate {
-  final String accountId;
-  final Uint8List update;
 
-  const AccountUpdate({
-    required this.accountId,
-    required this.update,
-  });
+            
 
-  @override
-  int get hashCode => accountId.hashCode ^ update.hashCode;
+            
 
-  @override
-  bool operator ==(Object other) =>
-      identical(this, other) ||
-      other is AccountUpdate &&
-          runtimeType == other.runtimeType &&
-          accountId == other.accountId &&
-          update == other.update;
-}
+            class AccountUpdate  {
+                final String accountId;
+final Uint8List update;
 
-class ApplyPassphrase {
-  final String? fingerprint;
+                const AccountUpdate({required this.accountId ,required this.update ,});
 
-  const ApplyPassphrase({
-    this.fingerprint,
-  });
+                
+                
 
-  @override
-  int get hashCode => fingerprint.hashCode;
+                
+        @override
+        int get hashCode => accountId.hashCode^update.hashCode;
+        
 
-  @override
-  bool operator ==(Object other) =>
-      identical(this, other) ||
-      other is ApplyPassphrase &&
-          runtimeType == other.runtimeType &&
-          fingerprint == other.fingerprint;
-}
+                
+        @override
+        bool operator ==(Object other) =>
+            identical(this, other) ||
+            other is AccountUpdate &&
+                runtimeType == other.runtimeType
+                && accountId == other.accountId&& update == other.update;
+        
+            }
 
-class BroadcastTransaction {
-  final String accountId;
-  final Uint8List psbt;
+class ApplyPassphrase  {
+                final String? fingerprint;
 
-  const BroadcastTransaction({
-    required this.accountId,
-    required this.psbt,
-  });
+                const ApplyPassphrase({this.fingerprint ,});
 
-  @override
-  int get hashCode => accountId.hashCode ^ psbt.hashCode;
+                
+                
 
-  @override
-  bool operator ==(Object other) =>
-      identical(this, other) ||
-      other is BroadcastTransaction &&
-          runtimeType == other.runtimeType &&
-          accountId == other.accountId &&
-          psbt == other.psbt;
-}
+                
+        @override
+        int get hashCode => fingerprint.hashCode;
+        
 
-class SignPsbt {
-  final String accountId;
-  final Uint8List psbt;
+                
+        @override
+        bool operator ==(Object other) =>
+            identical(this, other) ||
+            other is ApplyPassphrase &&
+                runtimeType == other.runtimeType
+                && fingerprint == other.fingerprint;
+        
+            }
 
-  const SignPsbt({
-    required this.accountId,
-    required this.psbt,
-  });
+class BroadcastTransaction  {
+                final String accountId;
+final Uint8List psbt;
 
-  @override
-  int get hashCode => accountId.hashCode ^ psbt.hashCode;
+                const BroadcastTransaction({required this.accountId ,required this.psbt ,});
 
-  @override
-  bool operator ==(Object other) =>
-      identical(this, other) ||
-      other is SignPsbt &&
-          runtimeType == other.runtimeType &&
-          accountId == other.accountId &&
-          psbt == other.psbt;
-}
+                
+                
+
+                
+        @override
+        int get hashCode => accountId.hashCode^psbt.hashCode;
+        
+
+                
+        @override
+        bool operator ==(Object other) =>
+            identical(this, other) ||
+            other is BroadcastTransaction &&
+                runtimeType == other.runtimeType
+                && accountId == other.accountId&& psbt == other.psbt;
+        
+            }
+
+class SignPsbt  {
+                final String accountId;
+final Uint8List psbt;
+
+                const SignPsbt({required this.accountId ,required this.psbt ,});
+
+                
+                
+
+                
+        @override
+        int get hashCode => accountId.hashCode^psbt.hashCode;
+        
+
+                
+        @override
+        bool operator ==(Object other) =>
+            identical(this, other) ||
+            other is SignPsbt &&
+                runtimeType == other.runtimeType
+                && accountId == other.accountId&& psbt == other.psbt;
+        
+            }
+            

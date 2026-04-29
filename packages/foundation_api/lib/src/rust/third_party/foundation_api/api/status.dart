@@ -6,86 +6,125 @@
 import '../../../frb_generated.dart';
 import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated.dart';
 
-class DeviceStatus {
-  final String version;
-  final int batteryLevel;
 
-  const DeviceStatus({
-    required this.version,
-    required this.batteryLevel,
-  });
+            
 
-  @override
-  int get hashCode => version.hashCode ^ batteryLevel.hashCode;
+            
 
-  @override
-  bool operator ==(Object other) =>
-      identical(this, other) ||
-      other is DeviceStatus &&
-          runtimeType == other.runtimeType &&
-          version == other.version &&
-          batteryLevel == other.batteryLevel;
-}
+            class DeviceStatus  {
+                final String version;
+final int batteryLevel;
 
-class EnvoyStatus {
-  final String version;
+                const DeviceStatus({required this.version ,required this.batteryLevel ,});
 
-  const EnvoyStatus({
-    required this.version,
-  });
+                
+                
 
-  @override
-  int get hashCode => version.hashCode;
+                
+        @override
+        int get hashCode => version.hashCode^batteryLevel.hashCode;
+        
 
-  @override
-  bool operator ==(Object other) =>
-      identical(this, other) ||
-      other is EnvoyStatus &&
-          runtimeType == other.runtimeType &&
-          version == other.version;
-}
+                
+        @override
+        bool operator ==(Object other) =>
+            identical(this, other) ||
+            other is DeviceStatus &&
+                runtimeType == other.runtimeType
+                && version == other.version&& batteryLevel == other.batteryLevel;
+        
+            }
 
-class Heartbeat {
-  const Heartbeat();
+class EnvoyStatus  {
+                final String version;
 
-  @override
-  int get hashCode => 0;
+                const EnvoyStatus({required this.version ,});
 
-  @override
-  bool operator ==(Object other) =>
-      identical(this, other) ||
-      other is Heartbeat && runtimeType == other.runtimeType;
-}
+                
+                
 
-class TimezoneRequest {
-  const TimezoneRequest();
+                
+        @override
+        int get hashCode => version.hashCode;
+        
 
-  @override
-  int get hashCode => 0;
+                
+        @override
+        bool operator ==(Object other) =>
+            identical(this, other) ||
+            other is EnvoyStatus &&
+                runtimeType == other.runtimeType
+                && version == other.version;
+        
+            }
 
-  @override
-  bool operator ==(Object other) =>
-      identical(this, other) ||
-      other is TimezoneRequest && runtimeType == other.runtimeType;
-}
+class Heartbeat  {
+                
 
-class TimezoneResponse {
-  final int offsetMinutes;
-  final String zone;
+                const Heartbeat();
 
-  const TimezoneResponse({
-    required this.offsetMinutes,
-    required this.zone,
-  });
+                
+                
 
-  @override
-  int get hashCode => offsetMinutes.hashCode ^ zone.hashCode;
+                
+        @override
+        int get hashCode => 0;
+        
 
-  @override
-  bool operator ==(Object other) =>
-      identical(this, other) ||
-      other is TimezoneResponse &&
-          runtimeType == other.runtimeType &&
-          offsetMinutes == other.offsetMinutes &&
-          zone == other.zone;
-}
+                
+        @override
+        bool operator ==(Object other) =>
+            identical(this, other) ||
+            other is Heartbeat &&
+                runtimeType == other.runtimeType
+                ;
+        
+            }
+
+class TimezoneRequest  {
+                
+
+                const TimezoneRequest();
+
+                
+                
+
+                
+        @override
+        int get hashCode => 0;
+        
+
+                
+        @override
+        bool operator ==(Object other) =>
+            identical(this, other) ||
+            other is TimezoneRequest &&
+                runtimeType == other.runtimeType
+                ;
+        
+            }
+
+class TimezoneResponse  {
+                final int offsetMinutes;
+final String zone;
+
+                const TimezoneResponse({required this.offsetMinutes ,required this.zone ,});
+
+                
+                
+
+                
+        @override
+        int get hashCode => offsetMinutes.hashCode^zone.hashCode;
+        
+
+                
+        @override
+        bool operator ==(Object other) =>
+            identical(this, other) ||
+            other is TimezoneResponse &&
+                runtimeType == other.runtimeType
+                && offsetMinutes == other.offsetMinutes&& zone == other.zone;
+        
+            }
+            

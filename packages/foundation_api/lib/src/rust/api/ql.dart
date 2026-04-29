@@ -18,169 +18,146 @@ import '../third_party/foundation_api/api/scv.dart';
 import '../third_party/foundation_api/api/status.dart';
 import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated.dart';
 
-// These functions are ignored because they are not marked as `pub`: `hash_data`, `split_backup_into_chunks`, `split_fw_update_into_chunks`
 
-Future<EnvoyMasterDechunker> getDecoder() =>
-    RustLib.instance.api.crateApiQlGetDecoder();
+            // These functions are ignored because they are not marked as `pub`: `hash_data`, `split_backup_into_chunks`, `split_fw_update_into_chunks`
 
-Future<EnvoyAridCache> getAridCache() =>
-    RustLib.instance.api.crateApiQlGetAridCache();
 
-Future<Uint8List> serializeXid(
-        {required QuantumLinkIdentity quantumLinkIdentity}) =>
-    RustLib.instance.api
-        .crateApiQlSerializeXid(quantumLinkIdentity: quantumLinkIdentity);
+            Future<EnvoyMasterDechunker>  getDecoder() => RustLib.instance.api.crateApiQlGetDecoder();
 
-Future<Uint8List> serializeXidDocument({required XidDocument xidDocument}) =>
-    RustLib.instance.api
-        .crateApiQlSerializeXidDocument(xidDocument: xidDocument);
+Future<EnvoyAridCache>  getAridCache() => RustLib.instance.api.crateApiQlGetAridCache();
 
-Future<XidDocument> deserializeXid({required List<int> data}) =>
-    RustLib.instance.api.crateApiQlDeserializeXid(data: data);
+Future<Uint8List>  serializeXid({required QuantumLinkIdentity quantumLinkIdentity }) => RustLib.instance.api.crateApiQlSerializeXid(quantumLinkIdentity: quantumLinkIdentity);
 
-Future<Uint8List> serializeQlIdentity(
-        {required QuantumLinkIdentity quantumLinkIdentity}) =>
-    RustLib.instance.api.crateApiQlSerializeQlIdentity(
-        quantumLinkIdentity: quantumLinkIdentity);
+Future<Uint8List>  serializeXidDocument({required XidDocument xidDocument }) => RustLib.instance.api.crateApiQlSerializeXidDocument(xidDocument: xidDocument);
 
-Future<QuantumLinkIdentity> deserializeQlIdentity({required List<int> data}) =>
-    RustLib.instance.api.crateApiQlDeserializeQlIdentity(data: data);
+Future<XidDocument>  deserializeXid({required List<int> data }) => RustLib.instance.api.crateApiQlDeserializeXid(data: data);
 
-Future<DecoderStatus> decode(
-        {required List<int> data,
-        required EnvoyMasterDechunker decoder,
-        required QuantumLinkIdentity quantumLinkIdentity,
-        required EnvoyAridCache aridCache}) =>
-    RustLib.instance.api.crateApiQlDecode(
-        data: data,
-        decoder: decoder,
-        quantumLinkIdentity: quantumLinkIdentity,
-        aridCache: aridCache);
+Future<Uint8List>  serializeQlIdentity({required QuantumLinkIdentity quantumLinkIdentity }) => RustLib.instance.api.crateApiQlSerializeQlIdentity(quantumLinkIdentity: quantumLinkIdentity);
 
-Future<List<Uint8List>> encode(
-        {required EnvoyMessage message,
-        required QuantumLinkIdentity sender,
-        required XidDocument recipient}) =>
-    RustLib.instance.api.crateApiQlEncode(
-        message: message, sender: sender, recipient: recipient);
+Future<QuantumLinkIdentity>  deserializeQlIdentity({required List<int> data }) => RustLib.instance.api.crateApiQlDeserializeQlIdentity(data: data);
 
-Future<bool> encodeToMagicBackupFile(
-        {required List<int> payload,
-        required QuantumLinkIdentity sender,
-        required XidDocument recipient,
-        required String path,
-        required BigInt chunkSize,
-        required int timestamp}) =>
-    RustLib.instance.api.crateApiQlEncodeToMagicBackupFile(
-        payload: payload,
-        sender: sender,
-        recipient: recipient,
-        path: path,
-        chunkSize: chunkSize,
-        timestamp: timestamp);
+Future<DecoderStatus>  decode({required List<int> data , required EnvoyMasterDechunker decoder , required QuantumLinkIdentity quantumLinkIdentity , required EnvoyAridCache aridCache }) => RustLib.instance.api.crateApiQlDecode(data: data, decoder: decoder, quantumLinkIdentity: quantumLinkIdentity, aridCache: aridCache);
 
-Future<bool> encodeToUpdateFile(
-        {required List<Uint8List> payload,
-        required QuantumLinkIdentity sender,
-        required XidDocument recipient,
-        required String path,
-        required BigInt chunkSize,
-        required int timestamp}) =>
-    RustLib.instance.api.crateApiQlEncodeToUpdateFile(
-        payload: payload,
-        sender: sender,
-        recipient: recipient,
-        path: path,
-        chunkSize: chunkSize,
-        timestamp: timestamp);
+Future<List<Uint8List>>  encode({required EnvoyMessage message , required QuantumLinkIdentity sender , required XidDocument recipient }) => RustLib.instance.api.crateApiQlEncode(message: message, sender: sender, recipient: recipient);
 
-Future<List<QuantumLinkMessage>> encodeToChunks(
-        {required List<Uint8List> payload,
-        required QuantumLinkIdentity sender,
-        required XidDocument recipient,
-        required BigInt chunkSize}) =>
-    RustLib.instance.api.crateApiQlEncodeToChunks(
-        payload: payload,
-        sender: sender,
-        recipient: recipient,
-        chunkSize: chunkSize);
+Future<bool>  encodeToMagicBackupFile({required List<int> payload , required QuantumLinkIdentity sender , required XidDocument recipient , required String path , required BigInt chunkSize , required int timestamp }) => RustLib.instance.api.crateApiQlEncodeToMagicBackupFile(payload: payload, sender: sender, recipient: recipient, path: path, chunkSize: chunkSize, timestamp: timestamp);
 
-Future<QuantumLinkIdentity> generateQlIdentity() =>
-    RustLib.instance.api.crateApiQlGenerateQlIdentity();
+Future<bool>  encodeToUpdateFile({required List<Uint8List> payload , required QuantumLinkIdentity sender , required XidDocument recipient , required String path , required BigInt chunkSize , required int timestamp }) => RustLib.instance.api.crateApiQlEncodeToUpdateFile(payload: payload, sender: sender, recipient: recipient, path: path, chunkSize: chunkSize, timestamp: timestamp);
 
-Future<CollectBackupChunks> collectBackupChunks(
-        {required SeedFingerprint seedFingerprint,
-        required int totalChunks,
-        required U8Array32 backupHash}) =>
-    RustLib.instance.api.crateApiQlCollectBackupChunks(
-        seedFingerprint: seedFingerprint,
-        totalChunks: totalChunks,
-        backupHash: backupHash);
+Future<List<QuantumLinkMessage>>  encodeToChunks({required List<Uint8List> payload , required QuantumLinkIdentity sender , required XidDocument recipient , required BigInt chunkSize }) => RustLib.instance.api.crateApiQlEncodeToChunks(payload: payload, sender: sender, recipient: recipient, chunkSize: chunkSize);
 
-Future<PrimeBackupFile?> pushBackupChunk(
-        {required CollectBackupChunks this_, required BackupChunk chunk}) =>
-    RustLib.instance.api.crateApiQlPushBackupChunk(this_: this_, chunk: chunk);
+Future<QuantumLinkIdentity>  generateQlIdentity() => RustLib.instance.api.crateApiQlGenerateQlIdentity();
 
-// Rust type: RustOpaqueMoi<flutter_rust_bridge::for_generated::RustAutoOpaqueInner<CollectBackupChunks>>
-abstract class CollectBackupChunks implements RustOpaqueInterface {
-  U8Array32 get backupHash;
+Future<CollectBackupChunks>  collectBackupChunks({required SeedFingerprint seedFingerprint , required int totalChunks , required U8Array32 backupHash }) => RustLib.instance.api.crateApiQlCollectBackupChunks(seedFingerprint: seedFingerprint, totalChunks: totalChunks, backupHash: backupHash);
 
-  Uint8List get data;
+Future<PrimeBackupFile?>  pushBackupChunk({required CollectBackupChunks this_ , required BackupChunk chunk }) => RustLib.instance.api.crateApiQlPushBackupChunk(this_: this_, chunk: chunk);
 
-  BigInt get nextChunkIndex;
+            
+                // Rust type: RustOpaqueMoi<flutter_rust_bridge::for_generated::RustAutoOpaqueInner<CollectBackupChunks>>
+                abstract class CollectBackupChunks implements RustOpaqueInterface {
+                     U8Array32 get backupHash;
 
-  SeedFingerprint get seedFingerprint;
 
-  BigInt get totalChunks;
+ Uint8List get data;
+
+
+ BigInt get nextChunkIndex;
+
+
+ SeedFingerprint get seedFingerprint;
+
+
+ BigInt get totalChunks;
+
 
   set backupHash(U8Array32 backupHash);
 
+
   set data(Uint8List data);
+
 
   set nextChunkIndex(BigInt nextChunkIndex);
 
+
   set seedFingerprint(SeedFingerprint seedFingerprint);
 
+
   set totalChunks(BigInt totalChunks);
-}
 
-// Rust type: RustOpaqueMoi<flutter_rust_bridge::for_generated::RustAutoOpaqueInner<EnvoyARIDCache>>
-abstract class EnvoyAridCache implements RustOpaqueInterface {}
 
-// Rust type: RustOpaqueMoi<flutter_rust_bridge::for_generated::RustAutoOpaqueInner<EnvoyMasterDechunker>>
-abstract class EnvoyMasterDechunker implements RustOpaqueInterface {}
 
-// Rust type: RustOpaqueMoi<flutter_rust_bridge::for_generated::RustAutoOpaqueInner<PrimeBackupFile>>
-abstract class PrimeBackupFile implements RustOpaqueInterface {
-  Uint8List get data;
+                    
+                }
+                
 
-  SeedFingerprint get seedFingerprint;
+
+                // Rust type: RustOpaqueMoi<flutter_rust_bridge::for_generated::RustAutoOpaqueInner<EnvoyARIDCache>>
+                abstract class EnvoyAridCache implements RustOpaqueInterface {
+                    
+
+                    
+                }
+                
+
+
+                // Rust type: RustOpaqueMoi<flutter_rust_bridge::for_generated::RustAutoOpaqueInner<EnvoyMasterDechunker>>
+                abstract class EnvoyMasterDechunker implements RustOpaqueInterface {
+                    
+
+                    
+                }
+                
+
+
+                // Rust type: RustOpaqueMoi<flutter_rust_bridge::for_generated::RustAutoOpaqueInner<PrimeBackupFile>>
+                abstract class PrimeBackupFile implements RustOpaqueInterface {
+                     Uint8List get data;
+
+
+ SeedFingerprint get seedFingerprint;
+
 
   set data(Uint8List data);
 
+
   set seedFingerprint(SeedFingerprint seedFingerprint);
-}
 
-// Rust type: RustOpaqueMoi<flutter_rust_bridge::for_generated::RustAutoOpaqueInner<XIDDocument>>
-abstract class XidDocument implements RustOpaqueInterface {}
 
-class DecoderStatus {
-  final double progress;
-  final PassportMessage? payload;
 
-  const DecoderStatus({
-    required this.progress,
-    this.payload,
-  });
+                    
+                }
+                
 
-  @override
-  int get hashCode => progress.hashCode ^ payload.hashCode;
 
-  @override
-  bool operator ==(Object other) =>
-      identical(this, other) ||
-      other is DecoderStatus &&
-          runtimeType == other.runtimeType &&
-          progress == other.progress &&
-          payload == other.payload;
-}
+                // Rust type: RustOpaqueMoi<flutter_rust_bridge::for_generated::RustAutoOpaqueInner<XIDDocument>>
+                abstract class XidDocument implements RustOpaqueInterface {
+                    
+
+                    
+                }
+                
+
+class DecoderStatus  {
+                final double progress;
+final PassportMessage? payload;
+
+                const DecoderStatus({required this.progress ,this.payload ,});
+
+                
+                
+
+                
+        @override
+        int get hashCode => progress.hashCode^payload.hashCode;
+        
+
+                
+        @override
+        bool operator ==(Object other) =>
+            identical(this, other) ||
+            other is DecoderStatus &&
+                runtimeType == other.runtimeType
+                && progress == other.progress&& payload == other.payload;
+        
+            }
+            

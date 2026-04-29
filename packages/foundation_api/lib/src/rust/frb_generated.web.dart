@@ -3,6 +3,7 @@
 
 // ignore_for_file: unused_import, unused_element, unnecessary_import, duplicate_ignore, invalid_use_of_internal_member, annotate_overrides, non_constant_identifier_names, curly_braces_in_flow_control_structures, prefer_const_literals_to_create_immutables, unused_field
 
+
 // Static analysis wrongly picks the IO variant, thus ignore this
 // ignore_for_file: argument_type_not_assignable
 
@@ -25,1947 +26,1088 @@ import 'third_party/foundation_api/api/quantum_link.dart';
 import 'third_party/foundation_api/api/scv.dart';
 import 'third_party/foundation_api/api/status.dart';
 
-abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
-  RustLibApiImplPlatform({
-    required super.handler,
-    required super.wire,
-    required super.generalizedFrbRustBinding,
-    required super.portManager,
-  });
-
-  CrossPlatformFinalizerArg
-      get rust_arc_decrement_strong_count_ArcMutexDecoderPtr => wire
-          .rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerArcMutexDecoder;
-
-  CrossPlatformFinalizerArg
-      get rust_arc_decrement_strong_count_CollectBackupChunksPtr => wire
-          .rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerCollectBackupChunks;
-
-  CrossPlatformFinalizerArg
-      get rust_arc_decrement_strong_count_EnvoyAridCachePtr => wire
-          .rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerEnvoyARIDCache;
-
-  CrossPlatformFinalizerArg
-      get rust_arc_decrement_strong_count_EnvoyMasterDechunkerPtr => wire
-          .rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerEnvoyMasterDechunker;
-
-  CrossPlatformFinalizerArg
-      get rust_arc_decrement_strong_count_PrimeBackupFilePtr => wire
-          .rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerPrimeBackupFile;
-
-  CrossPlatformFinalizerArg
-      get rust_arc_decrement_strong_count_QuantumLinkIdentityPtr => wire
-          .rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerQuantumLinkIdentity;
-
-  CrossPlatformFinalizerArg
-      get rust_arc_decrement_strong_count_XidDocumentPtr => wire
-          .rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerXIDDocument;
-
-  @protected
-  AnyhowException dco_decode_AnyhowException(dynamic raw);
-
-  @protected
-  ArcMutexDecoder
-      dco_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerArcMutexDecoder(
-          dynamic raw);
-
-  @protected
-  CollectBackupChunks
-      dco_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerCollectBackupChunks(
-          dynamic raw);
-
-  @protected
-  EnvoyAridCache
-      dco_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerEnvoyARIDCache(
-          dynamic raw);
-
-  @protected
-  EnvoyMasterDechunker
-      dco_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerEnvoyMasterDechunker(
-          dynamic raw);
-
-  @protected
-  PrimeBackupFile
-      dco_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerPrimeBackupFile(
-          dynamic raw);
-
-  @protected
-  QuantumLinkIdentity
-      dco_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerQuantumLinkIdentity(
-          dynamic raw);
-
-  @protected
-  XidDocument
-      dco_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerXIDDocument(
-          dynamic raw);
-
-  @protected
-  CollectBackupChunks
-      dco_decode_Auto_RefMut_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerCollectBackupChunks(
-          dynamic raw);
-
-  @protected
-  EnvoyAridCache
-      dco_decode_Auto_RefMut_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerEnvoyARIDCache(
-          dynamic raw);
-
-  @protected
-  EnvoyMasterDechunker
-      dco_decode_Auto_RefMut_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerEnvoyMasterDechunker(
-          dynamic raw);
-
-  @protected
-  PrimeBackupFile
-      dco_decode_Auto_RefMut_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerPrimeBackupFile(
-          dynamic raw);
-
-  @protected
-  ArcMutexDecoder
-      dco_decode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerArcMutexDecoder(
-          dynamic raw);
-
-  @protected
-  CollectBackupChunks
-      dco_decode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerCollectBackupChunks(
-          dynamic raw);
 
-  @protected
-  PrimeBackupFile
-      dco_decode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerPrimeBackupFile(
-          dynamic raw);
 
-  @protected
-  QuantumLinkIdentity
-      dco_decode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerQuantumLinkIdentity(
-          dynamic raw);
 
-  @protected
-  XidDocument
-      dco_decode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerXIDDocument(
-          dynamic raw);
+                abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
+                  RustLibApiImplPlatform({
+                    required super.handler,
+                    required super.wire,
+                    required super.generalizedFrbRustBinding,
+                    required super.portManager,
+                  });
 
-  @protected
-  ArcMutexDecoder
-      dco_decode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerArcMutexDecoder(
-          dynamic raw);
+                  CrossPlatformFinalizerArg get rust_arc_decrement_strong_count_ArcMutexDecoderPtr => wire.rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerArcMutexDecoder;
 
-  @protected
-  CollectBackupChunks
-      dco_decode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerCollectBackupChunks(
-          dynamic raw);
+CrossPlatformFinalizerArg get rust_arc_decrement_strong_count_CollectBackupChunksPtr => wire.rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerCollectBackupChunks;
 
-  @protected
-  EnvoyAridCache
-      dco_decode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerEnvoyARIDCache(
-          dynamic raw);
+CrossPlatformFinalizerArg get rust_arc_decrement_strong_count_EnvoyAridCachePtr => wire.rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerEnvoyARIDCache;
 
-  @protected
-  EnvoyMasterDechunker
-      dco_decode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerEnvoyMasterDechunker(
-          dynamic raw);
+CrossPlatformFinalizerArg get rust_arc_decrement_strong_count_EnvoyMasterDechunkerPtr => wire.rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerEnvoyMasterDechunker;
 
-  @protected
-  PrimeBackupFile
-      dco_decode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerPrimeBackupFile(
-          dynamic raw);
+CrossPlatformFinalizerArg get rust_arc_decrement_strong_count_PrimeBackupFilePtr => wire.rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerPrimeBackupFile;
 
-  @protected
-  QuantumLinkIdentity
-      dco_decode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerQuantumLinkIdentity(
-          dynamic raw);
+CrossPlatformFinalizerArg get rust_arc_decrement_strong_count_QuantumLinkIdentityPtr => wire.rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerQuantumLinkIdentity;
 
-  @protected
-  XidDocument
-      dco_decode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerXIDDocument(
-          dynamic raw);
+CrossPlatformFinalizerArg get rust_arc_decrement_strong_count_XidDocumentPtr => wire.rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerXIDDocument;
 
-  @protected
-  String dco_decode_String(dynamic raw);
 
-  @protected
-  AccountUpdate dco_decode_account_update(dynamic raw);
 
-  @protected
-  ApplyPassphrase dco_decode_apply_passphrase(dynamic raw);
+                  @protected AnyhowException dco_decode_AnyhowException(dynamic raw);
 
-  @protected
-  BackupChunk dco_decode_backup_chunk(dynamic raw);
+@protected ArcMutexDecoder dco_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerArcMutexDecoder(dynamic raw);
 
-  @protected
-  BackupMetadata dco_decode_backup_metadata(dynamic raw);
+@protected CollectBackupChunks dco_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerCollectBackupChunks(dynamic raw);
 
-  @protected
-  BackupShardRequest dco_decode_backup_shard_request(dynamic raw);
+@protected EnvoyAridCache dco_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerEnvoyARIDCache(dynamic raw);
 
-  @protected
-  BackupShardResponse dco_decode_backup_shard_response(dynamic raw);
+@protected EnvoyMasterDechunker dco_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerEnvoyMasterDechunker(dynamic raw);
 
-  @protected
-  bool dco_decode_bool(dynamic raw);
+@protected PrimeBackupFile dco_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerPrimeBackupFile(dynamic raw);
 
-  @protected
-  PrimeBackupFile
-      dco_decode_box_autoadd_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerPrimeBackupFile(
-          dynamic raw);
+@protected QuantumLinkIdentity dco_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerQuantumLinkIdentity(dynamic raw);
 
-  @protected
-  XidDocument
-      dco_decode_box_autoadd_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerXIDDocument(
-          dynamic raw);
+@protected XidDocument dco_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerXIDDocument(dynamic raw);
 
-  @protected
-  AccountUpdate dco_decode_box_autoadd_account_update(dynamic raw);
+@protected CollectBackupChunks dco_decode_Auto_RefMut_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerCollectBackupChunks(dynamic raw);
 
-  @protected
-  ApplyPassphrase dco_decode_box_autoadd_apply_passphrase(dynamic raw);
+@protected EnvoyAridCache dco_decode_Auto_RefMut_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerEnvoyARIDCache(dynamic raw);
 
-  @protected
-  BackupChunk dco_decode_box_autoadd_backup_chunk(dynamic raw);
+@protected EnvoyMasterDechunker dco_decode_Auto_RefMut_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerEnvoyMasterDechunker(dynamic raw);
 
-  @protected
-  BackupMetadata dco_decode_box_autoadd_backup_metadata(dynamic raw);
+@protected PrimeBackupFile dco_decode_Auto_RefMut_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerPrimeBackupFile(dynamic raw);
 
-  @protected
-  BackupShardRequest dco_decode_box_autoadd_backup_shard_request(dynamic raw);
+@protected ArcMutexDecoder dco_decode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerArcMutexDecoder(dynamic raw);
 
-  @protected
-  BackupShardResponse dco_decode_box_autoadd_backup_shard_response(dynamic raw);
+@protected CollectBackupChunks dco_decode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerCollectBackupChunks(dynamic raw);
 
-  @protected
-  BroadcastTransaction dco_decode_box_autoadd_broadcast_transaction(
-      dynamic raw);
+@protected PrimeBackupFile dco_decode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerPrimeBackupFile(dynamic raw);
 
-  @protected
-  ChallengeRequest dco_decode_box_autoadd_challenge_request(dynamic raw);
+@protected QuantumLinkIdentity dco_decode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerQuantumLinkIdentity(dynamic raw);
 
-  @protected
-  ChallengeResponseResult dco_decode_box_autoadd_challenge_response_result(
-      dynamic raw);
+@protected XidDocument dco_decode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerXIDDocument(dynamic raw);
 
-  @protected
-  CreateMagicBackupEvent dco_decode_box_autoadd_create_magic_backup_event(
-      dynamic raw);
+@protected ArcMutexDecoder dco_decode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerArcMutexDecoder(dynamic raw);
 
-  @protected
-  CreateMagicBackupResult dco_decode_box_autoadd_create_magic_backup_result(
-      dynamic raw);
+@protected CollectBackupChunks dco_decode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerCollectBackupChunks(dynamic raw);
 
-  @protected
-  DeviceStatus dco_decode_box_autoadd_device_status(dynamic raw);
+@protected EnvoyAridCache dco_decode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerEnvoyARIDCache(dynamic raw);
 
-  @protected
-  EnvoyMagicBackupEnabledRequest
-      dco_decode_box_autoadd_envoy_magic_backup_enabled_request(dynamic raw);
+@protected EnvoyMasterDechunker dco_decode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerEnvoyMasterDechunker(dynamic raw);
 
-  @protected
-  EnvoyMagicBackupEnabledResponse
-      dco_decode_box_autoadd_envoy_magic_backup_enabled_response(dynamic raw);
+@protected PrimeBackupFile dco_decode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerPrimeBackupFile(dynamic raw);
 
-  @protected
-  EnvoyMessage dco_decode_box_autoadd_envoy_message(dynamic raw);
+@protected QuantumLinkIdentity dco_decode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerQuantumLinkIdentity(dynamic raw);
 
-  @protected
-  EnvoyStatus dco_decode_box_autoadd_envoy_status(dynamic raw);
+@protected XidDocument dco_decode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerXIDDocument(dynamic raw);
 
-  @protected
-  ExchangeRate dco_decode_box_autoadd_exchange_rate(dynamic raw);
+@protected String dco_decode_String(dynamic raw);
 
-  @protected
-  ExchangeRateHistory dco_decode_box_autoadd_exchange_rate_history(dynamic raw);
+@protected AccountUpdate dco_decode_account_update(dynamic raw);
 
-  @protected
-  FirmwareChunk dco_decode_box_autoadd_firmware_chunk(dynamic raw);
+@protected ApplyPassphrase dco_decode_apply_passphrase(dynamic raw);
 
-  @protected
-  FirmwareFetchEvent dco_decode_box_autoadd_firmware_fetch_event(dynamic raw);
+@protected BackupChunk dco_decode_backup_chunk(dynamic raw);
 
-  @protected
-  FirmwareFetchRequest dco_decode_box_autoadd_firmware_fetch_request(
-      dynamic raw);
+@protected BackupMetadata dco_decode_backup_metadata(dynamic raw);
 
-  @protected
-  FirmwareInstallEvent dco_decode_box_autoadd_firmware_install_event(
-      dynamic raw);
+@protected BackupShardRequest dco_decode_backup_shard_request(dynamic raw);
 
-  @protected
-  FirmwareUpdateAvailable dco_decode_box_autoadd_firmware_update_available(
-      dynamic raw);
+@protected BackupShardResponse dco_decode_backup_shard_response(dynamic raw);
 
-  @protected
-  FirmwareUpdateCheckRequest
-      dco_decode_box_autoadd_firmware_update_check_request(dynamic raw);
+@protected bool dco_decode_bool(dynamic raw);
 
-  @protected
-  FirmwareUpdateCheckResponse
-      dco_decode_box_autoadd_firmware_update_check_response(dynamic raw);
+@protected PrimeBackupFile dco_decode_box_autoadd_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerPrimeBackupFile(dynamic raw);
 
-  @protected
-  Heartbeat dco_decode_box_autoadd_heartbeat(dynamic raw);
+@protected XidDocument dco_decode_box_autoadd_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerXIDDocument(dynamic raw);
 
-  @protected
-  PairingRequest dco_decode_box_autoadd_pairing_request(dynamic raw);
+@protected AccountUpdate dco_decode_box_autoadd_account_update(dynamic raw);
 
-  @protected
-  PairingResponse dco_decode_box_autoadd_pairing_response(dynamic raw);
+@protected ApplyPassphrase dco_decode_box_autoadd_apply_passphrase(dynamic raw);
 
-  @protected
-  PassportMessage dco_decode_box_autoadd_passport_message(dynamic raw);
+@protected BackupChunk dco_decode_box_autoadd_backup_chunk(dynamic raw);
 
-  @protected
-  PrimeMagicBackupEnabled dco_decode_box_autoadd_prime_magic_backup_enabled(
-      dynamic raw);
+@protected BackupMetadata dco_decode_box_autoadd_backup_metadata(dynamic raw);
 
-  @protected
-  PrimeMagicBackupStatusRequest
-      dco_decode_box_autoadd_prime_magic_backup_status_request(dynamic raw);
+@protected BackupShardRequest dco_decode_box_autoadd_backup_shard_request(dynamic raw);
 
-  @protected
-  PrimeMagicBackupStatusResponse
-      dco_decode_box_autoadd_prime_magic_backup_status_response(dynamic raw);
+@protected BackupShardResponse dco_decode_box_autoadd_backup_shard_response(dynamic raw);
 
-  @protected
-  RestoreMagicBackupEvent dco_decode_box_autoadd_restore_magic_backup_event(
-      dynamic raw);
+@protected BroadcastTransaction dco_decode_box_autoadd_broadcast_transaction(dynamic raw);
 
-  @protected
-  RestoreMagicBackupRequest dco_decode_box_autoadd_restore_magic_backup_request(
-      dynamic raw);
+@protected ChallengeRequest dco_decode_box_autoadd_challenge_request(dynamic raw);
 
-  @protected
-  RestoreMagicBackupResult dco_decode_box_autoadd_restore_magic_backup_result(
-      dynamic raw);
+@protected ChallengeResponseResult dco_decode_box_autoadd_challenge_response_result(dynamic raw);
 
-  @protected
-  RestoreShardRequest dco_decode_box_autoadd_restore_shard_request(dynamic raw);
+@protected CreateMagicBackupEvent dco_decode_box_autoadd_create_magic_backup_event(dynamic raw);
 
-  @protected
-  RestoreShardResponse dco_decode_box_autoadd_restore_shard_response(
-      dynamic raw);
+@protected CreateMagicBackupResult dco_decode_box_autoadd_create_magic_backup_result(dynamic raw);
 
-  @protected
-  SecurityCheck dco_decode_box_autoadd_security_check(dynamic raw);
+@protected CreateMagicBackupV2 dco_decode_box_autoadd_create_magic_backup_v_2(dynamic raw);
 
-  @protected
-  SeedFingerprint dco_decode_box_autoadd_seed_fingerprint(dynamic raw);
+@protected DeleteMagicBackupV2 dco_decode_box_autoadd_delete_magic_backup_v_2(dynamic raw);
 
-  @protected
-  Shard dco_decode_box_autoadd_shard(dynamic raw);
+@protected DeviceStatus dco_decode_box_autoadd_device_status(dynamic raw);
 
-  @protected
-  SignPsbt dco_decode_box_autoadd_sign_psbt(dynamic raw);
+@protected EnvoyMagicBackupEnabledRequest dco_decode_box_autoadd_envoy_magic_backup_enabled_request(dynamic raw);
 
-  @protected
-  StartMagicBackup dco_decode_box_autoadd_start_magic_backup(dynamic raw);
+@protected EnvoyMagicBackupEnabledResponse dco_decode_box_autoadd_envoy_magic_backup_enabled_response(dynamic raw);
 
-  @protected
-  TimezoneRequest dco_decode_box_autoadd_timezone_request(dynamic raw);
+@protected EnvoyMessage dco_decode_box_autoadd_envoy_message(dynamic raw);
 
-  @protected
-  TimezoneResponse dco_decode_box_autoadd_timezone_response(dynamic raw);
+@protected EnvoyStatus dco_decode_box_autoadd_envoy_status(dynamic raw);
 
-  @protected
-  BigInt dco_decode_box_autoadd_u_64(dynamic raw);
+@protected ExchangeRate dco_decode_box_autoadd_exchange_rate(dynamic raw);
 
-  @protected
-  int dco_decode_box_autoadd_u_8(dynamic raw);
+@protected ExchangeRateHistory dco_decode_box_autoadd_exchange_rate_history(dynamic raw);
 
-  @protected
-  UnpairingRequest dco_decode_box_autoadd_unpairing_request(dynamic raw);
+@protected FirmwareChunk dco_decode_box_autoadd_firmware_chunk(dynamic raw);
 
-  @protected
-  UnpairingResponse dco_decode_box_autoadd_unpairing_response(dynamic raw);
+@protected FirmwareFetchEvent dco_decode_box_autoadd_firmware_fetch_event(dynamic raw);
 
-  @protected
-  VerificationResult dco_decode_box_autoadd_verification_result(dynamic raw);
+@protected FirmwareFetchRequest dco_decode_box_autoadd_firmware_fetch_request(dynamic raw);
 
-  @protected
-  BroadcastTransaction dco_decode_broadcast_transaction(dynamic raw);
+@protected FirmwareInstallEvent dco_decode_box_autoadd_firmware_install_event(dynamic raw);
 
-  @protected
-  ChallengeRequest dco_decode_challenge_request(dynamic raw);
+@protected FirmwareUpdateAvailable dco_decode_box_autoadd_firmware_update_available(dynamic raw);
 
-  @protected
-  ChallengeResponseResult dco_decode_challenge_response_result(dynamic raw);
+@protected FirmwareUpdateCheckRequest dco_decode_box_autoadd_firmware_update_check_request(dynamic raw);
 
-  @protected
-  CreateMagicBackupEvent dco_decode_create_magic_backup_event(dynamic raw);
+@protected FirmwareUpdateCheckResponse dco_decode_box_autoadd_firmware_update_check_response(dynamic raw);
 
-  @protected
-  CreateMagicBackupResult dco_decode_create_magic_backup_result(dynamic raw);
+@protected GetMagicBackupV2 dco_decode_box_autoadd_get_magic_backup_v_2(dynamic raw);
 
-  @protected
-  DecoderStatus dco_decode_decoder_status(dynamic raw);
+@protected Heartbeat dco_decode_box_autoadd_heartbeat(dynamic raw);
 
-  @protected
-  DeviceStatus dco_decode_device_status(dynamic raw);
+@protected MagicBackupRequestV2 dco_decode_box_autoadd_magic_backup_request_v_2(dynamic raw);
 
-  @protected
-  EnvoyMagicBackupEnabledRequest dco_decode_envoy_magic_backup_enabled_request(
-      dynamic raw);
+@protected MagicBackupResponseV2 dco_decode_box_autoadd_magic_backup_response_v_2(dynamic raw);
 
-  @protected
-  EnvoyMagicBackupEnabledResponse
-      dco_decode_envoy_magic_backup_enabled_response(dynamic raw);
+@protected PairingRequest dco_decode_box_autoadd_pairing_request(dynamic raw);
 
-  @protected
-  EnvoyMessage dco_decode_envoy_message(dynamic raw);
+@protected PairingResponse dco_decode_box_autoadd_pairing_response(dynamic raw);
 
-  @protected
-  EnvoyStatus dco_decode_envoy_status(dynamic raw);
+@protected PassportMessage dco_decode_box_autoadd_passport_message(dynamic raw);
 
-  @protected
-  ExchangeRate dco_decode_exchange_rate(dynamic raw);
+@protected PrimeMagicBackupEnabled dco_decode_box_autoadd_prime_magic_backup_enabled(dynamic raw);
 
-  @protected
-  ExchangeRateHistory dco_decode_exchange_rate_history(dynamic raw);
+@protected PrimeMagicBackupStatusRequest dco_decode_box_autoadd_prime_magic_backup_status_request(dynamic raw);
 
-  @protected
-  double dco_decode_f_32(dynamic raw);
+@protected PrimeMagicBackupStatusResponse dco_decode_box_autoadd_prime_magic_backup_status_response(dynamic raw);
 
-  @protected
-  double dco_decode_f_64(dynamic raw);
+@protected RestoreMagicBackupEvent dco_decode_box_autoadd_restore_magic_backup_event(dynamic raw);
 
-  @protected
-  FirmwareChunk dco_decode_firmware_chunk(dynamic raw);
+@protected RestoreMagicBackupRequest dco_decode_box_autoadd_restore_magic_backup_request(dynamic raw);
 
-  @protected
-  FirmwareFetchEvent dco_decode_firmware_fetch_event(dynamic raw);
+@protected RestoreMagicBackupResult dco_decode_box_autoadd_restore_magic_backup_result(dynamic raw);
 
-  @protected
-  FirmwareFetchRequest dco_decode_firmware_fetch_request(dynamic raw);
+@protected RestoreShardRequest dco_decode_box_autoadd_restore_shard_request(dynamic raw);
 
-  @protected
-  FirmwareInstallEvent dco_decode_firmware_install_event(dynamic raw);
+@protected RestoreShardResponse dco_decode_box_autoadd_restore_shard_response(dynamic raw);
 
-  @protected
-  FirmwareUpdateAvailable dco_decode_firmware_update_available(dynamic raw);
+@protected SecurityCheck dco_decode_box_autoadd_security_check(dynamic raw);
 
-  @protected
-  FirmwareUpdateCheckRequest dco_decode_firmware_update_check_request(
-      dynamic raw);
+@protected SeedFingerprint dco_decode_box_autoadd_seed_fingerprint(dynamic raw);
 
-  @protected
-  FirmwareUpdateCheckResponse dco_decode_firmware_update_check_response(
-      dynamic raw);
+@protected Shard dco_decode_box_autoadd_shard(dynamic raw);
 
-  @protected
-  Heartbeat dco_decode_heartbeat(dynamic raw);
+@protected SignPsbt dco_decode_box_autoadd_sign_psbt(dynamic raw);
 
-  @protected
-  int dco_decode_i_32(dynamic raw);
+@protected StartMagicBackup dco_decode_box_autoadd_start_magic_backup(dynamic raw);
 
-  @protected
-  InstallErrorStage dco_decode_install_error_stage(dynamic raw);
+@protected TimezoneRequest dco_decode_box_autoadd_timezone_request(dynamic raw);
 
-  @protected
-  List<Uint8List> dco_decode_list_list_prim_u_8_strict(dynamic raw);
+@protected TimezoneResponse dco_decode_box_autoadd_timezone_response(dynamic raw);
 
-  @protected
-  List<PricePoint> dco_decode_list_price_point(dynamic raw);
+@protected BigInt dco_decode_box_autoadd_u_64(dynamic raw);
 
-  @protected
-  List<int> dco_decode_list_prim_u_8_loose(dynamic raw);
+@protected int dco_decode_box_autoadd_u_8(dynamic raw);
 
-  @protected
-  Uint8List dco_decode_list_prim_u_8_strict(dynamic raw);
+@protected UnpairingRequest dco_decode_box_autoadd_unpairing_request(dynamic raw);
 
-  @protected
-  List<QuantumLinkMessage> dco_decode_list_quantum_link_message(dynamic raw);
+@protected UnpairingResponse dco_decode_box_autoadd_unpairing_response(dynamic raw);
 
-  @protected
-  OnboardingState dco_decode_onboarding_state(dynamic raw);
+@protected VerificationResult dco_decode_box_autoadd_verification_result(dynamic raw);
 
-  @protected
-  String? dco_decode_opt_String(dynamic raw);
+@protected BroadcastTransaction dco_decode_broadcast_transaction(dynamic raw);
 
-  @protected
-  PrimeBackupFile?
-      dco_decode_opt_box_autoadd_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerPrimeBackupFile(
-          dynamic raw);
+@protected ChallengeRequest dco_decode_challenge_request(dynamic raw);
 
-  @protected
-  XidDocument?
-      dco_decode_opt_box_autoadd_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerXIDDocument(
-          dynamic raw);
+@protected ChallengeResponseResult dco_decode_challenge_response_result(dynamic raw);
 
-  @protected
-  PassportMessage? dco_decode_opt_box_autoadd_passport_message(dynamic raw);
+@protected CreateMagicBackupEvent dco_decode_create_magic_backup_event(dynamic raw);
 
-  @protected
-  BigInt? dco_decode_opt_box_autoadd_u_64(dynamic raw);
+@protected CreateMagicBackupResult dco_decode_create_magic_backup_result(dynamic raw);
 
-  @protected
-  int? dco_decode_opt_box_autoadd_u_8(dynamic raw);
+@protected CreateMagicBackupV2 dco_decode_create_magic_backup_v_2(dynamic raw);
 
-  @protected
-  PairingRequest dco_decode_pairing_request(dynamic raw);
+@protected DecoderStatus dco_decode_decoder_status(dynamic raw);
 
-  @protected
-  PairingResponse dco_decode_pairing_response(dynamic raw);
+@protected DeleteMagicBackupV2 dco_decode_delete_magic_backup_v_2(dynamic raw);
 
-  @protected
-  PassportColor dco_decode_passport_color(dynamic raw);
+@protected DeviceStatus dco_decode_device_status(dynamic raw);
 
-  @protected
-  PassportFirmwareVersion dco_decode_passport_firmware_version(dynamic raw);
+@protected EnvoyMagicBackupEnabledRequest dco_decode_envoy_magic_backup_enabled_request(dynamic raw);
 
-  @protected
-  PassportMessage dco_decode_passport_message(dynamic raw);
+@protected EnvoyMagicBackupEnabledResponse dco_decode_envoy_magic_backup_enabled_response(dynamic raw);
 
-  @protected
-  PassportModel dco_decode_passport_model(dynamic raw);
+@protected EnvoyMessage dco_decode_envoy_message(dynamic raw);
 
-  @protected
-  PassportSerial dco_decode_passport_serial(dynamic raw);
+@protected EnvoyStatus dco_decode_envoy_status(dynamic raw);
 
-  @protected
-  PricePoint dco_decode_price_point(dynamic raw);
+@protected ExchangeRate dco_decode_exchange_rate(dynamic raw);
 
-  @protected
-  PrimeMagicBackupEnabled dco_decode_prime_magic_backup_enabled(dynamic raw);
+@protected ExchangeRateHistory dco_decode_exchange_rate_history(dynamic raw);
 
-  @protected
-  PrimeMagicBackupStatusRequest dco_decode_prime_magic_backup_status_request(
-      dynamic raw);
+@protected double dco_decode_f_32(dynamic raw);
 
-  @protected
-  PrimeMagicBackupStatusResponse dco_decode_prime_magic_backup_status_response(
-      dynamic raw);
+@protected double dco_decode_f_64(dynamic raw);
 
-  @protected
-  QrDecoderStatus dco_decode_qr_decoder_status(dynamic raw);
+@protected FirmwareChunk dco_decode_firmware_chunk(dynamic raw);
 
-  @protected
-  QuantumLinkMessage dco_decode_quantum_link_message(dynamic raw);
+@protected FirmwareFetchEvent dco_decode_firmware_fetch_event(dynamic raw);
 
-  @protected
-  RestoreMagicBackupEvent dco_decode_restore_magic_backup_event(dynamic raw);
+@protected FirmwareFetchRequest dco_decode_firmware_fetch_request(dynamic raw);
 
-  @protected
-  RestoreMagicBackupRequest dco_decode_restore_magic_backup_request(
-      dynamic raw);
+@protected FirmwareInstallEvent dco_decode_firmware_install_event(dynamic raw);
 
-  @protected
-  RestoreMagicBackupResult dco_decode_restore_magic_backup_result(dynamic raw);
+@protected FirmwareUpdateAvailable dco_decode_firmware_update_available(dynamic raw);
 
-  @protected
-  RestoreShardRequest dco_decode_restore_shard_request(dynamic raw);
+@protected FirmwareUpdateCheckRequest dco_decode_firmware_update_check_request(dynamic raw);
 
-  @protected
-  RestoreShardResponse dco_decode_restore_shard_response(dynamic raw);
+@protected FirmwareUpdateCheckResponse dco_decode_firmware_update_check_response(dynamic raw);
 
-  @protected
-  SecurityCheck dco_decode_security_check(dynamic raw);
+@protected GetMagicBackupV2 dco_decode_get_magic_backup_v_2(dynamic raw);
 
-  @protected
-  SeedFingerprint dco_decode_seed_fingerprint(dynamic raw);
+@protected Heartbeat dco_decode_heartbeat(dynamic raw);
 
-  @protected
-  Shard dco_decode_shard(dynamic raw);
+@protected int dco_decode_i_32(dynamic raw);
 
-  @protected
-  SignPsbt dco_decode_sign_psbt(dynamic raw);
+@protected InstallErrorStage dco_decode_install_error_stage(dynamic raw);
 
-  @protected
-  StartMagicBackup dco_decode_start_magic_backup(dynamic raw);
+@protected List<Uint8List> dco_decode_list_list_prim_u_8_strict(dynamic raw);
 
-  @protected
-  TimezoneRequest dco_decode_timezone_request(dynamic raw);
+@protected List<PricePoint> dco_decode_list_price_point(dynamic raw);
 
-  @protected
-  TimezoneResponse dco_decode_timezone_response(dynamic raw);
+@protected List<int> dco_decode_list_prim_u_8_loose(dynamic raw);
 
-  @protected
-  int dco_decode_u_16(dynamic raw);
+@protected Uint8List dco_decode_list_prim_u_8_strict(dynamic raw);
 
-  @protected
-  int dco_decode_u_32(dynamic raw);
+@protected List<QuantumLinkMessage> dco_decode_list_quantum_link_message(dynamic raw);
 
-  @protected
-  BigInt dco_decode_u_64(dynamic raw);
+@protected MagicBackupRequestV2 dco_decode_magic_backup_request_v_2(dynamic raw);
 
-  @protected
-  int dco_decode_u_8(dynamic raw);
+@protected MagicBackupResponseV2 dco_decode_magic_backup_response_v_2(dynamic raw);
 
-  @protected
-  U8Array32 dco_decode_u_8_array_32(dynamic raw);
+@protected OnboardingState dco_decode_onboarding_state(dynamic raw);
 
-  @protected
-  void dco_decode_unit(dynamic raw);
+@protected String? dco_decode_opt_String(dynamic raw);
 
-  @protected
-  UnpairingRequest dco_decode_unpairing_request(dynamic raw);
+@protected PrimeBackupFile? dco_decode_opt_box_autoadd_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerPrimeBackupFile(dynamic raw);
 
-  @protected
-  UnpairingResponse dco_decode_unpairing_response(dynamic raw);
+@protected XidDocument? dco_decode_opt_box_autoadd_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerXIDDocument(dynamic raw);
 
-  @protected
-  BigInt dco_decode_usize(dynamic raw);
+@protected PassportMessage? dco_decode_opt_box_autoadd_passport_message(dynamic raw);
 
-  @protected
-  VerificationResult dco_decode_verification_result(dynamic raw);
+@protected BigInt? dco_decode_opt_box_autoadd_u_64(dynamic raw);
 
-  @protected
-  AnyhowException sse_decode_AnyhowException(SseDeserializer deserializer);
+@protected int? dco_decode_opt_box_autoadd_u_8(dynamic raw);
 
-  @protected
-  ArcMutexDecoder
-      sse_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerArcMutexDecoder(
-          SseDeserializer deserializer);
+@protected PairingRequest dco_decode_pairing_request(dynamic raw);
 
-  @protected
-  CollectBackupChunks
-      sse_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerCollectBackupChunks(
-          SseDeserializer deserializer);
+@protected PairingResponse dco_decode_pairing_response(dynamic raw);
 
-  @protected
-  EnvoyAridCache
-      sse_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerEnvoyARIDCache(
-          SseDeserializer deserializer);
+@protected PassportColor dco_decode_passport_color(dynamic raw);
 
-  @protected
-  EnvoyMasterDechunker
-      sse_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerEnvoyMasterDechunker(
-          SseDeserializer deserializer);
+@protected PassportFirmwareVersion dco_decode_passport_firmware_version(dynamic raw);
 
-  @protected
-  PrimeBackupFile
-      sse_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerPrimeBackupFile(
-          SseDeserializer deserializer);
+@protected PassportMessage dco_decode_passport_message(dynamic raw);
 
-  @protected
-  QuantumLinkIdentity
-      sse_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerQuantumLinkIdentity(
-          SseDeserializer deserializer);
+@protected PassportModel dco_decode_passport_model(dynamic raw);
 
-  @protected
-  XidDocument
-      sse_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerXIDDocument(
-          SseDeserializer deserializer);
+@protected PassportSerial dco_decode_passport_serial(dynamic raw);
 
-  @protected
-  CollectBackupChunks
-      sse_decode_Auto_RefMut_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerCollectBackupChunks(
-          SseDeserializer deserializer);
+@protected PricePoint dco_decode_price_point(dynamic raw);
 
-  @protected
-  EnvoyAridCache
-      sse_decode_Auto_RefMut_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerEnvoyARIDCache(
-          SseDeserializer deserializer);
+@protected PrimeMagicBackupEnabled dco_decode_prime_magic_backup_enabled(dynamic raw);
 
-  @protected
-  EnvoyMasterDechunker
-      sse_decode_Auto_RefMut_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerEnvoyMasterDechunker(
-          SseDeserializer deserializer);
+@protected PrimeMagicBackupStatusRequest dco_decode_prime_magic_backup_status_request(dynamic raw);
 
-  @protected
-  PrimeBackupFile
-      sse_decode_Auto_RefMut_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerPrimeBackupFile(
-          SseDeserializer deserializer);
+@protected PrimeMagicBackupStatusResponse dco_decode_prime_magic_backup_status_response(dynamic raw);
 
-  @protected
-  ArcMutexDecoder
-      sse_decode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerArcMutexDecoder(
-          SseDeserializer deserializer);
+@protected QrDecoderStatus dco_decode_qr_decoder_status(dynamic raw);
 
-  @protected
-  CollectBackupChunks
-      sse_decode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerCollectBackupChunks(
-          SseDeserializer deserializer);
+@protected QuantumLinkMessage dco_decode_quantum_link_message(dynamic raw);
 
-  @protected
-  PrimeBackupFile
-      sse_decode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerPrimeBackupFile(
-          SseDeserializer deserializer);
+@protected RestoreMagicBackupEvent dco_decode_restore_magic_backup_event(dynamic raw);
 
-  @protected
-  QuantumLinkIdentity
-      sse_decode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerQuantumLinkIdentity(
-          SseDeserializer deserializer);
+@protected RestoreMagicBackupRequest dco_decode_restore_magic_backup_request(dynamic raw);
 
-  @protected
-  XidDocument
-      sse_decode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerXIDDocument(
-          SseDeserializer deserializer);
+@protected RestoreMagicBackupResult dco_decode_restore_magic_backup_result(dynamic raw);
 
-  @protected
-  ArcMutexDecoder
-      sse_decode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerArcMutexDecoder(
-          SseDeserializer deserializer);
+@protected RestoreShardRequest dco_decode_restore_shard_request(dynamic raw);
 
-  @protected
-  CollectBackupChunks
-      sse_decode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerCollectBackupChunks(
-          SseDeserializer deserializer);
+@protected RestoreShardResponse dco_decode_restore_shard_response(dynamic raw);
 
-  @protected
-  EnvoyAridCache
-      sse_decode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerEnvoyARIDCache(
-          SseDeserializer deserializer);
+@protected SecurityCheck dco_decode_security_check(dynamic raw);
 
-  @protected
-  EnvoyMasterDechunker
-      sse_decode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerEnvoyMasterDechunker(
-          SseDeserializer deserializer);
+@protected SeedFingerprint dco_decode_seed_fingerprint(dynamic raw);
 
-  @protected
-  PrimeBackupFile
-      sse_decode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerPrimeBackupFile(
-          SseDeserializer deserializer);
+@protected Shard dco_decode_shard(dynamic raw);
 
-  @protected
-  QuantumLinkIdentity
-      sse_decode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerQuantumLinkIdentity(
-          SseDeserializer deserializer);
+@protected SignPsbt dco_decode_sign_psbt(dynamic raw);
 
-  @protected
-  XidDocument
-      sse_decode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerXIDDocument(
-          SseDeserializer deserializer);
+@protected StartMagicBackup dco_decode_start_magic_backup(dynamic raw);
 
-  @protected
-  String sse_decode_String(SseDeserializer deserializer);
+@protected TimezoneRequest dco_decode_timezone_request(dynamic raw);
 
-  @protected
-  AccountUpdate sse_decode_account_update(SseDeserializer deserializer);
+@protected TimezoneResponse dco_decode_timezone_response(dynamic raw);
 
-  @protected
-  ApplyPassphrase sse_decode_apply_passphrase(SseDeserializer deserializer);
+@protected int dco_decode_u_16(dynamic raw);
 
-  @protected
-  BackupChunk sse_decode_backup_chunk(SseDeserializer deserializer);
+@protected int dco_decode_u_32(dynamic raw);
 
-  @protected
-  BackupMetadata sse_decode_backup_metadata(SseDeserializer deserializer);
+@protected BigInt dco_decode_u_64(dynamic raw);
 
-  @protected
-  BackupShardRequest sse_decode_backup_shard_request(
-      SseDeserializer deserializer);
+@protected int dco_decode_u_8(dynamic raw);
 
-  @protected
-  BackupShardResponse sse_decode_backup_shard_response(
-      SseDeserializer deserializer);
+@protected U8Array32 dco_decode_u_8_array_32(dynamic raw);
 
-  @protected
-  bool sse_decode_bool(SseDeserializer deserializer);
+@protected void dco_decode_unit(dynamic raw);
 
-  @protected
-  PrimeBackupFile
-      sse_decode_box_autoadd_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerPrimeBackupFile(
-          SseDeserializer deserializer);
+@protected UnpairingRequest dco_decode_unpairing_request(dynamic raw);
 
-  @protected
-  XidDocument
-      sse_decode_box_autoadd_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerXIDDocument(
-          SseDeserializer deserializer);
+@protected UnpairingResponse dco_decode_unpairing_response(dynamic raw);
 
-  @protected
-  AccountUpdate sse_decode_box_autoadd_account_update(
-      SseDeserializer deserializer);
+@protected BigInt dco_decode_usize(dynamic raw);
 
-  @protected
-  ApplyPassphrase sse_decode_box_autoadd_apply_passphrase(
-      SseDeserializer deserializer);
+@protected VerificationResult dco_decode_verification_result(dynamic raw);
 
-  @protected
-  BackupChunk sse_decode_box_autoadd_backup_chunk(SseDeserializer deserializer);
+@protected AnyhowException sse_decode_AnyhowException(SseDeserializer deserializer);
 
-  @protected
-  BackupMetadata sse_decode_box_autoadd_backup_metadata(
-      SseDeserializer deserializer);
+@protected ArcMutexDecoder sse_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerArcMutexDecoder(SseDeserializer deserializer);
 
-  @protected
-  BackupShardRequest sse_decode_box_autoadd_backup_shard_request(
-      SseDeserializer deserializer);
+@protected CollectBackupChunks sse_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerCollectBackupChunks(SseDeserializer deserializer);
 
-  @protected
-  BackupShardResponse sse_decode_box_autoadd_backup_shard_response(
-      SseDeserializer deserializer);
+@protected EnvoyAridCache sse_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerEnvoyARIDCache(SseDeserializer deserializer);
 
-  @protected
-  BroadcastTransaction sse_decode_box_autoadd_broadcast_transaction(
-      SseDeserializer deserializer);
+@protected EnvoyMasterDechunker sse_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerEnvoyMasterDechunker(SseDeserializer deserializer);
 
-  @protected
-  ChallengeRequest sse_decode_box_autoadd_challenge_request(
-      SseDeserializer deserializer);
+@protected PrimeBackupFile sse_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerPrimeBackupFile(SseDeserializer deserializer);
 
-  @protected
-  ChallengeResponseResult sse_decode_box_autoadd_challenge_response_result(
-      SseDeserializer deserializer);
+@protected QuantumLinkIdentity sse_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerQuantumLinkIdentity(SseDeserializer deserializer);
 
-  @protected
-  CreateMagicBackupEvent sse_decode_box_autoadd_create_magic_backup_event(
-      SseDeserializer deserializer);
+@protected XidDocument sse_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerXIDDocument(SseDeserializer deserializer);
 
-  @protected
-  CreateMagicBackupResult sse_decode_box_autoadd_create_magic_backup_result(
-      SseDeserializer deserializer);
+@protected CollectBackupChunks sse_decode_Auto_RefMut_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerCollectBackupChunks(SseDeserializer deserializer);
 
-  @protected
-  DeviceStatus sse_decode_box_autoadd_device_status(
-      SseDeserializer deserializer);
+@protected EnvoyAridCache sse_decode_Auto_RefMut_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerEnvoyARIDCache(SseDeserializer deserializer);
 
-  @protected
-  EnvoyMagicBackupEnabledRequest
-      sse_decode_box_autoadd_envoy_magic_backup_enabled_request(
-          SseDeserializer deserializer);
+@protected EnvoyMasterDechunker sse_decode_Auto_RefMut_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerEnvoyMasterDechunker(SseDeserializer deserializer);
 
-  @protected
-  EnvoyMagicBackupEnabledResponse
-      sse_decode_box_autoadd_envoy_magic_backup_enabled_response(
-          SseDeserializer deserializer);
+@protected PrimeBackupFile sse_decode_Auto_RefMut_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerPrimeBackupFile(SseDeserializer deserializer);
 
-  @protected
-  EnvoyMessage sse_decode_box_autoadd_envoy_message(
-      SseDeserializer deserializer);
+@protected ArcMutexDecoder sse_decode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerArcMutexDecoder(SseDeserializer deserializer);
 
-  @protected
-  EnvoyStatus sse_decode_box_autoadd_envoy_status(SseDeserializer deserializer);
+@protected CollectBackupChunks sse_decode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerCollectBackupChunks(SseDeserializer deserializer);
 
-  @protected
-  ExchangeRate sse_decode_box_autoadd_exchange_rate(
-      SseDeserializer deserializer);
+@protected PrimeBackupFile sse_decode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerPrimeBackupFile(SseDeserializer deserializer);
 
-  @protected
-  ExchangeRateHistory sse_decode_box_autoadd_exchange_rate_history(
-      SseDeserializer deserializer);
+@protected QuantumLinkIdentity sse_decode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerQuantumLinkIdentity(SseDeserializer deserializer);
 
-  @protected
-  FirmwareChunk sse_decode_box_autoadd_firmware_chunk(
-      SseDeserializer deserializer);
+@protected XidDocument sse_decode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerXIDDocument(SseDeserializer deserializer);
 
-  @protected
-  FirmwareFetchEvent sse_decode_box_autoadd_firmware_fetch_event(
-      SseDeserializer deserializer);
+@protected ArcMutexDecoder sse_decode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerArcMutexDecoder(SseDeserializer deserializer);
 
-  @protected
-  FirmwareFetchRequest sse_decode_box_autoadd_firmware_fetch_request(
-      SseDeserializer deserializer);
+@protected CollectBackupChunks sse_decode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerCollectBackupChunks(SseDeserializer deserializer);
 
-  @protected
-  FirmwareInstallEvent sse_decode_box_autoadd_firmware_install_event(
-      SseDeserializer deserializer);
+@protected EnvoyAridCache sse_decode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerEnvoyARIDCache(SseDeserializer deserializer);
 
-  @protected
-  FirmwareUpdateAvailable sse_decode_box_autoadd_firmware_update_available(
-      SseDeserializer deserializer);
+@protected EnvoyMasterDechunker sse_decode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerEnvoyMasterDechunker(SseDeserializer deserializer);
 
-  @protected
-  FirmwareUpdateCheckRequest
-      sse_decode_box_autoadd_firmware_update_check_request(
-          SseDeserializer deserializer);
+@protected PrimeBackupFile sse_decode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerPrimeBackupFile(SseDeserializer deserializer);
 
-  @protected
-  FirmwareUpdateCheckResponse
-      sse_decode_box_autoadd_firmware_update_check_response(
-          SseDeserializer deserializer);
+@protected QuantumLinkIdentity sse_decode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerQuantumLinkIdentity(SseDeserializer deserializer);
 
-  @protected
-  Heartbeat sse_decode_box_autoadd_heartbeat(SseDeserializer deserializer);
+@protected XidDocument sse_decode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerXIDDocument(SseDeserializer deserializer);
 
-  @protected
-  PairingRequest sse_decode_box_autoadd_pairing_request(
-      SseDeserializer deserializer);
+@protected String sse_decode_String(SseDeserializer deserializer);
 
-  @protected
-  PairingResponse sse_decode_box_autoadd_pairing_response(
-      SseDeserializer deserializer);
+@protected AccountUpdate sse_decode_account_update(SseDeserializer deserializer);
 
-  @protected
-  PassportMessage sse_decode_box_autoadd_passport_message(
-      SseDeserializer deserializer);
+@protected ApplyPassphrase sse_decode_apply_passphrase(SseDeserializer deserializer);
 
-  @protected
-  PrimeMagicBackupEnabled sse_decode_box_autoadd_prime_magic_backup_enabled(
-      SseDeserializer deserializer);
+@protected BackupChunk sse_decode_backup_chunk(SseDeserializer deserializer);
 
-  @protected
-  PrimeMagicBackupStatusRequest
-      sse_decode_box_autoadd_prime_magic_backup_status_request(
-          SseDeserializer deserializer);
+@protected BackupMetadata sse_decode_backup_metadata(SseDeserializer deserializer);
 
-  @protected
-  PrimeMagicBackupStatusResponse
-      sse_decode_box_autoadd_prime_magic_backup_status_response(
-          SseDeserializer deserializer);
+@protected BackupShardRequest sse_decode_backup_shard_request(SseDeserializer deserializer);
 
-  @protected
-  RestoreMagicBackupEvent sse_decode_box_autoadd_restore_magic_backup_event(
-      SseDeserializer deserializer);
+@protected BackupShardResponse sse_decode_backup_shard_response(SseDeserializer deserializer);
 
-  @protected
-  RestoreMagicBackupRequest sse_decode_box_autoadd_restore_magic_backup_request(
-      SseDeserializer deserializer);
+@protected bool sse_decode_bool(SseDeserializer deserializer);
 
-  @protected
-  RestoreMagicBackupResult sse_decode_box_autoadd_restore_magic_backup_result(
-      SseDeserializer deserializer);
+@protected PrimeBackupFile sse_decode_box_autoadd_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerPrimeBackupFile(SseDeserializer deserializer);
 
-  @protected
-  RestoreShardRequest sse_decode_box_autoadd_restore_shard_request(
-      SseDeserializer deserializer);
+@protected XidDocument sse_decode_box_autoadd_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerXIDDocument(SseDeserializer deserializer);
 
-  @protected
-  RestoreShardResponse sse_decode_box_autoadd_restore_shard_response(
-      SseDeserializer deserializer);
+@protected AccountUpdate sse_decode_box_autoadd_account_update(SseDeserializer deserializer);
 
-  @protected
-  SecurityCheck sse_decode_box_autoadd_security_check(
-      SseDeserializer deserializer);
+@protected ApplyPassphrase sse_decode_box_autoadd_apply_passphrase(SseDeserializer deserializer);
 
-  @protected
-  SeedFingerprint sse_decode_box_autoadd_seed_fingerprint(
-      SseDeserializer deserializer);
+@protected BackupChunk sse_decode_box_autoadd_backup_chunk(SseDeserializer deserializer);
 
-  @protected
-  Shard sse_decode_box_autoadd_shard(SseDeserializer deserializer);
+@protected BackupMetadata sse_decode_box_autoadd_backup_metadata(SseDeserializer deserializer);
 
-  @protected
-  SignPsbt sse_decode_box_autoadd_sign_psbt(SseDeserializer deserializer);
+@protected BackupShardRequest sse_decode_box_autoadd_backup_shard_request(SseDeserializer deserializer);
 
-  @protected
-  StartMagicBackup sse_decode_box_autoadd_start_magic_backup(
-      SseDeserializer deserializer);
+@protected BackupShardResponse sse_decode_box_autoadd_backup_shard_response(SseDeserializer deserializer);
 
-  @protected
-  TimezoneRequest sse_decode_box_autoadd_timezone_request(
-      SseDeserializer deserializer);
+@protected BroadcastTransaction sse_decode_box_autoadd_broadcast_transaction(SseDeserializer deserializer);
 
-  @protected
-  TimezoneResponse sse_decode_box_autoadd_timezone_response(
-      SseDeserializer deserializer);
+@protected ChallengeRequest sse_decode_box_autoadd_challenge_request(SseDeserializer deserializer);
 
-  @protected
-  BigInt sse_decode_box_autoadd_u_64(SseDeserializer deserializer);
+@protected ChallengeResponseResult sse_decode_box_autoadd_challenge_response_result(SseDeserializer deserializer);
 
-  @protected
-  int sse_decode_box_autoadd_u_8(SseDeserializer deserializer);
+@protected CreateMagicBackupEvent sse_decode_box_autoadd_create_magic_backup_event(SseDeserializer deserializer);
 
-  @protected
-  UnpairingRequest sse_decode_box_autoadd_unpairing_request(
-      SseDeserializer deserializer);
+@protected CreateMagicBackupResult sse_decode_box_autoadd_create_magic_backup_result(SseDeserializer deserializer);
 
-  @protected
-  UnpairingResponse sse_decode_box_autoadd_unpairing_response(
-      SseDeserializer deserializer);
+@protected CreateMagicBackupV2 sse_decode_box_autoadd_create_magic_backup_v_2(SseDeserializer deserializer);
 
-  @protected
-  VerificationResult sse_decode_box_autoadd_verification_result(
-      SseDeserializer deserializer);
+@protected DeleteMagicBackupV2 sse_decode_box_autoadd_delete_magic_backup_v_2(SseDeserializer deserializer);
 
-  @protected
-  BroadcastTransaction sse_decode_broadcast_transaction(
-      SseDeserializer deserializer);
+@protected DeviceStatus sse_decode_box_autoadd_device_status(SseDeserializer deserializer);
 
-  @protected
-  ChallengeRequest sse_decode_challenge_request(SseDeserializer deserializer);
+@protected EnvoyMagicBackupEnabledRequest sse_decode_box_autoadd_envoy_magic_backup_enabled_request(SseDeserializer deserializer);
 
-  @protected
-  ChallengeResponseResult sse_decode_challenge_response_result(
-      SseDeserializer deserializer);
+@protected EnvoyMagicBackupEnabledResponse sse_decode_box_autoadd_envoy_magic_backup_enabled_response(SseDeserializer deserializer);
 
-  @protected
-  CreateMagicBackupEvent sse_decode_create_magic_backup_event(
-      SseDeserializer deserializer);
+@protected EnvoyMessage sse_decode_box_autoadd_envoy_message(SseDeserializer deserializer);
 
-  @protected
-  CreateMagicBackupResult sse_decode_create_magic_backup_result(
-      SseDeserializer deserializer);
+@protected EnvoyStatus sse_decode_box_autoadd_envoy_status(SseDeserializer deserializer);
 
-  @protected
-  DecoderStatus sse_decode_decoder_status(SseDeserializer deserializer);
+@protected ExchangeRate sse_decode_box_autoadd_exchange_rate(SseDeserializer deserializer);
 
-  @protected
-  DeviceStatus sse_decode_device_status(SseDeserializer deserializer);
+@protected ExchangeRateHistory sse_decode_box_autoadd_exchange_rate_history(SseDeserializer deserializer);
 
-  @protected
-  EnvoyMagicBackupEnabledRequest sse_decode_envoy_magic_backup_enabled_request(
-      SseDeserializer deserializer);
+@protected FirmwareChunk sse_decode_box_autoadd_firmware_chunk(SseDeserializer deserializer);
 
-  @protected
-  EnvoyMagicBackupEnabledResponse
-      sse_decode_envoy_magic_backup_enabled_response(
-          SseDeserializer deserializer);
+@protected FirmwareFetchEvent sse_decode_box_autoadd_firmware_fetch_event(SseDeserializer deserializer);
 
-  @protected
-  EnvoyMessage sse_decode_envoy_message(SseDeserializer deserializer);
+@protected FirmwareFetchRequest sse_decode_box_autoadd_firmware_fetch_request(SseDeserializer deserializer);
 
-  @protected
-  EnvoyStatus sse_decode_envoy_status(SseDeserializer deserializer);
+@protected FirmwareInstallEvent sse_decode_box_autoadd_firmware_install_event(SseDeserializer deserializer);
 
-  @protected
-  ExchangeRate sse_decode_exchange_rate(SseDeserializer deserializer);
+@protected FirmwareUpdateAvailable sse_decode_box_autoadd_firmware_update_available(SseDeserializer deserializer);
 
-  @protected
-  ExchangeRateHistory sse_decode_exchange_rate_history(
-      SseDeserializer deserializer);
+@protected FirmwareUpdateCheckRequest sse_decode_box_autoadd_firmware_update_check_request(SseDeserializer deserializer);
 
-  @protected
-  double sse_decode_f_32(SseDeserializer deserializer);
+@protected FirmwareUpdateCheckResponse sse_decode_box_autoadd_firmware_update_check_response(SseDeserializer deserializer);
 
-  @protected
-  double sse_decode_f_64(SseDeserializer deserializer);
+@protected GetMagicBackupV2 sse_decode_box_autoadd_get_magic_backup_v_2(SseDeserializer deserializer);
 
-  @protected
-  FirmwareChunk sse_decode_firmware_chunk(SseDeserializer deserializer);
+@protected Heartbeat sse_decode_box_autoadd_heartbeat(SseDeserializer deserializer);
 
-  @protected
-  FirmwareFetchEvent sse_decode_firmware_fetch_event(
-      SseDeserializer deserializer);
+@protected MagicBackupRequestV2 sse_decode_box_autoadd_magic_backup_request_v_2(SseDeserializer deserializer);
 
-  @protected
-  FirmwareFetchRequest sse_decode_firmware_fetch_request(
-      SseDeserializer deserializer);
+@protected MagicBackupResponseV2 sse_decode_box_autoadd_magic_backup_response_v_2(SseDeserializer deserializer);
 
-  @protected
-  FirmwareInstallEvent sse_decode_firmware_install_event(
-      SseDeserializer deserializer);
+@protected PairingRequest sse_decode_box_autoadd_pairing_request(SseDeserializer deserializer);
 
-  @protected
-  FirmwareUpdateAvailable sse_decode_firmware_update_available(
-      SseDeserializer deserializer);
+@protected PairingResponse sse_decode_box_autoadd_pairing_response(SseDeserializer deserializer);
 
-  @protected
-  FirmwareUpdateCheckRequest sse_decode_firmware_update_check_request(
-      SseDeserializer deserializer);
+@protected PassportMessage sse_decode_box_autoadd_passport_message(SseDeserializer deserializer);
 
-  @protected
-  FirmwareUpdateCheckResponse sse_decode_firmware_update_check_response(
-      SseDeserializer deserializer);
+@protected PrimeMagicBackupEnabled sse_decode_box_autoadd_prime_magic_backup_enabled(SseDeserializer deserializer);
 
-  @protected
-  Heartbeat sse_decode_heartbeat(SseDeserializer deserializer);
+@protected PrimeMagicBackupStatusRequest sse_decode_box_autoadd_prime_magic_backup_status_request(SseDeserializer deserializer);
 
-  @protected
-  int sse_decode_i_32(SseDeserializer deserializer);
+@protected PrimeMagicBackupStatusResponse sse_decode_box_autoadd_prime_magic_backup_status_response(SseDeserializer deserializer);
 
-  @protected
-  InstallErrorStage sse_decode_install_error_stage(
-      SseDeserializer deserializer);
+@protected RestoreMagicBackupEvent sse_decode_box_autoadd_restore_magic_backup_event(SseDeserializer deserializer);
 
-  @protected
-  List<Uint8List> sse_decode_list_list_prim_u_8_strict(
-      SseDeserializer deserializer);
+@protected RestoreMagicBackupRequest sse_decode_box_autoadd_restore_magic_backup_request(SseDeserializer deserializer);
 
-  @protected
-  List<PricePoint> sse_decode_list_price_point(SseDeserializer deserializer);
+@protected RestoreMagicBackupResult sse_decode_box_autoadd_restore_magic_backup_result(SseDeserializer deserializer);
 
-  @protected
-  List<int> sse_decode_list_prim_u_8_loose(SseDeserializer deserializer);
+@protected RestoreShardRequest sse_decode_box_autoadd_restore_shard_request(SseDeserializer deserializer);
 
-  @protected
-  Uint8List sse_decode_list_prim_u_8_strict(SseDeserializer deserializer);
+@protected RestoreShardResponse sse_decode_box_autoadd_restore_shard_response(SseDeserializer deserializer);
 
-  @protected
-  List<QuantumLinkMessage> sse_decode_list_quantum_link_message(
-      SseDeserializer deserializer);
+@protected SecurityCheck sse_decode_box_autoadd_security_check(SseDeserializer deserializer);
 
-  @protected
-  OnboardingState sse_decode_onboarding_state(SseDeserializer deserializer);
+@protected SeedFingerprint sse_decode_box_autoadd_seed_fingerprint(SseDeserializer deserializer);
 
-  @protected
-  String? sse_decode_opt_String(SseDeserializer deserializer);
+@protected Shard sse_decode_box_autoadd_shard(SseDeserializer deserializer);
 
-  @protected
-  PrimeBackupFile?
-      sse_decode_opt_box_autoadd_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerPrimeBackupFile(
-          SseDeserializer deserializer);
+@protected SignPsbt sse_decode_box_autoadd_sign_psbt(SseDeserializer deserializer);
 
-  @protected
-  XidDocument?
-      sse_decode_opt_box_autoadd_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerXIDDocument(
-          SseDeserializer deserializer);
+@protected StartMagicBackup sse_decode_box_autoadd_start_magic_backup(SseDeserializer deserializer);
 
-  @protected
-  PassportMessage? sse_decode_opt_box_autoadd_passport_message(
-      SseDeserializer deserializer);
+@protected TimezoneRequest sse_decode_box_autoadd_timezone_request(SseDeserializer deserializer);
 
-  @protected
-  BigInt? sse_decode_opt_box_autoadd_u_64(SseDeserializer deserializer);
+@protected TimezoneResponse sse_decode_box_autoadd_timezone_response(SseDeserializer deserializer);
 
-  @protected
-  int? sse_decode_opt_box_autoadd_u_8(SseDeserializer deserializer);
+@protected BigInt sse_decode_box_autoadd_u_64(SseDeserializer deserializer);
 
-  @protected
-  PairingRequest sse_decode_pairing_request(SseDeserializer deserializer);
+@protected int sse_decode_box_autoadd_u_8(SseDeserializer deserializer);
 
-  @protected
-  PairingResponse sse_decode_pairing_response(SseDeserializer deserializer);
+@protected UnpairingRequest sse_decode_box_autoadd_unpairing_request(SseDeserializer deserializer);
 
-  @protected
-  PassportColor sse_decode_passport_color(SseDeserializer deserializer);
+@protected UnpairingResponse sse_decode_box_autoadd_unpairing_response(SseDeserializer deserializer);
 
-  @protected
-  PassportFirmwareVersion sse_decode_passport_firmware_version(
-      SseDeserializer deserializer);
+@protected VerificationResult sse_decode_box_autoadd_verification_result(SseDeserializer deserializer);
 
-  @protected
-  PassportMessage sse_decode_passport_message(SseDeserializer deserializer);
+@protected BroadcastTransaction sse_decode_broadcast_transaction(SseDeserializer deserializer);
 
-  @protected
-  PassportModel sse_decode_passport_model(SseDeserializer deserializer);
+@protected ChallengeRequest sse_decode_challenge_request(SseDeserializer deserializer);
 
-  @protected
-  PassportSerial sse_decode_passport_serial(SseDeserializer deserializer);
+@protected ChallengeResponseResult sse_decode_challenge_response_result(SseDeserializer deserializer);
 
-  @protected
-  PricePoint sse_decode_price_point(SseDeserializer deserializer);
+@protected CreateMagicBackupEvent sse_decode_create_magic_backup_event(SseDeserializer deserializer);
 
-  @protected
-  PrimeMagicBackupEnabled sse_decode_prime_magic_backup_enabled(
-      SseDeserializer deserializer);
+@protected CreateMagicBackupResult sse_decode_create_magic_backup_result(SseDeserializer deserializer);
 
-  @protected
-  PrimeMagicBackupStatusRequest sse_decode_prime_magic_backup_status_request(
-      SseDeserializer deserializer);
+@protected CreateMagicBackupV2 sse_decode_create_magic_backup_v_2(SseDeserializer deserializer);
 
-  @protected
-  PrimeMagicBackupStatusResponse sse_decode_prime_magic_backup_status_response(
-      SseDeserializer deserializer);
+@protected DecoderStatus sse_decode_decoder_status(SseDeserializer deserializer);
 
-  @protected
-  QrDecoderStatus sse_decode_qr_decoder_status(SseDeserializer deserializer);
+@protected DeleteMagicBackupV2 sse_decode_delete_magic_backup_v_2(SseDeserializer deserializer);
 
-  @protected
-  QuantumLinkMessage sse_decode_quantum_link_message(
-      SseDeserializer deserializer);
+@protected DeviceStatus sse_decode_device_status(SseDeserializer deserializer);
 
-  @protected
-  RestoreMagicBackupEvent sse_decode_restore_magic_backup_event(
-      SseDeserializer deserializer);
+@protected EnvoyMagicBackupEnabledRequest sse_decode_envoy_magic_backup_enabled_request(SseDeserializer deserializer);
 
-  @protected
-  RestoreMagicBackupRequest sse_decode_restore_magic_backup_request(
-      SseDeserializer deserializer);
+@protected EnvoyMagicBackupEnabledResponse sse_decode_envoy_magic_backup_enabled_response(SseDeserializer deserializer);
 
-  @protected
-  RestoreMagicBackupResult sse_decode_restore_magic_backup_result(
-      SseDeserializer deserializer);
+@protected EnvoyMessage sse_decode_envoy_message(SseDeserializer deserializer);
 
-  @protected
-  RestoreShardRequest sse_decode_restore_shard_request(
-      SseDeserializer deserializer);
+@protected EnvoyStatus sse_decode_envoy_status(SseDeserializer deserializer);
 
-  @protected
-  RestoreShardResponse sse_decode_restore_shard_response(
-      SseDeserializer deserializer);
+@protected ExchangeRate sse_decode_exchange_rate(SseDeserializer deserializer);
 
-  @protected
-  SecurityCheck sse_decode_security_check(SseDeserializer deserializer);
+@protected ExchangeRateHistory sse_decode_exchange_rate_history(SseDeserializer deserializer);
 
-  @protected
-  SeedFingerprint sse_decode_seed_fingerprint(SseDeserializer deserializer);
+@protected double sse_decode_f_32(SseDeserializer deserializer);
 
-  @protected
-  Shard sse_decode_shard(SseDeserializer deserializer);
+@protected double sse_decode_f_64(SseDeserializer deserializer);
 
-  @protected
-  SignPsbt sse_decode_sign_psbt(SseDeserializer deserializer);
+@protected FirmwareChunk sse_decode_firmware_chunk(SseDeserializer deserializer);
 
-  @protected
-  StartMagicBackup sse_decode_start_magic_backup(SseDeserializer deserializer);
+@protected FirmwareFetchEvent sse_decode_firmware_fetch_event(SseDeserializer deserializer);
 
-  @protected
-  TimezoneRequest sse_decode_timezone_request(SseDeserializer deserializer);
+@protected FirmwareFetchRequest sse_decode_firmware_fetch_request(SseDeserializer deserializer);
 
-  @protected
-  TimezoneResponse sse_decode_timezone_response(SseDeserializer deserializer);
+@protected FirmwareInstallEvent sse_decode_firmware_install_event(SseDeserializer deserializer);
 
-  @protected
-  int sse_decode_u_16(SseDeserializer deserializer);
+@protected FirmwareUpdateAvailable sse_decode_firmware_update_available(SseDeserializer deserializer);
 
-  @protected
-  int sse_decode_u_32(SseDeserializer deserializer);
+@protected FirmwareUpdateCheckRequest sse_decode_firmware_update_check_request(SseDeserializer deserializer);
 
-  @protected
-  BigInt sse_decode_u_64(SseDeserializer deserializer);
+@protected FirmwareUpdateCheckResponse sse_decode_firmware_update_check_response(SseDeserializer deserializer);
 
-  @protected
-  int sse_decode_u_8(SseDeserializer deserializer);
+@protected GetMagicBackupV2 sse_decode_get_magic_backup_v_2(SseDeserializer deserializer);
 
-  @protected
-  U8Array32 sse_decode_u_8_array_32(SseDeserializer deserializer);
+@protected Heartbeat sse_decode_heartbeat(SseDeserializer deserializer);
 
-  @protected
-  void sse_decode_unit(SseDeserializer deserializer);
+@protected int sse_decode_i_32(SseDeserializer deserializer);
 
-  @protected
-  UnpairingRequest sse_decode_unpairing_request(SseDeserializer deserializer);
+@protected InstallErrorStage sse_decode_install_error_stage(SseDeserializer deserializer);
 
-  @protected
-  UnpairingResponse sse_decode_unpairing_response(SseDeserializer deserializer);
+@protected List<Uint8List> sse_decode_list_list_prim_u_8_strict(SseDeserializer deserializer);
 
-  @protected
-  BigInt sse_decode_usize(SseDeserializer deserializer);
+@protected List<PricePoint> sse_decode_list_price_point(SseDeserializer deserializer);
 
-  @protected
-  VerificationResult sse_decode_verification_result(
-      SseDeserializer deserializer);
+@protected List<int> sse_decode_list_prim_u_8_loose(SseDeserializer deserializer);
 
-  @protected
-  void sse_encode_AnyhowException(
-      AnyhowException self, SseSerializer serializer);
+@protected Uint8List sse_decode_list_prim_u_8_strict(SseDeserializer deserializer);
 
-  @protected
-  void
-      sse_encode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerArcMutexDecoder(
-          ArcMutexDecoder self, SseSerializer serializer);
+@protected List<QuantumLinkMessage> sse_decode_list_quantum_link_message(SseDeserializer deserializer);
 
-  @protected
-  void
-      sse_encode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerCollectBackupChunks(
-          CollectBackupChunks self, SseSerializer serializer);
+@protected MagicBackupRequestV2 sse_decode_magic_backup_request_v_2(SseDeserializer deserializer);
 
-  @protected
-  void
-      sse_encode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerEnvoyARIDCache(
-          EnvoyAridCache self, SseSerializer serializer);
+@protected MagicBackupResponseV2 sse_decode_magic_backup_response_v_2(SseDeserializer deserializer);
 
-  @protected
-  void
-      sse_encode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerEnvoyMasterDechunker(
-          EnvoyMasterDechunker self, SseSerializer serializer);
+@protected OnboardingState sse_decode_onboarding_state(SseDeserializer deserializer);
 
-  @protected
-  void
-      sse_encode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerPrimeBackupFile(
-          PrimeBackupFile self, SseSerializer serializer);
+@protected String? sse_decode_opt_String(SseDeserializer deserializer);
 
-  @protected
-  void
-      sse_encode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerQuantumLinkIdentity(
-          QuantumLinkIdentity self, SseSerializer serializer);
+@protected PrimeBackupFile? sse_decode_opt_box_autoadd_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerPrimeBackupFile(SseDeserializer deserializer);
 
-  @protected
-  void
-      sse_encode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerXIDDocument(
-          XidDocument self, SseSerializer serializer);
+@protected XidDocument? sse_decode_opt_box_autoadd_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerXIDDocument(SseDeserializer deserializer);
 
-  @protected
-  void
-      sse_encode_Auto_RefMut_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerCollectBackupChunks(
-          CollectBackupChunks self, SseSerializer serializer);
+@protected PassportMessage? sse_decode_opt_box_autoadd_passport_message(SseDeserializer deserializer);
 
-  @protected
-  void
-      sse_encode_Auto_RefMut_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerEnvoyARIDCache(
-          EnvoyAridCache self, SseSerializer serializer);
+@protected BigInt? sse_decode_opt_box_autoadd_u_64(SseDeserializer deserializer);
 
-  @protected
-  void
-      sse_encode_Auto_RefMut_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerEnvoyMasterDechunker(
-          EnvoyMasterDechunker self, SseSerializer serializer);
+@protected int? sse_decode_opt_box_autoadd_u_8(SseDeserializer deserializer);
 
-  @protected
-  void
-      sse_encode_Auto_RefMut_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerPrimeBackupFile(
-          PrimeBackupFile self, SseSerializer serializer);
+@protected PairingRequest sse_decode_pairing_request(SseDeserializer deserializer);
 
-  @protected
-  void
-      sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerArcMutexDecoder(
-          ArcMutexDecoder self, SseSerializer serializer);
+@protected PairingResponse sse_decode_pairing_response(SseDeserializer deserializer);
 
-  @protected
-  void
-      sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerCollectBackupChunks(
-          CollectBackupChunks self, SseSerializer serializer);
+@protected PassportColor sse_decode_passport_color(SseDeserializer deserializer);
 
-  @protected
-  void
-      sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerPrimeBackupFile(
-          PrimeBackupFile self, SseSerializer serializer);
+@protected PassportFirmwareVersion sse_decode_passport_firmware_version(SseDeserializer deserializer);
 
-  @protected
-  void
-      sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerQuantumLinkIdentity(
-          QuantumLinkIdentity self, SseSerializer serializer);
+@protected PassportMessage sse_decode_passport_message(SseDeserializer deserializer);
 
-  @protected
-  void
-      sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerXIDDocument(
-          XidDocument self, SseSerializer serializer);
+@protected PassportModel sse_decode_passport_model(SseDeserializer deserializer);
 
-  @protected
-  void
-      sse_encode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerArcMutexDecoder(
-          ArcMutexDecoder self, SseSerializer serializer);
+@protected PassportSerial sse_decode_passport_serial(SseDeserializer deserializer);
 
-  @protected
-  void
-      sse_encode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerCollectBackupChunks(
-          CollectBackupChunks self, SseSerializer serializer);
+@protected PricePoint sse_decode_price_point(SseDeserializer deserializer);
 
-  @protected
-  void
-      sse_encode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerEnvoyARIDCache(
-          EnvoyAridCache self, SseSerializer serializer);
+@protected PrimeMagicBackupEnabled sse_decode_prime_magic_backup_enabled(SseDeserializer deserializer);
 
-  @protected
-  void
-      sse_encode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerEnvoyMasterDechunker(
-          EnvoyMasterDechunker self, SseSerializer serializer);
+@protected PrimeMagicBackupStatusRequest sse_decode_prime_magic_backup_status_request(SseDeserializer deserializer);
 
-  @protected
-  void
-      sse_encode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerPrimeBackupFile(
-          PrimeBackupFile self, SseSerializer serializer);
+@protected PrimeMagicBackupStatusResponse sse_decode_prime_magic_backup_status_response(SseDeserializer deserializer);
 
-  @protected
-  void
-      sse_encode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerQuantumLinkIdentity(
-          QuantumLinkIdentity self, SseSerializer serializer);
+@protected QrDecoderStatus sse_decode_qr_decoder_status(SseDeserializer deserializer);
 
-  @protected
-  void
-      sse_encode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerXIDDocument(
-          XidDocument self, SseSerializer serializer);
+@protected QuantumLinkMessage sse_decode_quantum_link_message(SseDeserializer deserializer);
 
-  @protected
-  void sse_encode_String(String self, SseSerializer serializer);
+@protected RestoreMagicBackupEvent sse_decode_restore_magic_backup_event(SseDeserializer deserializer);
 
-  @protected
-  void sse_encode_account_update(AccountUpdate self, SseSerializer serializer);
+@protected RestoreMagicBackupRequest sse_decode_restore_magic_backup_request(SseDeserializer deserializer);
 
-  @protected
-  void sse_encode_apply_passphrase(
-      ApplyPassphrase self, SseSerializer serializer);
+@protected RestoreMagicBackupResult sse_decode_restore_magic_backup_result(SseDeserializer deserializer);
 
-  @protected
-  void sse_encode_backup_chunk(BackupChunk self, SseSerializer serializer);
+@protected RestoreShardRequest sse_decode_restore_shard_request(SseDeserializer deserializer);
 
-  @protected
-  void sse_encode_backup_metadata(
-      BackupMetadata self, SseSerializer serializer);
+@protected RestoreShardResponse sse_decode_restore_shard_response(SseDeserializer deserializer);
 
-  @protected
-  void sse_encode_backup_shard_request(
-      BackupShardRequest self, SseSerializer serializer);
+@protected SecurityCheck sse_decode_security_check(SseDeserializer deserializer);
 
-  @protected
-  void sse_encode_backup_shard_response(
-      BackupShardResponse self, SseSerializer serializer);
+@protected SeedFingerprint sse_decode_seed_fingerprint(SseDeserializer deserializer);
 
-  @protected
-  void sse_encode_bool(bool self, SseSerializer serializer);
+@protected Shard sse_decode_shard(SseDeserializer deserializer);
 
-  @protected
-  void
-      sse_encode_box_autoadd_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerPrimeBackupFile(
-          PrimeBackupFile self, SseSerializer serializer);
+@protected SignPsbt sse_decode_sign_psbt(SseDeserializer deserializer);
 
-  @protected
-  void
-      sse_encode_box_autoadd_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerXIDDocument(
-          XidDocument self, SseSerializer serializer);
+@protected StartMagicBackup sse_decode_start_magic_backup(SseDeserializer deserializer);
 
-  @protected
-  void sse_encode_box_autoadd_account_update(
-      AccountUpdate self, SseSerializer serializer);
+@protected TimezoneRequest sse_decode_timezone_request(SseDeserializer deserializer);
 
-  @protected
-  void sse_encode_box_autoadd_apply_passphrase(
-      ApplyPassphrase self, SseSerializer serializer);
+@protected TimezoneResponse sse_decode_timezone_response(SseDeserializer deserializer);
 
-  @protected
-  void sse_encode_box_autoadd_backup_chunk(
-      BackupChunk self, SseSerializer serializer);
+@protected int sse_decode_u_16(SseDeserializer deserializer);
 
-  @protected
-  void sse_encode_box_autoadd_backup_metadata(
-      BackupMetadata self, SseSerializer serializer);
+@protected int sse_decode_u_32(SseDeserializer deserializer);
 
-  @protected
-  void sse_encode_box_autoadd_backup_shard_request(
-      BackupShardRequest self, SseSerializer serializer);
+@protected BigInt sse_decode_u_64(SseDeserializer deserializer);
 
-  @protected
-  void sse_encode_box_autoadd_backup_shard_response(
-      BackupShardResponse self, SseSerializer serializer);
+@protected int sse_decode_u_8(SseDeserializer deserializer);
 
-  @protected
-  void sse_encode_box_autoadd_broadcast_transaction(
-      BroadcastTransaction self, SseSerializer serializer);
+@protected U8Array32 sse_decode_u_8_array_32(SseDeserializer deserializer);
 
-  @protected
-  void sse_encode_box_autoadd_challenge_request(
-      ChallengeRequest self, SseSerializer serializer);
+@protected void sse_decode_unit(SseDeserializer deserializer);
 
-  @protected
-  void sse_encode_box_autoadd_challenge_response_result(
-      ChallengeResponseResult self, SseSerializer serializer);
+@protected UnpairingRequest sse_decode_unpairing_request(SseDeserializer deserializer);
 
-  @protected
-  void sse_encode_box_autoadd_create_magic_backup_event(
-      CreateMagicBackupEvent self, SseSerializer serializer);
+@protected UnpairingResponse sse_decode_unpairing_response(SseDeserializer deserializer);
 
-  @protected
-  void sse_encode_box_autoadd_create_magic_backup_result(
-      CreateMagicBackupResult self, SseSerializer serializer);
+@protected BigInt sse_decode_usize(SseDeserializer deserializer);
 
-  @protected
-  void sse_encode_box_autoadd_device_status(
-      DeviceStatus self, SseSerializer serializer);
+@protected VerificationResult sse_decode_verification_result(SseDeserializer deserializer);
 
-  @protected
-  void sse_encode_box_autoadd_envoy_magic_backup_enabled_request(
-      EnvoyMagicBackupEnabledRequest self, SseSerializer serializer);
+@protected void sse_encode_AnyhowException(AnyhowException self, SseSerializer serializer);
 
-  @protected
-  void sse_encode_box_autoadd_envoy_magic_backup_enabled_response(
-      EnvoyMagicBackupEnabledResponse self, SseSerializer serializer);
+@protected void sse_encode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerArcMutexDecoder(ArcMutexDecoder self, SseSerializer serializer);
 
-  @protected
-  void sse_encode_box_autoadd_envoy_message(
-      EnvoyMessage self, SseSerializer serializer);
+@protected void sse_encode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerCollectBackupChunks(CollectBackupChunks self, SseSerializer serializer);
 
-  @protected
-  void sse_encode_box_autoadd_envoy_status(
-      EnvoyStatus self, SseSerializer serializer);
+@protected void sse_encode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerEnvoyARIDCache(EnvoyAridCache self, SseSerializer serializer);
 
-  @protected
-  void sse_encode_box_autoadd_exchange_rate(
-      ExchangeRate self, SseSerializer serializer);
+@protected void sse_encode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerEnvoyMasterDechunker(EnvoyMasterDechunker self, SseSerializer serializer);
 
-  @protected
-  void sse_encode_box_autoadd_exchange_rate_history(
-      ExchangeRateHistory self, SseSerializer serializer);
+@protected void sse_encode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerPrimeBackupFile(PrimeBackupFile self, SseSerializer serializer);
 
-  @protected
-  void sse_encode_box_autoadd_firmware_chunk(
-      FirmwareChunk self, SseSerializer serializer);
+@protected void sse_encode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerQuantumLinkIdentity(QuantumLinkIdentity self, SseSerializer serializer);
 
-  @protected
-  void sse_encode_box_autoadd_firmware_fetch_event(
-      FirmwareFetchEvent self, SseSerializer serializer);
+@protected void sse_encode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerXIDDocument(XidDocument self, SseSerializer serializer);
 
-  @protected
-  void sse_encode_box_autoadd_firmware_fetch_request(
-      FirmwareFetchRequest self, SseSerializer serializer);
+@protected void sse_encode_Auto_RefMut_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerCollectBackupChunks(CollectBackupChunks self, SseSerializer serializer);
 
-  @protected
-  void sse_encode_box_autoadd_firmware_install_event(
-      FirmwareInstallEvent self, SseSerializer serializer);
+@protected void sse_encode_Auto_RefMut_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerEnvoyARIDCache(EnvoyAridCache self, SseSerializer serializer);
 
-  @protected
-  void sse_encode_box_autoadd_firmware_update_available(
-      FirmwareUpdateAvailable self, SseSerializer serializer);
+@protected void sse_encode_Auto_RefMut_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerEnvoyMasterDechunker(EnvoyMasterDechunker self, SseSerializer serializer);
 
-  @protected
-  void sse_encode_box_autoadd_firmware_update_check_request(
-      FirmwareUpdateCheckRequest self, SseSerializer serializer);
+@protected void sse_encode_Auto_RefMut_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerPrimeBackupFile(PrimeBackupFile self, SseSerializer serializer);
 
-  @protected
-  void sse_encode_box_autoadd_firmware_update_check_response(
-      FirmwareUpdateCheckResponse self, SseSerializer serializer);
+@protected void sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerArcMutexDecoder(ArcMutexDecoder self, SseSerializer serializer);
 
-  @protected
-  void sse_encode_box_autoadd_heartbeat(
-      Heartbeat self, SseSerializer serializer);
+@protected void sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerCollectBackupChunks(CollectBackupChunks self, SseSerializer serializer);
 
-  @protected
-  void sse_encode_box_autoadd_pairing_request(
-      PairingRequest self, SseSerializer serializer);
+@protected void sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerPrimeBackupFile(PrimeBackupFile self, SseSerializer serializer);
 
-  @protected
-  void sse_encode_box_autoadd_pairing_response(
-      PairingResponse self, SseSerializer serializer);
+@protected void sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerQuantumLinkIdentity(QuantumLinkIdentity self, SseSerializer serializer);
 
-  @protected
-  void sse_encode_box_autoadd_passport_message(
-      PassportMessage self, SseSerializer serializer);
+@protected void sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerXIDDocument(XidDocument self, SseSerializer serializer);
 
-  @protected
-  void sse_encode_box_autoadd_prime_magic_backup_enabled(
-      PrimeMagicBackupEnabled self, SseSerializer serializer);
+@protected void sse_encode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerArcMutexDecoder(ArcMutexDecoder self, SseSerializer serializer);
 
-  @protected
-  void sse_encode_box_autoadd_prime_magic_backup_status_request(
-      PrimeMagicBackupStatusRequest self, SseSerializer serializer);
+@protected void sse_encode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerCollectBackupChunks(CollectBackupChunks self, SseSerializer serializer);
 
-  @protected
-  void sse_encode_box_autoadd_prime_magic_backup_status_response(
-      PrimeMagicBackupStatusResponse self, SseSerializer serializer);
+@protected void sse_encode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerEnvoyARIDCache(EnvoyAridCache self, SseSerializer serializer);
 
-  @protected
-  void sse_encode_box_autoadd_restore_magic_backup_event(
-      RestoreMagicBackupEvent self, SseSerializer serializer);
+@protected void sse_encode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerEnvoyMasterDechunker(EnvoyMasterDechunker self, SseSerializer serializer);
 
-  @protected
-  void sse_encode_box_autoadd_restore_magic_backup_request(
-      RestoreMagicBackupRequest self, SseSerializer serializer);
+@protected void sse_encode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerPrimeBackupFile(PrimeBackupFile self, SseSerializer serializer);
 
-  @protected
-  void sse_encode_box_autoadd_restore_magic_backup_result(
-      RestoreMagicBackupResult self, SseSerializer serializer);
+@protected void sse_encode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerQuantumLinkIdentity(QuantumLinkIdentity self, SseSerializer serializer);
 
-  @protected
-  void sse_encode_box_autoadd_restore_shard_request(
-      RestoreShardRequest self, SseSerializer serializer);
+@protected void sse_encode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerXIDDocument(XidDocument self, SseSerializer serializer);
 
-  @protected
-  void sse_encode_box_autoadd_restore_shard_response(
-      RestoreShardResponse self, SseSerializer serializer);
+@protected void sse_encode_String(String self, SseSerializer serializer);
 
-  @protected
-  void sse_encode_box_autoadd_security_check(
-      SecurityCheck self, SseSerializer serializer);
+@protected void sse_encode_account_update(AccountUpdate self, SseSerializer serializer);
 
-  @protected
-  void sse_encode_box_autoadd_seed_fingerprint(
-      SeedFingerprint self, SseSerializer serializer);
+@protected void sse_encode_apply_passphrase(ApplyPassphrase self, SseSerializer serializer);
 
-  @protected
-  void sse_encode_box_autoadd_shard(Shard self, SseSerializer serializer);
+@protected void sse_encode_backup_chunk(BackupChunk self, SseSerializer serializer);
 
-  @protected
-  void sse_encode_box_autoadd_sign_psbt(
-      SignPsbt self, SseSerializer serializer);
+@protected void sse_encode_backup_metadata(BackupMetadata self, SseSerializer serializer);
 
-  @protected
-  void sse_encode_box_autoadd_start_magic_backup(
-      StartMagicBackup self, SseSerializer serializer);
+@protected void sse_encode_backup_shard_request(BackupShardRequest self, SseSerializer serializer);
 
-  @protected
-  void sse_encode_box_autoadd_timezone_request(
-      TimezoneRequest self, SseSerializer serializer);
+@protected void sse_encode_backup_shard_response(BackupShardResponse self, SseSerializer serializer);
 
-  @protected
-  void sse_encode_box_autoadd_timezone_response(
-      TimezoneResponse self, SseSerializer serializer);
+@protected void sse_encode_bool(bool self, SseSerializer serializer);
 
-  @protected
-  void sse_encode_box_autoadd_u_64(BigInt self, SseSerializer serializer);
+@protected void sse_encode_box_autoadd_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerPrimeBackupFile(PrimeBackupFile self, SseSerializer serializer);
 
-  @protected
-  void sse_encode_box_autoadd_u_8(int self, SseSerializer serializer);
+@protected void sse_encode_box_autoadd_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerXIDDocument(XidDocument self, SseSerializer serializer);
 
-  @protected
-  void sse_encode_box_autoadd_unpairing_request(
-      UnpairingRequest self, SseSerializer serializer);
+@protected void sse_encode_box_autoadd_account_update(AccountUpdate self, SseSerializer serializer);
 
-  @protected
-  void sse_encode_box_autoadd_unpairing_response(
-      UnpairingResponse self, SseSerializer serializer);
+@protected void sse_encode_box_autoadd_apply_passphrase(ApplyPassphrase self, SseSerializer serializer);
 
-  @protected
-  void sse_encode_box_autoadd_verification_result(
-      VerificationResult self, SseSerializer serializer);
+@protected void sse_encode_box_autoadd_backup_chunk(BackupChunk self, SseSerializer serializer);
 
-  @protected
-  void sse_encode_broadcast_transaction(
-      BroadcastTransaction self, SseSerializer serializer);
+@protected void sse_encode_box_autoadd_backup_metadata(BackupMetadata self, SseSerializer serializer);
 
-  @protected
-  void sse_encode_challenge_request(
-      ChallengeRequest self, SseSerializer serializer);
+@protected void sse_encode_box_autoadd_backup_shard_request(BackupShardRequest self, SseSerializer serializer);
 
-  @protected
-  void sse_encode_challenge_response_result(
-      ChallengeResponseResult self, SseSerializer serializer);
+@protected void sse_encode_box_autoadd_backup_shard_response(BackupShardResponse self, SseSerializer serializer);
 
-  @protected
-  void sse_encode_create_magic_backup_event(
-      CreateMagicBackupEvent self, SseSerializer serializer);
+@protected void sse_encode_box_autoadd_broadcast_transaction(BroadcastTransaction self, SseSerializer serializer);
 
-  @protected
-  void sse_encode_create_magic_backup_result(
-      CreateMagicBackupResult self, SseSerializer serializer);
+@protected void sse_encode_box_autoadd_challenge_request(ChallengeRequest self, SseSerializer serializer);
 
-  @protected
-  void sse_encode_decoder_status(DecoderStatus self, SseSerializer serializer);
+@protected void sse_encode_box_autoadd_challenge_response_result(ChallengeResponseResult self, SseSerializer serializer);
 
-  @protected
-  void sse_encode_device_status(DeviceStatus self, SseSerializer serializer);
+@protected void sse_encode_box_autoadd_create_magic_backup_event(CreateMagicBackupEvent self, SseSerializer serializer);
 
-  @protected
-  void sse_encode_envoy_magic_backup_enabled_request(
-      EnvoyMagicBackupEnabledRequest self, SseSerializer serializer);
+@protected void sse_encode_box_autoadd_create_magic_backup_result(CreateMagicBackupResult self, SseSerializer serializer);
 
-  @protected
-  void sse_encode_envoy_magic_backup_enabled_response(
-      EnvoyMagicBackupEnabledResponse self, SseSerializer serializer);
+@protected void sse_encode_box_autoadd_create_magic_backup_v_2(CreateMagicBackupV2 self, SseSerializer serializer);
 
-  @protected
-  void sse_encode_envoy_message(EnvoyMessage self, SseSerializer serializer);
+@protected void sse_encode_box_autoadd_delete_magic_backup_v_2(DeleteMagicBackupV2 self, SseSerializer serializer);
 
-  @protected
-  void sse_encode_envoy_status(EnvoyStatus self, SseSerializer serializer);
+@protected void sse_encode_box_autoadd_device_status(DeviceStatus self, SseSerializer serializer);
 
-  @protected
-  void sse_encode_exchange_rate(ExchangeRate self, SseSerializer serializer);
+@protected void sse_encode_box_autoadd_envoy_magic_backup_enabled_request(EnvoyMagicBackupEnabledRequest self, SseSerializer serializer);
 
-  @protected
-  void sse_encode_exchange_rate_history(
-      ExchangeRateHistory self, SseSerializer serializer);
+@protected void sse_encode_box_autoadd_envoy_magic_backup_enabled_response(EnvoyMagicBackupEnabledResponse self, SseSerializer serializer);
 
-  @protected
-  void sse_encode_f_32(double self, SseSerializer serializer);
+@protected void sse_encode_box_autoadd_envoy_message(EnvoyMessage self, SseSerializer serializer);
 
-  @protected
-  void sse_encode_f_64(double self, SseSerializer serializer);
+@protected void sse_encode_box_autoadd_envoy_status(EnvoyStatus self, SseSerializer serializer);
 
-  @protected
-  void sse_encode_firmware_chunk(FirmwareChunk self, SseSerializer serializer);
+@protected void sse_encode_box_autoadd_exchange_rate(ExchangeRate self, SseSerializer serializer);
 
-  @protected
-  void sse_encode_firmware_fetch_event(
-      FirmwareFetchEvent self, SseSerializer serializer);
+@protected void sse_encode_box_autoadd_exchange_rate_history(ExchangeRateHistory self, SseSerializer serializer);
 
-  @protected
-  void sse_encode_firmware_fetch_request(
-      FirmwareFetchRequest self, SseSerializer serializer);
+@protected void sse_encode_box_autoadd_firmware_chunk(FirmwareChunk self, SseSerializer serializer);
 
-  @protected
-  void sse_encode_firmware_install_event(
-      FirmwareInstallEvent self, SseSerializer serializer);
+@protected void sse_encode_box_autoadd_firmware_fetch_event(FirmwareFetchEvent self, SseSerializer serializer);
 
-  @protected
-  void sse_encode_firmware_update_available(
-      FirmwareUpdateAvailable self, SseSerializer serializer);
+@protected void sse_encode_box_autoadd_firmware_fetch_request(FirmwareFetchRequest self, SseSerializer serializer);
 
-  @protected
-  void sse_encode_firmware_update_check_request(
-      FirmwareUpdateCheckRequest self, SseSerializer serializer);
+@protected void sse_encode_box_autoadd_firmware_install_event(FirmwareInstallEvent self, SseSerializer serializer);
 
-  @protected
-  void sse_encode_firmware_update_check_response(
-      FirmwareUpdateCheckResponse self, SseSerializer serializer);
+@protected void sse_encode_box_autoadd_firmware_update_available(FirmwareUpdateAvailable self, SseSerializer serializer);
 
-  @protected
-  void sse_encode_heartbeat(Heartbeat self, SseSerializer serializer);
+@protected void sse_encode_box_autoadd_firmware_update_check_request(FirmwareUpdateCheckRequest self, SseSerializer serializer);
 
-  @protected
-  void sse_encode_i_32(int self, SseSerializer serializer);
+@protected void sse_encode_box_autoadd_firmware_update_check_response(FirmwareUpdateCheckResponse self, SseSerializer serializer);
 
-  @protected
-  void sse_encode_install_error_stage(
-      InstallErrorStage self, SseSerializer serializer);
+@protected void sse_encode_box_autoadd_get_magic_backup_v_2(GetMagicBackupV2 self, SseSerializer serializer);
 
-  @protected
-  void sse_encode_list_list_prim_u_8_strict(
-      List<Uint8List> self, SseSerializer serializer);
+@protected void sse_encode_box_autoadd_heartbeat(Heartbeat self, SseSerializer serializer);
 
-  @protected
-  void sse_encode_list_price_point(
-      List<PricePoint> self, SseSerializer serializer);
+@protected void sse_encode_box_autoadd_magic_backup_request_v_2(MagicBackupRequestV2 self, SseSerializer serializer);
 
-  @protected
-  void sse_encode_list_prim_u_8_loose(List<int> self, SseSerializer serializer);
+@protected void sse_encode_box_autoadd_magic_backup_response_v_2(MagicBackupResponseV2 self, SseSerializer serializer);
 
-  @protected
-  void sse_encode_list_prim_u_8_strict(
-      Uint8List self, SseSerializer serializer);
+@protected void sse_encode_box_autoadd_pairing_request(PairingRequest self, SseSerializer serializer);
 
-  @protected
-  void sse_encode_list_quantum_link_message(
-      List<QuantumLinkMessage> self, SseSerializer serializer);
+@protected void sse_encode_box_autoadd_pairing_response(PairingResponse self, SseSerializer serializer);
 
-  @protected
-  void sse_encode_onboarding_state(
-      OnboardingState self, SseSerializer serializer);
+@protected void sse_encode_box_autoadd_passport_message(PassportMessage self, SseSerializer serializer);
 
-  @protected
-  void sse_encode_opt_String(String? self, SseSerializer serializer);
+@protected void sse_encode_box_autoadd_prime_magic_backup_enabled(PrimeMagicBackupEnabled self, SseSerializer serializer);
 
-  @protected
-  void
-      sse_encode_opt_box_autoadd_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerPrimeBackupFile(
-          PrimeBackupFile? self, SseSerializer serializer);
+@protected void sse_encode_box_autoadd_prime_magic_backup_status_request(PrimeMagicBackupStatusRequest self, SseSerializer serializer);
 
-  @protected
-  void
-      sse_encode_opt_box_autoadd_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerXIDDocument(
-          XidDocument? self, SseSerializer serializer);
+@protected void sse_encode_box_autoadd_prime_magic_backup_status_response(PrimeMagicBackupStatusResponse self, SseSerializer serializer);
 
-  @protected
-  void sse_encode_opt_box_autoadd_passport_message(
-      PassportMessage? self, SseSerializer serializer);
+@protected void sse_encode_box_autoadd_restore_magic_backup_event(RestoreMagicBackupEvent self, SseSerializer serializer);
 
-  @protected
-  void sse_encode_opt_box_autoadd_u_64(BigInt? self, SseSerializer serializer);
+@protected void sse_encode_box_autoadd_restore_magic_backup_request(RestoreMagicBackupRequest self, SseSerializer serializer);
 
-  @protected
-  void sse_encode_opt_box_autoadd_u_8(int? self, SseSerializer serializer);
+@protected void sse_encode_box_autoadd_restore_magic_backup_result(RestoreMagicBackupResult self, SseSerializer serializer);
 
-  @protected
-  void sse_encode_pairing_request(
-      PairingRequest self, SseSerializer serializer);
+@protected void sse_encode_box_autoadd_restore_shard_request(RestoreShardRequest self, SseSerializer serializer);
 
-  @protected
-  void sse_encode_pairing_response(
-      PairingResponse self, SseSerializer serializer);
+@protected void sse_encode_box_autoadd_restore_shard_response(RestoreShardResponse self, SseSerializer serializer);
 
-  @protected
-  void sse_encode_passport_color(PassportColor self, SseSerializer serializer);
+@protected void sse_encode_box_autoadd_security_check(SecurityCheck self, SseSerializer serializer);
 
-  @protected
-  void sse_encode_passport_firmware_version(
-      PassportFirmwareVersion self, SseSerializer serializer);
+@protected void sse_encode_box_autoadd_seed_fingerprint(SeedFingerprint self, SseSerializer serializer);
 
-  @protected
-  void sse_encode_passport_message(
-      PassportMessage self, SseSerializer serializer);
+@protected void sse_encode_box_autoadd_shard(Shard self, SseSerializer serializer);
 
-  @protected
-  void sse_encode_passport_model(PassportModel self, SseSerializer serializer);
+@protected void sse_encode_box_autoadd_sign_psbt(SignPsbt self, SseSerializer serializer);
 
-  @protected
-  void sse_encode_passport_serial(
-      PassportSerial self, SseSerializer serializer);
+@protected void sse_encode_box_autoadd_start_magic_backup(StartMagicBackup self, SseSerializer serializer);
 
-  @protected
-  void sse_encode_price_point(PricePoint self, SseSerializer serializer);
+@protected void sse_encode_box_autoadd_timezone_request(TimezoneRequest self, SseSerializer serializer);
 
-  @protected
-  void sse_encode_prime_magic_backup_enabled(
-      PrimeMagicBackupEnabled self, SseSerializer serializer);
+@protected void sse_encode_box_autoadd_timezone_response(TimezoneResponse self, SseSerializer serializer);
 
-  @protected
-  void sse_encode_prime_magic_backup_status_request(
-      PrimeMagicBackupStatusRequest self, SseSerializer serializer);
+@protected void sse_encode_box_autoadd_u_64(BigInt self, SseSerializer serializer);
 
-  @protected
-  void sse_encode_prime_magic_backup_status_response(
-      PrimeMagicBackupStatusResponse self, SseSerializer serializer);
+@protected void sse_encode_box_autoadd_u_8(int self, SseSerializer serializer);
 
-  @protected
-  void sse_encode_qr_decoder_status(
-      QrDecoderStatus self, SseSerializer serializer);
+@protected void sse_encode_box_autoadd_unpairing_request(UnpairingRequest self, SseSerializer serializer);
 
-  @protected
-  void sse_encode_quantum_link_message(
-      QuantumLinkMessage self, SseSerializer serializer);
+@protected void sse_encode_box_autoadd_unpairing_response(UnpairingResponse self, SseSerializer serializer);
 
-  @protected
-  void sse_encode_restore_magic_backup_event(
-      RestoreMagicBackupEvent self, SseSerializer serializer);
+@protected void sse_encode_box_autoadd_verification_result(VerificationResult self, SseSerializer serializer);
 
-  @protected
-  void sse_encode_restore_magic_backup_request(
-      RestoreMagicBackupRequest self, SseSerializer serializer);
+@protected void sse_encode_broadcast_transaction(BroadcastTransaction self, SseSerializer serializer);
 
-  @protected
-  void sse_encode_restore_magic_backup_result(
-      RestoreMagicBackupResult self, SseSerializer serializer);
+@protected void sse_encode_challenge_request(ChallengeRequest self, SseSerializer serializer);
 
-  @protected
-  void sse_encode_restore_shard_request(
-      RestoreShardRequest self, SseSerializer serializer);
+@protected void sse_encode_challenge_response_result(ChallengeResponseResult self, SseSerializer serializer);
 
-  @protected
-  void sse_encode_restore_shard_response(
-      RestoreShardResponse self, SseSerializer serializer);
+@protected void sse_encode_create_magic_backup_event(CreateMagicBackupEvent self, SseSerializer serializer);
 
-  @protected
-  void sse_encode_security_check(SecurityCheck self, SseSerializer serializer);
+@protected void sse_encode_create_magic_backup_result(CreateMagicBackupResult self, SseSerializer serializer);
 
-  @protected
-  void sse_encode_seed_fingerprint(
-      SeedFingerprint self, SseSerializer serializer);
+@protected void sse_encode_create_magic_backup_v_2(CreateMagicBackupV2 self, SseSerializer serializer);
 
-  @protected
-  void sse_encode_shard(Shard self, SseSerializer serializer);
+@protected void sse_encode_decoder_status(DecoderStatus self, SseSerializer serializer);
 
-  @protected
-  void sse_encode_sign_psbt(SignPsbt self, SseSerializer serializer);
+@protected void sse_encode_delete_magic_backup_v_2(DeleteMagicBackupV2 self, SseSerializer serializer);
 
-  @protected
-  void sse_encode_start_magic_backup(
-      StartMagicBackup self, SseSerializer serializer);
+@protected void sse_encode_device_status(DeviceStatus self, SseSerializer serializer);
 
-  @protected
-  void sse_encode_timezone_request(
-      TimezoneRequest self, SseSerializer serializer);
+@protected void sse_encode_envoy_magic_backup_enabled_request(EnvoyMagicBackupEnabledRequest self, SseSerializer serializer);
 
-  @protected
-  void sse_encode_timezone_response(
-      TimezoneResponse self, SseSerializer serializer);
+@protected void sse_encode_envoy_magic_backup_enabled_response(EnvoyMagicBackupEnabledResponse self, SseSerializer serializer);
 
-  @protected
-  void sse_encode_u_16(int self, SseSerializer serializer);
+@protected void sse_encode_envoy_message(EnvoyMessage self, SseSerializer serializer);
 
-  @protected
-  void sse_encode_u_32(int self, SseSerializer serializer);
+@protected void sse_encode_envoy_status(EnvoyStatus self, SseSerializer serializer);
 
-  @protected
-  void sse_encode_u_64(BigInt self, SseSerializer serializer);
+@protected void sse_encode_exchange_rate(ExchangeRate self, SseSerializer serializer);
 
-  @protected
-  void sse_encode_u_8(int self, SseSerializer serializer);
+@protected void sse_encode_exchange_rate_history(ExchangeRateHistory self, SseSerializer serializer);
 
-  @protected
-  void sse_encode_u_8_array_32(U8Array32 self, SseSerializer serializer);
+@protected void sse_encode_f_32(double self, SseSerializer serializer);
 
-  @protected
-  void sse_encode_unit(void self, SseSerializer serializer);
+@protected void sse_encode_f_64(double self, SseSerializer serializer);
 
-  @protected
-  void sse_encode_unpairing_request(
-      UnpairingRequest self, SseSerializer serializer);
+@protected void sse_encode_firmware_chunk(FirmwareChunk self, SseSerializer serializer);
 
-  @protected
-  void sse_encode_unpairing_response(
-      UnpairingResponse self, SseSerializer serializer);
+@protected void sse_encode_firmware_fetch_event(FirmwareFetchEvent self, SseSerializer serializer);
 
-  @protected
-  void sse_encode_usize(BigInt self, SseSerializer serializer);
+@protected void sse_encode_firmware_fetch_request(FirmwareFetchRequest self, SseSerializer serializer);
 
-  @protected
-  void sse_encode_verification_result(
-      VerificationResult self, SseSerializer serializer);
-}
+@protected void sse_encode_firmware_install_event(FirmwareInstallEvent self, SseSerializer serializer);
+
+@protected void sse_encode_firmware_update_available(FirmwareUpdateAvailable self, SseSerializer serializer);
+
+@protected void sse_encode_firmware_update_check_request(FirmwareUpdateCheckRequest self, SseSerializer serializer);
+
+@protected void sse_encode_firmware_update_check_response(FirmwareUpdateCheckResponse self, SseSerializer serializer);
+
+@protected void sse_encode_get_magic_backup_v_2(GetMagicBackupV2 self, SseSerializer serializer);
+
+@protected void sse_encode_heartbeat(Heartbeat self, SseSerializer serializer);
+
+@protected void sse_encode_i_32(int self, SseSerializer serializer);
+
+@protected void sse_encode_install_error_stage(InstallErrorStage self, SseSerializer serializer);
+
+@protected void sse_encode_list_list_prim_u_8_strict(List<Uint8List> self, SseSerializer serializer);
+
+@protected void sse_encode_list_price_point(List<PricePoint> self, SseSerializer serializer);
+
+@protected void sse_encode_list_prim_u_8_loose(List<int> self, SseSerializer serializer);
+
+@protected void sse_encode_list_prim_u_8_strict(Uint8List self, SseSerializer serializer);
+
+@protected void sse_encode_list_quantum_link_message(List<QuantumLinkMessage> self, SseSerializer serializer);
+
+@protected void sse_encode_magic_backup_request_v_2(MagicBackupRequestV2 self, SseSerializer serializer);
+
+@protected void sse_encode_magic_backup_response_v_2(MagicBackupResponseV2 self, SseSerializer serializer);
+
+@protected void sse_encode_onboarding_state(OnboardingState self, SseSerializer serializer);
+
+@protected void sse_encode_opt_String(String? self, SseSerializer serializer);
+
+@protected void sse_encode_opt_box_autoadd_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerPrimeBackupFile(PrimeBackupFile? self, SseSerializer serializer);
+
+@protected void sse_encode_opt_box_autoadd_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerXIDDocument(XidDocument? self, SseSerializer serializer);
+
+@protected void sse_encode_opt_box_autoadd_passport_message(PassportMessage? self, SseSerializer serializer);
+
+@protected void sse_encode_opt_box_autoadd_u_64(BigInt? self, SseSerializer serializer);
+
+@protected void sse_encode_opt_box_autoadd_u_8(int? self, SseSerializer serializer);
+
+@protected void sse_encode_pairing_request(PairingRequest self, SseSerializer serializer);
+
+@protected void sse_encode_pairing_response(PairingResponse self, SseSerializer serializer);
+
+@protected void sse_encode_passport_color(PassportColor self, SseSerializer serializer);
+
+@protected void sse_encode_passport_firmware_version(PassportFirmwareVersion self, SseSerializer serializer);
+
+@protected void sse_encode_passport_message(PassportMessage self, SseSerializer serializer);
+
+@protected void sse_encode_passport_model(PassportModel self, SseSerializer serializer);
+
+@protected void sse_encode_passport_serial(PassportSerial self, SseSerializer serializer);
+
+@protected void sse_encode_price_point(PricePoint self, SseSerializer serializer);
+
+@protected void sse_encode_prime_magic_backup_enabled(PrimeMagicBackupEnabled self, SseSerializer serializer);
+
+@protected void sse_encode_prime_magic_backup_status_request(PrimeMagicBackupStatusRequest self, SseSerializer serializer);
+
+@protected void sse_encode_prime_magic_backup_status_response(PrimeMagicBackupStatusResponse self, SseSerializer serializer);
+
+@protected void sse_encode_qr_decoder_status(QrDecoderStatus self, SseSerializer serializer);
+
+@protected void sse_encode_quantum_link_message(QuantumLinkMessage self, SseSerializer serializer);
+
+@protected void sse_encode_restore_magic_backup_event(RestoreMagicBackupEvent self, SseSerializer serializer);
+
+@protected void sse_encode_restore_magic_backup_request(RestoreMagicBackupRequest self, SseSerializer serializer);
+
+@protected void sse_encode_restore_magic_backup_result(RestoreMagicBackupResult self, SseSerializer serializer);
+
+@protected void sse_encode_restore_shard_request(RestoreShardRequest self, SseSerializer serializer);
+
+@protected void sse_encode_restore_shard_response(RestoreShardResponse self, SseSerializer serializer);
+
+@protected void sse_encode_security_check(SecurityCheck self, SseSerializer serializer);
+
+@protected void sse_encode_seed_fingerprint(SeedFingerprint self, SseSerializer serializer);
+
+@protected void sse_encode_shard(Shard self, SseSerializer serializer);
+
+@protected void sse_encode_sign_psbt(SignPsbt self, SseSerializer serializer);
+
+@protected void sse_encode_start_magic_backup(StartMagicBackup self, SseSerializer serializer);
+
+@protected void sse_encode_timezone_request(TimezoneRequest self, SseSerializer serializer);
+
+@protected void sse_encode_timezone_response(TimezoneResponse self, SseSerializer serializer);
+
+@protected void sse_encode_u_16(int self, SseSerializer serializer);
+
+@protected void sse_encode_u_32(int self, SseSerializer serializer);
+
+@protected void sse_encode_u_64(BigInt self, SseSerializer serializer);
+
+@protected void sse_encode_u_8(int self, SseSerializer serializer);
+
+@protected void sse_encode_u_8_array_32(U8Array32 self, SseSerializer serializer);
+
+@protected void sse_encode_unit(void self, SseSerializer serializer);
+
+@protected void sse_encode_unpairing_request(UnpairingRequest self, SseSerializer serializer);
+
+@protected void sse_encode_unpairing_response(UnpairingResponse self, SseSerializer serializer);
+
+@protected void sse_encode_usize(BigInt self, SseSerializer serializer);
+
+@protected void sse_encode_verification_result(VerificationResult self, SseSerializer serializer);
+                }
+                
+
 
 // Section: wire_class
 
 class RustLibWire implements BaseWire {
-  RustLibWire.fromExternalLibrary(ExternalLibrary lib);
+            RustLibWire.fromExternalLibrary(ExternalLibrary lib);
 
-  void rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerArcMutexDecoder(
-          int ptr) =>
-      wasmModule
-          .rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerArcMutexDecoder(
-              ptr);
+            void rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerArcMutexDecoder(int ptr) => wasmModule.rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerArcMutexDecoder(ptr);
 
-  void rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerArcMutexDecoder(
-          int ptr) =>
-      wasmModule
-          .rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerArcMutexDecoder(
-              ptr);
+void rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerArcMutexDecoder(int ptr) => wasmModule.rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerArcMutexDecoder(ptr);
 
-  void rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerCollectBackupChunks(
-          int ptr) =>
-      wasmModule
-          .rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerCollectBackupChunks(
-              ptr);
+void rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerCollectBackupChunks(int ptr) => wasmModule.rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerCollectBackupChunks(ptr);
 
-  void rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerCollectBackupChunks(
-          int ptr) =>
-      wasmModule
-          .rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerCollectBackupChunks(
-              ptr);
+void rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerCollectBackupChunks(int ptr) => wasmModule.rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerCollectBackupChunks(ptr);
 
-  void rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerEnvoyARIDCache(
-          int ptr) =>
-      wasmModule
-          .rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerEnvoyARIDCache(
-              ptr);
+void rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerEnvoyARIDCache(int ptr) => wasmModule.rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerEnvoyARIDCache(ptr);
 
-  void rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerEnvoyARIDCache(
-          int ptr) =>
-      wasmModule
-          .rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerEnvoyARIDCache(
-              ptr);
+void rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerEnvoyARIDCache(int ptr) => wasmModule.rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerEnvoyARIDCache(ptr);
 
-  void rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerEnvoyMasterDechunker(
-          int ptr) =>
-      wasmModule
-          .rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerEnvoyMasterDechunker(
-              ptr);
+void rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerEnvoyMasterDechunker(int ptr) => wasmModule.rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerEnvoyMasterDechunker(ptr);
 
-  void rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerEnvoyMasterDechunker(
-          int ptr) =>
-      wasmModule
-          .rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerEnvoyMasterDechunker(
-              ptr);
+void rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerEnvoyMasterDechunker(int ptr) => wasmModule.rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerEnvoyMasterDechunker(ptr);
 
-  void rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerPrimeBackupFile(
-          int ptr) =>
-      wasmModule
-          .rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerPrimeBackupFile(
-              ptr);
+void rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerPrimeBackupFile(int ptr) => wasmModule.rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerPrimeBackupFile(ptr);
 
-  void rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerPrimeBackupFile(
-          int ptr) =>
-      wasmModule
-          .rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerPrimeBackupFile(
-              ptr);
+void rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerPrimeBackupFile(int ptr) => wasmModule.rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerPrimeBackupFile(ptr);
 
-  void rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerQuantumLinkIdentity(
-          int ptr) =>
-      wasmModule
-          .rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerQuantumLinkIdentity(
-              ptr);
+void rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerQuantumLinkIdentity(int ptr) => wasmModule.rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerQuantumLinkIdentity(ptr);
 
-  void rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerQuantumLinkIdentity(
-          int ptr) =>
-      wasmModule
-          .rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerQuantumLinkIdentity(
-              ptr);
+void rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerQuantumLinkIdentity(int ptr) => wasmModule.rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerQuantumLinkIdentity(ptr);
 
-  void rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerXIDDocument(
-          int ptr) =>
-      wasmModule
-          .rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerXIDDocument(
-              ptr);
+void rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerXIDDocument(int ptr) => wasmModule.rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerXIDDocument(ptr);
 
-  void rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerXIDDocument(
-          int ptr) =>
-      wasmModule
-          .rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerXIDDocument(
-              ptr);
-}
+void rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerXIDDocument(int ptr) => wasmModule.rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerXIDDocument(ptr);
+        }
+        @JS('wasm_bindgen') external RustLibWasmModule get wasmModule;
 
-@JS('wasm_bindgen')
-external RustLibWasmModule get wasmModule;
+        @JS() @anonymous extension type RustLibWasmModule._(JSObject _) implements JSObject {
+            external void rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerArcMutexDecoder(int ptr);
 
-@JS()
-@anonymous
-extension type RustLibWasmModule._(JSObject _) implements JSObject {
-  external void
-      rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerArcMutexDecoder(
-          int ptr);
+external void rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerArcMutexDecoder(int ptr);
 
-  external void
-      rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerArcMutexDecoder(
-          int ptr);
+external void rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerCollectBackupChunks(int ptr);
 
-  external void
-      rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerCollectBackupChunks(
-          int ptr);
+external void rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerCollectBackupChunks(int ptr);
 
-  external void
-      rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerCollectBackupChunks(
-          int ptr);
+external void rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerEnvoyARIDCache(int ptr);
 
-  external void
-      rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerEnvoyARIDCache(
-          int ptr);
+external void rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerEnvoyARIDCache(int ptr);
 
-  external void
-      rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerEnvoyARIDCache(
-          int ptr);
+external void rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerEnvoyMasterDechunker(int ptr);
 
-  external void
-      rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerEnvoyMasterDechunker(
-          int ptr);
+external void rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerEnvoyMasterDechunker(int ptr);
 
-  external void
-      rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerEnvoyMasterDechunker(
-          int ptr);
+external void rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerPrimeBackupFile(int ptr);
 
-  external void
-      rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerPrimeBackupFile(
-          int ptr);
+external void rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerPrimeBackupFile(int ptr);
 
-  external void
-      rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerPrimeBackupFile(
-          int ptr);
+external void rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerQuantumLinkIdentity(int ptr);
 
-  external void
-      rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerQuantumLinkIdentity(
-          int ptr);
+external void rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerQuantumLinkIdentity(int ptr);
 
-  external void
-      rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerQuantumLinkIdentity(
-          int ptr);
+external void rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerXIDDocument(int ptr);
 
-  external void
-      rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerXIDDocument(
-          int ptr);
-
-  external void
-      rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerXIDDocument(
-          int ptr);
-}
+external void rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerXIDDocument(int ptr);
+        }
+        

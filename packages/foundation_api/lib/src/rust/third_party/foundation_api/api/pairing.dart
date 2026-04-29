@@ -7,88 +7,105 @@ import '../../../frb_generated.dart';
 import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated.dart';
 import 'passport.dart';
 
-class PairingRequest {
-  final Uint8List xidDocument;
-  final String deviceName;
 
-  const PairingRequest({
-    required this.xidDocument,
-    required this.deviceName,
-  });
+            
 
-  @override
-  int get hashCode => xidDocument.hashCode ^ deviceName.hashCode;
+            
 
-  @override
-  bool operator ==(Object other) =>
-      identical(this, other) ||
-      other is PairingRequest &&
-          runtimeType == other.runtimeType &&
-          xidDocument == other.xidDocument &&
-          deviceName == other.deviceName;
-}
+            class PairingRequest  {
+                final Uint8List xidDocument;
+final String deviceName;
 
-class PairingResponse {
-  final PassportModel passportModel;
-  final PassportFirmwareVersion passportFirmwareVersion;
-  final PassportSerial passportSerial;
-  final PassportColor passportColor;
-  final bool onboardingComplete;
+                const PairingRequest({required this.xidDocument ,required this.deviceName ,});
 
-  const PairingResponse({
-    required this.passportModel,
-    required this.passportFirmwareVersion,
-    required this.passportSerial,
-    required this.passportColor,
-    required this.onboardingComplete,
-  });
+                
+                
 
-  @override
-  int get hashCode =>
-      passportModel.hashCode ^
-      passportFirmwareVersion.hashCode ^
-      passportSerial.hashCode ^
-      passportColor.hashCode ^
-      onboardingComplete.hashCode;
+                
+        @override
+        int get hashCode => xidDocument.hashCode^deviceName.hashCode;
+        
 
-  @override
-  bool operator ==(Object other) =>
-      identical(this, other) ||
-      other is PairingResponse &&
-          runtimeType == other.runtimeType &&
-          passportModel == other.passportModel &&
-          passportFirmwareVersion == other.passportFirmwareVersion &&
-          passportSerial == other.passportSerial &&
-          passportColor == other.passportColor &&
-          onboardingComplete == other.onboardingComplete;
-}
+                
+        @override
+        bool operator ==(Object other) =>
+            identical(this, other) ||
+            other is PairingRequest &&
+                runtimeType == other.runtimeType
+                && xidDocument == other.xidDocument&& deviceName == other.deviceName;
+        
+            }
 
-class UnpairingRequest {
-  const UnpairingRequest();
+class PairingResponse  {
+                final PassportModel passportModel;
+final PassportFirmwareVersion passportFirmwareVersion;
+final PassportSerial passportSerial;
+final PassportColor passportColor;
+final bool onboardingComplete;
 
-  @override
-  int get hashCode => 0;
+                const PairingResponse({required this.passportModel ,required this.passportFirmwareVersion ,required this.passportSerial ,required this.passportColor ,required this.onboardingComplete ,});
 
-  @override
-  bool operator ==(Object other) =>
-      identical(this, other) ||
-      other is UnpairingRequest && runtimeType == other.runtimeType;
-}
+                
+                
 
-class UnpairingResponse {
-  final bool success;
+                
+        @override
+        int get hashCode => passportModel.hashCode^passportFirmwareVersion.hashCode^passportSerial.hashCode^passportColor.hashCode^onboardingComplete.hashCode;
+        
 
-  const UnpairingResponse({
-    required this.success,
-  });
+                
+        @override
+        bool operator ==(Object other) =>
+            identical(this, other) ||
+            other is PairingResponse &&
+                runtimeType == other.runtimeType
+                && passportModel == other.passportModel&& passportFirmwareVersion == other.passportFirmwareVersion&& passportSerial == other.passportSerial&& passportColor == other.passportColor&& onboardingComplete == other.onboardingComplete;
+        
+            }
 
-  @override
-  int get hashCode => success.hashCode;
+class UnpairingRequest  {
+                
 
-  @override
-  bool operator ==(Object other) =>
-      identical(this, other) ||
-      other is UnpairingResponse &&
-          runtimeType == other.runtimeType &&
-          success == other.success;
-}
+                const UnpairingRequest();
+
+                
+                
+
+                
+        @override
+        int get hashCode => 0;
+        
+
+                
+        @override
+        bool operator ==(Object other) =>
+            identical(this, other) ||
+            other is UnpairingRequest &&
+                runtimeType == other.runtimeType
+                ;
+        
+            }
+
+class UnpairingResponse  {
+                final bool success;
+
+                const UnpairingResponse({required this.success ,});
+
+                
+                
+
+                
+        @override
+        int get hashCode => success.hashCode;
+        
+
+                
+        @override
+        bool operator ==(Object other) =>
+            identical(this, other) ||
+            other is UnpairingResponse &&
+                runtimeType == other.runtimeType
+                && success == other.success;
+        
+            }
+            

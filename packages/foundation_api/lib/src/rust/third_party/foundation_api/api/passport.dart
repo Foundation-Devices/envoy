@@ -6,51 +6,69 @@
 import '../../../frb_generated.dart';
 import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated.dart';
 
-enum PassportColor {
-  light,
-  dark,
-  ;
-}
 
-class PassportFirmwareVersion {
-  final String field0;
+            
 
-  const PassportFirmwareVersion({
-    required this.field0,
-  });
+            
 
-  @override
-  int get hashCode => field0.hashCode;
+            enum PassportColor {
+                    light,
+dark,
+                    ;
+                    
+                }
 
-  @override
-  bool operator ==(Object other) =>
-      identical(this, other) ||
-      other is PassportFirmwareVersion &&
-          runtimeType == other.runtimeType &&
-          field0 == other.field0;
-}
+class PassportFirmwareVersion  {
+                final String field0;
+
+                const PassportFirmwareVersion({required this.field0 ,});
+
+                
+                
+
+                
+        @override
+        int get hashCode => field0.hashCode;
+        
+
+                
+        @override
+        bool operator ==(Object other) =>
+            identical(this, other) ||
+            other is PassportFirmwareVersion &&
+                runtimeType == other.runtimeType
+                && field0 == other.field0;
+        
+            }
 
 enum PassportModel {
-  gen1,
-  gen2,
-  prime,
-  ;
-}
+                    gen1,
+gen2,
+prime,
+                    ;
+                    
+                }
 
-class PassportSerial {
-  final String field0;
+class PassportSerial  {
+                final String field0;
 
-  const PassportSerial({
-    required this.field0,
-  });
+                const PassportSerial({required this.field0 ,});
 
-  @override
-  int get hashCode => field0.hashCode;
+                
+                
 
-  @override
-  bool operator ==(Object other) =>
-      identical(this, other) ||
-      other is PassportSerial &&
-          runtimeType == other.runtimeType &&
-          field0 == other.field0;
-}
+                
+        @override
+        int get hashCode => field0.hashCode;
+        
+
+                
+        @override
+        bool operator ==(Object other) =>
+            identical(this, other) ||
+            other is PassportSerial &&
+                runtimeType == other.runtimeType
+                && field0 == other.field0;
+        
+            }
+            

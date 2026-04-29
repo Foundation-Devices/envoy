@@ -12,10 +12,12 @@ use flutter_rust_bridge::for_generated::anyhow;
 use flutter_rust_bridge::for_generated::anyhow::{anyhow, Context};
 use flutter_rust_bridge::frb;
 use lazy_static::lazy_static;
+use libcrux_ml_dsa::ml_dsa_44;
 use mla::config::{ArchiveReaderConfig, ArchiveWriterConfig};
 use mla::{ArchiveReader, ArchiveWriter};
 use reqwest::Response;
 use serde::{Deserialize, Serialize};
+use sha2::{Digest, Sha256};
 use std::collections::HashMap;
 use std::io::Read;
 use std::time::Duration;
@@ -485,16 +487,341 @@ impl Backup {
         }
     }
 
-    // fn backup_payload_to_hashmap(payload: BackupPayload) -> HashMap<String, String> {
-    //     let mut result = HashMap::new();
-    //
-    //     // Process data in chunks of 2 (key, value)
-    //     for chunk in payload.data.chunks(2) {
-    //         if chunk.len() == 2 {
-    //             result.insert(chunk[0].clone(), chunk[1].clone());
-    //         }
-    //     }
-    //
-    //     result
-    // }
+    // ── V2 helpers (ML-DSA-44) ──────────────────────────────────────────
+
+    /// Derive a deterministic ML-DSA-44 keypair from BIP-39 seed words.
+    ///
+    /// seed = SHA256(entropy[0..32] || b"backup_signing")
+    #[frb(ignore)]
+    fn derive_mldsa_keypair(
+        seed_words: &str,
+    ) -> anyhow::Result<ml_dsa_44::MLDSA44KeyPair> {
+        let mnemonic = Mnemonic::parse(seed_words)
+            .map_err(|e| anyhow!("invalid mnemonic: {e}"))?;
+        let entropy = mnemonic.to_entropy_array().0;
+
+        let mut hasher = Sha256::new();
+        hasher.update(&entropy[0..32]);
+        hasher.update(b"backup_signing");
+        let seed: [u8; 32] = hasher.finalize().into();
+
+        Ok(ml_dsa_44::generate_key_pair(seed))
+    }
+
+    /// SHA256(verification_key_bytes) → hex string (64 chars).
+    #[frb(ignore)]
+    fn compute_backup_hash(vk: &ml_dsa_44::MLDSA44VerificationKey) -> String {
+        let digest = Sha256::digest(vk.as_ref());
+        hex::encode(digest)
+    }
+
+    /// Sign an arbitrary message with the ML-DSA-44 signing key.
+    /// Uses all-zero randomness for deterministic signatures.
+    #[frb(ignore)]
+    fn sign_message(
+        sk: &ml_dsa_44::MLDSA44SigningKey,
+        message: &[u8],
+    ) -> anyhow::Result<Vec<u8>> {
+        let sig = ml_dsa_44::sign(sk, message, b"", [0u8; 32])
+            .map_err(|e| anyhow!("ML-DSA signing failed: {e:?}"))?;
+        Ok(sig.as_ref().to_vec())
+    }
+
+    // ── Prime relay v2 (Envoy is a dumb proxy) ─────────────────────────
+
+    /// Upload a pre-signed Prime backup to the v2 server.
+    pub async fn perform_prime_backup_v2(
+        v2_server_url: &str,
+        proxy_port: i32,
+        timestamp: u64,
+        hash: Vec<u8>,
+        pubkey: Vec<u8>,
+        data: Vec<u8>,
+        client_signature: Vec<u8>,
+    ) -> anyhow::Result<bool> {
+        if v2_server_url.is_empty() {
+            anyhow::bail!("Server URL cannot be empty");
+        }
+
+        let body = BackupRequestV2 {
+            timestamp,
+            hash: hex::encode(&hash),
+            pubkey: hex::encode(&pubkey),
+            backup: hex::encode(&data),
+            client_signature: hex::encode(&client_signature),
+        };
+
+        let client = Self::get_reqwest_client(proxy_port);
+        let res = client
+            .post(format!("{v2_server_url}/backup"))
+            .json(&body)
+            .send()
+            .await
+            .map_err(|e| anyhow!("Failed to send v2 backup: {e}"))?;
+
+        if res.status().is_success() {
+            Ok(true)
+        } else {
+            Err(anyhow!("v2 server returned status {}", res.status()))
+        }
+    }
+
+    /// Retrieve a Prime backup from the v2 server using pre-signed auth.
+    pub async fn get_prime_backup_v2(
+        v2_server_url: &str,
+        proxy_port: i32,
+        key: Vec<u8>,
+        timestamp: u64,
+        signature: Vec<u8>,
+    ) -> Result<Vec<u8>, GetBackupException> {
+        if v2_server_url.is_empty() {
+            return Err(GetBackupException::InvalidServer);
+        }
+
+        let url = format!(
+            "{}/backup?key={}&ts={}&sig={}",
+            v2_server_url,
+            hex::encode(&key),
+            timestamp,
+            hex::encode(&signature),
+        );
+
+        let client = Self::get_reqwest_client(proxy_port);
+        let res = match client.get(&url).send().await {
+            Ok(r) => r,
+            Err(_) => return Err(GetBackupException::ServerUnreachable),
+        };
+
+        let status = res.status();
+        if status.as_u16() == 404 {
+            return Err(GetBackupException::BackupNotFound);
+        }
+        if !status.is_success() {
+            return Err(GetBackupException::ServerUnreachable);
+        }
+
+        let response: GetBackupResponse = match res.json().await {
+            Ok(r) => r,
+            Err(_) => return Err(GetBackupException::ServerUnreachable),
+        };
+
+        let parsed: Vec<u8> = FromHex::from_hex(&response.backup).unwrap_or_default();
+        Ok(parsed)
+    }
+
+    /// Delete a Prime backup from the v2 server using pre-signed auth.
+    pub async fn delete_prime_backup_v2(
+        v2_server_url: &str,
+        proxy_port: i32,
+        key: Vec<u8>,
+        timestamp: u64,
+        signature: Vec<u8>,
+    ) -> anyhow::Result<u16> {
+        if v2_server_url.is_empty() {
+            anyhow::bail!("Server URL cannot be empty");
+        }
+
+        let url = format!(
+            "{}/backup?key={}&ts={}&sig={}",
+            v2_server_url,
+            hex::encode(&key),
+            timestamp,
+            hex::encode(&signature),
+        );
+
+        let client = Self::get_reqwest_client(proxy_port);
+        let res = client
+            .delete(&url)
+            .send()
+            .await
+            .map_err(|e| anyhow!("Failed to delete v2 backup: {e}"))?;
+
+        Ok(res.status().as_u16())
+    }
+
+    // ── Envoy's own v2 backup ───────────────────────────────────────────
+
+    /// Encrypt and upload Envoy's own backup to the v2 server.
+    pub async fn perform_backup_v2(
+        payload: HashMap<String, String>,
+        seed_words: &str,
+        v2_server_url: &str,
+        local_backup: &str,
+        proxy_port: i32,
+        perform_cloud: bool,
+    ) -> anyhow::Result<bool> {
+        let backup_payload = BackupPayload {
+            keys_nr: payload.len() as u8,
+            data: payload.into_iter().flat_map(|(k, v)| vec![k, v]).collect(),
+        };
+        let backup_data =
+            Self::extract_backup_data(backup_payload).context("invalid backup payload")?;
+
+        if seed_words.is_empty() {
+            anyhow::bail!("Seed words cannot be empty");
+        }
+        if v2_server_url.is_empty() {
+            anyhow::bail!("Server URL cannot be empty");
+        }
+
+        let password = Self::get_static_secret(seed_words).context("invalid password")?;
+        let encrypted = Self::encrypt_backup(backup_data, &password);
+
+        // Save local backup
+        fs::write(local_backup, &encrypted).context("failed to write local backup")?;
+        if !perform_cloud {
+            return Ok(true);
+        }
+
+        let kp = Self::derive_mldsa_keypair(seed_words)?;
+        let backup_hash = Self::compute_backup_hash(&kp.verification_key);
+        let timestamp = std::time::SystemTime::now()
+            .duration_since(std::time::UNIX_EPOCH)
+            .unwrap()
+            .as_secs();
+        let msg = format!("post:{backup_hash}:{timestamp}");
+        let sig = Self::sign_message(&kp.signing_key, msg.as_bytes())?;
+
+        let body = BackupRequestV2 {
+            timestamp,
+            hash: backup_hash,
+            pubkey: hex::encode(kp.verification_key.as_ref()),
+            backup: hex::encode(&encrypted),
+            client_signature: hex::encode(&sig),
+        };
+
+        let client = Self::get_reqwest_client(proxy_port);
+        let res = client
+            .post(format!("{v2_server_url}/backup"))
+            .json(&body)
+            .send()
+            .await
+            .map_err(|e| anyhow!("Failed to send v2 backup: {e}"))?;
+
+        if res.status().is_success() {
+            Ok(true)
+        } else {
+            Err(anyhow!("v2 server returned status {}", res.status()))
+        }
+    }
+
+    /// Retrieve Envoy's own backup from the v2 server.
+    pub async fn get_backup_v2(
+        seed_words: &str,
+        v2_server_url: &str,
+        proxy_port: i32,
+    ) -> Result<Vec<(String, String)>, GetBackupException> {
+        if seed_words.is_empty() {
+            return Err(GetBackupException::InvalidSeed);
+        }
+        if v2_server_url.is_empty() {
+            return Err(GetBackupException::InvalidServer);
+        }
+
+        let kp = Self::derive_mldsa_keypair(seed_words)
+            .map_err(|_| GetBackupException::InvalidSeed)?;
+        let backup_hash = Self::compute_backup_hash(&kp.verification_key);
+        let timestamp = std::time::SystemTime::now()
+            .duration_since(std::time::UNIX_EPOCH)
+            .unwrap()
+            .as_secs();
+        let msg = format!("get:{backup_hash}:{timestamp}");
+        let sig = Self::sign_message(&kp.signing_key, msg.as_bytes())
+            .map_err(|_| GetBackupException::InvalidSeed)?;
+
+        let url = format!(
+            "{}/backup?key={}&ts={}&sig={}",
+            v2_server_url,
+            backup_hash,
+            timestamp,
+            hex::encode(&sig),
+        );
+
+        let client = Self::get_reqwest_client(proxy_port);
+        let res = match client.get(&url).send().await {
+            Ok(r) => r,
+            Err(_) => return Err(GetBackupException::ServerUnreachable),
+        };
+
+        let status = res.status();
+        if status.as_u16() == 400 {
+            return Err(GetBackupException::SeedNotFound);
+        }
+        if status.as_u16() == 404 {
+            return Err(GetBackupException::BackupNotFound);
+        }
+        if !status.is_success() {
+            return Err(GetBackupException::ServerUnreachable);
+        }
+
+        let response: GetBackupResponse = match res.json().await {
+            Ok(r) => r,
+            Err(_) => return Err(GetBackupException::ServerUnreachable),
+        };
+
+        let parsed = match FromHex::from_hex(&response.backup) {
+            Ok(p) => p,
+            Err(_) => return Err(GetBackupException::BackupNotFound),
+        };
+
+        let password = match Self::get_static_secret(seed_words) {
+            Ok(s) => s,
+            Err(_) => return Err(GetBackupException::InvalidSeed),
+        };
+
+        match Self::decrypt_backup(parsed, password) {
+            Ok(d) => Ok(d),
+            Err(_) => Err(GetBackupException::BackupNotFound),
+        }
+    }
+
+    /// Delete Envoy's own backup from the v2 server.
+    pub async fn delete_v2(
+        seed_words: &str,
+        v2_server_url: &str,
+        proxy_port: i32,
+    ) -> anyhow::Result<u16> {
+        if seed_words.is_empty() {
+            anyhow::bail!("Seed words cannot be empty");
+        }
+        if v2_server_url.is_empty() {
+            anyhow::bail!("Server URL cannot be empty");
+        }
+
+        let kp = Self::derive_mldsa_keypair(seed_words)?;
+        let backup_hash = Self::compute_backup_hash(&kp.verification_key);
+        let timestamp = std::time::SystemTime::now()
+            .duration_since(std::time::UNIX_EPOCH)
+            .unwrap()
+            .as_secs();
+        let msg = format!("delete:{backup_hash}:{timestamp}");
+        let sig = Self::sign_message(&kp.signing_key, msg.as_bytes())?;
+
+        let url = format!(
+            "{}/backup?key={}&ts={}&sig={}",
+            v2_server_url,
+            backup_hash,
+            timestamp,
+            hex::encode(&sig),
+        );
+
+        let client = Self::get_reqwest_client(proxy_port);
+        let res = client
+            .delete(&url)
+            .send()
+            .await
+            .map_err(|e| anyhow!("Failed to delete v2 backup: {e}"))?;
+
+        Ok(res.status().as_u16())
+    }
+}
+
+#[derive(Serialize)]
+#[frb(ignore)]
+struct BackupRequestV2 {
+    timestamp: u64,
+    hash: String,
+    pubkey: String,
+    backup: String,
+    client_signature: String,
 }
