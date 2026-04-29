@@ -151,9 +151,6 @@ class EnvoyBottomNavigationState extends ConsumerState<EnvoyBottomNavigation> {
 
   @override
   Widget build(BuildContext context) {
-    final double additionalBottomPadding =
-        MediaQuery.viewPaddingOf(context).bottom;
-
 // homeTabRoutes are defined in the same order as the bottom navigation bar.
     // Get only the FIRST route in the list (e.g. "/devices")
     final routeList = ref.watch(routeMatchListProvider);
@@ -171,10 +168,11 @@ class EnvoyBottomNavigationState extends ConsumerState<EnvoyBottomNavigation> {
       });
     }
 
-    return Padding(
-      padding: EdgeInsets.only(
-        bottom: (Platform.isAndroid ? EnvoySpacing.xs : EnvoySpacing.small) +
-            additionalBottomPadding,
+    return SafeArea(
+      bottom: true,
+      maintainBottomViewPadding: true,
+      minimum: EdgeInsets.only(
+        bottom: Platform.isAndroid ? EnvoySpacing.xs : EnvoySpacing.small,
       ),
       child: EnvoyBottomNavBar(
         _navBarItems(),
@@ -253,26 +251,22 @@ class EnvoyBottomNavBar extends StatelessWidget {
         explicitChildNodes: true,
         child: Container(
           color: Colors.transparent,
-          child: SizedBox(
-            width: double.infinity,
-            height: 73,
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
-              children: items.map((final item) {
-                final int index = items.indexOf(item);
-                return Flexible(
-                  child: GestureDetector(
-                    onTap: () {
-                      onItemSelected(index);
-                    },
-                    child: Container(
-                        color: Colors.transparent,
-                        child: _buildItem(item, selectedIndex == index)),
-                  ),
-                );
-              }).toList(),
-            ),
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            children: items.map((final item) {
+              final int index = items.indexOf(item);
+              return Flexible(
+                child: GestureDetector(
+                  onTap: () {
+                    onItemSelected(index);
+                  },
+                  child: Container(
+                      color: Colors.transparent,
+                      child: _buildItem(item, selectedIndex == index)),
+                ),
+              );
+            }).toList(),
           ),
         ),
       );

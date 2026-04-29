@@ -155,7 +155,11 @@ class Settings extends ChangeNotifier {
   void setDisplayFiat(String? displayFiat) {
     selectedFiat = displayFiat;
     ExchangeRate().setCurrency(selectedFiat);
-
+    // Fiat was disabled globally: clear the send-screen fiat choice if set,
+    // so send/staging fall back to the app unit.
+    if (displayFiat == null && sendUnit == AmountDisplayUnit.fiat) {
+      sendUnit = null;
+    }
     notifyListeners();
     store();
   }

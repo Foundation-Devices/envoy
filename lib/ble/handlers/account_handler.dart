@@ -59,14 +59,14 @@ class BleAccountHandler extends PassportMessageHandler {
   Future<void> handleMessage(api.QuantumLinkMessage message) async {
     if (message case api.QuantumLinkMessage_AccountUpdate accountUpdate) {
       kPrint("Got account update message: ${accountUpdate.field0.accountId}");
-      _handleAccountUpdate(accountUpdate.field0);
+      await _handleAccountUpdate(accountUpdate.field0);
     } else if (message
         case api.QuantumLinkMessage_ApplyPassphrase applyPassphrase) {
       _applyPassphraseStream.add(applyPassphrase.field0);
     }
   }
 
-  void _handleAccountUpdate(api.AccountUpdate accountUpdate) async {
+  Future<void> _handleAccountUpdate(api.AccountUpdate accountUpdate) async {
     kPrint("Got account update!");
     kPrint("Got payload! ${accountUpdate.accountId}");
     final payload = accountUpdate.update;
@@ -146,9 +146,10 @@ class BleAccountHandler extends PassportMessageHandler {
           await handler.setPreferredAddressType(
               addressType: desiredAddressType);
           kPrint("Account updated!");
-          return;
         }
       }
+
+      return;
     } else {
       await dir.create(recursive: true);
     }

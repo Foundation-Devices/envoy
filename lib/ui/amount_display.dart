@@ -55,7 +55,7 @@ class _AmountDisplayState extends ConsumerState<AmountDisplay> {
     int currentIndex = currentUnit.index;
     int length = AmountDisplayUnit.values.length;
 
-    // Fiat is always at the end of enum
+    // Fiat is always at the end of enum (kDebugMode here is to always show fiat when in developer mode)
     if (Settings().selectedFiat == null ||
         (!kDebugMode && widget.account?.network != Network.bitcoin)) {
       length--;

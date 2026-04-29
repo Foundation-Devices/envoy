@@ -104,7 +104,7 @@ class HomePage extends ConsumerStatefulWidget {
 }
 
 class HomePageState extends ConsumerState<HomePage>
-    with TickerProviderStateMixin {
+    with TickerProviderStateMixin, WidgetsBindingObserver {
   final Map<String, bool> transactionIdExpandedState = {};
   bool _backgroundShown = false;
   final bool _modalShown = false;
@@ -117,8 +117,6 @@ class HomePageState extends ConsumerState<HomePage>
   final bool _optionsShown = false;
   double _optionsHeight = 0;
   final backButtonDispatcher = RootBackButtonDispatcher();
-
-  final double _bottomTabBarHeight = 70.0;
 
   Function()? _rightAction;
 
@@ -188,6 +186,7 @@ class HomePageState extends ConsumerState<HomePage>
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addObserver(this);
     MigrationManager().resetMigrationPrefs();
     _resetTorWarningTimer();
     _resetServerDownWarningTimer();
@@ -338,9 +337,9 @@ class HomePageState extends ConsumerState<HomePage>
         checkBoxText: S().component_dontShowAgain,
         checkedValue: dismissed,
         onCheckBoxChanged: (checkedValue) {
-          if (!checkedValue) {
+          if (checkedValue) {
             EnvoyStorage().addPromptState(DismissiblePrompt.buyTxWarning);
-          } else if (checkedValue) {
+          } else {
             EnvoyStorage().removePromptState(DismissiblePrompt.buyTxWarning);
           }
         },
@@ -520,7 +519,15 @@ class HomePageState extends ConsumerState<HomePage>
   }
 
   @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.resumed) {
+      ConnectivityManager().resetFailureCounters();
+    }
+  }
+
+  @override
   void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
     SessionManager().remove();
     _torWarningTimer?.cancel();
     _serverDownWarningTimer?.cancel();
@@ -584,12 +591,10 @@ class HomePageState extends ConsumerState<HomePage>
     double shieldTopOptionsShown =
         shieldTop + _optionsHeight; // TODO: This needs to be programmatic
 
-    double bottomTabBarShieldOffset = 15;
     double shieldHeight = screenHeight -
-        _bottomTabBarHeight -
-        bottomOffset -
-        shieldTop -
-        bottomTabBarShieldOffset;
+        kBottomNavigationBarHeight -
+        _cachedBottomInset -
+        shieldTop;
 
     double shieldHeightModalShown = screenHeight * 0.85 - bottomOffset;
     double shieldHeightOptionsShown = screenHeight * 0.76 - bottomOffset;

@@ -35,6 +35,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.io.FileInputStream
+import java.util.Locale
 import java.util.UUID
 import kotlin.concurrent.atomics.AtomicBoolean
 import kotlin.concurrent.atomics.ExperimentalAtomicApi
@@ -149,8 +150,13 @@ class BluetoothChannel(
             result.success(true)
             return
         }
+        val requiredPermission = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            Manifest.permission.BLUETOOTH_CONNECT
+        } else {
+            Manifest.permission.BLUETOOTH
+        }
         if (ActivityCompat.checkSelfPermission(
-                context, Manifest.permission.BLUETOOTH_CONNECT
+                context, requiredPermission
             ) != PackageManager.PERMISSION_GRANTED
         ) {
             result.error("PERMISSION_ERROR", "Bluetooth connect permission not granted", null)
@@ -366,13 +372,12 @@ class BluetoothChannel(
             Log.w(TAG, "No ongoing scan to stop: ${e.message}")
         }
 
-        // Build scan filters
-        var scanFilters = knownPrimeDevicesMAC.map { bleMac ->
+        var scanFilters = knownPrimeDevicesMAC.mapNotNull { bleMac ->
             ScanFilter.Builder()
                 .setDeviceAddress(bleMac)
-                .setServiceUuid(ParcelUuid(PRIME_SERVICE_UUID))
                 .build()
         }
+
 
         if (scanFilters.isEmpty()) {
             scanFilters = listOf(
@@ -600,7 +605,10 @@ class BluetoothChannel(
             val hasBluetoothAdminPermission = ActivityCompat.checkSelfPermission(
                 context, Manifest.permission.BLUETOOTH_ADMIN
             ) == PackageManager.PERMISSION_GRANTED
-            hasBluetoothPermission && hasBluetoothAdminPermission
+            val hasFineLocationPermission = ActivityCompat.checkSelfPermission(
+                context, Manifest.permission.ACCESS_FINE_LOCATION
+            ) == PackageManager.PERMISSION_GRANTED
+            hasBluetoothPermission && hasBluetoothAdminPermission && hasFineLocationPermission
         }
     }
 

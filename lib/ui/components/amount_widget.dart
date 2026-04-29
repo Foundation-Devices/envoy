@@ -491,6 +491,7 @@ List<TextSpan> buildPrimaryBtcTextSpans(
   bool isAmountBtcUnder1 = amountBTC < 1;
 
   if (isAmountBtcUnder1) {
+    // Under 1 BTC: leading zeros gray, significant digits black
     bool foundNum = false;
 
     for (int i = 0; i < btcString.length; i++) {
@@ -513,30 +514,27 @@ List<TextSpan> buildPrimaryBtcTextSpans(
         }
       }
     }
-  }
-
-  if (!isAmountBtcUnder1) {
-    bool foundDecimalSeparator = false;
-    bool foundNum = false;
-    bool foundGroupSeparator = false;
+  } else {
+    // Amount >= 1 BTC
+    // 2+ integer digits (>= 10 BTC): integer part black, decimal part gray
+    // Single integer digit (1-9 BTC): all digits black
+    bool hasMultipleIntegerDigits = amountBTC >= 10;
+    bool foundDecimalSep = false;
 
     for (int i = 0; i < btcString.length; i++) {
       String char = btcString[i];
 
-      if (int.tryParse(char) != null) {
-        foundNum = true;
-      }
       if (char == decimalSeparator) {
-        foundDecimalSeparator = true;
-        foundNum = false;
-      }
-      if (char == groupSeparator) {
-        foundGroupSeparator = true;
-        foundNum = false;
-      }
-      if (foundNum && foundDecimalSeparator && foundGroupSeparator) {
+        foundDecimalSep = true;
+        textSpans.add(_createTextSpan(char, textStyleBlack!));
+      } else if (char == groupSeparator) {
+        // Group separator in integer part: always black
+        textSpans.add(_createTextSpan(char, textStyleBlack!));
+      } else if (foundDecimalSep && hasMultipleIntegerDigits) {
+        // Decimal digits when 2+ integer digits: gray
         textSpans.add(_createTextSpan(char, textStyleGray!));
       } else {
+        // Integer digits, or all digits when single integer digit: black
         textSpans.add(_createTextSpan(char, textStyleBlack!));
       }
     }
@@ -747,17 +745,24 @@ String convertSatsToBtcString(
 
 String formatAmountWithSeparators(double amount, bool trailingZeroes,
     String decimalSeparator, String groupSeparator) {
-  // Use .toStringAsFixed(8) for < 1000 BTC (ENV-2486)
-  // Use .toString() (natural trimming) for >= 1000 BTC (ENV-2486)
-  String amountString =
-      amount < 1000 ? amount.toStringAsFixed(8) : amount.toString();
+  // 9-digit rule: determine max decimal places based on integer part size
+  int integerPartValue = amount.truncate().abs();
+  int integerDigitCount =
+      integerPartValue == 0 ? 1 : integerPartValue.toString().length;
+  int maxDecimalPlaces =
+      integerDigitCount <= 1 ? 8 : (9 - integerDigitCount).clamp(0, 8);
 
-  // Standard decimal separator replacement
-  amountString = amountString.replaceAll('.', decimalSeparator);
+  // Get full precision string, then truncate (not round) to maxDecimalPlaces
+  String amountString = amount.toStringAsFixed(8);
 
-  List<String> parts = amountString.split(decimalSeparator);
+  List<String> parts = amountString.split('.');
   String integerPart = parts[0];
   String decimalPart = parts.length > 1 ? parts[1] : '';
+
+  // Truncate decimal part to maxDecimalPlaces
+  if (decimalPart.length > maxDecimalPlaces) {
+    decimalPart = decimalPart.substring(0, maxDecimalPlaces);
+  }
 
   // Add groupSeparator every three digits in the integer part
   List<String> integerDigits = integerPart.split('');
@@ -768,15 +773,12 @@ String formatAmountWithSeparators(double amount, bool trailingZeroes,
     }
   }
 
-  // Only pad decimals if required (small BTC values ENV-2486)
-  if (trailingZeroes && amount < 1000) {
-    int currentDecimalLength = decimalPart.length;
-    int targetDecimalLength = 8;
-    if (currentDecimalLength < targetDecimalLength) {
-      decimalPart = decimalPart.padRight(targetDecimalLength, '0');
-    }
+  // Pad decimals if requested
+  if (trailingZeroes) {
+    decimalPart = decimalPart.padRight(maxDecimalPlaces, '0');
   }
 
+  // Standard decimal separator replacement
   return integerDigits.join('') +
       (decimalPart.isNotEmpty ? "$decimalSeparator$decimalPart" : "");
 }

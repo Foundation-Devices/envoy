@@ -221,68 +221,62 @@ class _MagicRecoverWalletState extends ConsumerState<MagicRecoverWallet> {
                     ? MainAxisAlignment.spaceBetween
                     : MainAxisAlignment.start,
                 children: [
-                  Column(
-                    mainAxisSize: MainAxisSize.min,
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Row(
-                        mainAxisSize: MainAxisSize.max,
+                  Expanded(
+                    child: SingleChildScrollView(
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          if (_magicRecoverWalletState !=
-                                  MagicRecoveryWalletState.success &&
-                              _magicRecoverWalletState !=
-                                  MagicRecoveryWalletState.recovering &&
-                              _magicRecoverWalletState !=
-                                  MagicRecoveryWalletState.readingBackup)
-                            CupertinoNavigationBarBackButton(
-                              color: Colors.black,
-                              onPressed: () {
-                                _handleBackPress().then((proceed) {
-                                  if (proceed && context.mounted) {
-                                    context.pop();
-                                  }
-                                });
-                              },
-                            ),
-                        ],
-                      ),
-                      Container(
-                        constraints: BoxConstraints.tight(
-                          const Size.fromHeight(240),
-                        ),
-                        child: Transform.scale(
-                          scale: 1.2,
-                          child: _isInitialized && _controller != null
-                              ? rive.RiveWidget(
-                                  controller: _controller!,
-                                  fit: rive.Fit.contain,
-                                )
-                              : const SizedBox(),
-                        ),
-                      ),
-                      Flexible(
-                        child: SingleChildScrollView(
-                          child: Column(
+                          Row(
+                            mainAxisSize: MainAxisSize.max,
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            mainAxisSize: MainAxisSize.min,
                             children: [
-                              Padding(
-                                padding: EdgeInsets.only(
-                                  top: isThereBottomButtons
-                                      ? 0
-                                      : EnvoySpacing.large3,
+                              if (_magicRecoverWalletState !=
+                                      MagicRecoveryWalletState.success &&
+                                  _magicRecoverWalletState !=
+                                      MagicRecoveryWalletState.recovering &&
+                                  _magicRecoverWalletState !=
+                                      MagicRecoveryWalletState.readingBackup)
+                                CupertinoNavigationBarBackButton(
+                                  color: Colors.black,
+                                  onPressed: () {
+                                    _handleBackPress().then((proceed) {
+                                      if (proceed && context.mounted) {
+                                        context.pop();
+                                      }
+                                    });
+                                  },
                                 ),
-                                child: AnimatedSwitcher(
-                                  duration: const Duration(milliseconds: 800),
-                                  child: getMainWidget(),
-                                ),
-                              ),
                             ],
                           ),
-                        ),
+                          Container(
+                            constraints: BoxConstraints.tight(
+                              const Size.fromHeight(240),
+                            ),
+                            child: Transform.scale(
+                              scale: 1.2,
+                              child: _isInitialized && _controller != null
+                                  ? rive.RiveWidget(
+                                      controller: _controller!,
+                                      fit: rive.Fit.contain,
+                                    )
+                                  : const SizedBox(),
+                            ),
+                          ),
+                          Padding(
+                            padding: EdgeInsets.only(
+                              top: isThereBottomButtons
+                                  ? 0
+                                  : EnvoySpacing.large3,
+                            ),
+                            child: AnimatedSwitcher(
+                              duration: const Duration(milliseconds: 800),
+                              child: getMainWidget(),
+                            ),
+                          ),
+                        ],
                       ),
-                    ],
+                    ),
                   ),
                   getBottomButtons() ?? const SizedBox(),
                 ],
@@ -331,31 +325,27 @@ class _MagicRecoverWalletState extends ConsumerState<MagicRecoverWallet> {
 
       //Enable magic backup by default for seed recovery
       Settings().setSyncToCloud(true);
-      setState(() {
-        if (success) {
-          Settings().updateAccountsViewSettings();
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => const WalletSetupSuccess()),
-          ).then((_) {
+      if (success) {
+        Settings().updateAccountsViewSettings();
+        if (context.mounted) {
+          context.pushNamed(WALLET_SUCCESS).then((_) {
             //Try automatic recovery if the user press back button
             if (mounted && !ref.read(triedAutomaticRecovery)) {
               _tryAutomaticRecovery();
             }
           });
-        } else if (isValidSeed) {
-          _setUnhappyState();
-          setState(() {
-            _magicRecoverWalletState =
-                MagicRecoveryWalletState.validSeedNoBackup;
-          });
-        } else {
-          _setUnhappyState();
-          setState(() {
-            _magicRecoverWalletState = MagicRecoveryWalletState.failure;
-          });
         }
-      });
+      } else if (isValidSeed) {
+        _setUnhappyState();
+        setState(() {
+          _magicRecoverWalletState = MagicRecoveryWalletState.validSeedNoBackup;
+        });
+      } else {
+        _setUnhappyState();
+        setState(() {
+          _magicRecoverWalletState = MagicRecoveryWalletState.failure;
+        });
+      }
     } catch (e) {
       _setUnhappyState();
       if (mounted) {
@@ -526,7 +516,9 @@ class _MagicRecoverWalletState extends ConsumerState<MagicRecoverWallet> {
                   },
                   decoder: SeedQrDecoder(
                     onSeedValidated: (String seed) {
-                      context.pop();
+                      // Close the modal bottom sheet (root navigator),
+                      // not the GoRouter route.
+                      Navigator.of(context, rootNavigator: true).pop();
                       _onSeedDetected(seed, context);
                     },
                   ),

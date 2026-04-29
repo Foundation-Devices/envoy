@@ -53,13 +53,11 @@ import 'package:envoy/ui/widgets/scanner/qr_scanner.dart';
 import 'package:envoy/ui/widgets/toast/envoy_toast.dart';
 import 'package:envoy/util/blur_container_transform.dart';
 import 'package:envoy/util/envoy_storage.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:foundation_api/foundation_api.dart' as api;
 import 'package:go_router/go_router.dart';
-import 'package:ngwallet/ngwallet.dart' as ngwallet;
 import 'package:ngwallet/ngwallet.dart';
 
 //ignore: must_be_immutable
@@ -609,78 +607,94 @@ class TransactionListTile extends ConsumerWidget {
           },
           onDoubleTap: () {},
           // Avoids unintended behavior, prevents list item disappearance
-          child: Row(
-            children: [
-              transactionIcon(context, transaction),
-              Expanded(
-                child: ListTile(
-                  minLeadingWidth: 0,
-                  horizontalTitleGap: EnvoySpacing.small,
-                  title: transactionTitle(context, transaction),
-                  subtitle: txSubtitle(activeLocale),
-                  contentPadding: const EdgeInsets.all(0),
-                  trailing: Column(
-                    mainAxisAlignment: s.displayFiat() == null ||
-                            (kDebugMode &&
-                                account.network != ngwallet.Network.bitcoin)
-                        ? MainAxisAlignment.start
-                        : MainAxisAlignment.center,
-                    crossAxisAlignment: Settings().selectedFiat == null
-                        ? CrossAxisAlignment.center
-                        : CrossAxisAlignment.end,
-                    children: [
-                      // Styled as ListTile.title and ListTile.subtitle respectively
-                      Consumer(
-                        builder: (context, ref, child) {
-                          bool hide = ref.watch(
-                            balanceHideStateStatusProvider(account.id),
-                          );
-                          if (hide) {
-                            return const LoaderGhost(
-                              width: 100,
-                              height: 15,
-                              animate: false,
-                            );
-                          } else {
-                            return child ?? Container();
-                          }
-                        },
-                        child: Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            ((!transaction.isOnChain()) &&
-                                    currency != null &&
-                                    currencyAmount != null)
-                                ? Text(
-                                    "$currencyAmount $currency",
-                                    style: EnvoyTypography.body.copyWith(
-                                      color: EnvoyColors.textPrimary,
-                                    ),
-                                  )
-                                : Padding(
-                                    padding: EdgeInsets.only(
-                                      top: s.displayFiat() == null ||
-                                              (kDebugMode &&
-                                                  account.network !=
-                                                      ngwallet.Network.bitcoin)
-                                          ? EnvoySpacing.small
-                                          : 0,
-                                    ),
-                                    child: EnvoyAmount(
-                                      account: account,
-                                      amountSats: transaction.amount,
-                                      amountWidgetStyle:
-                                          AmountWidgetStyle.normal,
+          child: Padding(
+            padding: const EdgeInsets.symmetric(vertical: EnvoySpacing.medium1),
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Expanded(
+                  child: IntrinsicHeight(
+                    child: Row(
+                      children: [
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            children: [
+                              Row(
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: [
+                                  transactionIcon(
+                                    context,
+                                    transaction,
+                                    alignment: Alignment.center,
+                                  ),
+                                  Expanded(
+                                    child: transactionTitle(
+                                      context,
+                                      transaction,
                                     ),
                                   ),
+                                ],
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.only(
+                                  left: _kTxIconSlotWidth,
+                                ),
+                                child: txSubtitle(activeLocale),
+                              ),
+                            ],
+                          ),
+                        ),
+                        const SizedBox(width: EnvoySpacing.small),
+                        Column(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Consumer(
+                              builder: (context, ref, child) {
+                                bool hide = ref.watch(
+                                  balanceHideStateStatusProvider(account.id),
+                                );
+                                if (hide) {
+                                  return const LoaderGhost(
+                                    width: 100,
+                                    height: 15,
+                                    animate: false,
+                                  );
+                                } else {
+                                  return child ?? Container();
+                                }
+                              },
+                              child: Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  ((!transaction.isOnChain()) &&
+                                          currency != null &&
+                                          currencyAmount != null)
+                                      ? Text(
+                                          "$currencyAmount $currency",
+                                          style: EnvoyTypography.body.copyWith(
+                                            color: EnvoyColors.textPrimary,
+                                          ),
+                                        )
+                                      : EnvoyAmount(
+                                          account: account,
+                                          amountSats: transaction.amount,
+                                          amountWidgetStyle:
+                                              AmountWidgetStyle.normal,
+                                        ),
+                                ],
+                              ),
+                            ),
                           ],
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         );
       },
@@ -692,6 +706,8 @@ class TransactionListTile extends ConsumerWidget {
             context,
             transaction,
             iconColor: _detailsColor,
+            alignment: Alignment.center,
+            rightPadding: EnvoySpacing.xs,
           ),
           titleWidget: transactionTitle(
             context,
@@ -740,31 +756,32 @@ Widget transactionTitle(
   );
 }
 
+// Keep in sync with transactionIcon's layout width:
+// EnvoyIconSize.small (18) + default rightPadding (EnvoySpacing.small).
+const double _kTxIconSlotWidth = 18.0 + EnvoySpacing.small;
+
 Widget transactionIcon(
   BuildContext context,
   EnvoyTransaction transaction, {
   Color iconColor = EnvoyColors.textTertiary,
+  Alignment alignment = Alignment.center,
+  double rightPadding = EnvoySpacing.small,
 }) {
   return FittedBox(
-    alignment: Alignment.centerLeft,
+    alignment: alignment,
     fit: BoxFit.scaleDown,
     child: Consumer(
       builder: (context, ref, child) {
         bool? isBoosted = ref.watch(isTxBoostedProvider(transaction.txId));
         final cancelState = ref.watch(cancelTxStateProvider(transaction.txId));
         return Container(
-          padding: const EdgeInsets.only(
-            top: EnvoySpacing.small,
-            bottom: EnvoySpacing.small,
-            right: EnvoySpacing.xs,
-            left: EnvoySpacing.xs,
-          ),
+          padding: EdgeInsets.only(right: rightPadding),
           child: Transform.scale(
             scale: cancelState?.newTxId == transaction.txId ? 0.95 : 1.1,
             child: EnvoyIcon(
               getTransactionIcon(transaction, cancelState, isBoosted)!,
               color: iconColor,
-              size: EnvoyIconSize.normal,
+              size: EnvoyIconSize.small,
             ),
           ),
         );
@@ -835,9 +852,9 @@ void showWarningOnTxIdCopy(BuildContext context, String txId) {
     checkBoxText: S().component_dontShowAgain,
     checkedValue: false,
     onCheckBoxChanged: (checkedValue) {
-      if (!checkedValue) {
+      if (checkedValue) {
         EnvoyStorage().addPromptState(DismissiblePrompt.copyTxId);
-      } else if (checkedValue) {
+      } else {
         EnvoyStorage().removePromptState(DismissiblePrompt.copyTxId);
       }
     },

@@ -7,7 +7,6 @@ import 'package:envoy/account/envoy_transaction.dart';
 import 'package:envoy/ui/widgets/envoy_amount_widget.dart';
 import 'package:envoy/util/app_store_url.dart';
 import 'package:envoy/util/string_utils.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:envoy/ui/theme/envoy_colors.dart';
 import 'package:envoy/ui/theme/envoy_icons.dart';
@@ -33,6 +32,9 @@ import 'package:envoy/ui/routes/devices_router.dart';
 import 'package:envoy/business/settings.dart';
 import 'package:envoy/ui/home/cards/accounts/accounts_state.dart';
 
+// Matches the icon's layout width: EnvoyIconSize.small (18) + right padding.
+const double _kTxIconSlotWidth = 18.0 + EnvoySpacing.small;
+
 class EnvoyListTile extends StatelessWidget {
   const EnvoyListTile({
     super.key,
@@ -51,65 +53,68 @@ class EnvoyListTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Semantics(
-      container: true,
-      explicitChildNodes: true,
-      child: ListTile(
-          contentPadding: const EdgeInsets.symmetric(horizontal: 0),
-          minLeadingWidth: 0,
-          horizontalTitleGap: EnvoySpacing.medium1,
-          title: Semantics(
-            container: true,
-            identifier: 'list_tile_title',
-            child: Padding(
-              padding: const EdgeInsets.symmetric(vertical: EnvoySpacing.xs),
-              child: Text(
-                titleText,
-                style: EnvoyTypography.body
-                    .copyWith(color: EnvoyColors.textPrimary),
-              ),
-            ),
-          ),
-          subtitle: subtitleText == null
-              ? const Text("")
-              : Semantics(
-                  container: true,
-                  identifier: 'list_tile_subtitle',
-                  child: Text(
-                    subtitleText!,
-                    style: EnvoyTypography.info
-                        .copyWith(color: EnvoyColors.textSecondary),
-                  ),
-                ),
-          leading: txIcon == null
-              ? null
-              : Semantics(
-                  container: true,
-                  identifier: 'list_tile_icon',
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: EnvoySpacing.medium1),
+      child: IntrinsicHeight(
+        child: Row(
+          children: [
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  Row(
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
-                      EnvoyIcon(
-                        txIcon!,
-                        color: iconColor,
-                        size: EnvoyIconSize.small,
+                      if (txIcon != null)
+                        Padding(
+                          padding:
+                              const EdgeInsets.only(right: EnvoySpacing.small),
+                          child: EnvoyIcon(
+                            txIcon!,
+                            color: iconColor,
+                            size: EnvoyIconSize.small,
+                          ),
+                        ),
+                      Expanded(
+                        child: Semantics(
+                          container: true,
+                          child: Text(
+                            titleText,
+                            style: EnvoyTypography.body
+                                .copyWith(color: EnvoyColors.textPrimary),
+                          ),
+                        ),
                       ),
                     ],
                   ),
-                ),
-          trailing: unitIcon == null
-              ? const Text("")
-              : Semantics(
-                  container: true,
-                  identifier: 'list_tile_trailing',
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      unitIcon!,
-                    ],
-                  ),
-                )),
+                  if (subtitleText != null)
+                    Padding(
+                      padding: EdgeInsets.only(
+                        left: txIcon != null ? _kTxIconSlotWidth : 0,
+                      ),
+                      child: Text(
+                        subtitleText!,
+                        style: EnvoyTypography.info
+                            .copyWith(color: EnvoyColors.textSecondary),
+                      ),
+                    ),
+                ],
+              ),
+            ),
+            if (unitIcon != null) ...[
+              const SizedBox(width: EnvoySpacing.small),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  unitIcon!,
+                ],
+              ),
+            ],
+          ],
+        ),
+      ),
     );
   }
 }
@@ -215,21 +220,12 @@ class ActivityListTileState extends ConsumerState<ActivityListTile> {
               ],
             );
           } else {
-            return Padding(
-                padding: EdgeInsets.only(
-                    bottom: (s.displayFiat() != null &&
-                            (transactionAccount.network == Network.bitcoin ||
-                                kDebugMode))
-                        ? 6
-                        : EnvoySpacing.medium2),
-                child: FittedBox(
-                  child: EnvoyAmount(
-                    account: transactionAccount,
-                    amountSats: transaction.amount,
-                    amountWidgetStyle: AmountWidgetStyle.normal,
-                    alignToEnd: true,
-                  ),
-                ));
+            return EnvoyAmount(
+              account: transactionAccount,
+              amountSats: transaction.amount,
+              amountWidgetStyle: AmountWidgetStyle.normal,
+              alignToEnd: true,
+            );
           }
         }();
       }
@@ -320,6 +316,8 @@ class ActivityListTileState extends ConsumerState<ActivityListTile> {
         context,
         transaction,
         iconColor: EnvoyColors.textPrimaryInverse,
+        alignment: Alignment.center,
+        rightPadding: EnvoySpacing.xs,
       ),
       titleWidget: transactionTitle(
         context,

@@ -7,6 +7,7 @@ import 'package:envoy/business/settings.dart';
 import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/routes/accounts_router.dart';
 import 'package:envoy/ui/state/accounts_state.dart';
+import 'package:envoy/ui/state/send_unit_state.dart';
 import 'package:envoy/ui/theme/envoy_colors.dart';
 import 'package:envoy/ui/theme/envoy_icons.dart';
 import 'package:envoy/ui/theme/envoy_spacing.dart';
@@ -18,7 +19,6 @@ import 'package:envoy/ui/widgets/toast/envoy_toast.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/material.dart';
 import 'package:envoy/business/bitcoin_parser.dart';
-import 'package:envoy/ui/state/app_unit_state.dart';
 import 'dart:async';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:envoy/ui/home/cards/accounts/spend/state/spend_state.dart';
@@ -64,8 +64,7 @@ class _AddressEntryState extends ConsumerState<AddressEntry> {
 
   @override
   Widget build(BuildContext context) {
-    var unit = ref.read(appUnitProvider);
-
+    var unit = ref.read(sendUnitProvider);
     return Material(
       borderRadius: BorderRadius.circular(EnvoySpacing.medium3),
       child: Form(

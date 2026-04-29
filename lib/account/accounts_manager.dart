@@ -149,7 +149,7 @@ class NgAccountManager extends ChangeNotifier {
     sortByAccountOrder(_accountsHandler, order, (e) => e.$1.id);
     await deriveMissingTypes();
 
-    setTaprootEnabled(Settings().taprootEnabled());
+    await setTaprootEnabled(Settings().taprootEnabled());
 
     _accountsOrder.sink.add(order);
 
@@ -291,7 +291,9 @@ class NgAccountManager extends ChangeNotifier {
   @Deprecated('Use hotWalletAccountsEmptyProvider instead')
   bool hotWalletAccountsEmpty() {
     for (var account in accounts) {
-      if (account.isHot && account.balance != BigInt.zero) {
+      if (account.isHot &&
+          account.network == Network.bitcoin &&
+          account.balance != BigInt.zero) {
         return false;
       }
     }
@@ -392,7 +394,7 @@ class NgAccountManager extends ChangeNotifier {
     return "${deviceSerial}_${network.toLowerCase()}_${fingerprint.toLowerCase()}_acc_$number";
   }
 
-  void setTaprootEnabled(bool taprootEnabled) async {
+  Future<void> setTaprootEnabled(bool taprootEnabled) async {
     for (var handler in handlers) {
       try {
         //if wallets contains taproot and p2wpkh, then set the preferred address type

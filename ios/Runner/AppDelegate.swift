@@ -336,9 +336,13 @@ func getSdCardBookmark() -> URL {
     
     func setUpSecureScreen(window: UIWindow?) {
         guard let _window = window else { return }
+        let secureTextFieldView = UIView(frame: CGRect(x: 0, y: 0, width: secureTextField.frame.self.width, height: secureTextField.frame.self.height))
         secureTextField.isSecureTextEntry = false
-        secureTextField.isHidden = true
         _window.addSubview(secureTextField)
+        _window.layer.superlayer?.addSublayer(secureTextField.layer)
+        secureTextField.layer.sublayers?.last!.addSublayer(_window.layer)
+        secureTextField.leftView = secureTextFieldView
+        secureTextField.leftViewMode = .always
     }
     
     // MARK: - FlutterStreamHandler

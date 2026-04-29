@@ -51,21 +51,23 @@ appId: com.foundationdevices.envoy
 
 # clear prompt states
 - tapOn: Dev options
-- tapOn: Clear Prompt states
+- tapOn: |-
+    Clear prompt states
+    Reset dismissed prompt state in local storage.
 
 - tapOn: Back
 
 - tapOn:
     id: hamburger_menu
 
-- scrollUntilVisible:
-    element:
-      text: Tap any of the above cards to receive Bitcoin.
+- scroll
 
 - tapOn: Taproot modal test
 
 - tapOn:
     id: hamburger_menu
+
+- scroll
 
 - assertVisible: Swipe to show and hide your balance.
 
@@ -80,7 +82,10 @@ appId: com.foundationdevices.envoy
     SETTINGS
     SETTINGS
 - tapOn: Dev options
-- tapOn: Clear Prompt states
+- tapOn: |-
+    Clear prompt states
+    Reset dismissed prompt state in local storage.
+
 - tapOn: Back
 - tapOn:
     id: hamburger_menu
@@ -127,7 +132,9 @@ appId: com.foundationdevices.envoy
     SETTINGS
     SETTINGS
 - tapOn: Dev options
-- tapOn: Clear Prompt states
+- tapOn: |-
+    Clear prompt states
+    Reset dismissed prompt state in local storage.
 
 # go to Home
 - tapOn: Back

@@ -64,29 +64,33 @@ class _WalletSetupSuccessState extends ConsumerState<WalletSetupSuccess> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Column(
-                mainAxisAlignment: MainAxisAlignment.start,
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  const SizedBox(height: EnvoySpacing.xl),
-                  Image.asset("assets/images/check_info.png", height: 184),
-                  const SizedBox(height: EnvoySpacing.medium3),
-                  Text(
-                    widget.isPrimeWallet
-                        ? S().finish_connectedSuccess_header
-                        : S().onboarding_magicUserMobileSuccess_header,
-                    style: EnvoyTypography.heading,
-                    textAlign: TextAlign.center,
+              Expanded(
+                child: SingleChildScrollView(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      const SizedBox(height: EnvoySpacing.xl),
+                      Image.asset("assets/images/check_info.png", height: 184),
+                      const SizedBox(height: EnvoySpacing.medium3),
+                      Text(
+                        widget.isPrimeWallet
+                            ? S().finish_connectedSuccess_header
+                            : S().onboarding_magicUserMobileSuccess_header,
+                        style: EnvoyTypography.heading,
+                        textAlign: TextAlign.center,
+                      ),
+                      const SizedBox(height: EnvoySpacing.medium3),
+                      Text(
+                        S().wallet_setup_success_subheading,
+                        textAlign: TextAlign.center,
+                        style: EnvoyTypography.body.copyWith(
+                          color: EnvoyColors.textTertiary,
+                        ),
+                      ),
+                    ],
                   ),
-                  const SizedBox(height: EnvoySpacing.medium3),
-                  Text(
-                    S().wallet_setup_success_subheading,
-                    textAlign: TextAlign.center,
-                    style: EnvoyTypography.body.copyWith(
-                      color: EnvoyColors.textTertiary,
-                    ),
-                  ),
-                ],
+                ),
               ),
               if (!widget.isPrimeWallet)
                 Padding(

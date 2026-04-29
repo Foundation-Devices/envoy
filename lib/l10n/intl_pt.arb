@@ -737,7 +737,7 @@
   "onboarding_bluetoothDisabled_enable": "Enable in Settings",
   "onboarding_bluetoothDisabled_header": "Enable Bluetooth for QuantumLink Connection",
   "onboarding_bluetoothIntro_connect": "Connect with QuantumLink",
-  "onboarding_bluetoothIntro_content": "Passport Prime uses a new, secure Bluetooth-based protocol for real time communication with Envoy.\n\nQuantumLink creates and end-to-end encrypted tunnel between Passport and Envoy, ensuring a secure connection.",
+  "onboarding_bluetoothIntro_content": "Passport Prime uses a new, secure Bluetooth-based protocol for real time communication with Envoy.\n\nQuantumLink creates an end-to-end encrypted tunnel between Passport and Envoy, ensuring a secure connection.",
   "onboarding_bluetoothIntro_header": "Secure Bluetooth with\nQuantumLink",
   "onboarding_connectionChecking_SecurityPassed": "Security Check Passed",
   "onboarding_connectionChecking_forUpdates": "Checking for Updates",
