@@ -44,6 +44,34 @@ appId: com.foundationdevices.envoy
 
 - tapOn: Back
 
+# if on btc, tap once to get to sats
+- runFlow:
+    when:
+      visible:
+        id: "amount_display btc"
+    commands:
+      - tapOn:
+          id: "amount_display btc"
+          # refresh send
+      - tapOn:
+          id: hamburger_menu
+      - tapOn: Send
+
+# if on fiat, tap twice to get to sats (fiat → btc → sats)
+- runFlow:
+    when:
+      visible:
+        id: "amount_display fiat"
+    commands:
+      - tapOn:
+          id: "amount_display fiat"
+      - tapOn:
+          id: "amount_display btc"
+          # refresh send
+      - tapOn:
+          id: hamburger_menu
+      - tapOn: Send
+
 # enter amount
 - tapOn: "5"
 - tapOn: "6"

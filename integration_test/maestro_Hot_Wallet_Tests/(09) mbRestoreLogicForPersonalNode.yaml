@@ -401,24 +401,25 @@ appId: com.foundationdevices.envoy
 # Make MB to save Privacy and Node settings
 
 - tapOn:
-      id: "hamburger_menu"
+    id: "hamburger_menu"
 - tapOn: "BACKUPS\nBACKUPS"
 - tapOn: "Back up now"
 - tapOn: "Continue"
 
 # wait for MB
 - extendedWaitUntil:
-      visible: "Back up now"
-      timeout: 30000
+    visible: "A moment ago to Foundation Servers"
+    timeout: 30000
 
-- extendedWaitUntil:
-      notVisible: "Your Envoy backup is complete.\nYour Envoy backup is complete."
-      timeout: 10000
+# hack to wait 5 seconds for the toast
+- swipe:
+    start: "50%, 50%"
+    end: "50%, 50%"
+    duration: 5000
 
 # go home
 - tapOn:
-      id: "hamburger_menu"
+    id: "hamburger_menu"
 - tapOn:
-      id: "hamburger_menu"
+    id: "hamburger_menu"
 - tapOn: "Accounts"
-
