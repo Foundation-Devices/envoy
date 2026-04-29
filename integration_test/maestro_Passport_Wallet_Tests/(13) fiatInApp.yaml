@@ -50,6 +50,11 @@ appId: com.foundationdevices.envoy
 # in Mainet Account
 - tapOn: Back
 - tapOn: Accounts
+
+- swipe:
+    start: 50%, 30%
+    end: 50%, 80%
+
 - tapOn: GH TEST ACC (#1)
 - assertVisible:
     text: $
@@ -146,3 +151,5 @@ appId: com.foundationdevices.envoy
     id: hamburger_menu
 - tapOn:
     id: hamburger_menu
+- scroll
+- scroll
