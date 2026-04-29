@@ -5,6 +5,7 @@
 import 'package:envoy/account/accounts_manager.dart';
 import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/components/amount_widget.dart';
+import 'package:envoy/ui/components/brandmark.dart';
 import 'package:envoy/ui/components/filter_chip.dart';
 import 'package:envoy/ui/envoy_button.dart';
 import 'package:envoy/ui/home/home_state.dart';
@@ -442,13 +443,25 @@ class _AddressExplorerCardState extends ConsumerState<AddressExplorerCard> {
                       padding: const EdgeInsets.symmetric(
                         horizontal: EnvoySpacing.medium1,
                       ),
-                      itemCount: _filteredAddresses.length,
+                      itemCount: _filteredAddresses.length + 1,
                       itemBuilder: (context, index) {
+                        if (index == _filteredAddresses.length) {
+                          return const Padding(
+                            padding: EdgeInsets.symmetric(
+                              vertical: EnvoySpacing.large2,
+                            ),
+                            child: Brandmark(
+                              logoSize: EnvoySpacing.medium3,
+                              style: BrandmarkStyle.endMark,
+                            ),
+                          );
+                        }
                         final addressInfo = _filteredAddresses[index];
                         return _AddressListItem(
                           addressInfo: addressInfo,
                           account: account!,
                           onTap: () => _onAddressTap(addressInfo),
+                          isLast: index == _filteredAddresses.length - 1,
                         );
                       },
                     ),
@@ -692,11 +705,13 @@ class _AddressListItem extends StatelessWidget {
   final AddressInfo addressInfo;
   final EnvoyAccount account;
   final VoidCallback onTap;
+  final bool isLast;
 
   const _AddressListItem({
     required this.addressInfo,
     required this.account,
     required this.onTap,
+    this.isLast = false,
   });
 
   @override
@@ -716,7 +731,7 @@ class _AddressListItem extends StatelessWidget {
           color: Colors.transparent,
           border: Border(
             bottom: BorderSide(
-              color: NewEnvoyColor.borderTertiary,
+              color: isLast ? Colors.transparent : NewEnvoyColor.borderTertiary,
               width: 1,
             ),
           ),
