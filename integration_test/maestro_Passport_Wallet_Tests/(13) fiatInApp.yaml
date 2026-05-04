@@ -33,6 +33,8 @@ appId: com.foundationdevices.envoy
 - assertVisible:
     text: $
 
+- scroll
+
 # in Received or Sent transaction
 - runFlow:
     when:

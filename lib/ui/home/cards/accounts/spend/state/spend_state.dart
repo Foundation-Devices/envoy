@@ -259,6 +259,10 @@ void clearSpendState(ProviderContainer ref) {
     ref.read(coinSelectionStateProvider.notifier).reset();
     ref.read(spendTransactionProvider.notifier).reset();
     ref.read(selectedFeeOptionProvider.notifier).state = FeeOption.standard;
+    ref.read(userSelectedCoinsThisSessionProvider.notifier).state = false;
+    ref.read(userHasChangedFeesProvider.notifier).state = false;
+    ref.read(transactionInputsChangedProvider.notifier).state = false;
+    ref.read(coinSelectionChangedProvider.notifier).state = false;
   } catch (e, s) {
     kPrint("Error clearing spend state: $e", stackTrace: s);
   }
