@@ -834,6 +834,9 @@ class _TransactionsDetailsWidgetState
                                 txId: tx.txId,
                               );
                             }
+                            ref.invalidate(
+                              getTransactionProvider(tx.txId),
+                            );
                             if (context.mounted) {
                               Navigator.pop(context);
                             }
