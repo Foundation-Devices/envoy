@@ -7,7 +7,7 @@ import '../frb_generated.dart';
 import '../lib.dart';
 import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated.dart';
 
-// These functions are ignored because they are not marked as `pub`: `from_bytes`, `load`, `new`, `save`, `to_bytes`
+// These functions are ignored because they are not marked as `pub`: `from_bytes`, `load`, `matches`, `new`, `same_backup`, `save`, `shard_timestamp`, `to_bytes`
 // These function are ignored because they are on traits that is not defined in current crate (put an empty `#[frb]` on it to unignore): `clone`, `decode`, `decode`, `encode`, `encode`
 
 /// single shard backup entry
@@ -51,10 +51,12 @@ class ShardBackupFile {
   static Future<ShardBackupFile> default_() =>
       RustLib.instance.api.crateApiShardShardBackupFileDefault();
 
-  static Future<Uint8List?> getShardByFingerprint(
-          {required U8Array32 fingerprint, required String filePath}) =>
-      RustLib.instance.api.crateApiShardShardBackupFileGetShardByFingerprint(
-          fingerprint: fingerprint, filePath: filePath);
+  static Future<Uint8List?> getShard(
+          {required U8Array32 fingerprint,
+          int? timestamp,
+          required String filePath}) =>
+      RustLib.instance.api.crateApiShardShardBackupFileGetShard(
+          fingerprint: fingerprint, timestamp: timestamp, filePath: filePath);
 
   @override
   int get hashCode => shards.hashCode;

@@ -28,22 +28,30 @@ impl ShardBackupFile {
         }
         let shard = Shard::decode(&shard).context("decode shard")?;
         let mut backup_file = Self::load(&file_path);
-        let new_shard = ShardBackup::new(*shard.seed_fingerprint(), shard.encode());
-        backup_file
-            .shards
-            .retain(|s| s.fingerprint != new_shard.fingerprint);
+        let new_shard = ShardBackup {
+            fingerprint: *shard.seed_fingerprint(),
+            timestamp: shard.timestamp() as u64,
+            shard: shard.encode(),
+        };
+        backup_file.shards.retain(|s| !s.same_backup(&new_shard));
         backup_file.shards.push(new_shard);
         backup_file.save(&file_path)?;
         Ok(())
     }
 
-    pub fn get_shard_by_fingerprint(fingerprint: [u8; 32], file_path: String) -> Option<Vec<u8>> {
+    pub fn get_shard(
+        fingerprint: [u8; 32],
+        timestamp: Option<u32>,
+        file_path: String,
+    ) -> Option<Vec<u8>> {
         let backup_file = Self::load(&file_path);
         backup_file
             .shards
             .iter()
-            .find(|s| s.fingerprint == fingerprint)
-            .map(|s| s.shard.clone())
+            .enumerate()
+            .filter(|(_, s)| s.matches(fingerprint, timestamp))
+            .max_by_key(|(index, s)| (s.timestamp, *index))
+            .map(|(_, s)| s.shard.clone())
     }
 }
 
@@ -89,28 +97,38 @@ pub struct ShardBackup {
 }
 
 impl ShardBackup {
-    fn new(fingerprint: [u8; 32], shard: Vec<u8>) -> Self {
-        Self {
-            fingerprint,
-            timestamp: std::time::SystemTime::now()
-                .duration_since(std::time::UNIX_EPOCH)
-                .unwrap()
-                .as_secs(),
-            shard,
-        }
+    fn shard_timestamp(&self) -> Option<u32> {
+        Shard::decode(&self.shard)
+            .inspect_err(|e| log::warn!("failed to decode stored shard {e:?}"))
+            .ok()
+            .map(|shard| shard.timestamp())
+    }
+
+    fn same_backup(&self, other: &Self) -> bool {
+        self.fingerprint == other.fingerprint
+            && matches!(
+                (self.shard_timestamp(), other.shard_timestamp()),
+                (Some(self_timestamp), Some(other_timestamp)) if self_timestamp == other_timestamp
+            )
+    }
+
+    fn matches(&self, fingerprint: [u8; 32], timestamp: Option<u32>) -> bool {
+        self.fingerprint == fingerprint
+            && timestamp.map_or(true, |timestamp| self.shard_timestamp() == Some(timestamp))
     }
 }
 
 #[test]
 fn shard_backup_encode_decode() {
-    let backup = ShardBackup::new(
-        [
+    let backup = ShardBackup {
+        fingerprint: [
             0x41, 0x42, 0x43, 0x43, 0x43, 0x43, 0x43, 0x43, 0x43, 0x43, 0x43, 0x43, 0x43, 0x43,
             0x43, 0x43, 0x43, 0x43, 0x43, 0x43, 0x43, 0x43, 0x43, 0x43, 0x43, 0x43, 0x43, 0x43,
             0x43, 0x43, 0x43, 0x43,
         ],
-        vec![0xDE, 0xAD, 0xBE, 0xEF],
-    );
+        timestamp: 1_714_321_234,
+        shard: vec![0xDE, 0xAD, 0xBE, 0xEF],
+    };
 
     let encoded = minicbor::to_vec(&backup).expect("Failed to encode");
     let decoded: ShardBackup = decode(&encoded).expect("Failed to decode");
@@ -125,17 +143,27 @@ fn adding_shard() {
     let file_path = "adding_shard.cbor";
 
     let fingerprint = [2; 32];
-    let shard1 = Shard::new([1; 32], fingerprint, vec![3; 10], 2, true).encode();
-    let shard2 = Shard::new([1; 32], fingerprint, vec![4; 10], 2, true).encode();
+    let mut shard1 = Shard::new([1; 32], fingerprint, vec![3; 10], 2, true);
+    shard1.set_timestamp(1);
+    let shard1 = shard1.encode();
+    let mut shard2 = Shard::new([1; 32], fingerprint, vec![4; 10], 2, true);
+    shard2.set_timestamp(2);
+    let shard2 = shard2.encode();
 
     ShardBackupFile::add_new_shard(shard1.clone(), file_path.to_string()).unwrap();
 
-    let shard = ShardBackupFile::get_shard_by_fingerprint(fingerprint, file_path.to_string());
-    assert_eq!(shard, Some(shard1));
+    let shard = ShardBackupFile::get_shard(fingerprint, None, file_path.to_string());
+    assert_eq!(shard, Some(shard1.clone()));
 
     ShardBackupFile::add_new_shard(shard2.clone(), file_path.to_string()).unwrap();
 
-    let shard = ShardBackupFile::get_shard_by_fingerprint(fingerprint, file_path.to_string());
+    let shard = ShardBackupFile::get_shard(fingerprint, None, file_path.to_string());
+    assert_eq!(shard, Some(shard2.clone()));
+
+    let shard = ShardBackupFile::get_shard(fingerprint, Some(1), file_path.to_string());
+    assert_eq!(shard, Some(shard1));
+
+    let shard = ShardBackupFile::get_shard(fingerprint, Some(2), file_path.to_string());
     assert_eq!(shard, Some(shard2));
 
     let _ = std::fs::remove_file(file_path);
