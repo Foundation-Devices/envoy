@@ -180,10 +180,7 @@ sealed class QuantumLinkMessage with _$QuantumLinkMessage {
   const factory QuantumLinkMessage.unpairingResponse(
     UnpairingResponse field0,
   ) = QuantumLinkMessage_UnpairingResponse;
-  const factory QuantumLinkMessage.magicBackupRequestV2(
-    MagicBackupRequestV2 field0,
-  ) = QuantumLinkMessage_MagicBackupRequestV2;
-  const factory QuantumLinkMessage.magicBackupResponseV2(
-    MagicBackupResponseV2 field0,
-  ) = QuantumLinkMessage_MagicBackupResponseV2;
+  const factory QuantumLinkMessage.deviceNameUpdate(
+    DeviceNameUpdate field0,
+  ) = QuantumLinkMessage_DeviceNameUpdate;
 }

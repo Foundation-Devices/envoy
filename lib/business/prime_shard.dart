@@ -59,10 +59,14 @@ class PrimeShard {
     kPrint("Instance of PrimeShard created!");
   }
 
-  Future<Uint8List?> getShard({required Uint8List fingerprint}) async {
-    return ShardBackupFile.getShardByFingerprint(
+  Future<Uint8List?> getShard({
+    required Uint8List fingerprint,
+    int? timestamp,
+  }) async {
+    return ShardBackupFile.getShard(
       filePath: getPrimeSecretPath(),
       fingerprint: U8Array32(fingerprint),
+      timestamp: timestamp,
     );
   }
 
