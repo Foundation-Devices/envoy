@@ -18,47 +18,39 @@ import '../third_party/foundation_api/api/status.dart';
 import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated.dart';
 import 'ql.dart';
 
+String greet({required String name}) =>
+    RustLib.instance.api.crateApiQrGreet(name: name);
 
-            
+Future<ArcMutexDecoder> getQrDecoder() =>
+    RustLib.instance.api.crateApiQrGetQrDecoder();
 
-            String  greet({required String name }) => RustLib.instance.api.crateApiQrGreet(name: name);
+Future<QrDecoderStatus> decodeQr(
+        {required String qr, required ArcMutexDecoder decoder}) =>
+    RustLib.instance.api.crateApiQrDecodeQr(qr: qr, decoder: decoder);
 
-Future<ArcMutexDecoder>  getQrDecoder() => RustLib.instance.api.crateApiQrGetQrDecoder();
+Future<PassportMessage> decodeBleMessage({required List<int> data}) =>
+    RustLib.instance.api.crateApiQrDecodeBleMessage(data: data);
 
-Future<QrDecoderStatus>  decodeQr({required String qr , required ArcMutexDecoder decoder }) => RustLib.instance.api.crateApiQrDecodeQr(qr: qr, decoder: decoder);
+// Rust type: RustOpaqueMoi<flutter_rust_bridge::for_generated::RustAutoOpaqueInner<Arc < Mutex < Decoder > >>>
+abstract class ArcMutexDecoder implements RustOpaqueInterface {}
 
-Future<PassportMessage>  decodeBleMessage({required List<int> data }) => RustLib.instance.api.crateApiQrDecodeBleMessage(data: data);
+class QrDecoderStatus {
+  final double progress;
+  final XidDocument? payload;
 
-            
-                // Rust type: RustOpaqueMoi<flutter_rust_bridge::for_generated::RustAutoOpaqueInner<Arc < Mutex < Decoder > >>>
-                abstract class ArcMutexDecoder implements RustOpaqueInterface {
-                    
+  const QrDecoderStatus({
+    required this.progress,
+    this.payload,
+  });
 
-                    
-                }
-                
+  @override
+  int get hashCode => progress.hashCode ^ payload.hashCode;
 
-class QrDecoderStatus  {
-                final double progress;
-final XidDocument? payload;
-
-                const QrDecoderStatus({required this.progress ,this.payload ,});
-
-                
-                
-
-                
-        @override
-        int get hashCode => progress.hashCode^payload.hashCode;
-        
-
-                
-        @override
-        bool operator ==(Object other) =>
-            identical(this, other) ||
-            other is QrDecoderStatus &&
-                runtimeType == other.runtimeType
-                && progress == other.progress&& payload == other.payload;
-        
-            }
-            
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is QrDecoderStatus &&
+          runtimeType == other.runtimeType &&
+          progress == other.progress &&
+          payload == other.payload;
+}

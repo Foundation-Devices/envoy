@@ -9,498 +9,451 @@ import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated.dart';
 import 'package:freezed_annotation/freezed_annotation.dart' hide protected;
 part 'backup.freezed.dart';
 
-            
+class BackupChunk {
+  final int chunkIndex;
+  final int totalChunks;
+  final Uint8List data;
 
-            
+  const BackupChunk({
+    required this.chunkIndex,
+    required this.totalChunks,
+    required this.data,
+  });
 
-            class BackupChunk  {
-                final int chunkIndex;
-final int totalChunks;
-final Uint8List data;
+  @override
+  int get hashCode =>
+      chunkIndex.hashCode ^ totalChunks.hashCode ^ data.hashCode;
 
-                const BackupChunk({required this.chunkIndex ,required this.totalChunks ,required this.data ,});
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is BackupChunk &&
+          runtimeType == other.runtimeType &&
+          chunkIndex == other.chunkIndex &&
+          totalChunks == other.totalChunks &&
+          data == other.data;
+}
 
-                
-                
+class BackupMetadata {
+  final int totalChunks;
 
-                
-        @override
-        int get hashCode => chunkIndex.hashCode^totalChunks.hashCode^data.hashCode;
-        
+  const BackupMetadata({
+    required this.totalChunks,
+  });
 
-                
-        @override
-        bool operator ==(Object other) =>
-            identical(this, other) ||
-            other is BackupChunk &&
-                runtimeType == other.runtimeType
-                && chunkIndex == other.chunkIndex&& totalChunks == other.totalChunks&& data == other.data;
-        
-            }
+  @override
+  int get hashCode => totalChunks.hashCode;
 
-class BackupMetadata  {
-                final int totalChunks;
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is BackupMetadata &&
+          runtimeType == other.runtimeType &&
+          totalChunks == other.totalChunks;
+}
 
-                const BackupMetadata({required this.totalChunks ,});
+class BackupShardRequest {
+  final Shard shard;
 
-                
-                
+  const BackupShardRequest({
+    required this.shard,
+  });
 
-                
-        @override
-        int get hashCode => totalChunks.hashCode;
-        
+  @override
+  int get hashCode => shard.hashCode;
 
-                
-        @override
-        bool operator ==(Object other) =>
-            identical(this, other) ||
-            other is BackupMetadata &&
-                runtimeType == other.runtimeType
-                && totalChunks == other.totalChunks;
-        
-            }
-
-class BackupShardRequest  {
-                final Shard shard;
-
-                const BackupShardRequest({required this.shard ,});
-
-                
-                
-
-                
-        @override
-        int get hashCode => shard.hashCode;
-        
-
-                
-        @override
-        bool operator ==(Object other) =>
-            identical(this, other) ||
-            other is BackupShardRequest &&
-                runtimeType == other.runtimeType
-                && shard == other.shard;
-        
-            }
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is BackupShardRequest &&
+          runtimeType == other.runtimeType &&
+          shard == other.shard;
+}
 
 @freezed
-                sealed class BackupShardResponse with _$BackupShardResponse  {
-                    const BackupShardResponse._();
+sealed class BackupShardResponse with _$BackupShardResponse {
+  const BackupShardResponse._();
 
-                     const factory BackupShardResponse.success() = BackupShardResponse_Success;
- const factory BackupShardResponse.error({   required String error , }) = BackupShardResponse_Error;
-
-                    
-
-                    
-                }
+  const factory BackupShardResponse.success() = BackupShardResponse_Success;
+  const factory BackupShardResponse.error({
+    required String error,
+  }) = BackupShardResponse_Error;
+}
 
 @freezed
-                sealed class CreateMagicBackupEvent with _$CreateMagicBackupEvent  {
-                    const CreateMagicBackupEvent._();
+sealed class CreateMagicBackupEvent with _$CreateMagicBackupEvent {
+  const CreateMagicBackupEvent._();
 
-                     const factory CreateMagicBackupEvent.start(  StartMagicBackup field0,) = CreateMagicBackupEvent_Start;
- const factory CreateMagicBackupEvent.chunk(  BackupChunk field0,) = CreateMagicBackupEvent_Chunk;
-
-                    
-
-                    
-                }
-
-@freezed
-                sealed class CreateMagicBackupResult with _$CreateMagicBackupResult  {
-                    const CreateMagicBackupResult._();
-
-                     const factory CreateMagicBackupResult.success() = CreateMagicBackupResult_Success;
- const factory CreateMagicBackupResult.error({   required String error , }) = CreateMagicBackupResult_Error;
-
-                    
-
-                    
-                }
-
-class CreateMagicBackupV2  {
-                final BigInt timestamp;
-/// Backup identifier (SHA-256 hash).
-final Uint8List hash;
-/// ML-DSA-44 public key.
-final Uint8List pubkey;
-/// Encrypted backup payload.
-final Uint8List data;
-/// ML-DSA-44 client signature.
-final Uint8List clientSignature;
-
-                const CreateMagicBackupV2({required this.timestamp ,required this.hash ,required this.pubkey ,required this.data ,required this.clientSignature ,});
-
-                
-                
-
-                
-        @override
-        int get hashCode => timestamp.hashCode^hash.hashCode^pubkey.hashCode^data.hashCode^clientSignature.hashCode;
-        
-
-                
-        @override
-        bool operator ==(Object other) =>
-            identical(this, other) ||
-            other is CreateMagicBackupV2 &&
-                runtimeType == other.runtimeType
-                && timestamp == other.timestamp&& hash == other.hash&& pubkey == other.pubkey&& data == other.data&& clientSignature == other.clientSignature;
-        
-            }
-
-class DeleteMagicBackupV2  {
-                final Uint8List key;
-final BigInt timestamp;
-/// ML-DSA-44 signature.
-final Uint8List signature;
-
-                const DeleteMagicBackupV2({required this.key ,required this.timestamp ,required this.signature ,});
-
-                
-                
-
-                
-        @override
-        int get hashCode => key.hashCode^timestamp.hashCode^signature.hashCode;
-        
-
-                
-        @override
-        bool operator ==(Object other) =>
-            identical(this, other) ||
-            other is DeleteMagicBackupV2 &&
-                runtimeType == other.runtimeType
-                && key == other.key&& timestamp == other.timestamp&& signature == other.signature;
-        
-            }
-
-class EnvoyMagicBackupEnabledRequest  {
-                
-
-                const EnvoyMagicBackupEnabledRequest();
-
-                
-                
-
-                
-        @override
-        int get hashCode => 0;
-        
-
-                
-        @override
-        bool operator ==(Object other) =>
-            identical(this, other) ||
-            other is EnvoyMagicBackupEnabledRequest &&
-                runtimeType == other.runtimeType
-                ;
-        
-            }
-
-class EnvoyMagicBackupEnabledResponse  {
-                final bool enabled;
-
-                const EnvoyMagicBackupEnabledResponse({required this.enabled ,});
-
-                
-                
-
-                
-        @override
-        int get hashCode => enabled.hashCode;
-        
-
-                
-        @override
-        bool operator ==(Object other) =>
-            identical(this, other) ||
-            other is EnvoyMagicBackupEnabledResponse &&
-                runtimeType == other.runtimeType
-                && enabled == other.enabled;
-        
-            }
-
-class GetMagicBackupV2  {
-                final Uint8List key;
-final BigInt timestamp;
-/// ML-DSA-44 signature.
-final Uint8List signature;
-
-                const GetMagicBackupV2({required this.key ,required this.timestamp ,required this.signature ,});
-
-                
-                
-
-                
-        @override
-        int get hashCode => key.hashCode^timestamp.hashCode^signature.hashCode;
-        
-
-                
-        @override
-        bool operator ==(Object other) =>
-            identical(this, other) ||
-            other is GetMagicBackupV2 &&
-                runtimeType == other.runtimeType
-                && key == other.key&& timestamp == other.timestamp&& signature == other.signature;
-        
-            }
+  const factory CreateMagicBackupEvent.start(
+    StartMagicBackup field0,
+  ) = CreateMagicBackupEvent_Start;
+  const factory CreateMagicBackupEvent.chunk(
+    BackupChunk field0,
+  ) = CreateMagicBackupEvent_Chunk;
+}
 
 @freezed
-                sealed class MagicBackupRequestV2 with _$MagicBackupRequestV2  {
-                    const MagicBackupRequestV2._();
+sealed class CreateMagicBackupResult with _$CreateMagicBackupResult {
+  const CreateMagicBackupResult._();
 
-                     const factory MagicBackupRequestV2.create(  CreateMagicBackupV2 field0,) = MagicBackupRequestV2_Create;
- const factory MagicBackupRequestV2.get_(  GetMagicBackupV2 field0,) = MagicBackupRequestV2_Get;
- const factory MagicBackupRequestV2.delete(  DeleteMagicBackupV2 field0,) = MagicBackupRequestV2_Delete;
+  const factory CreateMagicBackupResult.success() =
+      CreateMagicBackupResult_Success;
+  const factory CreateMagicBackupResult.error({
+    required String error,
+  }) = CreateMagicBackupResult_Error;
+}
 
-                    
+class CreateMagicBackupV2 {
+  final BigInt timestamp;
 
-                    
-                }
+  /// Backup identifier (SHA-256 hash).
+  final Uint8List hash;
 
-@freezed
-                sealed class MagicBackupResponseV2 with _$MagicBackupResponseV2  {
-                    const MagicBackupResponseV2._();
+  /// ML-DSA-44 public key.
+  final Uint8List pubkey;
 
-                     const factory MagicBackupResponseV2.created() = MagicBackupResponseV2_Created;
- const factory MagicBackupResponseV2.backup({   required Uint8List data , }) = MagicBackupResponseV2_Backup;
- const factory MagicBackupResponseV2.deleted() = MagicBackupResponseV2_Deleted;
- const factory MagicBackupResponseV2.error({   required String error , }) = MagicBackupResponseV2_Error;
+  /// Encrypted backup payload.
+  final Uint8List data;
 
-                    
+  /// ML-DSA-44 client signature.
+  final Uint8List clientSignature;
 
-                    
-                }
+  const CreateMagicBackupV2({
+    required this.timestamp,
+    required this.hash,
+    required this.pubkey,
+    required this.data,
+    required this.clientSignature,
+  });
 
-class PrimeMagicBackupEnabled  {
-                final bool enabled;
-final SeedFingerprint seedFingerprint;
+  @override
+  int get hashCode =>
+      timestamp.hashCode ^
+      hash.hashCode ^
+      pubkey.hashCode ^
+      data.hashCode ^
+      clientSignature.hashCode;
 
-                const PrimeMagicBackupEnabled({required this.enabled ,required this.seedFingerprint ,});
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is CreateMagicBackupV2 &&
+          runtimeType == other.runtimeType &&
+          timestamp == other.timestamp &&
+          hash == other.hash &&
+          pubkey == other.pubkey &&
+          data == other.data &&
+          clientSignature == other.clientSignature;
+}
 
-                
-                
+class DeleteMagicBackupV2 {
+  final Uint8List key;
+  final BigInt timestamp;
 
-                
-        @override
-        int get hashCode => enabled.hashCode^seedFingerprint.hashCode;
-        
+  /// ML-DSA-44 signature.
+  final Uint8List signature;
 
-                
-        @override
-        bool operator ==(Object other) =>
-            identical(this, other) ||
-            other is PrimeMagicBackupEnabled &&
-                runtimeType == other.runtimeType
-                && enabled == other.enabled&& seedFingerprint == other.seedFingerprint;
-        
-            }
+  const DeleteMagicBackupV2({
+    required this.key,
+    required this.timestamp,
+    required this.signature,
+  });
 
-class PrimeMagicBackupStatusRequest  {
-                final SeedFingerprint seedFingerprint;
+  @override
+  int get hashCode => key.hashCode ^ timestamp.hashCode ^ signature.hashCode;
 
-                const PrimeMagicBackupStatusRequest({required this.seedFingerprint ,});
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is DeleteMagicBackupV2 &&
+          runtimeType == other.runtimeType &&
+          key == other.key &&
+          timestamp == other.timestamp &&
+          signature == other.signature;
+}
 
-                
-                
+class EnvoyMagicBackupEnabledRequest {
+  const EnvoyMagicBackupEnabledRequest();
 
-                
-        @override
-        int get hashCode => seedFingerprint.hashCode;
-        
+  @override
+  int get hashCode => 0;
 
-                
-        @override
-        bool operator ==(Object other) =>
-            identical(this, other) ||
-            other is PrimeMagicBackupStatusRequest &&
-                runtimeType == other.runtimeType
-                && seedFingerprint == other.seedFingerprint;
-        
-            }
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is EnvoyMagicBackupEnabledRequest &&
+          runtimeType == other.runtimeType;
+}
 
-class PrimeMagicBackupStatusResponse  {
-                final bool shardBackupFound;
+class EnvoyMagicBackupEnabledResponse {
+  final bool enabled;
 
-                const PrimeMagicBackupStatusResponse({required this.shardBackupFound ,});
+  const EnvoyMagicBackupEnabledResponse({
+    required this.enabled,
+  });
 
-                
-                
+  @override
+  int get hashCode => enabled.hashCode;
 
-                
-        @override
-        int get hashCode => shardBackupFound.hashCode;
-        
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is EnvoyMagicBackupEnabledResponse &&
+          runtimeType == other.runtimeType &&
+          enabled == other.enabled;
+}
 
-                
-        @override
-        bool operator ==(Object other) =>
-            identical(this, other) ||
-            other is PrimeMagicBackupStatusResponse &&
-                runtimeType == other.runtimeType
-                && shardBackupFound == other.shardBackupFound;
-        
-            }
+class GetMagicBackupV2 {
+  final Uint8List key;
+  final BigInt timestamp;
 
-@freezed
-                sealed class RestoreMagicBackupEvent with _$RestoreMagicBackupEvent  {
-                    const RestoreMagicBackupEvent._();
+  /// ML-DSA-44 signature.
+  final Uint8List signature;
 
-                     const factory RestoreMagicBackupEvent.notFound() = RestoreMagicBackupEvent_NotFound;
- const factory RestoreMagicBackupEvent.starting(  BackupMetadata field0,) = RestoreMagicBackupEvent_Starting;
- const factory RestoreMagicBackupEvent.chunk(  BackupChunk field0,) = RestoreMagicBackupEvent_Chunk;
- const factory RestoreMagicBackupEvent.error({   required String error , }) = RestoreMagicBackupEvent_Error;
+  const GetMagicBackupV2({
+    required this.key,
+    required this.timestamp,
+    required this.signature,
+  });
 
-                    
+  @override
+  int get hashCode => key.hashCode ^ timestamp.hashCode ^ signature.hashCode;
 
-                    
-                }
-
-class RestoreMagicBackupRequest  {
-                final SeedFingerprint seedFingerprint;
-/// if 0, then go from start
-final int resumeFromChunk;
-
-                const RestoreMagicBackupRequest({required this.seedFingerprint ,required this.resumeFromChunk ,});
-
-                
-                
-
-                
-        @override
-        int get hashCode => seedFingerprint.hashCode^resumeFromChunk.hashCode;
-        
-
-                
-        @override
-        bool operator ==(Object other) =>
-            identical(this, other) ||
-            other is RestoreMagicBackupRequest &&
-                runtimeType == other.runtimeType
-                && seedFingerprint == other.seedFingerprint&& resumeFromChunk == other.resumeFromChunk;
-        
-            }
-
-@freezed
-                sealed class RestoreMagicBackupResult with _$RestoreMagicBackupResult  {
-                    const RestoreMagicBackupResult._();
-
-                     const factory RestoreMagicBackupResult.success() = RestoreMagicBackupResult_Success;
- const factory RestoreMagicBackupResult.error({   required String error , }) = RestoreMagicBackupResult_Error;
-
-                    
-
-                    
-                }
-
-class RestoreShardRequest  {
-                final SeedFingerprint seedFingerprint;
-
-                const RestoreShardRequest({required this.seedFingerprint ,});
-
-                
-                
-
-                
-        @override
-        int get hashCode => seedFingerprint.hashCode;
-        
-
-                
-        @override
-        bool operator ==(Object other) =>
-            identical(this, other) ||
-            other is RestoreShardRequest &&
-                runtimeType == other.runtimeType
-                && seedFingerprint == other.seedFingerprint;
-        
-            }
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is GetMagicBackupV2 &&
+          runtimeType == other.runtimeType &&
+          key == other.key &&
+          timestamp == other.timestamp &&
+          signature == other.signature;
+}
 
 @freezed
-                sealed class RestoreShardResponse with _$RestoreShardResponse  {
-                    const RestoreShardResponse._();
+sealed class MagicBackupRequestV2 with _$MagicBackupRequestV2 {
+  const MagicBackupRequestV2._();
 
-                     const factory RestoreShardResponse.success({   required Shard shard , }) = RestoreShardResponse_Success;
- const factory RestoreShardResponse.error({   required String error , }) = RestoreShardResponse_Error;
- const factory RestoreShardResponse.notFound() = RestoreShardResponse_NotFound;
+  const factory MagicBackupRequestV2.create(
+    CreateMagicBackupV2 field0,
+  ) = MagicBackupRequestV2_Create;
+  const factory MagicBackupRequestV2.get_(
+    GetMagicBackupV2 field0,
+  ) = MagicBackupRequestV2_Get;
+  const factory MagicBackupRequestV2.delete(
+    DeleteMagicBackupV2 field0,
+  ) = MagicBackupRequestV2_Delete;
+}
 
-                    
+@freezed
+sealed class MagicBackupResponseV2 with _$MagicBackupResponseV2 {
+  const MagicBackupResponseV2._();
 
-                    
-                }
+  const factory MagicBackupResponseV2.created() = MagicBackupResponseV2_Created;
+  const factory MagicBackupResponseV2.backup({
+    required Uint8List data,
+  }) = MagicBackupResponseV2_Backup;
+  const factory MagicBackupResponseV2.deleted() = MagicBackupResponseV2_Deleted;
+  const factory MagicBackupResponseV2.error({
+    required String error,
+  }) = MagicBackupResponseV2_Error;
+}
 
-class SeedFingerprint  {
-                final U8Array32 field0;
+class PrimeMagicBackupEnabled {
+  final bool enabled;
+  final SeedFingerprint seedFingerprint;
 
-                const SeedFingerprint({required this.field0 ,});
+  const PrimeMagicBackupEnabled({
+    required this.enabled,
+    required this.seedFingerprint,
+  });
 
-                
-                
+  @override
+  int get hashCode => enabled.hashCode ^ seedFingerprint.hashCode;
 
-                
-        @override
-        int get hashCode => field0.hashCode;
-        
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is PrimeMagicBackupEnabled &&
+          runtimeType == other.runtimeType &&
+          enabled == other.enabled &&
+          seedFingerprint == other.seedFingerprint;
+}
 
-                
-        @override
-        bool operator ==(Object other) =>
-            identical(this, other) ||
-            other is SeedFingerprint &&
-                runtimeType == other.runtimeType
-                && field0 == other.field0;
-        
-            }
+class PrimeMagicBackupStatusRequest {
+  final SeedFingerprint seedFingerprint;
 
-class Shard  {
-                final Uint8List field0;
+  const PrimeMagicBackupStatusRequest({
+    required this.seedFingerprint,
+  });
 
-                const Shard({required this.field0 ,});
+  @override
+  int get hashCode => seedFingerprint.hashCode;
 
-                
-                
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is PrimeMagicBackupStatusRequest &&
+          runtimeType == other.runtimeType &&
+          seedFingerprint == other.seedFingerprint;
+}
 
-                
-        @override
-        int get hashCode => field0.hashCode;
-        
+class PrimeMagicBackupStatusResponse {
+  final bool shardBackupFound;
 
-                
-        @override
-        bool operator ==(Object other) =>
-            identical(this, other) ||
-            other is Shard &&
-                runtimeType == other.runtimeType
-                && field0 == other.field0;
-        
-            }
+  const PrimeMagicBackupStatusResponse({
+    required this.shardBackupFound,
+  });
 
-class StartMagicBackup  {
-                final SeedFingerprint seedFingerprint;
-final int totalChunks;
-final U8Array32 hash;
+  @override
+  int get hashCode => shardBackupFound.hashCode;
 
-                const StartMagicBackup({required this.seedFingerprint ,required this.totalChunks ,required this.hash ,});
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is PrimeMagicBackupStatusResponse &&
+          runtimeType == other.runtimeType &&
+          shardBackupFound == other.shardBackupFound;
+}
 
-                
-                
+@freezed
+sealed class RestoreMagicBackupEvent with _$RestoreMagicBackupEvent {
+  const RestoreMagicBackupEvent._();
 
-                
-        @override
-        int get hashCode => seedFingerprint.hashCode^totalChunks.hashCode^hash.hashCode;
-        
+  const factory RestoreMagicBackupEvent.notFound() =
+      RestoreMagicBackupEvent_NotFound;
+  const factory RestoreMagicBackupEvent.starting(
+    BackupMetadata field0,
+  ) = RestoreMagicBackupEvent_Starting;
+  const factory RestoreMagicBackupEvent.chunk(
+    BackupChunk field0,
+  ) = RestoreMagicBackupEvent_Chunk;
+  const factory RestoreMagicBackupEvent.error({
+    required String error,
+  }) = RestoreMagicBackupEvent_Error;
+}
 
-                
-        @override
-        bool operator ==(Object other) =>
-            identical(this, other) ||
-            other is StartMagicBackup &&
-                runtimeType == other.runtimeType
-                && seedFingerprint == other.seedFingerprint&& totalChunks == other.totalChunks&& hash == other.hash;
-        
-            }
-            
+class RestoreMagicBackupRequest {
+  final SeedFingerprint seedFingerprint;
+
+  /// if 0, then go from start
+  final int resumeFromChunk;
+
+  const RestoreMagicBackupRequest({
+    required this.seedFingerprint,
+    required this.resumeFromChunk,
+  });
+
+  @override
+  int get hashCode => seedFingerprint.hashCode ^ resumeFromChunk.hashCode;
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is RestoreMagicBackupRequest &&
+          runtimeType == other.runtimeType &&
+          seedFingerprint == other.seedFingerprint &&
+          resumeFromChunk == other.resumeFromChunk;
+}
+
+@freezed
+sealed class RestoreMagicBackupResult with _$RestoreMagicBackupResult {
+  const RestoreMagicBackupResult._();
+
+  const factory RestoreMagicBackupResult.success() =
+      RestoreMagicBackupResult_Success;
+  const factory RestoreMagicBackupResult.error({
+    required String error,
+  }) = RestoreMagicBackupResult_Error;
+}
+
+class RestoreShardRequest {
+  final SeedFingerprint seedFingerprint;
+
+  const RestoreShardRequest({
+    required this.seedFingerprint,
+  });
+
+  @override
+  int get hashCode => seedFingerprint.hashCode;
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is RestoreShardRequest &&
+          runtimeType == other.runtimeType &&
+          seedFingerprint == other.seedFingerprint;
+}
+
+@freezed
+sealed class RestoreShardResponse with _$RestoreShardResponse {
+  const RestoreShardResponse._();
+
+  const factory RestoreShardResponse.success({
+    required Shard shard,
+  }) = RestoreShardResponse_Success;
+  const factory RestoreShardResponse.error({
+    required String error,
+  }) = RestoreShardResponse_Error;
+  const factory RestoreShardResponse.notFound() = RestoreShardResponse_NotFound;
+}
+
+class SeedFingerprint {
+  final U8Array32 field0;
+
+  const SeedFingerprint({
+    required this.field0,
+  });
+
+  @override
+  int get hashCode => field0.hashCode;
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is SeedFingerprint &&
+          runtimeType == other.runtimeType &&
+          field0 == other.field0;
+}
+
+class Shard {
+  final Uint8List field0;
+
+  const Shard({
+    required this.field0,
+  });
+
+  @override
+  int get hashCode => field0.hashCode;
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is Shard &&
+          runtimeType == other.runtimeType &&
+          field0 == other.field0;
+}
+
+class StartMagicBackup {
+  final SeedFingerprint seedFingerprint;
+  final int totalChunks;
+  final U8Array32 hash;
+
+  const StartMagicBackup({
+    required this.seedFingerprint,
+    required this.totalChunks,
+    required this.hash,
+  });
+
+  @override
+  int get hashCode =>
+      seedFingerprint.hashCode ^ totalChunks.hashCode ^ hash.hashCode;
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is StartMagicBackup &&
+          runtimeType == other.runtimeType &&
+          seedFingerprint == other.seedFingerprint &&
+          totalChunks == other.totalChunks &&
+          hash == other.hash;
+}

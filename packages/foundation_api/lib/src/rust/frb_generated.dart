@@ -8,7 +8,8 @@ import 'api/qr.dart';
 import 'dart:async';
 import 'dart:convert';
 import 'frb_generated.dart';
-import 'frb_generated.io.dart' if (dart.library.js_interop) 'frb_generated.web.dart';
+import 'frb_generated.io.dart'
+    if (dart.library.js_interop) 'frb_generated.web.dart';
 import 'lib.dart';
 import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated.dart';
 import 'third_party/foundation_api/api/backup.dart';
@@ -23,3424 +24,6380 @@ import 'third_party/foundation_api/api/quantum_link.dart';
 import 'third_party/foundation_api/api/scv.dart';
 import 'third_party/foundation_api/api/status.dart';
 
+/// Main entrypoint of the Rust API
+class RustLib extends BaseEntrypoint<RustLibApi, RustLibApiImpl, RustLibWire> {
+  @internal
+  static final instance = RustLib._();
+
+  RustLib._();
+
+  /// Initialize flutter_rust_bridge
+  static Future<void> init({
+    RustLibApi? api,
+    BaseHandler? handler,
+    ExternalLibrary? externalLibrary,
+    bool forceSameCodegenVersion = true,
+  }) async {
+    await instance.initImpl(
+      api: api,
+      handler: handler,
+      externalLibrary: externalLibrary,
+      forceSameCodegenVersion: forceSameCodegenVersion,
+    );
+  }
+
+  /// Initialize flutter_rust_bridge in mock mode.
+  /// No libraries for FFI are loaded.
+  static void initMock({
+    required RustLibApi api,
+  }) {
+    instance.initMockImpl(
+      api: api,
+    );
+  }
+
+  /// Dispose flutter_rust_bridge
+  ///
+  /// The call to this function is optional, since flutter_rust_bridge (and everything else)
+  /// is automatically disposed when the app stops.
+  static void dispose() => instance.disposeImpl();
+
+  @override
+  ApiImplConstructor<RustLibApiImpl, RustLibWire> get apiImplConstructor =>
+      RustLibApiImpl.new;
+
+  @override
+  WireConstructor<RustLibWire> get wireConstructor =>
+      RustLibWire.fromExternalLibrary;
+
+  @override
+  Future<void> executeRustInitializers() async {
+    await api.crateApiQrInitApp();
+  }
+
+  @override
+  ExternalLibraryLoaderConfig get defaultExternalLibraryLoaderConfig =>
+      kDefaultExternalLibraryLoaderConfig;
+
+  @override
+  String get codegenVersion => '2.11.1';
+
+  @override
+  int get rustContentHash => -575115648;
+
+  static const kDefaultExternalLibraryLoaderConfig =
+      ExternalLibraryLoaderConfig(
+    stem: 'rust_lib_foundation_api',
+    ioDirectory: 'rust/target/release/',
+    webPrefix: 'pkg/',
+  );
+}
+
+abstract class RustLibApi extends BaseApi {
+  U8Array32 crateApiQlCollectBackupChunksAutoAccessorGetBackupHash(
+      {required CollectBackupChunks that});
+
+  Uint8List crateApiQlCollectBackupChunksAutoAccessorGetData(
+      {required CollectBackupChunks that});
+
+  BigInt crateApiQlCollectBackupChunksAutoAccessorGetNextChunkIndex(
+      {required CollectBackupChunks that});
+
+  SeedFingerprint crateApiQlCollectBackupChunksAutoAccessorGetSeedFingerprint(
+      {required CollectBackupChunks that});
+
+  BigInt crateApiQlCollectBackupChunksAutoAccessorGetTotalChunks(
+      {required CollectBackupChunks that});
+
+  void crateApiQlCollectBackupChunksAutoAccessorSetBackupHash(
+      {required CollectBackupChunks that, required U8Array32 backupHash});
+
+  void crateApiQlCollectBackupChunksAutoAccessorSetData(
+      {required CollectBackupChunks that, required Uint8List data});
+
+  void crateApiQlCollectBackupChunksAutoAccessorSetNextChunkIndex(
+      {required CollectBackupChunks that, required BigInt nextChunkIndex});
+
+  void crateApiQlCollectBackupChunksAutoAccessorSetSeedFingerprint(
+      {required CollectBackupChunks that,
+      required SeedFingerprint seedFingerprint});
+
+  void crateApiQlCollectBackupChunksAutoAccessorSetTotalChunks(
+      {required CollectBackupChunks that, required BigInt totalChunks});
 
-                /// Main entrypoint of the Rust API
-                class RustLib extends BaseEntrypoint<RustLibApi, RustLibApiImpl, RustLibWire> {
-                  @internal
-                  static final instance = RustLib._();
+  Uint8List crateApiQlPrimeBackupFileAutoAccessorGetData(
+      {required PrimeBackupFile that});
 
-                  RustLib._();
+  SeedFingerprint crateApiQlPrimeBackupFileAutoAccessorGetSeedFingerprint(
+      {required PrimeBackupFile that});
 
-                  /// Initialize flutter_rust_bridge
-                  static Future<void> init({
-                    RustLibApi? api,
-                    BaseHandler? handler,
-                    ExternalLibrary? externalLibrary,
-                    bool forceSameCodegenVersion = true,
-                  }) async {
-                    await instance.initImpl(
-                      api: api,
-                      handler: handler,
-                      externalLibrary: externalLibrary,
-                      forceSameCodegenVersion: forceSameCodegenVersion,
-                    );
-                  }
+  void crateApiQlPrimeBackupFileAutoAccessorSetData(
+      {required PrimeBackupFile that, required Uint8List data});
 
-                  /// Initialize flutter_rust_bridge in mock mode.
-                  /// No libraries for FFI are loaded.
-                  static void initMock({
-                    required RustLibApi api,
-                  }) {
-                    instance.initMockImpl(
-                      api: api,
-                    );
-                  }
+  void crateApiQlPrimeBackupFileAutoAccessorSetSeedFingerprint(
+      {required PrimeBackupFile that,
+      required SeedFingerprint seedFingerprint});
 
-                  /// Dispose flutter_rust_bridge
-                  ///
-                  /// The call to this function is optional, since flutter_rust_bridge (and everything else)
-                  /// is automatically disposed when the app stops.
-                  static void dispose() => instance.disposeImpl();
+  Future<CollectBackupChunks> crateApiQlCollectBackupChunks(
+      {required SeedFingerprint seedFingerprint,
+      required int totalChunks,
+      required U8Array32 backupHash});
 
-                  @override
-                  ApiImplConstructor<RustLibApiImpl, RustLibWire> get apiImplConstructor => RustLibApiImpl.new;
+  Future<DecoderStatus> crateApiQlDecode(
+      {required List<int> data,
+      required EnvoyMasterDechunker decoder,
+      required QuantumLinkIdentity quantumLinkIdentity,
+      required EnvoyAridCache aridCache});
 
-                  @override
-                  WireConstructor<RustLibWire> get wireConstructor => RustLibWire.fromExternalLibrary;
+  Future<PassportMessage> crateApiQrDecodeBleMessage({required List<int> data});
 
-                  @override
-                  Future<void> executeRustInitializers() async {
-                    await api.crateApiQrInitApp();
+  Future<QrDecoderStatus> crateApiQrDecodeQr(
+      {required String qr, required ArcMutexDecoder decoder});
 
-                  }
+  Future<QuantumLinkIdentity> crateApiQlDeserializeQlIdentity(
+      {required List<int> data});
 
-                  @override
-                  ExternalLibraryLoaderConfig get defaultExternalLibraryLoaderConfig => kDefaultExternalLibraryLoaderConfig;
+  Future<XidDocument> crateApiQlDeserializeXid({required List<int> data});
 
-                  @override
-                  String get codegenVersion => '2.11.1';
+  Future<List<Uint8List>> crateApiQlEncode(
+      {required EnvoyMessage message,
+      required QuantumLinkIdentity sender,
+      required XidDocument recipient});
 
-                  @override
-                  int get rustContentHash => -575115648;
+  Future<List<QuantumLinkMessage>> crateApiQlEncodeToChunks(
+      {required List<Uint8List> payload,
+      required QuantumLinkIdentity sender,
+      required XidDocument recipient,
+      required BigInt chunkSize});
 
-                  static const kDefaultExternalLibraryLoaderConfig = ExternalLibraryLoaderConfig(
-                    stem: 'rust_lib_foundation_api',
-                    ioDirectory: 'rust/target/release/',
-                    webPrefix: 'pkg/',
-                  );
-                }
-                
+  Future<bool> crateApiQlEncodeToMagicBackupFile(
+      {required List<int> payload,
+      required QuantumLinkIdentity sender,
+      required XidDocument recipient,
+      required String path,
+      required BigInt chunkSize,
+      required int timestamp});
 
-                abstract class RustLibApi extends BaseApi {
-                  U8Array32 crateApiQlCollectBackupChunksAutoAccessorGetBackupHash({required CollectBackupChunks that });
+  Future<bool> crateApiQlEncodeToUpdateFile(
+      {required List<Uint8List> payload,
+      required QuantumLinkIdentity sender,
+      required XidDocument recipient,
+      required String path,
+      required BigInt chunkSize,
+      required int timestamp});
 
-Uint8List crateApiQlCollectBackupChunksAutoAccessorGetData({required CollectBackupChunks that });
+  Future<QuantumLinkIdentity> crateApiQlGenerateQlIdentity();
 
-BigInt crateApiQlCollectBackupChunksAutoAccessorGetNextChunkIndex({required CollectBackupChunks that });
+  Future<EnvoyAridCache> crateApiQlGetAridCache();
 
-SeedFingerprint crateApiQlCollectBackupChunksAutoAccessorGetSeedFingerprint({required CollectBackupChunks that });
+  Future<EnvoyMasterDechunker> crateApiQlGetDecoder();
 
-BigInt crateApiQlCollectBackupChunksAutoAccessorGetTotalChunks({required CollectBackupChunks that });
+  Future<ArcMutexDecoder> crateApiQrGetQrDecoder();
 
-void crateApiQlCollectBackupChunksAutoAccessorSetBackupHash({required CollectBackupChunks that , required U8Array32 backupHash });
+  String crateApiQrGreet({required String name});
 
-void crateApiQlCollectBackupChunksAutoAccessorSetData({required CollectBackupChunks that , required Uint8List data });
+  Future<void> crateApiQrInitApp();
 
-void crateApiQlCollectBackupChunksAutoAccessorSetNextChunkIndex({required CollectBackupChunks that , required BigInt nextChunkIndex });
+  Future<PrimeBackupFile?> crateApiQlPushBackupChunk(
+      {required CollectBackupChunks this_, required BackupChunk chunk});
 
-void crateApiQlCollectBackupChunksAutoAccessorSetSeedFingerprint({required CollectBackupChunks that , required SeedFingerprint seedFingerprint });
+  Future<Uint8List> crateApiQlSerializeQlIdentity(
+      {required QuantumLinkIdentity quantumLinkIdentity});
 
-void crateApiQlCollectBackupChunksAutoAccessorSetTotalChunks({required CollectBackupChunks that , required BigInt totalChunks });
+  Future<Uint8List> crateApiQlSerializeXid(
+      {required QuantumLinkIdentity quantumLinkIdentity});
 
-Uint8List crateApiQlPrimeBackupFileAutoAccessorGetData({required PrimeBackupFile that });
+  Future<Uint8List> crateApiQlSerializeXidDocument(
+      {required XidDocument xidDocument});
 
-SeedFingerprint crateApiQlPrimeBackupFileAutoAccessorGetSeedFingerprint({required PrimeBackupFile that });
+  RustArcIncrementStrongCountFnType
+      get rust_arc_increment_strong_count_ArcMutexDecoder;
 
-void crateApiQlPrimeBackupFileAutoAccessorSetData({required PrimeBackupFile that , required Uint8List data });
+  RustArcDecrementStrongCountFnType
+      get rust_arc_decrement_strong_count_ArcMutexDecoder;
 
-void crateApiQlPrimeBackupFileAutoAccessorSetSeedFingerprint({required PrimeBackupFile that , required SeedFingerprint seedFingerprint });
+  CrossPlatformFinalizerArg
+      get rust_arc_decrement_strong_count_ArcMutexDecoderPtr;
 
-Future<CollectBackupChunks> crateApiQlCollectBackupChunks({required SeedFingerprint seedFingerprint , required int totalChunks , required U8Array32 backupHash });
+  RustArcIncrementStrongCountFnType
+      get rust_arc_increment_strong_count_CollectBackupChunks;
 
-Future<DecoderStatus> crateApiQlDecode({required List<int> data , required EnvoyMasterDechunker decoder , required QuantumLinkIdentity quantumLinkIdentity , required EnvoyAridCache aridCache });
+  RustArcDecrementStrongCountFnType
+      get rust_arc_decrement_strong_count_CollectBackupChunks;
 
-Future<PassportMessage> crateApiQrDecodeBleMessage({required List<int> data });
+  CrossPlatformFinalizerArg
+      get rust_arc_decrement_strong_count_CollectBackupChunksPtr;
 
-Future<QrDecoderStatus> crateApiQrDecodeQr({required String qr , required ArcMutexDecoder decoder });
+  RustArcIncrementStrongCountFnType
+      get rust_arc_increment_strong_count_EnvoyAridCache;
 
-Future<QuantumLinkIdentity> crateApiQlDeserializeQlIdentity({required List<int> data });
+  RustArcDecrementStrongCountFnType
+      get rust_arc_decrement_strong_count_EnvoyAridCache;
 
-Future<XidDocument> crateApiQlDeserializeXid({required List<int> data });
+  CrossPlatformFinalizerArg
+      get rust_arc_decrement_strong_count_EnvoyAridCachePtr;
 
-Future<List<Uint8List>> crateApiQlEncode({required EnvoyMessage message , required QuantumLinkIdentity sender , required XidDocument recipient });
+  RustArcIncrementStrongCountFnType
+      get rust_arc_increment_strong_count_EnvoyMasterDechunker;
 
-Future<List<QuantumLinkMessage>> crateApiQlEncodeToChunks({required List<Uint8List> payload , required QuantumLinkIdentity sender , required XidDocument recipient , required BigInt chunkSize });
+  RustArcDecrementStrongCountFnType
+      get rust_arc_decrement_strong_count_EnvoyMasterDechunker;
 
-Future<bool> crateApiQlEncodeToMagicBackupFile({required List<int> payload , required QuantumLinkIdentity sender , required XidDocument recipient , required String path , required BigInt chunkSize , required int timestamp });
+  CrossPlatformFinalizerArg
+      get rust_arc_decrement_strong_count_EnvoyMasterDechunkerPtr;
 
-Future<bool> crateApiQlEncodeToUpdateFile({required List<Uint8List> payload , required QuantumLinkIdentity sender , required XidDocument recipient , required String path , required BigInt chunkSize , required int timestamp });
+  RustArcIncrementStrongCountFnType
+      get rust_arc_increment_strong_count_PrimeBackupFile;
 
-Future<QuantumLinkIdentity> crateApiQlGenerateQlIdentity();
+  RustArcDecrementStrongCountFnType
+      get rust_arc_decrement_strong_count_PrimeBackupFile;
 
-Future<EnvoyAridCache> crateApiQlGetAridCache();
+  CrossPlatformFinalizerArg
+      get rust_arc_decrement_strong_count_PrimeBackupFilePtr;
 
-Future<EnvoyMasterDechunker> crateApiQlGetDecoder();
+  RustArcIncrementStrongCountFnType
+      get rust_arc_increment_strong_count_QuantumLinkIdentity;
 
-Future<ArcMutexDecoder> crateApiQrGetQrDecoder();
+  RustArcDecrementStrongCountFnType
+      get rust_arc_decrement_strong_count_QuantumLinkIdentity;
 
-String crateApiQrGreet({required String name });
+  CrossPlatformFinalizerArg
+      get rust_arc_decrement_strong_count_QuantumLinkIdentityPtr;
 
-Future<void> crateApiQrInitApp();
+  RustArcIncrementStrongCountFnType
+      get rust_arc_increment_strong_count_XidDocument;
 
-Future<PrimeBackupFile?> crateApiQlPushBackupChunk({required CollectBackupChunks this_ , required BackupChunk chunk });
+  RustArcDecrementStrongCountFnType
+      get rust_arc_decrement_strong_count_XidDocument;
 
-Future<Uint8List> crateApiQlSerializeQlIdentity({required QuantumLinkIdentity quantumLinkIdentity });
+  CrossPlatformFinalizerArg get rust_arc_decrement_strong_count_XidDocumentPtr;
+}
 
-Future<Uint8List> crateApiQlSerializeXid({required QuantumLinkIdentity quantumLinkIdentity });
+class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
+  RustLibApiImpl({
+    required super.handler,
+    required super.wire,
+    required super.generalizedFrbRustBinding,
+    required super.portManager,
+  });
 
-Future<Uint8List> crateApiQlSerializeXidDocument({required XidDocument xidDocument });
+  @override
+  U8Array32 crateApiQlCollectBackupChunksAutoAccessorGetBackupHash(
+      {required CollectBackupChunks that}) {
+    return handler.executeSync(SyncTask(
+      callFfi: () {
+        final serializer = SseSerializer(generalizedFrbRustBinding);
+        sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerCollectBackupChunks(
+            that, serializer);
+        return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 1)!;
+      },
+      codec: SseCodec(
+        decodeSuccessData: sse_decode_u_8_array_32,
+        decodeErrorData: null,
+      ),
+      constMeta:
+          kCrateApiQlCollectBackupChunksAutoAccessorGetBackupHashConstMeta,
+      argValues: [that],
+      apiImpl: this,
+    ));
+  }
 
-RustArcIncrementStrongCountFnType get rust_arc_increment_strong_count_ArcMutexDecoder;
-
-RustArcDecrementStrongCountFnType get rust_arc_decrement_strong_count_ArcMutexDecoder;
-
-CrossPlatformFinalizerArg get rust_arc_decrement_strong_count_ArcMutexDecoderPtr;
-
-RustArcIncrementStrongCountFnType get rust_arc_increment_strong_count_CollectBackupChunks;
-
-RustArcDecrementStrongCountFnType get rust_arc_decrement_strong_count_CollectBackupChunks;
-
-CrossPlatformFinalizerArg get rust_arc_decrement_strong_count_CollectBackupChunksPtr;
-
-RustArcIncrementStrongCountFnType get rust_arc_increment_strong_count_EnvoyAridCache;
-
-RustArcDecrementStrongCountFnType get rust_arc_decrement_strong_count_EnvoyAridCache;
-
-CrossPlatformFinalizerArg get rust_arc_decrement_strong_count_EnvoyAridCachePtr;
-
-RustArcIncrementStrongCountFnType get rust_arc_increment_strong_count_EnvoyMasterDechunker;
-
-RustArcDecrementStrongCountFnType get rust_arc_decrement_strong_count_EnvoyMasterDechunker;
-
-CrossPlatformFinalizerArg get rust_arc_decrement_strong_count_EnvoyMasterDechunkerPtr;
-
-RustArcIncrementStrongCountFnType get rust_arc_increment_strong_count_PrimeBackupFile;
-
-RustArcDecrementStrongCountFnType get rust_arc_decrement_strong_count_PrimeBackupFile;
-
-CrossPlatformFinalizerArg get rust_arc_decrement_strong_count_PrimeBackupFilePtr;
-
-RustArcIncrementStrongCountFnType get rust_arc_increment_strong_count_QuantumLinkIdentity;
-
-RustArcDecrementStrongCountFnType get rust_arc_decrement_strong_count_QuantumLinkIdentity;
-
-CrossPlatformFinalizerArg get rust_arc_decrement_strong_count_QuantumLinkIdentityPtr;
-
-RustArcIncrementStrongCountFnType get rust_arc_increment_strong_count_XidDocument;
-
-RustArcDecrementStrongCountFnType get rust_arc_decrement_strong_count_XidDocument;
-
-CrossPlatformFinalizerArg get rust_arc_decrement_strong_count_XidDocumentPtr;
-
-
-                }
-                
-
-                class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
-                  RustLibApiImpl({
-                    required super.handler,
-                    required super.wire,
-                    required super.generalizedFrbRustBinding,
-                    required super.portManager,
-                  });
-
-                  @override U8Array32 crateApiQlCollectBackupChunksAutoAccessorGetBackupHash({required CollectBackupChunks that })  { return handler.executeSync(SyncTask(
-            callFfi: () {
-              
-            final serializer = SseSerializer(generalizedFrbRustBinding);sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerCollectBackupChunks(that, serializer);
-            return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 1)!;
-            
-            },
-            codec: 
-        SseCodec(
-          decodeSuccessData: sse_decode_u_8_array_32,
-          decodeErrorData: null,
-        )
-        ,
-            constMeta: kCrateApiQlCollectBackupChunksAutoAccessorGetBackupHashConstMeta,
-            argValues: [that],
-            apiImpl: this,
-        )); }
-
-
-        TaskConstMeta get kCrateApiQlCollectBackupChunksAutoAccessorGetBackupHashConstMeta => const TaskConstMeta(
+  TaskConstMeta
+      get kCrateApiQlCollectBackupChunksAutoAccessorGetBackupHashConstMeta =>
+          const TaskConstMeta(
             debugName: "CollectBackupChunks_auto_accessor_get_backup_hash",
             argNames: ["that"],
-        );
-        
+          );
 
-@override Uint8List crateApiQlCollectBackupChunksAutoAccessorGetData({required CollectBackupChunks that })  { return handler.executeSync(SyncTask(
-            callFfi: () {
-              
-            final serializer = SseSerializer(generalizedFrbRustBinding);sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerCollectBackupChunks(that, serializer);
-            return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 2)!;
-            
-            },
-            codec: 
-        SseCodec(
-          decodeSuccessData: sse_decode_list_prim_u_8_strict,
-          decodeErrorData: null,
-        )
-        ,
-            constMeta: kCrateApiQlCollectBackupChunksAutoAccessorGetDataConstMeta,
-            argValues: [that],
-            apiImpl: this,
-        )); }
+  @override
+  Uint8List crateApiQlCollectBackupChunksAutoAccessorGetData(
+      {required CollectBackupChunks that}) {
+    return handler.executeSync(SyncTask(
+      callFfi: () {
+        final serializer = SseSerializer(generalizedFrbRustBinding);
+        sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerCollectBackupChunks(
+            that, serializer);
+        return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 2)!;
+      },
+      codec: SseCodec(
+        decodeSuccessData: sse_decode_list_prim_u_8_strict,
+        decodeErrorData: null,
+      ),
+      constMeta: kCrateApiQlCollectBackupChunksAutoAccessorGetDataConstMeta,
+      argValues: [that],
+      apiImpl: this,
+    ));
+  }
 
-
-        TaskConstMeta get kCrateApiQlCollectBackupChunksAutoAccessorGetDataConstMeta => const TaskConstMeta(
+  TaskConstMeta
+      get kCrateApiQlCollectBackupChunksAutoAccessorGetDataConstMeta =>
+          const TaskConstMeta(
             debugName: "CollectBackupChunks_auto_accessor_get_data",
             argNames: ["that"],
-        );
-        
+          );
 
-@override BigInt crateApiQlCollectBackupChunksAutoAccessorGetNextChunkIndex({required CollectBackupChunks that })  { return handler.executeSync(SyncTask(
-            callFfi: () {
-              
-            final serializer = SseSerializer(generalizedFrbRustBinding);sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerCollectBackupChunks(that, serializer);
-            return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 3)!;
-            
-            },
-            codec: 
-        SseCodec(
-          decodeSuccessData: sse_decode_usize,
-          decodeErrorData: null,
-        )
-        ,
-            constMeta: kCrateApiQlCollectBackupChunksAutoAccessorGetNextChunkIndexConstMeta,
-            argValues: [that],
-            apiImpl: this,
-        )); }
+  @override
+  BigInt crateApiQlCollectBackupChunksAutoAccessorGetNextChunkIndex(
+      {required CollectBackupChunks that}) {
+    return handler.executeSync(SyncTask(
+      callFfi: () {
+        final serializer = SseSerializer(generalizedFrbRustBinding);
+        sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerCollectBackupChunks(
+            that, serializer);
+        return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 3)!;
+      },
+      codec: SseCodec(
+        decodeSuccessData: sse_decode_usize,
+        decodeErrorData: null,
+      ),
+      constMeta:
+          kCrateApiQlCollectBackupChunksAutoAccessorGetNextChunkIndexConstMeta,
+      argValues: [that],
+      apiImpl: this,
+    ));
+  }
 
-
-        TaskConstMeta get kCrateApiQlCollectBackupChunksAutoAccessorGetNextChunkIndexConstMeta => const TaskConstMeta(
+  TaskConstMeta
+      get kCrateApiQlCollectBackupChunksAutoAccessorGetNextChunkIndexConstMeta =>
+          const TaskConstMeta(
             debugName: "CollectBackupChunks_auto_accessor_get_next_chunk_index",
             argNames: ["that"],
-        );
-        
+          );
 
-@override SeedFingerprint crateApiQlCollectBackupChunksAutoAccessorGetSeedFingerprint({required CollectBackupChunks that })  { return handler.executeSync(SyncTask(
-            callFfi: () {
-              
-            final serializer = SseSerializer(generalizedFrbRustBinding);sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerCollectBackupChunks(that, serializer);
-            return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 4)!;
-            
-            },
-            codec: 
-        SseCodec(
-          decodeSuccessData: sse_decode_seed_fingerprint,
-          decodeErrorData: null,
-        )
-        ,
-            constMeta: kCrateApiQlCollectBackupChunksAutoAccessorGetSeedFingerprintConstMeta,
-            argValues: [that],
-            apiImpl: this,
-        )); }
+  @override
+  SeedFingerprint crateApiQlCollectBackupChunksAutoAccessorGetSeedFingerprint(
+      {required CollectBackupChunks that}) {
+    return handler.executeSync(SyncTask(
+      callFfi: () {
+        final serializer = SseSerializer(generalizedFrbRustBinding);
+        sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerCollectBackupChunks(
+            that, serializer);
+        return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 4)!;
+      },
+      codec: SseCodec(
+        decodeSuccessData: sse_decode_seed_fingerprint,
+        decodeErrorData: null,
+      ),
+      constMeta:
+          kCrateApiQlCollectBackupChunksAutoAccessorGetSeedFingerprintConstMeta,
+      argValues: [that],
+      apiImpl: this,
+    ));
+  }
 
-
-        TaskConstMeta get kCrateApiQlCollectBackupChunksAutoAccessorGetSeedFingerprintConstMeta => const TaskConstMeta(
+  TaskConstMeta
+      get kCrateApiQlCollectBackupChunksAutoAccessorGetSeedFingerprintConstMeta =>
+          const TaskConstMeta(
             debugName: "CollectBackupChunks_auto_accessor_get_seed_fingerprint",
             argNames: ["that"],
-        );
-        
+          );
 
-@override BigInt crateApiQlCollectBackupChunksAutoAccessorGetTotalChunks({required CollectBackupChunks that })  { return handler.executeSync(SyncTask(
-            callFfi: () {
-              
-            final serializer = SseSerializer(generalizedFrbRustBinding);sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerCollectBackupChunks(that, serializer);
-            return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 5)!;
-            
-            },
-            codec: 
-        SseCodec(
-          decodeSuccessData: sse_decode_usize,
-          decodeErrorData: null,
-        )
-        ,
-            constMeta: kCrateApiQlCollectBackupChunksAutoAccessorGetTotalChunksConstMeta,
-            argValues: [that],
-            apiImpl: this,
-        )); }
+  @override
+  BigInt crateApiQlCollectBackupChunksAutoAccessorGetTotalChunks(
+      {required CollectBackupChunks that}) {
+    return handler.executeSync(SyncTask(
+      callFfi: () {
+        final serializer = SseSerializer(generalizedFrbRustBinding);
+        sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerCollectBackupChunks(
+            that, serializer);
+        return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 5)!;
+      },
+      codec: SseCodec(
+        decodeSuccessData: sse_decode_usize,
+        decodeErrorData: null,
+      ),
+      constMeta:
+          kCrateApiQlCollectBackupChunksAutoAccessorGetTotalChunksConstMeta,
+      argValues: [that],
+      apiImpl: this,
+    ));
+  }
 
-
-        TaskConstMeta get kCrateApiQlCollectBackupChunksAutoAccessorGetTotalChunksConstMeta => const TaskConstMeta(
+  TaskConstMeta
+      get kCrateApiQlCollectBackupChunksAutoAccessorGetTotalChunksConstMeta =>
+          const TaskConstMeta(
             debugName: "CollectBackupChunks_auto_accessor_get_total_chunks",
             argNames: ["that"],
-        );
-        
+          );
 
-@override void crateApiQlCollectBackupChunksAutoAccessorSetBackupHash({required CollectBackupChunks that , required U8Array32 backupHash })  { return handler.executeSync(SyncTask(
-            callFfi: () {
-              
-            final serializer = SseSerializer(generalizedFrbRustBinding);sse_encode_Auto_RefMut_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerCollectBackupChunks(that, serializer);
-sse_encode_u_8_array_32(backupHash, serializer);
-            return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 6)!;
-            
-            },
-            codec: 
-        SseCodec(
-          decodeSuccessData: sse_decode_unit,
-          decodeErrorData: null,
-        )
-        ,
-            constMeta: kCrateApiQlCollectBackupChunksAutoAccessorSetBackupHashConstMeta,
-            argValues: [that, backupHash],
-            apiImpl: this,
-        )); }
+  @override
+  void crateApiQlCollectBackupChunksAutoAccessorSetBackupHash(
+      {required CollectBackupChunks that, required U8Array32 backupHash}) {
+    return handler.executeSync(SyncTask(
+      callFfi: () {
+        final serializer = SseSerializer(generalizedFrbRustBinding);
+        sse_encode_Auto_RefMut_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerCollectBackupChunks(
+            that, serializer);
+        sse_encode_u_8_array_32(backupHash, serializer);
+        return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 6)!;
+      },
+      codec: SseCodec(
+        decodeSuccessData: sse_decode_unit,
+        decodeErrorData: null,
+      ),
+      constMeta:
+          kCrateApiQlCollectBackupChunksAutoAccessorSetBackupHashConstMeta,
+      argValues: [that, backupHash],
+      apiImpl: this,
+    ));
+  }
 
-
-        TaskConstMeta get kCrateApiQlCollectBackupChunksAutoAccessorSetBackupHashConstMeta => const TaskConstMeta(
+  TaskConstMeta
+      get kCrateApiQlCollectBackupChunksAutoAccessorSetBackupHashConstMeta =>
+          const TaskConstMeta(
             debugName: "CollectBackupChunks_auto_accessor_set_backup_hash",
             argNames: ["that", "backupHash"],
-        );
-        
+          );
 
-@override void crateApiQlCollectBackupChunksAutoAccessorSetData({required CollectBackupChunks that , required Uint8List data })  { return handler.executeSync(SyncTask(
-            callFfi: () {
-              
-            final serializer = SseSerializer(generalizedFrbRustBinding);sse_encode_Auto_RefMut_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerCollectBackupChunks(that, serializer);
-sse_encode_list_prim_u_8_strict(data, serializer);
-            return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 7)!;
-            
-            },
-            codec: 
-        SseCodec(
-          decodeSuccessData: sse_decode_unit,
-          decodeErrorData: null,
-        )
-        ,
-            constMeta: kCrateApiQlCollectBackupChunksAutoAccessorSetDataConstMeta,
-            argValues: [that, data],
-            apiImpl: this,
-        )); }
+  @override
+  void crateApiQlCollectBackupChunksAutoAccessorSetData(
+      {required CollectBackupChunks that, required Uint8List data}) {
+    return handler.executeSync(SyncTask(
+      callFfi: () {
+        final serializer = SseSerializer(generalizedFrbRustBinding);
+        sse_encode_Auto_RefMut_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerCollectBackupChunks(
+            that, serializer);
+        sse_encode_list_prim_u_8_strict(data, serializer);
+        return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 7)!;
+      },
+      codec: SseCodec(
+        decodeSuccessData: sse_decode_unit,
+        decodeErrorData: null,
+      ),
+      constMeta: kCrateApiQlCollectBackupChunksAutoAccessorSetDataConstMeta,
+      argValues: [that, data],
+      apiImpl: this,
+    ));
+  }
 
-
-        TaskConstMeta get kCrateApiQlCollectBackupChunksAutoAccessorSetDataConstMeta => const TaskConstMeta(
+  TaskConstMeta
+      get kCrateApiQlCollectBackupChunksAutoAccessorSetDataConstMeta =>
+          const TaskConstMeta(
             debugName: "CollectBackupChunks_auto_accessor_set_data",
             argNames: ["that", "data"],
-        );
-        
+          );
 
-@override void crateApiQlCollectBackupChunksAutoAccessorSetNextChunkIndex({required CollectBackupChunks that , required BigInt nextChunkIndex })  { return handler.executeSync(SyncTask(
-            callFfi: () {
-              
-            final serializer = SseSerializer(generalizedFrbRustBinding);sse_encode_Auto_RefMut_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerCollectBackupChunks(that, serializer);
-sse_encode_usize(nextChunkIndex, serializer);
-            return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 8)!;
-            
-            },
-            codec: 
-        SseCodec(
-          decodeSuccessData: sse_decode_unit,
-          decodeErrorData: null,
-        )
-        ,
-            constMeta: kCrateApiQlCollectBackupChunksAutoAccessorSetNextChunkIndexConstMeta,
-            argValues: [that, nextChunkIndex],
-            apiImpl: this,
-        )); }
+  @override
+  void crateApiQlCollectBackupChunksAutoAccessorSetNextChunkIndex(
+      {required CollectBackupChunks that, required BigInt nextChunkIndex}) {
+    return handler.executeSync(SyncTask(
+      callFfi: () {
+        final serializer = SseSerializer(generalizedFrbRustBinding);
+        sse_encode_Auto_RefMut_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerCollectBackupChunks(
+            that, serializer);
+        sse_encode_usize(nextChunkIndex, serializer);
+        return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 8)!;
+      },
+      codec: SseCodec(
+        decodeSuccessData: sse_decode_unit,
+        decodeErrorData: null,
+      ),
+      constMeta:
+          kCrateApiQlCollectBackupChunksAutoAccessorSetNextChunkIndexConstMeta,
+      argValues: [that, nextChunkIndex],
+      apiImpl: this,
+    ));
+  }
 
-
-        TaskConstMeta get kCrateApiQlCollectBackupChunksAutoAccessorSetNextChunkIndexConstMeta => const TaskConstMeta(
+  TaskConstMeta
+      get kCrateApiQlCollectBackupChunksAutoAccessorSetNextChunkIndexConstMeta =>
+          const TaskConstMeta(
             debugName: "CollectBackupChunks_auto_accessor_set_next_chunk_index",
             argNames: ["that", "nextChunkIndex"],
-        );
-        
+          );
 
-@override void crateApiQlCollectBackupChunksAutoAccessorSetSeedFingerprint({required CollectBackupChunks that , required SeedFingerprint seedFingerprint })  { return handler.executeSync(SyncTask(
-            callFfi: () {
-              
-            final serializer = SseSerializer(generalizedFrbRustBinding);sse_encode_Auto_RefMut_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerCollectBackupChunks(that, serializer);
-sse_encode_seed_fingerprint(seedFingerprint, serializer);
-            return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 9)!;
-            
-            },
-            codec: 
-        SseCodec(
-          decodeSuccessData: sse_decode_unit,
-          decodeErrorData: null,
-        )
-        ,
-            constMeta: kCrateApiQlCollectBackupChunksAutoAccessorSetSeedFingerprintConstMeta,
-            argValues: [that, seedFingerprint],
-            apiImpl: this,
-        )); }
+  @override
+  void crateApiQlCollectBackupChunksAutoAccessorSetSeedFingerprint(
+      {required CollectBackupChunks that,
+      required SeedFingerprint seedFingerprint}) {
+    return handler.executeSync(SyncTask(
+      callFfi: () {
+        final serializer = SseSerializer(generalizedFrbRustBinding);
+        sse_encode_Auto_RefMut_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerCollectBackupChunks(
+            that, serializer);
+        sse_encode_seed_fingerprint(seedFingerprint, serializer);
+        return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 9)!;
+      },
+      codec: SseCodec(
+        decodeSuccessData: sse_decode_unit,
+        decodeErrorData: null,
+      ),
+      constMeta:
+          kCrateApiQlCollectBackupChunksAutoAccessorSetSeedFingerprintConstMeta,
+      argValues: [that, seedFingerprint],
+      apiImpl: this,
+    ));
+  }
 
-
-        TaskConstMeta get kCrateApiQlCollectBackupChunksAutoAccessorSetSeedFingerprintConstMeta => const TaskConstMeta(
+  TaskConstMeta
+      get kCrateApiQlCollectBackupChunksAutoAccessorSetSeedFingerprintConstMeta =>
+          const TaskConstMeta(
             debugName: "CollectBackupChunks_auto_accessor_set_seed_fingerprint",
             argNames: ["that", "seedFingerprint"],
-        );
-        
+          );
 
-@override void crateApiQlCollectBackupChunksAutoAccessorSetTotalChunks({required CollectBackupChunks that , required BigInt totalChunks })  { return handler.executeSync(SyncTask(
-            callFfi: () {
-              
-            final serializer = SseSerializer(generalizedFrbRustBinding);sse_encode_Auto_RefMut_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerCollectBackupChunks(that, serializer);
-sse_encode_usize(totalChunks, serializer);
-            return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 10)!;
-            
-            },
-            codec: 
-        SseCodec(
-          decodeSuccessData: sse_decode_unit,
-          decodeErrorData: null,
-        )
-        ,
-            constMeta: kCrateApiQlCollectBackupChunksAutoAccessorSetTotalChunksConstMeta,
-            argValues: [that, totalChunks],
-            apiImpl: this,
-        )); }
+  @override
+  void crateApiQlCollectBackupChunksAutoAccessorSetTotalChunks(
+      {required CollectBackupChunks that, required BigInt totalChunks}) {
+    return handler.executeSync(SyncTask(
+      callFfi: () {
+        final serializer = SseSerializer(generalizedFrbRustBinding);
+        sse_encode_Auto_RefMut_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerCollectBackupChunks(
+            that, serializer);
+        sse_encode_usize(totalChunks, serializer);
+        return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 10)!;
+      },
+      codec: SseCodec(
+        decodeSuccessData: sse_decode_unit,
+        decodeErrorData: null,
+      ),
+      constMeta:
+          kCrateApiQlCollectBackupChunksAutoAccessorSetTotalChunksConstMeta,
+      argValues: [that, totalChunks],
+      apiImpl: this,
+    ));
+  }
 
-
-        TaskConstMeta get kCrateApiQlCollectBackupChunksAutoAccessorSetTotalChunksConstMeta => const TaskConstMeta(
+  TaskConstMeta
+      get kCrateApiQlCollectBackupChunksAutoAccessorSetTotalChunksConstMeta =>
+          const TaskConstMeta(
             debugName: "CollectBackupChunks_auto_accessor_set_total_chunks",
             argNames: ["that", "totalChunks"],
-        );
-        
+          );
 
-@override Uint8List crateApiQlPrimeBackupFileAutoAccessorGetData({required PrimeBackupFile that })  { return handler.executeSync(SyncTask(
-            callFfi: () {
-              
-            final serializer = SseSerializer(generalizedFrbRustBinding);sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerPrimeBackupFile(that, serializer);
-            return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 11)!;
-            
-            },
-            codec: 
-        SseCodec(
-          decodeSuccessData: sse_decode_list_prim_u_8_strict,
-          decodeErrorData: null,
-        )
-        ,
-            constMeta: kCrateApiQlPrimeBackupFileAutoAccessorGetDataConstMeta,
-            argValues: [that],
-            apiImpl: this,
-        )); }
+  @override
+  Uint8List crateApiQlPrimeBackupFileAutoAccessorGetData(
+      {required PrimeBackupFile that}) {
+    return handler.executeSync(SyncTask(
+      callFfi: () {
+        final serializer = SseSerializer(generalizedFrbRustBinding);
+        sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerPrimeBackupFile(
+            that, serializer);
+        return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 11)!;
+      },
+      codec: SseCodec(
+        decodeSuccessData: sse_decode_list_prim_u_8_strict,
+        decodeErrorData: null,
+      ),
+      constMeta: kCrateApiQlPrimeBackupFileAutoAccessorGetDataConstMeta,
+      argValues: [that],
+      apiImpl: this,
+    ));
+  }
 
+  TaskConstMeta get kCrateApiQlPrimeBackupFileAutoAccessorGetDataConstMeta =>
+      const TaskConstMeta(
+        debugName: "PrimeBackupFile_auto_accessor_get_data",
+        argNames: ["that"],
+      );
 
-        TaskConstMeta get kCrateApiQlPrimeBackupFileAutoAccessorGetDataConstMeta => const TaskConstMeta(
-            debugName: "PrimeBackupFile_auto_accessor_get_data",
-            argNames: ["that"],
-        );
-        
+  @override
+  SeedFingerprint crateApiQlPrimeBackupFileAutoAccessorGetSeedFingerprint(
+      {required PrimeBackupFile that}) {
+    return handler.executeSync(SyncTask(
+      callFfi: () {
+        final serializer = SseSerializer(generalizedFrbRustBinding);
+        sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerPrimeBackupFile(
+            that, serializer);
+        return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 12)!;
+      },
+      codec: SseCodec(
+        decodeSuccessData: sse_decode_seed_fingerprint,
+        decodeErrorData: null,
+      ),
+      constMeta:
+          kCrateApiQlPrimeBackupFileAutoAccessorGetSeedFingerprintConstMeta,
+      argValues: [that],
+      apiImpl: this,
+    ));
+  }
 
-@override SeedFingerprint crateApiQlPrimeBackupFileAutoAccessorGetSeedFingerprint({required PrimeBackupFile that })  { return handler.executeSync(SyncTask(
-            callFfi: () {
-              
-            final serializer = SseSerializer(generalizedFrbRustBinding);sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerPrimeBackupFile(that, serializer);
-            return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 12)!;
-            
-            },
-            codec: 
-        SseCodec(
-          decodeSuccessData: sse_decode_seed_fingerprint,
-          decodeErrorData: null,
-        )
-        ,
-            constMeta: kCrateApiQlPrimeBackupFileAutoAccessorGetSeedFingerprintConstMeta,
-            argValues: [that],
-            apiImpl: this,
-        )); }
-
-
-        TaskConstMeta get kCrateApiQlPrimeBackupFileAutoAccessorGetSeedFingerprintConstMeta => const TaskConstMeta(
+  TaskConstMeta
+      get kCrateApiQlPrimeBackupFileAutoAccessorGetSeedFingerprintConstMeta =>
+          const TaskConstMeta(
             debugName: "PrimeBackupFile_auto_accessor_get_seed_fingerprint",
             argNames: ["that"],
-        );
-        
+          );
 
-@override void crateApiQlPrimeBackupFileAutoAccessorSetData({required PrimeBackupFile that , required Uint8List data })  { return handler.executeSync(SyncTask(
-            callFfi: () {
-              
-            final serializer = SseSerializer(generalizedFrbRustBinding);sse_encode_Auto_RefMut_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerPrimeBackupFile(that, serializer);
-sse_encode_list_prim_u_8_strict(data, serializer);
-            return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 13)!;
-            
-            },
-            codec: 
-        SseCodec(
-          decodeSuccessData: sse_decode_unit,
-          decodeErrorData: null,
-        )
-        ,
-            constMeta: kCrateApiQlPrimeBackupFileAutoAccessorSetDataConstMeta,
-            argValues: [that, data],
-            apiImpl: this,
-        )); }
+  @override
+  void crateApiQlPrimeBackupFileAutoAccessorSetData(
+      {required PrimeBackupFile that, required Uint8List data}) {
+    return handler.executeSync(SyncTask(
+      callFfi: () {
+        final serializer = SseSerializer(generalizedFrbRustBinding);
+        sse_encode_Auto_RefMut_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerPrimeBackupFile(
+            that, serializer);
+        sse_encode_list_prim_u_8_strict(data, serializer);
+        return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 13)!;
+      },
+      codec: SseCodec(
+        decodeSuccessData: sse_decode_unit,
+        decodeErrorData: null,
+      ),
+      constMeta: kCrateApiQlPrimeBackupFileAutoAccessorSetDataConstMeta,
+      argValues: [that, data],
+      apiImpl: this,
+    ));
+  }
 
+  TaskConstMeta get kCrateApiQlPrimeBackupFileAutoAccessorSetDataConstMeta =>
+      const TaskConstMeta(
+        debugName: "PrimeBackupFile_auto_accessor_set_data",
+        argNames: ["that", "data"],
+      );
 
-        TaskConstMeta get kCrateApiQlPrimeBackupFileAutoAccessorSetDataConstMeta => const TaskConstMeta(
-            debugName: "PrimeBackupFile_auto_accessor_set_data",
-            argNames: ["that", "data"],
-        );
-        
+  @override
+  void crateApiQlPrimeBackupFileAutoAccessorSetSeedFingerprint(
+      {required PrimeBackupFile that,
+      required SeedFingerprint seedFingerprint}) {
+    return handler.executeSync(SyncTask(
+      callFfi: () {
+        final serializer = SseSerializer(generalizedFrbRustBinding);
+        sse_encode_Auto_RefMut_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerPrimeBackupFile(
+            that, serializer);
+        sse_encode_seed_fingerprint(seedFingerprint, serializer);
+        return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 14)!;
+      },
+      codec: SseCodec(
+        decodeSuccessData: sse_decode_unit,
+        decodeErrorData: null,
+      ),
+      constMeta:
+          kCrateApiQlPrimeBackupFileAutoAccessorSetSeedFingerprintConstMeta,
+      argValues: [that, seedFingerprint],
+      apiImpl: this,
+    ));
+  }
 
-@override void crateApiQlPrimeBackupFileAutoAccessorSetSeedFingerprint({required PrimeBackupFile that , required SeedFingerprint seedFingerprint })  { return handler.executeSync(SyncTask(
-            callFfi: () {
-              
-            final serializer = SseSerializer(generalizedFrbRustBinding);sse_encode_Auto_RefMut_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerPrimeBackupFile(that, serializer);
-sse_encode_seed_fingerprint(seedFingerprint, serializer);
-            return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 14)!;
-            
-            },
-            codec: 
-        SseCodec(
-          decodeSuccessData: sse_decode_unit,
-          decodeErrorData: null,
-        )
-        ,
-            constMeta: kCrateApiQlPrimeBackupFileAutoAccessorSetSeedFingerprintConstMeta,
-            argValues: [that, seedFingerprint],
-            apiImpl: this,
-        )); }
-
-
-        TaskConstMeta get kCrateApiQlPrimeBackupFileAutoAccessorSetSeedFingerprintConstMeta => const TaskConstMeta(
+  TaskConstMeta
+      get kCrateApiQlPrimeBackupFileAutoAccessorSetSeedFingerprintConstMeta =>
+          const TaskConstMeta(
             debugName: "PrimeBackupFile_auto_accessor_set_seed_fingerprint",
             argNames: ["that", "seedFingerprint"],
+          );
+
+  @override
+  Future<CollectBackupChunks> crateApiQlCollectBackupChunks(
+      {required SeedFingerprint seedFingerprint,
+      required int totalChunks,
+      required U8Array32 backupHash}) {
+    return handler.executeNormal(NormalTask(
+      callFfi: (port_) {
+        final serializer = SseSerializer(generalizedFrbRustBinding);
+        sse_encode_box_autoadd_seed_fingerprint(seedFingerprint, serializer);
+        sse_encode_u_32(totalChunks, serializer);
+        sse_encode_u_8_array_32(backupHash, serializer);
+        pdeCallFfi(generalizedFrbRustBinding, serializer,
+            funcId: 15, port: port_);
+      },
+      codec: SseCodec(
+        decodeSuccessData:
+            sse_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerCollectBackupChunks,
+        decodeErrorData: null,
+      ),
+      constMeta: kCrateApiQlCollectBackupChunksConstMeta,
+      argValues: [seedFingerprint, totalChunks, backupHash],
+      apiImpl: this,
+    ));
+  }
+
+  TaskConstMeta get kCrateApiQlCollectBackupChunksConstMeta =>
+      const TaskConstMeta(
+        debugName: "collect_backup_chunks",
+        argNames: ["seedFingerprint", "totalChunks", "backupHash"],
+      );
+
+  @override
+  Future<DecoderStatus> crateApiQlDecode(
+      {required List<int> data,
+      required EnvoyMasterDechunker decoder,
+      required QuantumLinkIdentity quantumLinkIdentity,
+      required EnvoyAridCache aridCache}) {
+    return handler.executeNormal(NormalTask(
+      callFfi: (port_) {
+        final serializer = SseSerializer(generalizedFrbRustBinding);
+        sse_encode_list_prim_u_8_loose(data, serializer);
+        sse_encode_Auto_RefMut_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerEnvoyMasterDechunker(
+            decoder, serializer);
+        sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerQuantumLinkIdentity(
+            quantumLinkIdentity, serializer);
+        sse_encode_Auto_RefMut_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerEnvoyARIDCache(
+            aridCache, serializer);
+        pdeCallFfi(generalizedFrbRustBinding, serializer,
+            funcId: 16, port: port_);
+      },
+      codec: SseCodec(
+        decodeSuccessData: sse_decode_decoder_status,
+        decodeErrorData: sse_decode_AnyhowException,
+      ),
+      constMeta: kCrateApiQlDecodeConstMeta,
+      argValues: [data, decoder, quantumLinkIdentity, aridCache],
+      apiImpl: this,
+    ));
+  }
+
+  TaskConstMeta get kCrateApiQlDecodeConstMeta => const TaskConstMeta(
+        debugName: "decode",
+        argNames: ["data", "decoder", "quantumLinkIdentity", "aridCache"],
+      );
+
+  @override
+  Future<PassportMessage> crateApiQrDecodeBleMessage(
+      {required List<int> data}) {
+    return handler.executeNormal(NormalTask(
+      callFfi: (port_) {
+        final serializer = SseSerializer(generalizedFrbRustBinding);
+        sse_encode_list_prim_u_8_loose(data, serializer);
+        pdeCallFfi(generalizedFrbRustBinding, serializer,
+            funcId: 17, port: port_);
+      },
+      codec: SseCodec(
+        decodeSuccessData: sse_decode_passport_message,
+        decodeErrorData: null,
+      ),
+      constMeta: kCrateApiQrDecodeBleMessageConstMeta,
+      argValues: [data],
+      apiImpl: this,
+    ));
+  }
+
+  TaskConstMeta get kCrateApiQrDecodeBleMessageConstMeta => const TaskConstMeta(
+        debugName: "decode_ble_message",
+        argNames: ["data"],
+      );
+
+  @override
+  Future<QrDecoderStatus> crateApiQrDecodeQr(
+      {required String qr, required ArcMutexDecoder decoder}) {
+    return handler.executeNormal(NormalTask(
+      callFfi: (port_) {
+        final serializer = SseSerializer(generalizedFrbRustBinding);
+        sse_encode_String(qr, serializer);
+        sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerArcMutexDecoder(
+            decoder, serializer);
+        pdeCallFfi(generalizedFrbRustBinding, serializer,
+            funcId: 18, port: port_);
+      },
+      codec: SseCodec(
+        decodeSuccessData: sse_decode_qr_decoder_status,
+        decodeErrorData: sse_decode_AnyhowException,
+      ),
+      constMeta: kCrateApiQrDecodeQrConstMeta,
+      argValues: [qr, decoder],
+      apiImpl: this,
+    ));
+  }
+
+  TaskConstMeta get kCrateApiQrDecodeQrConstMeta => const TaskConstMeta(
+        debugName: "decode_qr",
+        argNames: ["qr", "decoder"],
+      );
+
+  @override
+  Future<QuantumLinkIdentity> crateApiQlDeserializeQlIdentity(
+      {required List<int> data}) {
+    return handler.executeNormal(NormalTask(
+      callFfi: (port_) {
+        final serializer = SseSerializer(generalizedFrbRustBinding);
+        sse_encode_list_prim_u_8_loose(data, serializer);
+        pdeCallFfi(generalizedFrbRustBinding, serializer,
+            funcId: 19, port: port_);
+      },
+      codec: SseCodec(
+        decodeSuccessData:
+            sse_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerQuantumLinkIdentity,
+        decodeErrorData: sse_decode_AnyhowException,
+      ),
+      constMeta: kCrateApiQlDeserializeQlIdentityConstMeta,
+      argValues: [data],
+      apiImpl: this,
+    ));
+  }
+
+  TaskConstMeta get kCrateApiQlDeserializeQlIdentityConstMeta =>
+      const TaskConstMeta(
+        debugName: "deserialize_ql_identity",
+        argNames: ["data"],
+      );
+
+  @override
+  Future<XidDocument> crateApiQlDeserializeXid({required List<int> data}) {
+    return handler.executeNormal(NormalTask(
+      callFfi: (port_) {
+        final serializer = SseSerializer(generalizedFrbRustBinding);
+        sse_encode_list_prim_u_8_loose(data, serializer);
+        pdeCallFfi(generalizedFrbRustBinding, serializer,
+            funcId: 20, port: port_);
+      },
+      codec: SseCodec(
+        decodeSuccessData:
+            sse_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerXIDDocument,
+        decodeErrorData: sse_decode_AnyhowException,
+      ),
+      constMeta: kCrateApiQlDeserializeXidConstMeta,
+      argValues: [data],
+      apiImpl: this,
+    ));
+  }
+
+  TaskConstMeta get kCrateApiQlDeserializeXidConstMeta => const TaskConstMeta(
+        debugName: "deserialize_xid",
+        argNames: ["data"],
+      );
+
+  @override
+  Future<List<Uint8List>> crateApiQlEncode(
+      {required EnvoyMessage message,
+      required QuantumLinkIdentity sender,
+      required XidDocument recipient}) {
+    return handler.executeNormal(NormalTask(
+      callFfi: (port_) {
+        final serializer = SseSerializer(generalizedFrbRustBinding);
+        sse_encode_box_autoadd_envoy_message(message, serializer);
+        sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerQuantumLinkIdentity(
+            sender, serializer);
+        sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerXIDDocument(
+            recipient, serializer);
+        pdeCallFfi(generalizedFrbRustBinding, serializer,
+            funcId: 21, port: port_);
+      },
+      codec: SseCodec(
+        decodeSuccessData: sse_decode_list_list_prim_u_8_strict,
+        decodeErrorData: null,
+      ),
+      constMeta: kCrateApiQlEncodeConstMeta,
+      argValues: [message, sender, recipient],
+      apiImpl: this,
+    ));
+  }
+
+  TaskConstMeta get kCrateApiQlEncodeConstMeta => const TaskConstMeta(
+        debugName: "encode",
+        argNames: ["message", "sender", "recipient"],
+      );
+
+  @override
+  Future<List<QuantumLinkMessage>> crateApiQlEncodeToChunks(
+      {required List<Uint8List> payload,
+      required QuantumLinkIdentity sender,
+      required XidDocument recipient,
+      required BigInt chunkSize}) {
+    return handler.executeNormal(NormalTask(
+      callFfi: (port_) {
+        final serializer = SseSerializer(generalizedFrbRustBinding);
+        sse_encode_list_list_prim_u_8_strict(payload, serializer);
+        sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerQuantumLinkIdentity(
+            sender, serializer);
+        sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerXIDDocument(
+            recipient, serializer);
+        sse_encode_usize(chunkSize, serializer);
+        pdeCallFfi(generalizedFrbRustBinding, serializer,
+            funcId: 22, port: port_);
+      },
+      codec: SseCodec(
+        decodeSuccessData: sse_decode_list_quantum_link_message,
+        decodeErrorData: sse_decode_AnyhowException,
+      ),
+      constMeta: kCrateApiQlEncodeToChunksConstMeta,
+      argValues: [payload, sender, recipient, chunkSize],
+      apiImpl: this,
+    ));
+  }
+
+  TaskConstMeta get kCrateApiQlEncodeToChunksConstMeta => const TaskConstMeta(
+        debugName: "encode_to_chunks",
+        argNames: ["payload", "sender", "recipient", "chunkSize"],
+      );
+
+  @override
+  Future<bool> crateApiQlEncodeToMagicBackupFile(
+      {required List<int> payload,
+      required QuantumLinkIdentity sender,
+      required XidDocument recipient,
+      required String path,
+      required BigInt chunkSize,
+      required int timestamp}) {
+    return handler.executeNormal(NormalTask(
+      callFfi: (port_) {
+        final serializer = SseSerializer(generalizedFrbRustBinding);
+        sse_encode_list_prim_u_8_loose(payload, serializer);
+        sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerQuantumLinkIdentity(
+            sender, serializer);
+        sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerXIDDocument(
+            recipient, serializer);
+        sse_encode_String(path, serializer);
+        sse_encode_usize(chunkSize, serializer);
+        sse_encode_u_32(timestamp, serializer);
+        pdeCallFfi(generalizedFrbRustBinding, serializer,
+            funcId: 23, port: port_);
+      },
+      codec: SseCodec(
+        decodeSuccessData: sse_decode_bool,
+        decodeErrorData: sse_decode_AnyhowException,
+      ),
+      constMeta: kCrateApiQlEncodeToMagicBackupFileConstMeta,
+      argValues: [payload, sender, recipient, path, chunkSize, timestamp],
+      apiImpl: this,
+    ));
+  }
+
+  TaskConstMeta get kCrateApiQlEncodeToMagicBackupFileConstMeta =>
+      const TaskConstMeta(
+        debugName: "encode_to_magic_backup_file",
+        argNames: [
+          "payload",
+          "sender",
+          "recipient",
+          "path",
+          "chunkSize",
+          "timestamp"
+        ],
+      );
+
+  @override
+  Future<bool> crateApiQlEncodeToUpdateFile(
+      {required List<Uint8List> payload,
+      required QuantumLinkIdentity sender,
+      required XidDocument recipient,
+      required String path,
+      required BigInt chunkSize,
+      required int timestamp}) {
+    return handler.executeNormal(NormalTask(
+      callFfi: (port_) {
+        final serializer = SseSerializer(generalizedFrbRustBinding);
+        sse_encode_list_list_prim_u_8_strict(payload, serializer);
+        sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerQuantumLinkIdentity(
+            sender, serializer);
+        sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerXIDDocument(
+            recipient, serializer);
+        sse_encode_String(path, serializer);
+        sse_encode_usize(chunkSize, serializer);
+        sse_encode_u_32(timestamp, serializer);
+        pdeCallFfi(generalizedFrbRustBinding, serializer,
+            funcId: 24, port: port_);
+      },
+      codec: SseCodec(
+        decodeSuccessData: sse_decode_bool,
+        decodeErrorData: sse_decode_AnyhowException,
+      ),
+      constMeta: kCrateApiQlEncodeToUpdateFileConstMeta,
+      argValues: [payload, sender, recipient, path, chunkSize, timestamp],
+      apiImpl: this,
+    ));
+  }
+
+  TaskConstMeta get kCrateApiQlEncodeToUpdateFileConstMeta =>
+      const TaskConstMeta(
+        debugName: "encode_to_update_file",
+        argNames: [
+          "payload",
+          "sender",
+          "recipient",
+          "path",
+          "chunkSize",
+          "timestamp"
+        ],
+      );
+
+  @override
+  Future<QuantumLinkIdentity> crateApiQlGenerateQlIdentity() {
+    return handler.executeNormal(NormalTask(
+      callFfi: (port_) {
+        final serializer = SseSerializer(generalizedFrbRustBinding);
+        pdeCallFfi(generalizedFrbRustBinding, serializer,
+            funcId: 25, port: port_);
+      },
+      codec: SseCodec(
+        decodeSuccessData:
+            sse_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerQuantumLinkIdentity,
+        decodeErrorData: null,
+      ),
+      constMeta: kCrateApiQlGenerateQlIdentityConstMeta,
+      argValues: [],
+      apiImpl: this,
+    ));
+  }
+
+  TaskConstMeta get kCrateApiQlGenerateQlIdentityConstMeta =>
+      const TaskConstMeta(
+        debugName: "generate_ql_identity",
+        argNames: [],
+      );
+
+  @override
+  Future<EnvoyAridCache> crateApiQlGetAridCache() {
+    return handler.executeNormal(NormalTask(
+      callFfi: (port_) {
+        final serializer = SseSerializer(generalizedFrbRustBinding);
+        pdeCallFfi(generalizedFrbRustBinding, serializer,
+            funcId: 26, port: port_);
+      },
+      codec: SseCodec(
+        decodeSuccessData:
+            sse_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerEnvoyARIDCache,
+        decodeErrorData: null,
+      ),
+      constMeta: kCrateApiQlGetAridCacheConstMeta,
+      argValues: [],
+      apiImpl: this,
+    ));
+  }
+
+  TaskConstMeta get kCrateApiQlGetAridCacheConstMeta => const TaskConstMeta(
+        debugName: "get_arid_cache",
+        argNames: [],
+      );
+
+  @override
+  Future<EnvoyMasterDechunker> crateApiQlGetDecoder() {
+    return handler.executeNormal(NormalTask(
+      callFfi: (port_) {
+        final serializer = SseSerializer(generalizedFrbRustBinding);
+        pdeCallFfi(generalizedFrbRustBinding, serializer,
+            funcId: 27, port: port_);
+      },
+      codec: SseCodec(
+        decodeSuccessData:
+            sse_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerEnvoyMasterDechunker,
+        decodeErrorData: null,
+      ),
+      constMeta: kCrateApiQlGetDecoderConstMeta,
+      argValues: [],
+      apiImpl: this,
+    ));
+  }
+
+  TaskConstMeta get kCrateApiQlGetDecoderConstMeta => const TaskConstMeta(
+        debugName: "get_decoder",
+        argNames: [],
+      );
+
+  @override
+  Future<ArcMutexDecoder> crateApiQrGetQrDecoder() {
+    return handler.executeNormal(NormalTask(
+      callFfi: (port_) {
+        final serializer = SseSerializer(generalizedFrbRustBinding);
+        pdeCallFfi(generalizedFrbRustBinding, serializer,
+            funcId: 28, port: port_);
+      },
+      codec: SseCodec(
+        decodeSuccessData:
+            sse_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerArcMutexDecoder,
+        decodeErrorData: null,
+      ),
+      constMeta: kCrateApiQrGetQrDecoderConstMeta,
+      argValues: [],
+      apiImpl: this,
+    ));
+  }
+
+  TaskConstMeta get kCrateApiQrGetQrDecoderConstMeta => const TaskConstMeta(
+        debugName: "get_qr_decoder",
+        argNames: [],
+      );
+
+  @override
+  String crateApiQrGreet({required String name}) {
+    return handler.executeSync(SyncTask(
+      callFfi: () {
+        final serializer = SseSerializer(generalizedFrbRustBinding);
+        sse_encode_String(name, serializer);
+        return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 29)!;
+      },
+      codec: SseCodec(
+        decodeSuccessData: sse_decode_String,
+        decodeErrorData: null,
+      ),
+      constMeta: kCrateApiQrGreetConstMeta,
+      argValues: [name],
+      apiImpl: this,
+    ));
+  }
+
+  TaskConstMeta get kCrateApiQrGreetConstMeta => const TaskConstMeta(
+        debugName: "greet",
+        argNames: ["name"],
+      );
+
+  @override
+  Future<void> crateApiQrInitApp() {
+    return handler.executeNormal(NormalTask(
+      callFfi: (port_) {
+        final serializer = SseSerializer(generalizedFrbRustBinding);
+        pdeCallFfi(generalizedFrbRustBinding, serializer,
+            funcId: 30, port: port_);
+      },
+      codec: SseCodec(
+        decodeSuccessData: sse_decode_unit,
+        decodeErrorData: null,
+      ),
+      constMeta: kCrateApiQrInitAppConstMeta,
+      argValues: [],
+      apiImpl: this,
+    ));
+  }
+
+  TaskConstMeta get kCrateApiQrInitAppConstMeta => const TaskConstMeta(
+        debugName: "init_app",
+        argNames: [],
+      );
+
+  @override
+  Future<PrimeBackupFile?> crateApiQlPushBackupChunk(
+      {required CollectBackupChunks this_, required BackupChunk chunk}) {
+    return handler.executeNormal(NormalTask(
+      callFfi: (port_) {
+        final serializer = SseSerializer(generalizedFrbRustBinding);
+        sse_encode_Auto_RefMut_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerCollectBackupChunks(
+            this_, serializer);
+        sse_encode_box_autoadd_backup_chunk(chunk, serializer);
+        pdeCallFfi(generalizedFrbRustBinding, serializer,
+            funcId: 31, port: port_);
+      },
+      codec: SseCodec(
+        decodeSuccessData:
+            sse_decode_opt_box_autoadd_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerPrimeBackupFile,
+        decodeErrorData: sse_decode_AnyhowException,
+      ),
+      constMeta: kCrateApiQlPushBackupChunkConstMeta,
+      argValues: [this_, chunk],
+      apiImpl: this,
+    ));
+  }
+
+  TaskConstMeta get kCrateApiQlPushBackupChunkConstMeta => const TaskConstMeta(
+        debugName: "push_backup_chunk",
+        argNames: ["this_", "chunk"],
+      );
+
+  @override
+  Future<Uint8List> crateApiQlSerializeQlIdentity(
+      {required QuantumLinkIdentity quantumLinkIdentity}) {
+    return handler.executeNormal(NormalTask(
+      callFfi: (port_) {
+        final serializer = SseSerializer(generalizedFrbRustBinding);
+        sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerQuantumLinkIdentity(
+            quantumLinkIdentity, serializer);
+        pdeCallFfi(generalizedFrbRustBinding, serializer,
+            funcId: 32, port: port_);
+      },
+      codec: SseCodec(
+        decodeSuccessData: sse_decode_list_prim_u_8_strict,
+        decodeErrorData: sse_decode_AnyhowException,
+      ),
+      constMeta: kCrateApiQlSerializeQlIdentityConstMeta,
+      argValues: [quantumLinkIdentity],
+      apiImpl: this,
+    ));
+  }
+
+  TaskConstMeta get kCrateApiQlSerializeQlIdentityConstMeta =>
+      const TaskConstMeta(
+        debugName: "serialize_ql_identity",
+        argNames: ["quantumLinkIdentity"],
+      );
+
+  @override
+  Future<Uint8List> crateApiQlSerializeXid(
+      {required QuantumLinkIdentity quantumLinkIdentity}) {
+    return handler.executeNormal(NormalTask(
+      callFfi: (port_) {
+        final serializer = SseSerializer(generalizedFrbRustBinding);
+        sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerQuantumLinkIdentity(
+            quantumLinkIdentity, serializer);
+        pdeCallFfi(generalizedFrbRustBinding, serializer,
+            funcId: 33, port: port_);
+      },
+      codec: SseCodec(
+        decodeSuccessData: sse_decode_list_prim_u_8_strict,
+        decodeErrorData: null,
+      ),
+      constMeta: kCrateApiQlSerializeXidConstMeta,
+      argValues: [quantumLinkIdentity],
+      apiImpl: this,
+    ));
+  }
+
+  TaskConstMeta get kCrateApiQlSerializeXidConstMeta => const TaskConstMeta(
+        debugName: "serialize_xid",
+        argNames: ["quantumLinkIdentity"],
+      );
+
+  @override
+  Future<Uint8List> crateApiQlSerializeXidDocument(
+      {required XidDocument xidDocument}) {
+    return handler.executeNormal(NormalTask(
+      callFfi: (port_) {
+        final serializer = SseSerializer(generalizedFrbRustBinding);
+        sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerXIDDocument(
+            xidDocument, serializer);
+        pdeCallFfi(generalizedFrbRustBinding, serializer,
+            funcId: 34, port: port_);
+      },
+      codec: SseCodec(
+        decodeSuccessData: sse_decode_list_prim_u_8_strict,
+        decodeErrorData: sse_decode_AnyhowException,
+      ),
+      constMeta: kCrateApiQlSerializeXidDocumentConstMeta,
+      argValues: [xidDocument],
+      apiImpl: this,
+    ));
+  }
+
+  TaskConstMeta get kCrateApiQlSerializeXidDocumentConstMeta =>
+      const TaskConstMeta(
+        debugName: "serialize_xid_document",
+        argNames: ["xidDocument"],
+      );
+
+  RustArcIncrementStrongCountFnType
+      get rust_arc_increment_strong_count_ArcMutexDecoder => wire
+          .rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerArcMutexDecoder;
+
+  RustArcDecrementStrongCountFnType
+      get rust_arc_decrement_strong_count_ArcMutexDecoder => wire
+          .rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerArcMutexDecoder;
+
+  RustArcIncrementStrongCountFnType
+      get rust_arc_increment_strong_count_CollectBackupChunks => wire
+          .rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerCollectBackupChunks;
+
+  RustArcDecrementStrongCountFnType
+      get rust_arc_decrement_strong_count_CollectBackupChunks => wire
+          .rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerCollectBackupChunks;
+
+  RustArcIncrementStrongCountFnType
+      get rust_arc_increment_strong_count_EnvoyAridCache => wire
+          .rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerEnvoyARIDCache;
+
+  RustArcDecrementStrongCountFnType
+      get rust_arc_decrement_strong_count_EnvoyAridCache => wire
+          .rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerEnvoyARIDCache;
+
+  RustArcIncrementStrongCountFnType
+      get rust_arc_increment_strong_count_EnvoyMasterDechunker => wire
+          .rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerEnvoyMasterDechunker;
+
+  RustArcDecrementStrongCountFnType
+      get rust_arc_decrement_strong_count_EnvoyMasterDechunker => wire
+          .rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerEnvoyMasterDechunker;
+
+  RustArcIncrementStrongCountFnType
+      get rust_arc_increment_strong_count_PrimeBackupFile => wire
+          .rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerPrimeBackupFile;
+
+  RustArcDecrementStrongCountFnType
+      get rust_arc_decrement_strong_count_PrimeBackupFile => wire
+          .rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerPrimeBackupFile;
+
+  RustArcIncrementStrongCountFnType
+      get rust_arc_increment_strong_count_QuantumLinkIdentity => wire
+          .rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerQuantumLinkIdentity;
+
+  RustArcDecrementStrongCountFnType
+      get rust_arc_decrement_strong_count_QuantumLinkIdentity => wire
+          .rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerQuantumLinkIdentity;
+
+  RustArcIncrementStrongCountFnType
+      get rust_arc_increment_strong_count_XidDocument => wire
+          .rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerXIDDocument;
+
+  RustArcDecrementStrongCountFnType
+      get rust_arc_decrement_strong_count_XidDocument => wire
+          .rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerXIDDocument;
+
+  @protected
+  AnyhowException dco_decode_AnyhowException(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return AnyhowException(raw as String);
+  }
+
+  @protected
+  ArcMutexDecoder
+      dco_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerArcMutexDecoder(
+          dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return ArcMutexDecoderImpl.frbInternalDcoDecode(raw as List<dynamic>);
+  }
+
+  @protected
+  CollectBackupChunks
+      dco_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerCollectBackupChunks(
+          dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return CollectBackupChunksImpl.frbInternalDcoDecode(raw as List<dynamic>);
+  }
+
+  @protected
+  EnvoyAridCache
+      dco_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerEnvoyARIDCache(
+          dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return EnvoyAridCacheImpl.frbInternalDcoDecode(raw as List<dynamic>);
+  }
+
+  @protected
+  EnvoyMasterDechunker
+      dco_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerEnvoyMasterDechunker(
+          dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return EnvoyMasterDechunkerImpl.frbInternalDcoDecode(raw as List<dynamic>);
+  }
+
+  @protected
+  PrimeBackupFile
+      dco_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerPrimeBackupFile(
+          dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return PrimeBackupFileImpl.frbInternalDcoDecode(raw as List<dynamic>);
+  }
+
+  @protected
+  QuantumLinkIdentity
+      dco_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerQuantumLinkIdentity(
+          dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return QuantumLinkIdentityImpl.frbInternalDcoDecode(raw as List<dynamic>);
+  }
+
+  @protected
+  XidDocument
+      dco_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerXIDDocument(
+          dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return XidDocumentImpl.frbInternalDcoDecode(raw as List<dynamic>);
+  }
+
+  @protected
+  CollectBackupChunks
+      dco_decode_Auto_RefMut_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerCollectBackupChunks(
+          dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return CollectBackupChunksImpl.frbInternalDcoDecode(raw as List<dynamic>);
+  }
+
+  @protected
+  EnvoyAridCache
+      dco_decode_Auto_RefMut_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerEnvoyARIDCache(
+          dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return EnvoyAridCacheImpl.frbInternalDcoDecode(raw as List<dynamic>);
+  }
+
+  @protected
+  EnvoyMasterDechunker
+      dco_decode_Auto_RefMut_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerEnvoyMasterDechunker(
+          dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return EnvoyMasterDechunkerImpl.frbInternalDcoDecode(raw as List<dynamic>);
+  }
+
+  @protected
+  PrimeBackupFile
+      dco_decode_Auto_RefMut_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerPrimeBackupFile(
+          dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return PrimeBackupFileImpl.frbInternalDcoDecode(raw as List<dynamic>);
+  }
+
+  @protected
+  ArcMutexDecoder
+      dco_decode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerArcMutexDecoder(
+          dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return ArcMutexDecoderImpl.frbInternalDcoDecode(raw as List<dynamic>);
+  }
+
+  @protected
+  CollectBackupChunks
+      dco_decode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerCollectBackupChunks(
+          dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return CollectBackupChunksImpl.frbInternalDcoDecode(raw as List<dynamic>);
+  }
+
+  @protected
+  PrimeBackupFile
+      dco_decode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerPrimeBackupFile(
+          dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return PrimeBackupFileImpl.frbInternalDcoDecode(raw as List<dynamic>);
+  }
+
+  @protected
+  QuantumLinkIdentity
+      dco_decode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerQuantumLinkIdentity(
+          dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return QuantumLinkIdentityImpl.frbInternalDcoDecode(raw as List<dynamic>);
+  }
+
+  @protected
+  XidDocument
+      dco_decode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerXIDDocument(
+          dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return XidDocumentImpl.frbInternalDcoDecode(raw as List<dynamic>);
+  }
+
+  @protected
+  ArcMutexDecoder
+      dco_decode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerArcMutexDecoder(
+          dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return ArcMutexDecoderImpl.frbInternalDcoDecode(raw as List<dynamic>);
+  }
+
+  @protected
+  CollectBackupChunks
+      dco_decode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerCollectBackupChunks(
+          dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return CollectBackupChunksImpl.frbInternalDcoDecode(raw as List<dynamic>);
+  }
+
+  @protected
+  EnvoyAridCache
+      dco_decode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerEnvoyARIDCache(
+          dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return EnvoyAridCacheImpl.frbInternalDcoDecode(raw as List<dynamic>);
+  }
+
+  @protected
+  EnvoyMasterDechunker
+      dco_decode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerEnvoyMasterDechunker(
+          dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return EnvoyMasterDechunkerImpl.frbInternalDcoDecode(raw as List<dynamic>);
+  }
+
+  @protected
+  PrimeBackupFile
+      dco_decode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerPrimeBackupFile(
+          dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return PrimeBackupFileImpl.frbInternalDcoDecode(raw as List<dynamic>);
+  }
+
+  @protected
+  QuantumLinkIdentity
+      dco_decode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerQuantumLinkIdentity(
+          dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return QuantumLinkIdentityImpl.frbInternalDcoDecode(raw as List<dynamic>);
+  }
+
+  @protected
+  XidDocument
+      dco_decode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerXIDDocument(
+          dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return XidDocumentImpl.frbInternalDcoDecode(raw as List<dynamic>);
+  }
+
+  @protected
+  String dco_decode_String(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return raw as String;
+  }
+
+  @protected
+  AccountUpdate dco_decode_account_update(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    final arr = raw as List<dynamic>;
+    if (arr.length != 2)
+      throw Exception('unexpected arr length: expect 2 but see ${arr.length}');
+    return AccountUpdate(
+      accountId: dco_decode_String(arr[0]),
+      update: dco_decode_list_prim_u_8_strict(arr[1]),
+    );
+  }
+
+  @protected
+  ApplyPassphrase dco_decode_apply_passphrase(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    final arr = raw as List<dynamic>;
+    if (arr.length != 1)
+      throw Exception('unexpected arr length: expect 1 but see ${arr.length}');
+    return ApplyPassphrase(
+      fingerprint: dco_decode_opt_String(arr[0]),
+    );
+  }
+
+  @protected
+  BackupChunk dco_decode_backup_chunk(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    final arr = raw as List<dynamic>;
+    if (arr.length != 3)
+      throw Exception('unexpected arr length: expect 3 but see ${arr.length}');
+    return BackupChunk(
+      chunkIndex: dco_decode_u_32(arr[0]),
+      totalChunks: dco_decode_u_32(arr[1]),
+      data: dco_decode_list_prim_u_8_strict(arr[2]),
+    );
+  }
+
+  @protected
+  BackupMetadata dco_decode_backup_metadata(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    final arr = raw as List<dynamic>;
+    if (arr.length != 1)
+      throw Exception('unexpected arr length: expect 1 but see ${arr.length}');
+    return BackupMetadata(
+      totalChunks: dco_decode_u_32(arr[0]),
+    );
+  }
+
+  @protected
+  BackupShardRequest dco_decode_backup_shard_request(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    final arr = raw as List<dynamic>;
+    if (arr.length != 1)
+      throw Exception('unexpected arr length: expect 1 but see ${arr.length}');
+    return BackupShardRequest(
+      shard: dco_decode_shard(arr[0]),
+    );
+  }
+
+  @protected
+  BackupShardResponse dco_decode_backup_shard_response(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    switch (raw[0]) {
+      case 0:
+        return BackupShardResponse_Success();
+      case 1:
+        return BackupShardResponse_Error(
+          error: dco_decode_String(raw[1]),
         );
-        
+      default:
+        throw Exception("unreachable");
+    }
+  }
 
-@override Future<CollectBackupChunks> crateApiQlCollectBackupChunks({required SeedFingerprint seedFingerprint , required int totalChunks , required U8Array32 backupHash })  { return handler.executeNormal(NormalTask(
-            callFfi: (port_) {
-              
-            final serializer = SseSerializer(generalizedFrbRustBinding);sse_encode_box_autoadd_seed_fingerprint(seedFingerprint, serializer);
-sse_encode_u_32(totalChunks, serializer);
-sse_encode_u_8_array_32(backupHash, serializer);
-            pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 15, port: port_);
-            
-            },
-            codec: 
-        SseCodec(
-          decodeSuccessData: sse_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerCollectBackupChunks,
-          decodeErrorData: null,
-        )
-        ,
-            constMeta: kCrateApiQlCollectBackupChunksConstMeta,
-            argValues: [seedFingerprint, totalChunks, backupHash],
-            apiImpl: this,
-        )); }
+  @protected
+  bool dco_decode_bool(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return raw as bool;
+  }
 
+  @protected
+  PrimeBackupFile
+      dco_decode_box_autoadd_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerPrimeBackupFile(
+          dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return dco_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerPrimeBackupFile(
+        raw);
+  }
 
-        TaskConstMeta get kCrateApiQlCollectBackupChunksConstMeta => const TaskConstMeta(
-            debugName: "collect_backup_chunks",
-            argNames: ["seedFingerprint", "totalChunks", "backupHash"],
+  @protected
+  XidDocument
+      dco_decode_box_autoadd_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerXIDDocument(
+          dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return dco_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerXIDDocument(
+        raw);
+  }
+
+  @protected
+  AccountUpdate dco_decode_box_autoadd_account_update(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return dco_decode_account_update(raw);
+  }
+
+  @protected
+  ApplyPassphrase dco_decode_box_autoadd_apply_passphrase(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return dco_decode_apply_passphrase(raw);
+  }
+
+  @protected
+  BackupChunk dco_decode_box_autoadd_backup_chunk(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return dco_decode_backup_chunk(raw);
+  }
+
+  @protected
+  BackupMetadata dco_decode_box_autoadd_backup_metadata(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return dco_decode_backup_metadata(raw);
+  }
+
+  @protected
+  BackupShardRequest dco_decode_box_autoadd_backup_shard_request(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return dco_decode_backup_shard_request(raw);
+  }
+
+  @protected
+  BackupShardResponse dco_decode_box_autoadd_backup_shard_response(
+      dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return dco_decode_backup_shard_response(raw);
+  }
+
+  @protected
+  BroadcastTransaction dco_decode_box_autoadd_broadcast_transaction(
+      dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return dco_decode_broadcast_transaction(raw);
+  }
+
+  @protected
+  ChallengeRequest dco_decode_box_autoadd_challenge_request(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return dco_decode_challenge_request(raw);
+  }
+
+  @protected
+  ChallengeResponseResult dco_decode_box_autoadd_challenge_response_result(
+      dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return dco_decode_challenge_response_result(raw);
+  }
+
+  @protected
+  CreateMagicBackupEvent dco_decode_box_autoadd_create_magic_backup_event(
+      dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return dco_decode_create_magic_backup_event(raw);
+  }
+
+  @protected
+  CreateMagicBackupResult dco_decode_box_autoadd_create_magic_backup_result(
+      dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return dco_decode_create_magic_backup_result(raw);
+  }
+
+  @protected
+  CreateMagicBackupV2 dco_decode_box_autoadd_create_magic_backup_v_2(
+      dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return dco_decode_create_magic_backup_v_2(raw);
+  }
+
+  @protected
+  DeleteMagicBackupV2 dco_decode_box_autoadd_delete_magic_backup_v_2(
+      dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return dco_decode_delete_magic_backup_v_2(raw);
+  }
+
+  @protected
+  DeviceStatus dco_decode_box_autoadd_device_status(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return dco_decode_device_status(raw);
+  }
+
+  @protected
+  EnvoyMagicBackupEnabledRequest
+      dco_decode_box_autoadd_envoy_magic_backup_enabled_request(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return dco_decode_envoy_magic_backup_enabled_request(raw);
+  }
+
+  @protected
+  EnvoyMagicBackupEnabledResponse
+      dco_decode_box_autoadd_envoy_magic_backup_enabled_response(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return dco_decode_envoy_magic_backup_enabled_response(raw);
+  }
+
+  @protected
+  EnvoyMessage dco_decode_box_autoadd_envoy_message(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return dco_decode_envoy_message(raw);
+  }
+
+  @protected
+  EnvoyStatus dco_decode_box_autoadd_envoy_status(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return dco_decode_envoy_status(raw);
+  }
+
+  @protected
+  ExchangeRate dco_decode_box_autoadd_exchange_rate(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return dco_decode_exchange_rate(raw);
+  }
+
+  @protected
+  ExchangeRateHistory dco_decode_box_autoadd_exchange_rate_history(
+      dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return dco_decode_exchange_rate_history(raw);
+  }
+
+  @protected
+  FirmwareChunk dco_decode_box_autoadd_firmware_chunk(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return dco_decode_firmware_chunk(raw);
+  }
+
+  @protected
+  FirmwareFetchEvent dco_decode_box_autoadd_firmware_fetch_event(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return dco_decode_firmware_fetch_event(raw);
+  }
+
+  @protected
+  FirmwareFetchRequest dco_decode_box_autoadd_firmware_fetch_request(
+      dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return dco_decode_firmware_fetch_request(raw);
+  }
+
+  @protected
+  FirmwareInstallEvent dco_decode_box_autoadd_firmware_install_event(
+      dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return dco_decode_firmware_install_event(raw);
+  }
+
+  @protected
+  FirmwareUpdateAvailable dco_decode_box_autoadd_firmware_update_available(
+      dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return dco_decode_firmware_update_available(raw);
+  }
+
+  @protected
+  FirmwareUpdateCheckRequest
+      dco_decode_box_autoadd_firmware_update_check_request(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return dco_decode_firmware_update_check_request(raw);
+  }
+
+  @protected
+  FirmwareUpdateCheckResponse
+      dco_decode_box_autoadd_firmware_update_check_response(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return dco_decode_firmware_update_check_response(raw);
+  }
+
+  @protected
+  GetMagicBackupV2 dco_decode_box_autoadd_get_magic_backup_v_2(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return dco_decode_get_magic_backup_v_2(raw);
+  }
+
+  @protected
+  Heartbeat dco_decode_box_autoadd_heartbeat(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return dco_decode_heartbeat(raw);
+  }
+
+  @protected
+  MagicBackupRequestV2 dco_decode_box_autoadd_magic_backup_request_v_2(
+      dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return dco_decode_magic_backup_request_v_2(raw);
+  }
+
+  @protected
+  MagicBackupResponseV2 dco_decode_box_autoadd_magic_backup_response_v_2(
+      dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return dco_decode_magic_backup_response_v_2(raw);
+  }
+
+  @protected
+  PairingRequest dco_decode_box_autoadd_pairing_request(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return dco_decode_pairing_request(raw);
+  }
+
+  @protected
+  PairingResponse dco_decode_box_autoadd_pairing_response(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return dco_decode_pairing_response(raw);
+  }
+
+  @protected
+  PassportMessage dco_decode_box_autoadd_passport_message(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return dco_decode_passport_message(raw);
+  }
+
+  @protected
+  PrimeMagicBackupEnabled dco_decode_box_autoadd_prime_magic_backup_enabled(
+      dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return dco_decode_prime_magic_backup_enabled(raw);
+  }
+
+  @protected
+  PrimeMagicBackupStatusRequest
+      dco_decode_box_autoadd_prime_magic_backup_status_request(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return dco_decode_prime_magic_backup_status_request(raw);
+  }
+
+  @protected
+  PrimeMagicBackupStatusResponse
+      dco_decode_box_autoadd_prime_magic_backup_status_response(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return dco_decode_prime_magic_backup_status_response(raw);
+  }
+
+  @protected
+  RestoreMagicBackupEvent dco_decode_box_autoadd_restore_magic_backup_event(
+      dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return dco_decode_restore_magic_backup_event(raw);
+  }
+
+  @protected
+  RestoreMagicBackupRequest dco_decode_box_autoadd_restore_magic_backup_request(
+      dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return dco_decode_restore_magic_backup_request(raw);
+  }
+
+  @protected
+  RestoreMagicBackupResult dco_decode_box_autoadd_restore_magic_backup_result(
+      dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return dco_decode_restore_magic_backup_result(raw);
+  }
+
+  @protected
+  RestoreShardRequest dco_decode_box_autoadd_restore_shard_request(
+      dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return dco_decode_restore_shard_request(raw);
+  }
+
+  @protected
+  RestoreShardResponse dco_decode_box_autoadd_restore_shard_response(
+      dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return dco_decode_restore_shard_response(raw);
+  }
+
+  @protected
+  SecurityCheck dco_decode_box_autoadd_security_check(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return dco_decode_security_check(raw);
+  }
+
+  @protected
+  SeedFingerprint dco_decode_box_autoadd_seed_fingerprint(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return dco_decode_seed_fingerprint(raw);
+  }
+
+  @protected
+  Shard dco_decode_box_autoadd_shard(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return dco_decode_shard(raw);
+  }
+
+  @protected
+  SignPsbt dco_decode_box_autoadd_sign_psbt(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return dco_decode_sign_psbt(raw);
+  }
+
+  @protected
+  StartMagicBackup dco_decode_box_autoadd_start_magic_backup(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return dco_decode_start_magic_backup(raw);
+  }
+
+  @protected
+  TimezoneRequest dco_decode_box_autoadd_timezone_request(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return dco_decode_timezone_request(raw);
+  }
+
+  @protected
+  TimezoneResponse dco_decode_box_autoadd_timezone_response(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return dco_decode_timezone_response(raw);
+  }
+
+  @protected
+  BigInt dco_decode_box_autoadd_u_64(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return dco_decode_u_64(raw);
+  }
+
+  @protected
+  int dco_decode_box_autoadd_u_8(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return raw as int;
+  }
+
+  @protected
+  UnpairingRequest dco_decode_box_autoadd_unpairing_request(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return dco_decode_unpairing_request(raw);
+  }
+
+  @protected
+  UnpairingResponse dco_decode_box_autoadd_unpairing_response(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return dco_decode_unpairing_response(raw);
+  }
+
+  @protected
+  VerificationResult dco_decode_box_autoadd_verification_result(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return dco_decode_verification_result(raw);
+  }
+
+  @protected
+  BroadcastTransaction dco_decode_broadcast_transaction(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    final arr = raw as List<dynamic>;
+    if (arr.length != 2)
+      throw Exception('unexpected arr length: expect 2 but see ${arr.length}');
+    return BroadcastTransaction(
+      accountId: dco_decode_String(arr[0]),
+      psbt: dco_decode_list_prim_u_8_strict(arr[1]),
+    );
+  }
+
+  @protected
+  ChallengeRequest dco_decode_challenge_request(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    final arr = raw as List<dynamic>;
+    if (arr.length != 1)
+      throw Exception('unexpected arr length: expect 1 but see ${arr.length}');
+    return ChallengeRequest(
+      data: dco_decode_list_prim_u_8_strict(arr[0]),
+    );
+  }
+
+  @protected
+  ChallengeResponseResult dco_decode_challenge_response_result(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    switch (raw[0]) {
+      case 0:
+        return ChallengeResponseResult_Success(
+          data: dco_decode_list_prim_u_8_strict(raw[1]),
         );
-        
-
-@override Future<DecoderStatus> crateApiQlDecode({required List<int> data , required EnvoyMasterDechunker decoder , required QuantumLinkIdentity quantumLinkIdentity , required EnvoyAridCache aridCache })  { return handler.executeNormal(NormalTask(
-            callFfi: (port_) {
-              
-            final serializer = SseSerializer(generalizedFrbRustBinding);sse_encode_list_prim_u_8_loose(data, serializer);
-sse_encode_Auto_RefMut_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerEnvoyMasterDechunker(decoder, serializer);
-sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerQuantumLinkIdentity(quantumLinkIdentity, serializer);
-sse_encode_Auto_RefMut_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerEnvoyARIDCache(aridCache, serializer);
-            pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 16, port: port_);
-            
-            },
-            codec: 
-        SseCodec(
-          decodeSuccessData: sse_decode_decoder_status,
-          decodeErrorData: sse_decode_AnyhowException,
-        )
-        ,
-            constMeta: kCrateApiQlDecodeConstMeta,
-            argValues: [data, decoder, quantumLinkIdentity, aridCache],
-            apiImpl: this,
-        )); }
-
-
-        TaskConstMeta get kCrateApiQlDecodeConstMeta => const TaskConstMeta(
-            debugName: "decode",
-            argNames: ["data", "decoder", "quantumLinkIdentity", "aridCache"],
+      case 1:
+        return ChallengeResponseResult_Error(
+          error: dco_decode_String(raw[1]),
         );
-        
+      default:
+        throw Exception("unreachable");
+    }
+  }
 
-@override Future<PassportMessage> crateApiQrDecodeBleMessage({required List<int> data })  { return handler.executeNormal(NormalTask(
-            callFfi: (port_) {
-              
-            final serializer = SseSerializer(generalizedFrbRustBinding);sse_encode_list_prim_u_8_loose(data, serializer);
-            pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 17, port: port_);
-            
-            },
-            codec: 
-        SseCodec(
-          decodeSuccessData: sse_decode_passport_message,
-          decodeErrorData: null,
-        )
-        ,
-            constMeta: kCrateApiQrDecodeBleMessageConstMeta,
-            argValues: [data],
-            apiImpl: this,
-        )); }
-
-
-        TaskConstMeta get kCrateApiQrDecodeBleMessageConstMeta => const TaskConstMeta(
-            debugName: "decode_ble_message",
-            argNames: ["data"],
+  @protected
+  CreateMagicBackupEvent dco_decode_create_magic_backup_event(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    switch (raw[0]) {
+      case 0:
+        return CreateMagicBackupEvent_Start(
+          dco_decode_box_autoadd_start_magic_backup(raw[1]),
         );
-        
-
-@override Future<QrDecoderStatus> crateApiQrDecodeQr({required String qr , required ArcMutexDecoder decoder })  { return handler.executeNormal(NormalTask(
-            callFfi: (port_) {
-              
-            final serializer = SseSerializer(generalizedFrbRustBinding);sse_encode_String(qr, serializer);
-sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerArcMutexDecoder(decoder, serializer);
-            pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 18, port: port_);
-            
-            },
-            codec: 
-        SseCodec(
-          decodeSuccessData: sse_decode_qr_decoder_status,
-          decodeErrorData: sse_decode_AnyhowException,
-        )
-        ,
-            constMeta: kCrateApiQrDecodeQrConstMeta,
-            argValues: [qr, decoder],
-            apiImpl: this,
-        )); }
-
-
-        TaskConstMeta get kCrateApiQrDecodeQrConstMeta => const TaskConstMeta(
-            debugName: "decode_qr",
-            argNames: ["qr", "decoder"],
+      case 1:
+        return CreateMagicBackupEvent_Chunk(
+          dco_decode_box_autoadd_backup_chunk(raw[1]),
         );
-        
+      default:
+        throw Exception("unreachable");
+    }
+  }
 
-@override Future<QuantumLinkIdentity> crateApiQlDeserializeQlIdentity({required List<int> data })  { return handler.executeNormal(NormalTask(
-            callFfi: (port_) {
-              
-            final serializer = SseSerializer(generalizedFrbRustBinding);sse_encode_list_prim_u_8_loose(data, serializer);
-            pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 19, port: port_);
-            
-            },
-            codec: 
-        SseCodec(
-          decodeSuccessData: sse_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerQuantumLinkIdentity,
-          decodeErrorData: sse_decode_AnyhowException,
-        )
-        ,
-            constMeta: kCrateApiQlDeserializeQlIdentityConstMeta,
-            argValues: [data],
-            apiImpl: this,
-        )); }
-
-
-        TaskConstMeta get kCrateApiQlDeserializeQlIdentityConstMeta => const TaskConstMeta(
-            debugName: "deserialize_ql_identity",
-            argNames: ["data"],
+  @protected
+  CreateMagicBackupResult dco_decode_create_magic_backup_result(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    switch (raw[0]) {
+      case 0:
+        return CreateMagicBackupResult_Success();
+      case 1:
+        return CreateMagicBackupResult_Error(
+          error: dco_decode_String(raw[1]),
         );
-        
+      default:
+        throw Exception("unreachable");
+    }
+  }
 
-@override Future<XidDocument> crateApiQlDeserializeXid({required List<int> data })  { return handler.executeNormal(NormalTask(
-            callFfi: (port_) {
-              
-            final serializer = SseSerializer(generalizedFrbRustBinding);sse_encode_list_prim_u_8_loose(data, serializer);
-            pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 20, port: port_);
-            
-            },
-            codec: 
-        SseCodec(
-          decodeSuccessData: sse_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerXIDDocument,
-          decodeErrorData: sse_decode_AnyhowException,
-        )
-        ,
-            constMeta: kCrateApiQlDeserializeXidConstMeta,
-            argValues: [data],
-            apiImpl: this,
-        )); }
+  @protected
+  CreateMagicBackupV2 dco_decode_create_magic_backup_v_2(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    final arr = raw as List<dynamic>;
+    if (arr.length != 5)
+      throw Exception('unexpected arr length: expect 5 but see ${arr.length}');
+    return CreateMagicBackupV2(
+      timestamp: dco_decode_u_64(arr[0]),
+      hash: dco_decode_list_prim_u_8_strict(arr[1]),
+      pubkey: dco_decode_list_prim_u_8_strict(arr[2]),
+      data: dco_decode_list_prim_u_8_strict(arr[3]),
+      clientSignature: dco_decode_list_prim_u_8_strict(arr[4]),
+    );
+  }
 
+  @protected
+  DecoderStatus dco_decode_decoder_status(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    final arr = raw as List<dynamic>;
+    if (arr.length != 2)
+      throw Exception('unexpected arr length: expect 2 but see ${arr.length}');
+    return DecoderStatus(
+      progress: dco_decode_f_64(arr[0]),
+      payload: dco_decode_opt_box_autoadd_passport_message(arr[1]),
+    );
+  }
 
-        TaskConstMeta get kCrateApiQlDeserializeXidConstMeta => const TaskConstMeta(
-            debugName: "deserialize_xid",
-            argNames: ["data"],
+  @protected
+  DeleteMagicBackupV2 dco_decode_delete_magic_backup_v_2(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    final arr = raw as List<dynamic>;
+    if (arr.length != 3)
+      throw Exception('unexpected arr length: expect 3 but see ${arr.length}');
+    return DeleteMagicBackupV2(
+      key: dco_decode_list_prim_u_8_strict(arr[0]),
+      timestamp: dco_decode_u_64(arr[1]),
+      signature: dco_decode_list_prim_u_8_strict(arr[2]),
+    );
+  }
+
+  @protected
+  DeviceStatus dco_decode_device_status(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    final arr = raw as List<dynamic>;
+    if (arr.length != 2)
+      throw Exception('unexpected arr length: expect 2 but see ${arr.length}');
+    return DeviceStatus(
+      version: dco_decode_String(arr[0]),
+      batteryLevel: dco_decode_u_8(arr[1]),
+    );
+  }
+
+  @protected
+  EnvoyMagicBackupEnabledRequest dco_decode_envoy_magic_backup_enabled_request(
+      dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    final arr = raw as List<dynamic>;
+    if (arr.length != 0)
+      throw Exception('unexpected arr length: expect 0 but see ${arr.length}');
+    return EnvoyMagicBackupEnabledRequest();
+  }
+
+  @protected
+  EnvoyMagicBackupEnabledResponse
+      dco_decode_envoy_magic_backup_enabled_response(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    final arr = raw as List<dynamic>;
+    if (arr.length != 1)
+      throw Exception('unexpected arr length: expect 1 but see ${arr.length}');
+    return EnvoyMagicBackupEnabledResponse(
+      enabled: dco_decode_bool(arr[0]),
+    );
+  }
+
+  @protected
+  EnvoyMessage dco_decode_envoy_message(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    final arr = raw as List<dynamic>;
+    if (arr.length != 3)
+      throw Exception('unexpected arr length: expect 3 but see ${arr.length}');
+    return EnvoyMessage(
+      message: dco_decode_quantum_link_message(arr[0]),
+      timestamp: dco_decode_u_32(arr[1]),
+      protocolVersion: dco_decode_opt_box_autoadd_u_8(arr[2]),
+    );
+  }
+
+  @protected
+  EnvoyStatus dco_decode_envoy_status(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    final arr = raw as List<dynamic>;
+    if (arr.length != 1)
+      throw Exception('unexpected arr length: expect 1 but see ${arr.length}');
+    return EnvoyStatus(
+      version: dco_decode_String(arr[0]),
+    );
+  }
+
+  @protected
+  ExchangeRate dco_decode_exchange_rate(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    final arr = raw as List<dynamic>;
+    if (arr.length != 3)
+      throw Exception('unexpected arr length: expect 3 but see ${arr.length}');
+    return ExchangeRate(
+      currencyCode: dco_decode_String(arr[0]),
+      rate: dco_decode_f_32(arr[1]),
+      timestamp: dco_decode_u_64(arr[2]),
+    );
+  }
+
+  @protected
+  ExchangeRateHistory dco_decode_exchange_rate_history(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    final arr = raw as List<dynamic>;
+    if (arr.length != 2)
+      throw Exception('unexpected arr length: expect 2 but see ${arr.length}');
+    return ExchangeRateHistory(
+      history: dco_decode_list_price_point(arr[0]),
+      currencyCode: dco_decode_String(arr[1]),
+    );
+  }
+
+  @protected
+  double dco_decode_f_32(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return raw as double;
+  }
+
+  @protected
+  double dco_decode_f_64(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return raw as double;
+  }
+
+  @protected
+  FirmwareChunk dco_decode_firmware_chunk(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    final arr = raw as List<dynamic>;
+    if (arr.length != 5)
+      throw Exception('unexpected arr length: expect 5 but see ${arr.length}');
+    return FirmwareChunk(
+      patchIndex: dco_decode_u_8(arr[0]),
+      totalPatches: dco_decode_u_8(arr[1]),
+      chunkIndex: dco_decode_u_16(arr[2]),
+      totalChunks: dco_decode_u_16(arr[3]),
+      data: dco_decode_list_prim_u_8_strict(arr[4]),
+    );
+  }
+
+  @protected
+  FirmwareFetchEvent dco_decode_firmware_fetch_event(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    switch (raw[0]) {
+      case 0:
+        return FirmwareFetchEvent_UpdateNotAvailable();
+      case 1:
+        return FirmwareFetchEvent_Starting(
+          dco_decode_box_autoadd_firmware_update_available(raw[1]),
         );
-        
-
-@override Future<List<Uint8List>> crateApiQlEncode({required EnvoyMessage message , required QuantumLinkIdentity sender , required XidDocument recipient })  { return handler.executeNormal(NormalTask(
-            callFfi: (port_) {
-              
-            final serializer = SseSerializer(generalizedFrbRustBinding);sse_encode_box_autoadd_envoy_message(message, serializer);
-sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerQuantumLinkIdentity(sender, serializer);
-sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerXIDDocument(recipient, serializer);
-            pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 21, port: port_);
-            
-            },
-            codec: 
-        SseCodec(
-          decodeSuccessData: sse_decode_list_list_prim_u_8_strict,
-          decodeErrorData: null,
-        )
-        ,
-            constMeta: kCrateApiQlEncodeConstMeta,
-            argValues: [message, sender, recipient],
-            apiImpl: this,
-        )); }
-
-
-        TaskConstMeta get kCrateApiQlEncodeConstMeta => const TaskConstMeta(
-            debugName: "encode",
-            argNames: ["message", "sender", "recipient"],
+      case 2:
+        return FirmwareFetchEvent_Downloading();
+      case 3:
+        return FirmwareFetchEvent_Chunk(
+          dco_decode_box_autoadd_firmware_chunk(raw[1]),
         );
-        
-
-@override Future<List<QuantumLinkMessage>> crateApiQlEncodeToChunks({required List<Uint8List> payload , required QuantumLinkIdentity sender , required XidDocument recipient , required BigInt chunkSize })  { return handler.executeNormal(NormalTask(
-            callFfi: (port_) {
-              
-            final serializer = SseSerializer(generalizedFrbRustBinding);sse_encode_list_list_prim_u_8_strict(payload, serializer);
-sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerQuantumLinkIdentity(sender, serializer);
-sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerXIDDocument(recipient, serializer);
-sse_encode_usize(chunkSize, serializer);
-            pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 22, port: port_);
-            
-            },
-            codec: 
-        SseCodec(
-          decodeSuccessData: sse_decode_list_quantum_link_message,
-          decodeErrorData: sse_decode_AnyhowException,
-        )
-        ,
-            constMeta: kCrateApiQlEncodeToChunksConstMeta,
-            argValues: [payload, sender, recipient, chunkSize],
-            apiImpl: this,
-        )); }
-
-
-        TaskConstMeta get kCrateApiQlEncodeToChunksConstMeta => const TaskConstMeta(
-            debugName: "encode_to_chunks",
-            argNames: ["payload", "sender", "recipient", "chunkSize"],
+      case 4:
+        return FirmwareFetchEvent_Error(
+          error: dco_decode_String(raw[1]),
         );
-        
+      default:
+        throw Exception("unreachable");
+    }
+  }
 
-@override Future<bool> crateApiQlEncodeToMagicBackupFile({required List<int> payload , required QuantumLinkIdentity sender , required XidDocument recipient , required String path , required BigInt chunkSize , required int timestamp })  { return handler.executeNormal(NormalTask(
-            callFfi: (port_) {
-              
-            final serializer = SseSerializer(generalizedFrbRustBinding);sse_encode_list_prim_u_8_loose(payload, serializer);
-sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerQuantumLinkIdentity(sender, serializer);
-sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerXIDDocument(recipient, serializer);
-sse_encode_String(path, serializer);
-sse_encode_usize(chunkSize, serializer);
-sse_encode_u_32(timestamp, serializer);
-            pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 23, port: port_);
-            
-            },
-            codec: 
-        SseCodec(
-          decodeSuccessData: sse_decode_bool,
-          decodeErrorData: sse_decode_AnyhowException,
-        )
-        ,
-            constMeta: kCrateApiQlEncodeToMagicBackupFileConstMeta,
-            argValues: [payload, sender, recipient, path, chunkSize, timestamp],
-            apiImpl: this,
-        )); }
+  @protected
+  FirmwareFetchRequest dco_decode_firmware_fetch_request(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    final arr = raw as List<dynamic>;
+    if (arr.length != 2)
+      throw Exception('unexpected arr length: expect 2 but see ${arr.length}');
+    return FirmwareFetchRequest(
+      currentVersion: dco_decode_String(arr[0]),
+      chunkOffset: dco_decode_opt_box_autoadd_u_64(arr[1]),
+    );
+  }
 
-
-        TaskConstMeta get kCrateApiQlEncodeToMagicBackupFileConstMeta => const TaskConstMeta(
-            debugName: "encode_to_magic_backup_file",
-            argNames: ["payload", "sender", "recipient", "path", "chunkSize", "timestamp"],
+  @protected
+  FirmwareInstallEvent dco_decode_firmware_install_event(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    switch (raw[0]) {
+      case 0:
+        return FirmwareInstallEvent_UpdateVerified();
+      case 1:
+        return FirmwareInstallEvent_Installing();
+      case 2:
+        return FirmwareInstallEvent_Rebooting();
+      case 3:
+        return FirmwareInstallEvent_Success(
+          installedVersion: dco_decode_String(raw[1]),
         );
-        
-
-@override Future<bool> crateApiQlEncodeToUpdateFile({required List<Uint8List> payload , required QuantumLinkIdentity sender , required XidDocument recipient , required String path , required BigInt chunkSize , required int timestamp })  { return handler.executeNormal(NormalTask(
-            callFfi: (port_) {
-              
-            final serializer = SseSerializer(generalizedFrbRustBinding);sse_encode_list_list_prim_u_8_strict(payload, serializer);
-sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerQuantumLinkIdentity(sender, serializer);
-sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerXIDDocument(recipient, serializer);
-sse_encode_String(path, serializer);
-sse_encode_usize(chunkSize, serializer);
-sse_encode_u_32(timestamp, serializer);
-            pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 24, port: port_);
-            
-            },
-            codec: 
-        SseCodec(
-          decodeSuccessData: sse_decode_bool,
-          decodeErrorData: sse_decode_AnyhowException,
-        )
-        ,
-            constMeta: kCrateApiQlEncodeToUpdateFileConstMeta,
-            argValues: [payload, sender, recipient, path, chunkSize, timestamp],
-            apiImpl: this,
-        )); }
-
-
-        TaskConstMeta get kCrateApiQlEncodeToUpdateFileConstMeta => const TaskConstMeta(
-            debugName: "encode_to_update_file",
-            argNames: ["payload", "sender", "recipient", "path", "chunkSize", "timestamp"],
+      case 4:
+        return FirmwareInstallEvent_Error(
+          error: dco_decode_String(raw[1]),
+          stage: dco_decode_install_error_stage(raw[2]),
         );
-        
+      default:
+        throw Exception("unreachable");
+    }
+  }
 
-@override Future<QuantumLinkIdentity> crateApiQlGenerateQlIdentity()  { return handler.executeNormal(NormalTask(
-            callFfi: (port_) {
-              
-            final serializer = SseSerializer(generalizedFrbRustBinding);
-            pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 25, port: port_);
-            
-            },
-            codec: 
-        SseCodec(
-          decodeSuccessData: sse_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerQuantumLinkIdentity,
-          decodeErrorData: null,
-        )
-        ,
-            constMeta: kCrateApiQlGenerateQlIdentityConstMeta,
-            argValues: [],
-            apiImpl: this,
-        )); }
+  @protected
+  FirmwareUpdateAvailable dco_decode_firmware_update_available(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    final arr = raw as List<dynamic>;
+    if (arr.length != 5)
+      throw Exception('unexpected arr length: expect 5 but see ${arr.length}');
+    return FirmwareUpdateAvailable(
+      version: dco_decode_String(arr[0]),
+      changelog: dco_decode_String(arr[1]),
+      timestamp: dco_decode_u_32(arr[2]),
+      totalSize: dco_decode_u_32(arr[3]),
+      patchCount: dco_decode_u_8(arr[4]),
+    );
+  }
 
+  @protected
+  FirmwareUpdateCheckRequest dco_decode_firmware_update_check_request(
+      dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    final arr = raw as List<dynamic>;
+    if (arr.length != 1)
+      throw Exception('unexpected arr length: expect 1 but see ${arr.length}');
+    return FirmwareUpdateCheckRequest(
+      currentVersion: dco_decode_String(arr[0]),
+    );
+  }
 
-        TaskConstMeta get kCrateApiQlGenerateQlIdentityConstMeta => const TaskConstMeta(
-            debugName: "generate_ql_identity",
-            argNames: [],
+  @protected
+  FirmwareUpdateCheckResponse dco_decode_firmware_update_check_response(
+      dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    switch (raw[0]) {
+      case 0:
+        return FirmwareUpdateCheckResponse_Available(
+          dco_decode_box_autoadd_firmware_update_available(raw[1]),
         );
-        
+      case 1:
+        return FirmwareUpdateCheckResponse_NotAvailable();
+      default:
+        throw Exception("unreachable");
+    }
+  }
 
-@override Future<EnvoyAridCache> crateApiQlGetAridCache()  { return handler.executeNormal(NormalTask(
-            callFfi: (port_) {
-              
-            final serializer = SseSerializer(generalizedFrbRustBinding);
-            pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 26, port: port_);
-            
-            },
-            codec: 
-        SseCodec(
-          decodeSuccessData: sse_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerEnvoyARIDCache,
-          decodeErrorData: null,
-        )
-        ,
-            constMeta: kCrateApiQlGetAridCacheConstMeta,
-            argValues: [],
-            apiImpl: this,
-        )); }
+  @protected
+  GetMagicBackupV2 dco_decode_get_magic_backup_v_2(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    final arr = raw as List<dynamic>;
+    if (arr.length != 3)
+      throw Exception('unexpected arr length: expect 3 but see ${arr.length}');
+    return GetMagicBackupV2(
+      key: dco_decode_list_prim_u_8_strict(arr[0]),
+      timestamp: dco_decode_u_64(arr[1]),
+      signature: dco_decode_list_prim_u_8_strict(arr[2]),
+    );
+  }
 
+  @protected
+  Heartbeat dco_decode_heartbeat(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    final arr = raw as List<dynamic>;
+    if (arr.length != 0)
+      throw Exception('unexpected arr length: expect 0 but see ${arr.length}');
+    return Heartbeat();
+  }
 
-        TaskConstMeta get kCrateApiQlGetAridCacheConstMeta => const TaskConstMeta(
-            debugName: "get_arid_cache",
-            argNames: [],
+  @protected
+  int dco_decode_i_32(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return raw as int;
+  }
+
+  @protected
+  InstallErrorStage dco_decode_install_error_stage(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return InstallErrorStage.values[raw as int];
+  }
+
+  @protected
+  List<Uint8List> dco_decode_list_list_prim_u_8_strict(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return (raw as List<dynamic>).map(dco_decode_list_prim_u_8_strict).toList();
+  }
+
+  @protected
+  List<PricePoint> dco_decode_list_price_point(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return (raw as List<dynamic>).map(dco_decode_price_point).toList();
+  }
+
+  @protected
+  List<int> dco_decode_list_prim_u_8_loose(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return raw as List<int>;
+  }
+
+  @protected
+  Uint8List dco_decode_list_prim_u_8_strict(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return raw as Uint8List;
+  }
+
+  @protected
+  List<QuantumLinkMessage> dco_decode_list_quantum_link_message(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return (raw as List<dynamic>).map(dco_decode_quantum_link_message).toList();
+  }
+
+  @protected
+  MagicBackupRequestV2 dco_decode_magic_backup_request_v_2(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    switch (raw[0]) {
+      case 0:
+        return MagicBackupRequestV2_Create(
+          dco_decode_box_autoadd_create_magic_backup_v_2(raw[1]),
         );
-        
-
-@override Future<EnvoyMasterDechunker> crateApiQlGetDecoder()  { return handler.executeNormal(NormalTask(
-            callFfi: (port_) {
-              
-            final serializer = SseSerializer(generalizedFrbRustBinding);
-            pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 27, port: port_);
-            
-            },
-            codec: 
-        SseCodec(
-          decodeSuccessData: sse_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerEnvoyMasterDechunker,
-          decodeErrorData: null,
-        )
-        ,
-            constMeta: kCrateApiQlGetDecoderConstMeta,
-            argValues: [],
-            apiImpl: this,
-        )); }
-
-
-        TaskConstMeta get kCrateApiQlGetDecoderConstMeta => const TaskConstMeta(
-            debugName: "get_decoder",
-            argNames: [],
+      case 1:
+        return MagicBackupRequestV2_Get(
+          dco_decode_box_autoadd_get_magic_backup_v_2(raw[1]),
         );
-        
-
-@override Future<ArcMutexDecoder> crateApiQrGetQrDecoder()  { return handler.executeNormal(NormalTask(
-            callFfi: (port_) {
-              
-            final serializer = SseSerializer(generalizedFrbRustBinding);
-            pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 28, port: port_);
-            
-            },
-            codec: 
-        SseCodec(
-          decodeSuccessData: sse_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerArcMutexDecoder,
-          decodeErrorData: null,
-        )
-        ,
-            constMeta: kCrateApiQrGetQrDecoderConstMeta,
-            argValues: [],
-            apiImpl: this,
-        )); }
-
-
-        TaskConstMeta get kCrateApiQrGetQrDecoderConstMeta => const TaskConstMeta(
-            debugName: "get_qr_decoder",
-            argNames: [],
+      case 2:
+        return MagicBackupRequestV2_Delete(
+          dco_decode_box_autoadd_delete_magic_backup_v_2(raw[1]),
         );
-        
+      default:
+        throw Exception("unreachable");
+    }
+  }
 
-@override String crateApiQrGreet({required String name })  { return handler.executeSync(SyncTask(
-            callFfi: () {
-              
-            final serializer = SseSerializer(generalizedFrbRustBinding);sse_encode_String(name, serializer);
-            return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 29)!;
-            
-            },
-            codec: 
-        SseCodec(
-          decodeSuccessData: sse_decode_String,
-          decodeErrorData: null,
-        )
-        ,
-            constMeta: kCrateApiQrGreetConstMeta,
-            argValues: [name],
-            apiImpl: this,
-        )); }
-
-
-        TaskConstMeta get kCrateApiQrGreetConstMeta => const TaskConstMeta(
-            debugName: "greet",
-            argNames: ["name"],
+  @protected
+  MagicBackupResponseV2 dco_decode_magic_backup_response_v_2(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    switch (raw[0]) {
+      case 0:
+        return MagicBackupResponseV2_Created();
+      case 1:
+        return MagicBackupResponseV2_Backup(
+          data: dco_decode_list_prim_u_8_strict(raw[1]),
         );
-        
-
-@override Future<void> crateApiQrInitApp()  { return handler.executeNormal(NormalTask(
-            callFfi: (port_) {
-              
-            final serializer = SseSerializer(generalizedFrbRustBinding);
-            pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 30, port: port_);
-            
-            },
-            codec: 
-        SseCodec(
-          decodeSuccessData: sse_decode_unit,
-          decodeErrorData: null,
-        )
-        ,
-            constMeta: kCrateApiQrInitAppConstMeta,
-            argValues: [],
-            apiImpl: this,
-        )); }
-
-
-        TaskConstMeta get kCrateApiQrInitAppConstMeta => const TaskConstMeta(
-            debugName: "init_app",
-            argNames: [],
+      case 2:
+        return MagicBackupResponseV2_Deleted();
+      case 3:
+        return MagicBackupResponseV2_Error(
+          error: dco_decode_String(raw[1]),
         );
-        
+      default:
+        throw Exception("unreachable");
+    }
+  }
 
-@override Future<PrimeBackupFile?> crateApiQlPushBackupChunk({required CollectBackupChunks this_ , required BackupChunk chunk })  { return handler.executeNormal(NormalTask(
-            callFfi: (port_) {
-              
-            final serializer = SseSerializer(generalizedFrbRustBinding);sse_encode_Auto_RefMut_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerCollectBackupChunks(this_, serializer);
-sse_encode_box_autoadd_backup_chunk(chunk, serializer);
-            pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 31, port: port_);
-            
-            },
-            codec: 
-        SseCodec(
-          decodeSuccessData: sse_decode_opt_box_autoadd_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerPrimeBackupFile,
-          decodeErrorData: sse_decode_AnyhowException,
-        )
-        ,
-            constMeta: kCrateApiQlPushBackupChunkConstMeta,
-            argValues: [this_, chunk],
-            apiImpl: this,
-        )); }
+  @protected
+  OnboardingState dco_decode_onboarding_state(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return OnboardingState.values[raw as int];
+  }
 
+  @protected
+  String? dco_decode_opt_String(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return raw == null ? null : dco_decode_String(raw);
+  }
 
-        TaskConstMeta get kCrateApiQlPushBackupChunkConstMeta => const TaskConstMeta(
-            debugName: "push_backup_chunk",
-            argNames: ["this_", "chunk"],
+  @protected
+  PrimeBackupFile?
+      dco_decode_opt_box_autoadd_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerPrimeBackupFile(
+          dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return raw == null
+        ? null
+        : dco_decode_box_autoadd_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerPrimeBackupFile(
+            raw);
+  }
+
+  @protected
+  XidDocument?
+      dco_decode_opt_box_autoadd_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerXIDDocument(
+          dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return raw == null
+        ? null
+        : dco_decode_box_autoadd_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerXIDDocument(
+            raw);
+  }
+
+  @protected
+  PassportMessage? dco_decode_opt_box_autoadd_passport_message(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return raw == null ? null : dco_decode_box_autoadd_passport_message(raw);
+  }
+
+  @protected
+  BigInt? dco_decode_opt_box_autoadd_u_64(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return raw == null ? null : dco_decode_box_autoadd_u_64(raw);
+  }
+
+  @protected
+  int? dco_decode_opt_box_autoadd_u_8(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return raw == null ? null : dco_decode_box_autoadd_u_8(raw);
+  }
+
+  @protected
+  PairingRequest dco_decode_pairing_request(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    final arr = raw as List<dynamic>;
+    if (arr.length != 2)
+      throw Exception('unexpected arr length: expect 2 but see ${arr.length}');
+    return PairingRequest(
+      xidDocument: dco_decode_list_prim_u_8_strict(arr[0]),
+      deviceName: dco_decode_String(arr[1]),
+    );
+  }
+
+  @protected
+  PairingResponse dco_decode_pairing_response(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    final arr = raw as List<dynamic>;
+    if (arr.length != 5)
+      throw Exception('unexpected arr length: expect 5 but see ${arr.length}');
+    return PairingResponse(
+      passportModel: dco_decode_passport_model(arr[0]),
+      passportFirmwareVersion: dco_decode_passport_firmware_version(arr[1]),
+      passportSerial: dco_decode_passport_serial(arr[2]),
+      passportColor: dco_decode_passport_color(arr[3]),
+      onboardingComplete: dco_decode_bool(arr[4]),
+    );
+  }
+
+  @protected
+  PassportColor dco_decode_passport_color(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return PassportColor.values[raw as int];
+  }
+
+  @protected
+  PassportFirmwareVersion dco_decode_passport_firmware_version(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    final arr = raw as List<dynamic>;
+    if (arr.length != 1)
+      throw Exception('unexpected arr length: expect 1 but see ${arr.length}');
+    return PassportFirmwareVersion(
+      field0: dco_decode_String(arr[0]),
+    );
+  }
+
+  @protected
+  PassportMessage dco_decode_passport_message(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    final arr = raw as List<dynamic>;
+    if (arr.length != 3)
+      throw Exception('unexpected arr length: expect 3 but see ${arr.length}');
+    return PassportMessage(
+      message: dco_decode_quantum_link_message(arr[0]),
+      status: dco_decode_device_status(arr[1]),
+      protocolVersion: dco_decode_opt_box_autoadd_u_8(arr[2]),
+    );
+  }
+
+  @protected
+  PassportModel dco_decode_passport_model(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return PassportModel.values[raw as int];
+  }
+
+  @protected
+  PassportSerial dco_decode_passport_serial(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    final arr = raw as List<dynamic>;
+    if (arr.length != 1)
+      throw Exception('unexpected arr length: expect 1 but see ${arr.length}');
+    return PassportSerial(
+      field0: dco_decode_String(arr[0]),
+    );
+  }
+
+  @protected
+  PricePoint dco_decode_price_point(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    final arr = raw as List<dynamic>;
+    if (arr.length != 2)
+      throw Exception('unexpected arr length: expect 2 but see ${arr.length}');
+    return PricePoint(
+      rate: dco_decode_f_32(arr[0]),
+      timestamp: dco_decode_u_64(arr[1]),
+    );
+  }
+
+  @protected
+  PrimeMagicBackupEnabled dco_decode_prime_magic_backup_enabled(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    final arr = raw as List<dynamic>;
+    if (arr.length != 2)
+      throw Exception('unexpected arr length: expect 2 but see ${arr.length}');
+    return PrimeMagicBackupEnabled(
+      enabled: dco_decode_bool(arr[0]),
+      seedFingerprint: dco_decode_seed_fingerprint(arr[1]),
+    );
+  }
+
+  @protected
+  PrimeMagicBackupStatusRequest dco_decode_prime_magic_backup_status_request(
+      dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    final arr = raw as List<dynamic>;
+    if (arr.length != 1)
+      throw Exception('unexpected arr length: expect 1 but see ${arr.length}');
+    return PrimeMagicBackupStatusRequest(
+      seedFingerprint: dco_decode_seed_fingerprint(arr[0]),
+    );
+  }
+
+  @protected
+  PrimeMagicBackupStatusResponse dco_decode_prime_magic_backup_status_response(
+      dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    final arr = raw as List<dynamic>;
+    if (arr.length != 1)
+      throw Exception('unexpected arr length: expect 1 but see ${arr.length}');
+    return PrimeMagicBackupStatusResponse(
+      shardBackupFound: dco_decode_bool(arr[0]),
+    );
+  }
+
+  @protected
+  QrDecoderStatus dco_decode_qr_decoder_status(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    final arr = raw as List<dynamic>;
+    if (arr.length != 2)
+      throw Exception('unexpected arr length: expect 2 but see ${arr.length}');
+    return QrDecoderStatus(
+      progress: dco_decode_f_64(arr[0]),
+      payload:
+          dco_decode_opt_box_autoadd_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerXIDDocument(
+              arr[1]),
+    );
+  }
+
+  @protected
+  QuantumLinkMessage dco_decode_quantum_link_message(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    switch (raw[0]) {
+      case 0:
+        return QuantumLinkMessage_ExchangeRate(
+          dco_decode_box_autoadd_exchange_rate(raw[1]),
         );
-        
-
-@override Future<Uint8List> crateApiQlSerializeQlIdentity({required QuantumLinkIdentity quantumLinkIdentity })  { return handler.executeNormal(NormalTask(
-            callFfi: (port_) {
-              
-            final serializer = SseSerializer(generalizedFrbRustBinding);sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerQuantumLinkIdentity(quantumLinkIdentity, serializer);
-            pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 32, port: port_);
-            
-            },
-            codec: 
-        SseCodec(
-          decodeSuccessData: sse_decode_list_prim_u_8_strict,
-          decodeErrorData: sse_decode_AnyhowException,
-        )
-        ,
-            constMeta: kCrateApiQlSerializeQlIdentityConstMeta,
-            argValues: [quantumLinkIdentity],
-            apiImpl: this,
-        )); }
-
-
-        TaskConstMeta get kCrateApiQlSerializeQlIdentityConstMeta => const TaskConstMeta(
-            debugName: "serialize_ql_identity",
-            argNames: ["quantumLinkIdentity"],
+      case 1:
+        return QuantumLinkMessage_ExchangeRateHistory(
+          dco_decode_box_autoadd_exchange_rate_history(raw[1]),
         );
-        
-
-@override Future<Uint8List> crateApiQlSerializeXid({required QuantumLinkIdentity quantumLinkIdentity })  { return handler.executeNormal(NormalTask(
-            callFfi: (port_) {
-              
-            final serializer = SseSerializer(generalizedFrbRustBinding);sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerQuantumLinkIdentity(quantumLinkIdentity, serializer);
-            pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 33, port: port_);
-            
-            },
-            codec: 
-        SseCodec(
-          decodeSuccessData: sse_decode_list_prim_u_8_strict,
-          decodeErrorData: null,
-        )
-        ,
-            constMeta: kCrateApiQlSerializeXidConstMeta,
-            argValues: [quantumLinkIdentity],
-            apiImpl: this,
-        )); }
-
-
-        TaskConstMeta get kCrateApiQlSerializeXidConstMeta => const TaskConstMeta(
-            debugName: "serialize_xid",
-            argNames: ["quantumLinkIdentity"],
+      case 2:
+        return QuantumLinkMessage_FirmwareUpdateCheckRequest(
+          dco_decode_box_autoadd_firmware_update_check_request(raw[1]),
         );
-        
-
-@override Future<Uint8List> crateApiQlSerializeXidDocument({required XidDocument xidDocument })  { return handler.executeNormal(NormalTask(
-            callFfi: (port_) {
-              
-            final serializer = SseSerializer(generalizedFrbRustBinding);sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerXIDDocument(xidDocument, serializer);
-            pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 34, port: port_);
-            
-            },
-            codec: 
-        SseCodec(
-          decodeSuccessData: sse_decode_list_prim_u_8_strict,
-          decodeErrorData: sse_decode_AnyhowException,
-        )
-        ,
-            constMeta: kCrateApiQlSerializeXidDocumentConstMeta,
-            argValues: [xidDocument],
-            apiImpl: this,
-        )); }
-
-
-        TaskConstMeta get kCrateApiQlSerializeXidDocumentConstMeta => const TaskConstMeta(
-            debugName: "serialize_xid_document",
-            argNames: ["xidDocument"],
+      case 3:
+        return QuantumLinkMessage_FirmwareUpdateCheckResponse(
+          dco_decode_box_autoadd_firmware_update_check_response(raw[1]),
         );
-        
-
-RustArcIncrementStrongCountFnType get rust_arc_increment_strong_count_ArcMutexDecoder => wire.rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerArcMutexDecoder;
-
-RustArcDecrementStrongCountFnType get rust_arc_decrement_strong_count_ArcMutexDecoder => wire.rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerArcMutexDecoder;
-
-RustArcIncrementStrongCountFnType get rust_arc_increment_strong_count_CollectBackupChunks => wire.rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerCollectBackupChunks;
-
-RustArcDecrementStrongCountFnType get rust_arc_decrement_strong_count_CollectBackupChunks => wire.rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerCollectBackupChunks;
-
-RustArcIncrementStrongCountFnType get rust_arc_increment_strong_count_EnvoyAridCache => wire.rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerEnvoyARIDCache;
-
-RustArcDecrementStrongCountFnType get rust_arc_decrement_strong_count_EnvoyAridCache => wire.rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerEnvoyARIDCache;
-
-RustArcIncrementStrongCountFnType get rust_arc_increment_strong_count_EnvoyMasterDechunker => wire.rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerEnvoyMasterDechunker;
-
-RustArcDecrementStrongCountFnType get rust_arc_decrement_strong_count_EnvoyMasterDechunker => wire.rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerEnvoyMasterDechunker;
-
-RustArcIncrementStrongCountFnType get rust_arc_increment_strong_count_PrimeBackupFile => wire.rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerPrimeBackupFile;
-
-RustArcDecrementStrongCountFnType get rust_arc_decrement_strong_count_PrimeBackupFile => wire.rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerPrimeBackupFile;
-
-RustArcIncrementStrongCountFnType get rust_arc_increment_strong_count_QuantumLinkIdentity => wire.rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerQuantumLinkIdentity;
-
-RustArcDecrementStrongCountFnType get rust_arc_decrement_strong_count_QuantumLinkIdentity => wire.rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerQuantumLinkIdentity;
-
-RustArcIncrementStrongCountFnType get rust_arc_increment_strong_count_XidDocument => wire.rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerXIDDocument;
-
-RustArcDecrementStrongCountFnType get rust_arc_decrement_strong_count_XidDocument => wire.rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerXIDDocument;
-
-
-
-                  @protected AnyhowException dco_decode_AnyhowException(dynamic raw){ // Codec=Dco (DartCObject based), see doc to use other codecs
-return AnyhowException(raw as String); }
-
-@protected ArcMutexDecoder dco_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerArcMutexDecoder(dynamic raw){ // Codec=Dco (DartCObject based), see doc to use other codecs
-return ArcMutexDecoderImpl.frbInternalDcoDecode(raw as List<dynamic>); }
-
-@protected CollectBackupChunks dco_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerCollectBackupChunks(dynamic raw){ // Codec=Dco (DartCObject based), see doc to use other codecs
-return CollectBackupChunksImpl.frbInternalDcoDecode(raw as List<dynamic>); }
-
-@protected EnvoyAridCache dco_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerEnvoyARIDCache(dynamic raw){ // Codec=Dco (DartCObject based), see doc to use other codecs
-return EnvoyAridCacheImpl.frbInternalDcoDecode(raw as List<dynamic>); }
-
-@protected EnvoyMasterDechunker dco_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerEnvoyMasterDechunker(dynamic raw){ // Codec=Dco (DartCObject based), see doc to use other codecs
-return EnvoyMasterDechunkerImpl.frbInternalDcoDecode(raw as List<dynamic>); }
-
-@protected PrimeBackupFile dco_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerPrimeBackupFile(dynamic raw){ // Codec=Dco (DartCObject based), see doc to use other codecs
-return PrimeBackupFileImpl.frbInternalDcoDecode(raw as List<dynamic>); }
-
-@protected QuantumLinkIdentity dco_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerQuantumLinkIdentity(dynamic raw){ // Codec=Dco (DartCObject based), see doc to use other codecs
-return QuantumLinkIdentityImpl.frbInternalDcoDecode(raw as List<dynamic>); }
-
-@protected XidDocument dco_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerXIDDocument(dynamic raw){ // Codec=Dco (DartCObject based), see doc to use other codecs
-return XidDocumentImpl.frbInternalDcoDecode(raw as List<dynamic>); }
-
-@protected CollectBackupChunks dco_decode_Auto_RefMut_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerCollectBackupChunks(dynamic raw){ // Codec=Dco (DartCObject based), see doc to use other codecs
-return CollectBackupChunksImpl.frbInternalDcoDecode(raw as List<dynamic>); }
-
-@protected EnvoyAridCache dco_decode_Auto_RefMut_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerEnvoyARIDCache(dynamic raw){ // Codec=Dco (DartCObject based), see doc to use other codecs
-return EnvoyAridCacheImpl.frbInternalDcoDecode(raw as List<dynamic>); }
-
-@protected EnvoyMasterDechunker dco_decode_Auto_RefMut_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerEnvoyMasterDechunker(dynamic raw){ // Codec=Dco (DartCObject based), see doc to use other codecs
-return EnvoyMasterDechunkerImpl.frbInternalDcoDecode(raw as List<dynamic>); }
-
-@protected PrimeBackupFile dco_decode_Auto_RefMut_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerPrimeBackupFile(dynamic raw){ // Codec=Dco (DartCObject based), see doc to use other codecs
-return PrimeBackupFileImpl.frbInternalDcoDecode(raw as List<dynamic>); }
-
-@protected ArcMutexDecoder dco_decode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerArcMutexDecoder(dynamic raw){ // Codec=Dco (DartCObject based), see doc to use other codecs
-return ArcMutexDecoderImpl.frbInternalDcoDecode(raw as List<dynamic>); }
-
-@protected CollectBackupChunks dco_decode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerCollectBackupChunks(dynamic raw){ // Codec=Dco (DartCObject based), see doc to use other codecs
-return CollectBackupChunksImpl.frbInternalDcoDecode(raw as List<dynamic>); }
-
-@protected PrimeBackupFile dco_decode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerPrimeBackupFile(dynamic raw){ // Codec=Dco (DartCObject based), see doc to use other codecs
-return PrimeBackupFileImpl.frbInternalDcoDecode(raw as List<dynamic>); }
-
-@protected QuantumLinkIdentity dco_decode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerQuantumLinkIdentity(dynamic raw){ // Codec=Dco (DartCObject based), see doc to use other codecs
-return QuantumLinkIdentityImpl.frbInternalDcoDecode(raw as List<dynamic>); }
-
-@protected XidDocument dco_decode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerXIDDocument(dynamic raw){ // Codec=Dco (DartCObject based), see doc to use other codecs
-return XidDocumentImpl.frbInternalDcoDecode(raw as List<dynamic>); }
-
-@protected ArcMutexDecoder dco_decode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerArcMutexDecoder(dynamic raw){ // Codec=Dco (DartCObject based), see doc to use other codecs
-return ArcMutexDecoderImpl.frbInternalDcoDecode(raw as List<dynamic>); }
-
-@protected CollectBackupChunks dco_decode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerCollectBackupChunks(dynamic raw){ // Codec=Dco (DartCObject based), see doc to use other codecs
-return CollectBackupChunksImpl.frbInternalDcoDecode(raw as List<dynamic>); }
-
-@protected EnvoyAridCache dco_decode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerEnvoyARIDCache(dynamic raw){ // Codec=Dco (DartCObject based), see doc to use other codecs
-return EnvoyAridCacheImpl.frbInternalDcoDecode(raw as List<dynamic>); }
-
-@protected EnvoyMasterDechunker dco_decode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerEnvoyMasterDechunker(dynamic raw){ // Codec=Dco (DartCObject based), see doc to use other codecs
-return EnvoyMasterDechunkerImpl.frbInternalDcoDecode(raw as List<dynamic>); }
-
-@protected PrimeBackupFile dco_decode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerPrimeBackupFile(dynamic raw){ // Codec=Dco (DartCObject based), see doc to use other codecs
-return PrimeBackupFileImpl.frbInternalDcoDecode(raw as List<dynamic>); }
-
-@protected QuantumLinkIdentity dco_decode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerQuantumLinkIdentity(dynamic raw){ // Codec=Dco (DartCObject based), see doc to use other codecs
-return QuantumLinkIdentityImpl.frbInternalDcoDecode(raw as List<dynamic>); }
-
-@protected XidDocument dco_decode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerXIDDocument(dynamic raw){ // Codec=Dco (DartCObject based), see doc to use other codecs
-return XidDocumentImpl.frbInternalDcoDecode(raw as List<dynamic>); }
-
-@protected String dco_decode_String(dynamic raw){ // Codec=Dco (DartCObject based), see doc to use other codecs
-return raw as String; }
-
-@protected AccountUpdate dco_decode_account_update(dynamic raw){ // Codec=Dco (DartCObject based), see doc to use other codecs
-final arr = raw as List<dynamic>;
-                if (arr.length != 2) throw Exception('unexpected arr length: expect 2 but see ${arr.length}');
-                return AccountUpdate(accountId: dco_decode_String(arr[0]),
-update: dco_decode_list_prim_u_8_strict(arr[1]),); }
-
-@protected ApplyPassphrase dco_decode_apply_passphrase(dynamic raw){ // Codec=Dco (DartCObject based), see doc to use other codecs
-final arr = raw as List<dynamic>;
-                if (arr.length != 1) throw Exception('unexpected arr length: expect 1 but see ${arr.length}');
-                return ApplyPassphrase(fingerprint: dco_decode_opt_String(arr[0]),); }
-
-@protected BackupChunk dco_decode_backup_chunk(dynamic raw){ // Codec=Dco (DartCObject based), see doc to use other codecs
-final arr = raw as List<dynamic>;
-                if (arr.length != 3) throw Exception('unexpected arr length: expect 3 but see ${arr.length}');
-                return BackupChunk(chunkIndex: dco_decode_u_32(arr[0]),
-totalChunks: dco_decode_u_32(arr[1]),
-data: dco_decode_list_prim_u_8_strict(arr[2]),); }
-
-@protected BackupMetadata dco_decode_backup_metadata(dynamic raw){ // Codec=Dco (DartCObject based), see doc to use other codecs
-final arr = raw as List<dynamic>;
-                if (arr.length != 1) throw Exception('unexpected arr length: expect 1 but see ${arr.length}');
-                return BackupMetadata(totalChunks: dco_decode_u_32(arr[0]),); }
-
-@protected BackupShardRequest dco_decode_backup_shard_request(dynamic raw){ // Codec=Dco (DartCObject based), see doc to use other codecs
-final arr = raw as List<dynamic>;
-                if (arr.length != 1) throw Exception('unexpected arr length: expect 1 but see ${arr.length}');
-                return BackupShardRequest(shard: dco_decode_shard(arr[0]),); }
-
-@protected BackupShardResponse dco_decode_backup_shard_response(dynamic raw){ // Codec=Dco (DartCObject based), see doc to use other codecs
-switch (raw[0]) {
-                case 0: return BackupShardResponse_Success();
-case 1: return BackupShardResponse_Error(error: dco_decode_String(raw[1]),);
-                default: throw Exception("unreachable");
-            } }
-
-@protected bool dco_decode_bool(dynamic raw){ // Codec=Dco (DartCObject based), see doc to use other codecs
-return raw as bool; }
-
-@protected PrimeBackupFile dco_decode_box_autoadd_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerPrimeBackupFile(dynamic raw){ // Codec=Dco (DartCObject based), see doc to use other codecs
-return dco_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerPrimeBackupFile(raw); }
-
-@protected XidDocument dco_decode_box_autoadd_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerXIDDocument(dynamic raw){ // Codec=Dco (DartCObject based), see doc to use other codecs
-return dco_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerXIDDocument(raw); }
-
-@protected AccountUpdate dco_decode_box_autoadd_account_update(dynamic raw){ // Codec=Dco (DartCObject based), see doc to use other codecs
-return dco_decode_account_update(raw); }
-
-@protected ApplyPassphrase dco_decode_box_autoadd_apply_passphrase(dynamic raw){ // Codec=Dco (DartCObject based), see doc to use other codecs
-return dco_decode_apply_passphrase(raw); }
-
-@protected BackupChunk dco_decode_box_autoadd_backup_chunk(dynamic raw){ // Codec=Dco (DartCObject based), see doc to use other codecs
-return dco_decode_backup_chunk(raw); }
-
-@protected BackupMetadata dco_decode_box_autoadd_backup_metadata(dynamic raw){ // Codec=Dco (DartCObject based), see doc to use other codecs
-return dco_decode_backup_metadata(raw); }
-
-@protected BackupShardRequest dco_decode_box_autoadd_backup_shard_request(dynamic raw){ // Codec=Dco (DartCObject based), see doc to use other codecs
-return dco_decode_backup_shard_request(raw); }
-
-@protected BackupShardResponse dco_decode_box_autoadd_backup_shard_response(dynamic raw){ // Codec=Dco (DartCObject based), see doc to use other codecs
-return dco_decode_backup_shard_response(raw); }
-
-@protected BroadcastTransaction dco_decode_box_autoadd_broadcast_transaction(dynamic raw){ // Codec=Dco (DartCObject based), see doc to use other codecs
-return dco_decode_broadcast_transaction(raw); }
-
-@protected ChallengeRequest dco_decode_box_autoadd_challenge_request(dynamic raw){ // Codec=Dco (DartCObject based), see doc to use other codecs
-return dco_decode_challenge_request(raw); }
-
-@protected ChallengeResponseResult dco_decode_box_autoadd_challenge_response_result(dynamic raw){ // Codec=Dco (DartCObject based), see doc to use other codecs
-return dco_decode_challenge_response_result(raw); }
-
-@protected CreateMagicBackupEvent dco_decode_box_autoadd_create_magic_backup_event(dynamic raw){ // Codec=Dco (DartCObject based), see doc to use other codecs
-return dco_decode_create_magic_backup_event(raw); }
-
-@protected CreateMagicBackupResult dco_decode_box_autoadd_create_magic_backup_result(dynamic raw){ // Codec=Dco (DartCObject based), see doc to use other codecs
-return dco_decode_create_magic_backup_result(raw); }
-
-@protected CreateMagicBackupV2 dco_decode_box_autoadd_create_magic_backup_v_2(dynamic raw){ // Codec=Dco (DartCObject based), see doc to use other codecs
-return dco_decode_create_magic_backup_v_2(raw); }
-
-@protected DeleteMagicBackupV2 dco_decode_box_autoadd_delete_magic_backup_v_2(dynamic raw){ // Codec=Dco (DartCObject based), see doc to use other codecs
-return dco_decode_delete_magic_backup_v_2(raw); }
-
-@protected DeviceStatus dco_decode_box_autoadd_device_status(dynamic raw){ // Codec=Dco (DartCObject based), see doc to use other codecs
-return dco_decode_device_status(raw); }
-
-@protected EnvoyMagicBackupEnabledRequest dco_decode_box_autoadd_envoy_magic_backup_enabled_request(dynamic raw){ // Codec=Dco (DartCObject based), see doc to use other codecs
-return dco_decode_envoy_magic_backup_enabled_request(raw); }
-
-@protected EnvoyMagicBackupEnabledResponse dco_decode_box_autoadd_envoy_magic_backup_enabled_response(dynamic raw){ // Codec=Dco (DartCObject based), see doc to use other codecs
-return dco_decode_envoy_magic_backup_enabled_response(raw); }
-
-@protected EnvoyMessage dco_decode_box_autoadd_envoy_message(dynamic raw){ // Codec=Dco (DartCObject based), see doc to use other codecs
-return dco_decode_envoy_message(raw); }
-
-@protected EnvoyStatus dco_decode_box_autoadd_envoy_status(dynamic raw){ // Codec=Dco (DartCObject based), see doc to use other codecs
-return dco_decode_envoy_status(raw); }
-
-@protected ExchangeRate dco_decode_box_autoadd_exchange_rate(dynamic raw){ // Codec=Dco (DartCObject based), see doc to use other codecs
-return dco_decode_exchange_rate(raw); }
-
-@protected ExchangeRateHistory dco_decode_box_autoadd_exchange_rate_history(dynamic raw){ // Codec=Dco (DartCObject based), see doc to use other codecs
-return dco_decode_exchange_rate_history(raw); }
-
-@protected FirmwareChunk dco_decode_box_autoadd_firmware_chunk(dynamic raw){ // Codec=Dco (DartCObject based), see doc to use other codecs
-return dco_decode_firmware_chunk(raw); }
-
-@protected FirmwareFetchEvent dco_decode_box_autoadd_firmware_fetch_event(dynamic raw){ // Codec=Dco (DartCObject based), see doc to use other codecs
-return dco_decode_firmware_fetch_event(raw); }
-
-@protected FirmwareFetchRequest dco_decode_box_autoadd_firmware_fetch_request(dynamic raw){ // Codec=Dco (DartCObject based), see doc to use other codecs
-return dco_decode_firmware_fetch_request(raw); }
-
-@protected FirmwareInstallEvent dco_decode_box_autoadd_firmware_install_event(dynamic raw){ // Codec=Dco (DartCObject based), see doc to use other codecs
-return dco_decode_firmware_install_event(raw); }
-
-@protected FirmwareUpdateAvailable dco_decode_box_autoadd_firmware_update_available(dynamic raw){ // Codec=Dco (DartCObject based), see doc to use other codecs
-return dco_decode_firmware_update_available(raw); }
-
-@protected FirmwareUpdateCheckRequest dco_decode_box_autoadd_firmware_update_check_request(dynamic raw){ // Codec=Dco (DartCObject based), see doc to use other codecs
-return dco_decode_firmware_update_check_request(raw); }
-
-@protected FirmwareUpdateCheckResponse dco_decode_box_autoadd_firmware_update_check_response(dynamic raw){ // Codec=Dco (DartCObject based), see doc to use other codecs
-return dco_decode_firmware_update_check_response(raw); }
-
-@protected GetMagicBackupV2 dco_decode_box_autoadd_get_magic_backup_v_2(dynamic raw){ // Codec=Dco (DartCObject based), see doc to use other codecs
-return dco_decode_get_magic_backup_v_2(raw); }
-
-@protected Heartbeat dco_decode_box_autoadd_heartbeat(dynamic raw){ // Codec=Dco (DartCObject based), see doc to use other codecs
-return dco_decode_heartbeat(raw); }
-
-@protected MagicBackupRequestV2 dco_decode_box_autoadd_magic_backup_request_v_2(dynamic raw){ // Codec=Dco (DartCObject based), see doc to use other codecs
-return dco_decode_magic_backup_request_v_2(raw); }
-
-@protected MagicBackupResponseV2 dco_decode_box_autoadd_magic_backup_response_v_2(dynamic raw){ // Codec=Dco (DartCObject based), see doc to use other codecs
-return dco_decode_magic_backup_response_v_2(raw); }
-
-@protected PairingRequest dco_decode_box_autoadd_pairing_request(dynamic raw){ // Codec=Dco (DartCObject based), see doc to use other codecs
-return dco_decode_pairing_request(raw); }
-
-@protected PairingResponse dco_decode_box_autoadd_pairing_response(dynamic raw){ // Codec=Dco (DartCObject based), see doc to use other codecs
-return dco_decode_pairing_response(raw); }
-
-@protected PassportMessage dco_decode_box_autoadd_passport_message(dynamic raw){ // Codec=Dco (DartCObject based), see doc to use other codecs
-return dco_decode_passport_message(raw); }
-
-@protected PrimeMagicBackupEnabled dco_decode_box_autoadd_prime_magic_backup_enabled(dynamic raw){ // Codec=Dco (DartCObject based), see doc to use other codecs
-return dco_decode_prime_magic_backup_enabled(raw); }
-
-@protected PrimeMagicBackupStatusRequest dco_decode_box_autoadd_prime_magic_backup_status_request(dynamic raw){ // Codec=Dco (DartCObject based), see doc to use other codecs
-return dco_decode_prime_magic_backup_status_request(raw); }
-
-@protected PrimeMagicBackupStatusResponse dco_decode_box_autoadd_prime_magic_backup_status_response(dynamic raw){ // Codec=Dco (DartCObject based), see doc to use other codecs
-return dco_decode_prime_magic_backup_status_response(raw); }
-
-@protected RestoreMagicBackupEvent dco_decode_box_autoadd_restore_magic_backup_event(dynamic raw){ // Codec=Dco (DartCObject based), see doc to use other codecs
-return dco_decode_restore_magic_backup_event(raw); }
-
-@protected RestoreMagicBackupRequest dco_decode_box_autoadd_restore_magic_backup_request(dynamic raw){ // Codec=Dco (DartCObject based), see doc to use other codecs
-return dco_decode_restore_magic_backup_request(raw); }
-
-@protected RestoreMagicBackupResult dco_decode_box_autoadd_restore_magic_backup_result(dynamic raw){ // Codec=Dco (DartCObject based), see doc to use other codecs
-return dco_decode_restore_magic_backup_result(raw); }
-
-@protected RestoreShardRequest dco_decode_box_autoadd_restore_shard_request(dynamic raw){ // Codec=Dco (DartCObject based), see doc to use other codecs
-return dco_decode_restore_shard_request(raw); }
-
-@protected RestoreShardResponse dco_decode_box_autoadd_restore_shard_response(dynamic raw){ // Codec=Dco (DartCObject based), see doc to use other codecs
-return dco_decode_restore_shard_response(raw); }
-
-@protected SecurityCheck dco_decode_box_autoadd_security_check(dynamic raw){ // Codec=Dco (DartCObject based), see doc to use other codecs
-return dco_decode_security_check(raw); }
-
-@protected SeedFingerprint dco_decode_box_autoadd_seed_fingerprint(dynamic raw){ // Codec=Dco (DartCObject based), see doc to use other codecs
-return dco_decode_seed_fingerprint(raw); }
-
-@protected Shard dco_decode_box_autoadd_shard(dynamic raw){ // Codec=Dco (DartCObject based), see doc to use other codecs
-return dco_decode_shard(raw); }
-
-@protected SignPsbt dco_decode_box_autoadd_sign_psbt(dynamic raw){ // Codec=Dco (DartCObject based), see doc to use other codecs
-return dco_decode_sign_psbt(raw); }
-
-@protected StartMagicBackup dco_decode_box_autoadd_start_magic_backup(dynamic raw){ // Codec=Dco (DartCObject based), see doc to use other codecs
-return dco_decode_start_magic_backup(raw); }
-
-@protected TimezoneRequest dco_decode_box_autoadd_timezone_request(dynamic raw){ // Codec=Dco (DartCObject based), see doc to use other codecs
-return dco_decode_timezone_request(raw); }
-
-@protected TimezoneResponse dco_decode_box_autoadd_timezone_response(dynamic raw){ // Codec=Dco (DartCObject based), see doc to use other codecs
-return dco_decode_timezone_response(raw); }
-
-@protected BigInt dco_decode_box_autoadd_u_64(dynamic raw){ // Codec=Dco (DartCObject based), see doc to use other codecs
-return dco_decode_u_64(raw); }
-
-@protected int dco_decode_box_autoadd_u_8(dynamic raw){ // Codec=Dco (DartCObject based), see doc to use other codecs
-return raw as int; }
-
-@protected UnpairingRequest dco_decode_box_autoadd_unpairing_request(dynamic raw){ // Codec=Dco (DartCObject based), see doc to use other codecs
-return dco_decode_unpairing_request(raw); }
-
-@protected UnpairingResponse dco_decode_box_autoadd_unpairing_response(dynamic raw){ // Codec=Dco (DartCObject based), see doc to use other codecs
-return dco_decode_unpairing_response(raw); }
-
-@protected VerificationResult dco_decode_box_autoadd_verification_result(dynamic raw){ // Codec=Dco (DartCObject based), see doc to use other codecs
-return dco_decode_verification_result(raw); }
-
-@protected BroadcastTransaction dco_decode_broadcast_transaction(dynamic raw){ // Codec=Dco (DartCObject based), see doc to use other codecs
-final arr = raw as List<dynamic>;
-                if (arr.length != 2) throw Exception('unexpected arr length: expect 2 but see ${arr.length}');
-                return BroadcastTransaction(accountId: dco_decode_String(arr[0]),
-psbt: dco_decode_list_prim_u_8_strict(arr[1]),); }
-
-@protected ChallengeRequest dco_decode_challenge_request(dynamic raw){ // Codec=Dco (DartCObject based), see doc to use other codecs
-final arr = raw as List<dynamic>;
-                if (arr.length != 1) throw Exception('unexpected arr length: expect 1 but see ${arr.length}');
-                return ChallengeRequest(data: dco_decode_list_prim_u_8_strict(arr[0]),); }
-
-@protected ChallengeResponseResult dco_decode_challenge_response_result(dynamic raw){ // Codec=Dco (DartCObject based), see doc to use other codecs
-switch (raw[0]) {
-                case 0: return ChallengeResponseResult_Success(data: dco_decode_list_prim_u_8_strict(raw[1]),);
-case 1: return ChallengeResponseResult_Error(error: dco_decode_String(raw[1]),);
-                default: throw Exception("unreachable");
-            } }
-
-@protected CreateMagicBackupEvent dco_decode_create_magic_backup_event(dynamic raw){ // Codec=Dco (DartCObject based), see doc to use other codecs
-switch (raw[0]) {
-                case 0: return CreateMagicBackupEvent_Start(dco_decode_box_autoadd_start_magic_backup(raw[1]),);
-case 1: return CreateMagicBackupEvent_Chunk(dco_decode_box_autoadd_backup_chunk(raw[1]),);
-                default: throw Exception("unreachable");
-            } }
-
-@protected CreateMagicBackupResult dco_decode_create_magic_backup_result(dynamic raw){ // Codec=Dco (DartCObject based), see doc to use other codecs
-switch (raw[0]) {
-                case 0: return CreateMagicBackupResult_Success();
-case 1: return CreateMagicBackupResult_Error(error: dco_decode_String(raw[1]),);
-                default: throw Exception("unreachable");
-            } }
-
-@protected CreateMagicBackupV2 dco_decode_create_magic_backup_v_2(dynamic raw){ // Codec=Dco (DartCObject based), see doc to use other codecs
-final arr = raw as List<dynamic>;
-                if (arr.length != 5) throw Exception('unexpected arr length: expect 5 but see ${arr.length}');
-                return CreateMagicBackupV2(timestamp: dco_decode_u_64(arr[0]),
-hash: dco_decode_list_prim_u_8_strict(arr[1]),
-pubkey: dco_decode_list_prim_u_8_strict(arr[2]),
-data: dco_decode_list_prim_u_8_strict(arr[3]),
-clientSignature: dco_decode_list_prim_u_8_strict(arr[4]),); }
-
-@protected DecoderStatus dco_decode_decoder_status(dynamic raw){ // Codec=Dco (DartCObject based), see doc to use other codecs
-final arr = raw as List<dynamic>;
-                if (arr.length != 2) throw Exception('unexpected arr length: expect 2 but see ${arr.length}');
-                return DecoderStatus(progress: dco_decode_f_64(arr[0]),
-payload: dco_decode_opt_box_autoadd_passport_message(arr[1]),); }
-
-@protected DeleteMagicBackupV2 dco_decode_delete_magic_backup_v_2(dynamic raw){ // Codec=Dco (DartCObject based), see doc to use other codecs
-final arr = raw as List<dynamic>;
-                if (arr.length != 3) throw Exception('unexpected arr length: expect 3 but see ${arr.length}');
-                return DeleteMagicBackupV2(key: dco_decode_list_prim_u_8_strict(arr[0]),
-timestamp: dco_decode_u_64(arr[1]),
-signature: dco_decode_list_prim_u_8_strict(arr[2]),); }
-
-@protected DeviceStatus dco_decode_device_status(dynamic raw){ // Codec=Dco (DartCObject based), see doc to use other codecs
-final arr = raw as List<dynamic>;
-                if (arr.length != 2) throw Exception('unexpected arr length: expect 2 but see ${arr.length}');
-                return DeviceStatus(version: dco_decode_String(arr[0]),
-batteryLevel: dco_decode_u_8(arr[1]),); }
-
-@protected EnvoyMagicBackupEnabledRequest dco_decode_envoy_magic_backup_enabled_request(dynamic raw){ // Codec=Dco (DartCObject based), see doc to use other codecs
-final arr = raw as List<dynamic>;
-                if (arr.length != 0) throw Exception('unexpected arr length: expect 0 but see ${arr.length}');
-                return EnvoyMagicBackupEnabledRequest(); }
-
-@protected EnvoyMagicBackupEnabledResponse dco_decode_envoy_magic_backup_enabled_response(dynamic raw){ // Codec=Dco (DartCObject based), see doc to use other codecs
-final arr = raw as List<dynamic>;
-                if (arr.length != 1) throw Exception('unexpected arr length: expect 1 but see ${arr.length}');
-                return EnvoyMagicBackupEnabledResponse(enabled: dco_decode_bool(arr[0]),); }
-
-@protected EnvoyMessage dco_decode_envoy_message(dynamic raw){ // Codec=Dco (DartCObject based), see doc to use other codecs
-final arr = raw as List<dynamic>;
-                if (arr.length != 3) throw Exception('unexpected arr length: expect 3 but see ${arr.length}');
-                return EnvoyMessage(message: dco_decode_quantum_link_message(arr[0]),
-timestamp: dco_decode_u_32(arr[1]),
-protocolVersion: dco_decode_opt_box_autoadd_u_8(arr[2]),); }
-
-@protected EnvoyStatus dco_decode_envoy_status(dynamic raw){ // Codec=Dco (DartCObject based), see doc to use other codecs
-final arr = raw as List<dynamic>;
-                if (arr.length != 1) throw Exception('unexpected arr length: expect 1 but see ${arr.length}');
-                return EnvoyStatus(version: dco_decode_String(arr[0]),); }
-
-@protected ExchangeRate dco_decode_exchange_rate(dynamic raw){ // Codec=Dco (DartCObject based), see doc to use other codecs
-final arr = raw as List<dynamic>;
-                if (arr.length != 3) throw Exception('unexpected arr length: expect 3 but see ${arr.length}');
-                return ExchangeRate(currencyCode: dco_decode_String(arr[0]),
-rate: dco_decode_f_32(arr[1]),
-timestamp: dco_decode_u_64(arr[2]),); }
-
-@protected ExchangeRateHistory dco_decode_exchange_rate_history(dynamic raw){ // Codec=Dco (DartCObject based), see doc to use other codecs
-final arr = raw as List<dynamic>;
-                if (arr.length != 2) throw Exception('unexpected arr length: expect 2 but see ${arr.length}');
-                return ExchangeRateHistory(history: dco_decode_list_price_point(arr[0]),
-currencyCode: dco_decode_String(arr[1]),); }
-
-@protected double dco_decode_f_32(dynamic raw){ // Codec=Dco (DartCObject based), see doc to use other codecs
-return raw as double; }
-
-@protected double dco_decode_f_64(dynamic raw){ // Codec=Dco (DartCObject based), see doc to use other codecs
-return raw as double; }
-
-@protected FirmwareChunk dco_decode_firmware_chunk(dynamic raw){ // Codec=Dco (DartCObject based), see doc to use other codecs
-final arr = raw as List<dynamic>;
-                if (arr.length != 5) throw Exception('unexpected arr length: expect 5 but see ${arr.length}');
-                return FirmwareChunk(patchIndex: dco_decode_u_8(arr[0]),
-totalPatches: dco_decode_u_8(arr[1]),
-chunkIndex: dco_decode_u_16(arr[2]),
-totalChunks: dco_decode_u_16(arr[3]),
-data: dco_decode_list_prim_u_8_strict(arr[4]),); }
-
-@protected FirmwareFetchEvent dco_decode_firmware_fetch_event(dynamic raw){ // Codec=Dco (DartCObject based), see doc to use other codecs
-switch (raw[0]) {
-                case 0: return FirmwareFetchEvent_UpdateNotAvailable();
-case 1: return FirmwareFetchEvent_Starting(dco_decode_box_autoadd_firmware_update_available(raw[1]),);
-case 2: return FirmwareFetchEvent_Downloading();
-case 3: return FirmwareFetchEvent_Chunk(dco_decode_box_autoadd_firmware_chunk(raw[1]),);
-case 4: return FirmwareFetchEvent_Error(error: dco_decode_String(raw[1]),);
-                default: throw Exception("unreachable");
-            } }
-
-@protected FirmwareFetchRequest dco_decode_firmware_fetch_request(dynamic raw){ // Codec=Dco (DartCObject based), see doc to use other codecs
-final arr = raw as List<dynamic>;
-                if (arr.length != 2) throw Exception('unexpected arr length: expect 2 but see ${arr.length}');
-                return FirmwareFetchRequest(currentVersion: dco_decode_String(arr[0]),
-chunkOffset: dco_decode_opt_box_autoadd_u_64(arr[1]),); }
-
-@protected FirmwareInstallEvent dco_decode_firmware_install_event(dynamic raw){ // Codec=Dco (DartCObject based), see doc to use other codecs
-switch (raw[0]) {
-                case 0: return FirmwareInstallEvent_UpdateVerified();
-case 1: return FirmwareInstallEvent_Installing();
-case 2: return FirmwareInstallEvent_Rebooting();
-case 3: return FirmwareInstallEvent_Success(installedVersion: dco_decode_String(raw[1]),);
-case 4: return FirmwareInstallEvent_Error(error: dco_decode_String(raw[1]),stage: dco_decode_install_error_stage(raw[2]),);
-                default: throw Exception("unreachable");
-            } }
-
-@protected FirmwareUpdateAvailable dco_decode_firmware_update_available(dynamic raw){ // Codec=Dco (DartCObject based), see doc to use other codecs
-final arr = raw as List<dynamic>;
-                if (arr.length != 5) throw Exception('unexpected arr length: expect 5 but see ${arr.length}');
-                return FirmwareUpdateAvailable(version: dco_decode_String(arr[0]),
-changelog: dco_decode_String(arr[1]),
-timestamp: dco_decode_u_32(arr[2]),
-totalSize: dco_decode_u_32(arr[3]),
-patchCount: dco_decode_u_8(arr[4]),); }
-
-@protected FirmwareUpdateCheckRequest dco_decode_firmware_update_check_request(dynamic raw){ // Codec=Dco (DartCObject based), see doc to use other codecs
-final arr = raw as List<dynamic>;
-                if (arr.length != 1) throw Exception('unexpected arr length: expect 1 but see ${arr.length}');
-                return FirmwareUpdateCheckRequest(currentVersion: dco_decode_String(arr[0]),); }
-
-@protected FirmwareUpdateCheckResponse dco_decode_firmware_update_check_response(dynamic raw){ // Codec=Dco (DartCObject based), see doc to use other codecs
-switch (raw[0]) {
-                case 0: return FirmwareUpdateCheckResponse_Available(dco_decode_box_autoadd_firmware_update_available(raw[1]),);
-case 1: return FirmwareUpdateCheckResponse_NotAvailable();
-                default: throw Exception("unreachable");
-            } }
-
-@protected GetMagicBackupV2 dco_decode_get_magic_backup_v_2(dynamic raw){ // Codec=Dco (DartCObject based), see doc to use other codecs
-final arr = raw as List<dynamic>;
-                if (arr.length != 3) throw Exception('unexpected arr length: expect 3 but see ${arr.length}');
-                return GetMagicBackupV2(key: dco_decode_list_prim_u_8_strict(arr[0]),
-timestamp: dco_decode_u_64(arr[1]),
-signature: dco_decode_list_prim_u_8_strict(arr[2]),); }
-
-@protected Heartbeat dco_decode_heartbeat(dynamic raw){ // Codec=Dco (DartCObject based), see doc to use other codecs
-final arr = raw as List<dynamic>;
-                if (arr.length != 0) throw Exception('unexpected arr length: expect 0 but see ${arr.length}');
-                return Heartbeat(); }
-
-@protected int dco_decode_i_32(dynamic raw){ // Codec=Dco (DartCObject based), see doc to use other codecs
-return raw as int; }
-
-@protected InstallErrorStage dco_decode_install_error_stage(dynamic raw){ // Codec=Dco (DartCObject based), see doc to use other codecs
-return InstallErrorStage.values[raw as int]; }
-
-@protected List<Uint8List> dco_decode_list_list_prim_u_8_strict(dynamic raw){ // Codec=Dco (DartCObject based), see doc to use other codecs
-return (raw as List<dynamic>).map(dco_decode_list_prim_u_8_strict).toList(); }
-
-@protected List<PricePoint> dco_decode_list_price_point(dynamic raw){ // Codec=Dco (DartCObject based), see doc to use other codecs
-return (raw as List<dynamic>).map(dco_decode_price_point).toList(); }
-
-@protected List<int> dco_decode_list_prim_u_8_loose(dynamic raw){ // Codec=Dco (DartCObject based), see doc to use other codecs
-return raw as List<int>; }
-
-@protected Uint8List dco_decode_list_prim_u_8_strict(dynamic raw){ // Codec=Dco (DartCObject based), see doc to use other codecs
-return raw as Uint8List; }
-
-@protected List<QuantumLinkMessage> dco_decode_list_quantum_link_message(dynamic raw){ // Codec=Dco (DartCObject based), see doc to use other codecs
-return (raw as List<dynamic>).map(dco_decode_quantum_link_message).toList(); }
-
-@protected MagicBackupRequestV2 dco_decode_magic_backup_request_v_2(dynamic raw){ // Codec=Dco (DartCObject based), see doc to use other codecs
-switch (raw[0]) {
-                case 0: return MagicBackupRequestV2_Create(dco_decode_box_autoadd_create_magic_backup_v_2(raw[1]),);
-case 1: return MagicBackupRequestV2_Get(dco_decode_box_autoadd_get_magic_backup_v_2(raw[1]),);
-case 2: return MagicBackupRequestV2_Delete(dco_decode_box_autoadd_delete_magic_backup_v_2(raw[1]),);
-                default: throw Exception("unreachable");
-            } }
-
-@protected MagicBackupResponseV2 dco_decode_magic_backup_response_v_2(dynamic raw){ // Codec=Dco (DartCObject based), see doc to use other codecs
-switch (raw[0]) {
-                case 0: return MagicBackupResponseV2_Created();
-case 1: return MagicBackupResponseV2_Backup(data: dco_decode_list_prim_u_8_strict(raw[1]),);
-case 2: return MagicBackupResponseV2_Deleted();
-case 3: return MagicBackupResponseV2_Error(error: dco_decode_String(raw[1]),);
-                default: throw Exception("unreachable");
-            } }
-
-@protected OnboardingState dco_decode_onboarding_state(dynamic raw){ // Codec=Dco (DartCObject based), see doc to use other codecs
-return OnboardingState.values[raw as int]; }
-
-@protected String? dco_decode_opt_String(dynamic raw){ // Codec=Dco (DartCObject based), see doc to use other codecs
-return raw == null ? null : dco_decode_String(raw); }
-
-@protected PrimeBackupFile? dco_decode_opt_box_autoadd_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerPrimeBackupFile(dynamic raw){ // Codec=Dco (DartCObject based), see doc to use other codecs
-return raw == null ? null : dco_decode_box_autoadd_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerPrimeBackupFile(raw); }
-
-@protected XidDocument? dco_decode_opt_box_autoadd_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerXIDDocument(dynamic raw){ // Codec=Dco (DartCObject based), see doc to use other codecs
-return raw == null ? null : dco_decode_box_autoadd_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerXIDDocument(raw); }
-
-@protected PassportMessage? dco_decode_opt_box_autoadd_passport_message(dynamic raw){ // Codec=Dco (DartCObject based), see doc to use other codecs
-return raw == null ? null : dco_decode_box_autoadd_passport_message(raw); }
-
-@protected BigInt? dco_decode_opt_box_autoadd_u_64(dynamic raw){ // Codec=Dco (DartCObject based), see doc to use other codecs
-return raw == null ? null : dco_decode_box_autoadd_u_64(raw); }
-
-@protected int? dco_decode_opt_box_autoadd_u_8(dynamic raw){ // Codec=Dco (DartCObject based), see doc to use other codecs
-return raw == null ? null : dco_decode_box_autoadd_u_8(raw); }
-
-@protected PairingRequest dco_decode_pairing_request(dynamic raw){ // Codec=Dco (DartCObject based), see doc to use other codecs
-final arr = raw as List<dynamic>;
-                if (arr.length != 2) throw Exception('unexpected arr length: expect 2 but see ${arr.length}');
-                return PairingRequest(xidDocument: dco_decode_list_prim_u_8_strict(arr[0]),
-deviceName: dco_decode_String(arr[1]),); }
-
-@protected PairingResponse dco_decode_pairing_response(dynamic raw){ // Codec=Dco (DartCObject based), see doc to use other codecs
-final arr = raw as List<dynamic>;
-                if (arr.length != 5) throw Exception('unexpected arr length: expect 5 but see ${arr.length}');
-                return PairingResponse(passportModel: dco_decode_passport_model(arr[0]),
-passportFirmwareVersion: dco_decode_passport_firmware_version(arr[1]),
-passportSerial: dco_decode_passport_serial(arr[2]),
-passportColor: dco_decode_passport_color(arr[3]),
-onboardingComplete: dco_decode_bool(arr[4]),); }
-
-@protected PassportColor dco_decode_passport_color(dynamic raw){ // Codec=Dco (DartCObject based), see doc to use other codecs
-return PassportColor.values[raw as int]; }
-
-@protected PassportFirmwareVersion dco_decode_passport_firmware_version(dynamic raw){ // Codec=Dco (DartCObject based), see doc to use other codecs
-final arr = raw as List<dynamic>;
-                if (arr.length != 1) throw Exception('unexpected arr length: expect 1 but see ${arr.length}');
-                return PassportFirmwareVersion(field0: dco_decode_String(arr[0]),); }
-
-@protected PassportMessage dco_decode_passport_message(dynamic raw){ // Codec=Dco (DartCObject based), see doc to use other codecs
-final arr = raw as List<dynamic>;
-                if (arr.length != 3) throw Exception('unexpected arr length: expect 3 but see ${arr.length}');
-                return PassportMessage(message: dco_decode_quantum_link_message(arr[0]),
-status: dco_decode_device_status(arr[1]),
-protocolVersion: dco_decode_opt_box_autoadd_u_8(arr[2]),); }
-
-@protected PassportModel dco_decode_passport_model(dynamic raw){ // Codec=Dco (DartCObject based), see doc to use other codecs
-return PassportModel.values[raw as int]; }
-
-@protected PassportSerial dco_decode_passport_serial(dynamic raw){ // Codec=Dco (DartCObject based), see doc to use other codecs
-final arr = raw as List<dynamic>;
-                if (arr.length != 1) throw Exception('unexpected arr length: expect 1 but see ${arr.length}');
-                return PassportSerial(field0: dco_decode_String(arr[0]),); }
-
-@protected PricePoint dco_decode_price_point(dynamic raw){ // Codec=Dco (DartCObject based), see doc to use other codecs
-final arr = raw as List<dynamic>;
-                if (arr.length != 2) throw Exception('unexpected arr length: expect 2 but see ${arr.length}');
-                return PricePoint(rate: dco_decode_f_32(arr[0]),
-timestamp: dco_decode_u_64(arr[1]),); }
-
-@protected PrimeMagicBackupEnabled dco_decode_prime_magic_backup_enabled(dynamic raw){ // Codec=Dco (DartCObject based), see doc to use other codecs
-final arr = raw as List<dynamic>;
-                if (arr.length != 2) throw Exception('unexpected arr length: expect 2 but see ${arr.length}');
-                return PrimeMagicBackupEnabled(enabled: dco_decode_bool(arr[0]),
-seedFingerprint: dco_decode_seed_fingerprint(arr[1]),); }
-
-@protected PrimeMagicBackupStatusRequest dco_decode_prime_magic_backup_status_request(dynamic raw){ // Codec=Dco (DartCObject based), see doc to use other codecs
-final arr = raw as List<dynamic>;
-                if (arr.length != 1) throw Exception('unexpected arr length: expect 1 but see ${arr.length}');
-                return PrimeMagicBackupStatusRequest(seedFingerprint: dco_decode_seed_fingerprint(arr[0]),); }
-
-@protected PrimeMagicBackupStatusResponse dco_decode_prime_magic_backup_status_response(dynamic raw){ // Codec=Dco (DartCObject based), see doc to use other codecs
-final arr = raw as List<dynamic>;
-                if (arr.length != 1) throw Exception('unexpected arr length: expect 1 but see ${arr.length}');
-                return PrimeMagicBackupStatusResponse(shardBackupFound: dco_decode_bool(arr[0]),); }
-
-@protected QrDecoderStatus dco_decode_qr_decoder_status(dynamic raw){ // Codec=Dco (DartCObject based), see doc to use other codecs
-final arr = raw as List<dynamic>;
-                if (arr.length != 2) throw Exception('unexpected arr length: expect 2 but see ${arr.length}');
-                return QrDecoderStatus(progress: dco_decode_f_64(arr[0]),
-payload: dco_decode_opt_box_autoadd_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerXIDDocument(arr[1]),); }
-
-@protected QuantumLinkMessage dco_decode_quantum_link_message(dynamic raw){ // Codec=Dco (DartCObject based), see doc to use other codecs
-switch (raw[0]) {
-                case 0: return QuantumLinkMessage_ExchangeRate(dco_decode_box_autoadd_exchange_rate(raw[1]),);
-case 1: return QuantumLinkMessage_ExchangeRateHistory(dco_decode_box_autoadd_exchange_rate_history(raw[1]),);
-case 2: return QuantumLinkMessage_FirmwareUpdateCheckRequest(dco_decode_box_autoadd_firmware_update_check_request(raw[1]),);
-case 3: return QuantumLinkMessage_FirmwareUpdateCheckResponse(dco_decode_box_autoadd_firmware_update_check_response(raw[1]),);
-case 4: return QuantumLinkMessage_FirmwareFetchRequest(dco_decode_box_autoadd_firmware_fetch_request(raw[1]),);
-case 5: return QuantumLinkMessage_FirmwareFetchEvent(dco_decode_box_autoadd_firmware_fetch_event(raw[1]),);
-case 6: return QuantumLinkMessage_FirmwareInstallEvent(dco_decode_box_autoadd_firmware_install_event(raw[1]),);
-case 7: return QuantumLinkMessage_DeviceStatus(dco_decode_box_autoadd_device_status(raw[1]),);
-case 8: return QuantumLinkMessage_EnvoyStatus(dco_decode_box_autoadd_envoy_status(raw[1]),);
-case 9: return QuantumLinkMessage_PairingRequest(dco_decode_box_autoadd_pairing_request(raw[1]),);
-case 10: return QuantumLinkMessage_PairingResponse(dco_decode_box_autoadd_pairing_response(raw[1]),);
-case 11: return QuantumLinkMessage_SecurityCheck(dco_decode_box_autoadd_security_check(raw[1]),);
-case 12: return QuantumLinkMessage_OnboardingState(dco_decode_onboarding_state(raw[1]),);
-case 13: return QuantumLinkMessage_SignPsbt(dco_decode_box_autoadd_sign_psbt(raw[1]),);
-case 14: return QuantumLinkMessage_BroadcastTransaction(dco_decode_box_autoadd_broadcast_transaction(raw[1]),);
-case 15: return QuantumLinkMessage_AccountUpdate(dco_decode_box_autoadd_account_update(raw[1]),);
-case 16: return QuantumLinkMessage_ApplyPassphrase(dco_decode_box_autoadd_apply_passphrase(raw[1]),);
-case 17: return QuantumLinkMessage_EnvoyMagicBackupEnabledRequest(dco_decode_box_autoadd_envoy_magic_backup_enabled_request(raw[1]),);
-case 18: return QuantumLinkMessage_EnvoyMagicBackupEnabledResponse(dco_decode_box_autoadd_envoy_magic_backup_enabled_response(raw[1]),);
-case 19: return QuantumLinkMessage_PrimeMagicBackupEnabled(dco_decode_box_autoadd_prime_magic_backup_enabled(raw[1]),);
-case 20: return QuantumLinkMessage_PrimeMagicBackupStatusRequest(dco_decode_box_autoadd_prime_magic_backup_status_request(raw[1]),);
-case 21: return QuantumLinkMessage_PrimeMagicBackupStatusResponse(dco_decode_box_autoadd_prime_magic_backup_status_response(raw[1]),);
-case 22: return QuantumLinkMessage_BackupShardRequest(dco_decode_box_autoadd_backup_shard_request(raw[1]),);
-case 23: return QuantumLinkMessage_BackupShardResponse(dco_decode_box_autoadd_backup_shard_response(raw[1]),);
-case 24: return QuantumLinkMessage_RestoreShardRequest(dco_decode_box_autoadd_restore_shard_request(raw[1]),);
-case 25: return QuantumLinkMessage_RestoreShardResponse(dco_decode_box_autoadd_restore_shard_response(raw[1]),);
-case 26: return QuantumLinkMessage_CreateMagicBackupEvent(dco_decode_box_autoadd_create_magic_backup_event(raw[1]),);
-case 27: return QuantumLinkMessage_CreateMagicBackupResult(dco_decode_box_autoadd_create_magic_backup_result(raw[1]),);
-case 28: return QuantumLinkMessage_RestoreMagicBackupRequest(dco_decode_box_autoadd_restore_magic_backup_request(raw[1]),);
-case 29: return QuantumLinkMessage_RestoreMagicBackupEvent(dco_decode_box_autoadd_restore_magic_backup_event(raw[1]),);
-case 30: return QuantumLinkMessage_RestoreMagicBackupResult(dco_decode_box_autoadd_restore_magic_backup_result(raw[1]),);
-case 31: return QuantumLinkMessage_Heartbeat(dco_decode_box_autoadd_heartbeat(raw[1]),);
-case 32: return QuantumLinkMessage_TimezoneRequest(dco_decode_box_autoadd_timezone_request(raw[1]),);
-case 33: return QuantumLinkMessage_TimezoneResponse(dco_decode_box_autoadd_timezone_response(raw[1]),);
-case 34: return QuantumLinkMessage_UnpairingRequest(dco_decode_box_autoadd_unpairing_request(raw[1]),);
-case 35: return QuantumLinkMessage_UnpairingResponse(dco_decode_box_autoadd_unpairing_response(raw[1]),);
-case 36: return QuantumLinkMessage_MagicBackupRequestV2(dco_decode_box_autoadd_magic_backup_request_v_2(raw[1]),);
-case 37: return QuantumLinkMessage_MagicBackupResponseV2(dco_decode_box_autoadd_magic_backup_response_v_2(raw[1]),);
-                default: throw Exception("unreachable");
-            } }
-
-@protected RestoreMagicBackupEvent dco_decode_restore_magic_backup_event(dynamic raw){ // Codec=Dco (DartCObject based), see doc to use other codecs
-switch (raw[0]) {
-                case 0: return RestoreMagicBackupEvent_NotFound();
-case 1: return RestoreMagicBackupEvent_Starting(dco_decode_box_autoadd_backup_metadata(raw[1]),);
-case 2: return RestoreMagicBackupEvent_Chunk(dco_decode_box_autoadd_backup_chunk(raw[1]),);
-case 3: return RestoreMagicBackupEvent_Error(error: dco_decode_String(raw[1]),);
-                default: throw Exception("unreachable");
-            } }
-
-@protected RestoreMagicBackupRequest dco_decode_restore_magic_backup_request(dynamic raw){ // Codec=Dco (DartCObject based), see doc to use other codecs
-final arr = raw as List<dynamic>;
-                if (arr.length != 2) throw Exception('unexpected arr length: expect 2 but see ${arr.length}');
-                return RestoreMagicBackupRequest(seedFingerprint: dco_decode_seed_fingerprint(arr[0]),
-resumeFromChunk: dco_decode_u_32(arr[1]),); }
-
-@protected RestoreMagicBackupResult dco_decode_restore_magic_backup_result(dynamic raw){ // Codec=Dco (DartCObject based), see doc to use other codecs
-switch (raw[0]) {
-                case 0: return RestoreMagicBackupResult_Success();
-case 1: return RestoreMagicBackupResult_Error(error: dco_decode_String(raw[1]),);
-                default: throw Exception("unreachable");
-            } }
-
-@protected RestoreShardRequest dco_decode_restore_shard_request(dynamic raw){ // Codec=Dco (DartCObject based), see doc to use other codecs
-final arr = raw as List<dynamic>;
-                if (arr.length != 1) throw Exception('unexpected arr length: expect 1 but see ${arr.length}');
-                return RestoreShardRequest(seedFingerprint: dco_decode_seed_fingerprint(arr[0]),); }
-
-@protected RestoreShardResponse dco_decode_restore_shard_response(dynamic raw){ // Codec=Dco (DartCObject based), see doc to use other codecs
-switch (raw[0]) {
-                case 0: return RestoreShardResponse_Success(shard: dco_decode_box_autoadd_shard(raw[1]),);
-case 1: return RestoreShardResponse_Error(error: dco_decode_String(raw[1]),);
-case 2: return RestoreShardResponse_NotFound();
-                default: throw Exception("unreachable");
-            } }
-
-@protected SecurityCheck dco_decode_security_check(dynamic raw){ // Codec=Dco (DartCObject based), see doc to use other codecs
-switch (raw[0]) {
-                case 0: return SecurityCheck_ChallengeRequest(dco_decode_box_autoadd_challenge_request(raw[1]),);
-case 1: return SecurityCheck_ChallengeResponse(dco_decode_box_autoadd_challenge_response_result(raw[1]),);
-case 2: return SecurityCheck_VerificationResult(dco_decode_box_autoadd_verification_result(raw[1]),);
-                default: throw Exception("unreachable");
-            } }
-
-@protected SeedFingerprint dco_decode_seed_fingerprint(dynamic raw){ // Codec=Dco (DartCObject based), see doc to use other codecs
-final arr = raw as List<dynamic>;
-                if (arr.length != 1) throw Exception('unexpected arr length: expect 1 but see ${arr.length}');
-                return SeedFingerprint(field0: dco_decode_u_8_array_32(arr[0]),); }
-
-@protected Shard dco_decode_shard(dynamic raw){ // Codec=Dco (DartCObject based), see doc to use other codecs
-final arr = raw as List<dynamic>;
-                if (arr.length != 1) throw Exception('unexpected arr length: expect 1 but see ${arr.length}');
-                return Shard(field0: dco_decode_list_prim_u_8_strict(arr[0]),); }
-
-@protected SignPsbt dco_decode_sign_psbt(dynamic raw){ // Codec=Dco (DartCObject based), see doc to use other codecs
-final arr = raw as List<dynamic>;
-                if (arr.length != 2) throw Exception('unexpected arr length: expect 2 but see ${arr.length}');
-                return SignPsbt(accountId: dco_decode_String(arr[0]),
-psbt: dco_decode_list_prim_u_8_strict(arr[1]),); }
-
-@protected StartMagicBackup dco_decode_start_magic_backup(dynamic raw){ // Codec=Dco (DartCObject based), see doc to use other codecs
-final arr = raw as List<dynamic>;
-                if (arr.length != 3) throw Exception('unexpected arr length: expect 3 but see ${arr.length}');
-                return StartMagicBackup(seedFingerprint: dco_decode_seed_fingerprint(arr[0]),
-totalChunks: dco_decode_u_32(arr[1]),
-hash: dco_decode_u_8_array_32(arr[2]),); }
-
-@protected TimezoneRequest dco_decode_timezone_request(dynamic raw){ // Codec=Dco (DartCObject based), see doc to use other codecs
-final arr = raw as List<dynamic>;
-                if (arr.length != 0) throw Exception('unexpected arr length: expect 0 but see ${arr.length}');
-                return TimezoneRequest(); }
-
-@protected TimezoneResponse dco_decode_timezone_response(dynamic raw){ // Codec=Dco (DartCObject based), see doc to use other codecs
-final arr = raw as List<dynamic>;
-                if (arr.length != 2) throw Exception('unexpected arr length: expect 2 but see ${arr.length}');
-                return TimezoneResponse(offsetMinutes: dco_decode_i_32(arr[0]),
-zone: dco_decode_String(arr[1]),); }
-
-@protected int dco_decode_u_16(dynamic raw){ // Codec=Dco (DartCObject based), see doc to use other codecs
-return raw as int; }
-
-@protected int dco_decode_u_32(dynamic raw){ // Codec=Dco (DartCObject based), see doc to use other codecs
-return raw as int; }
-
-@protected BigInt dco_decode_u_64(dynamic raw){ // Codec=Dco (DartCObject based), see doc to use other codecs
-return dcoDecodeU64(raw); }
-
-@protected int dco_decode_u_8(dynamic raw){ // Codec=Dco (DartCObject based), see doc to use other codecs
-return raw as int; }
-
-@protected U8Array32 dco_decode_u_8_array_32(dynamic raw){ // Codec=Dco (DartCObject based), see doc to use other codecs
-return U8Array32(dco_decode_list_prim_u_8_strict(raw)); }
-
-@protected void dco_decode_unit(dynamic raw){ // Codec=Dco (DartCObject based), see doc to use other codecs
-return; }
-
-@protected UnpairingRequest dco_decode_unpairing_request(dynamic raw){ // Codec=Dco (DartCObject based), see doc to use other codecs
-final arr = raw as List<dynamic>;
-                if (arr.length != 0) throw Exception('unexpected arr length: expect 0 but see ${arr.length}');
-                return UnpairingRequest(); }
-
-@protected UnpairingResponse dco_decode_unpairing_response(dynamic raw){ // Codec=Dco (DartCObject based), see doc to use other codecs
-final arr = raw as List<dynamic>;
-                if (arr.length != 1) throw Exception('unexpected arr length: expect 1 but see ${arr.length}');
-                return UnpairingResponse(success: dco_decode_bool(arr[0]),); }
-
-@protected BigInt dco_decode_usize(dynamic raw){ // Codec=Dco (DartCObject based), see doc to use other codecs
-return dcoDecodeU64(raw); }
-
-@protected VerificationResult dco_decode_verification_result(dynamic raw){ // Codec=Dco (DartCObject based), see doc to use other codecs
-switch (raw[0]) {
-                case 0: return VerificationResult_Success();
-case 1: return VerificationResult_Error(error: dco_decode_String(raw[1]),);
-case 2: return VerificationResult_Failure();
-                default: throw Exception("unreachable");
-            } }
-
-@protected AnyhowException sse_decode_AnyhowException(SseDeserializer deserializer){ // Codec=Sse (Serialization based), see doc to use other codecs
-var inner = sse_decode_String(deserializer);
-        return AnyhowException(inner); }
-
-@protected ArcMutexDecoder sse_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerArcMutexDecoder(SseDeserializer deserializer){ // Codec=Sse (Serialization based), see doc to use other codecs
-return ArcMutexDecoderImpl.frbInternalSseDecode(sse_decode_usize(deserializer), sse_decode_i_32(deserializer)); }
-
-@protected CollectBackupChunks sse_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerCollectBackupChunks(SseDeserializer deserializer){ // Codec=Sse (Serialization based), see doc to use other codecs
-return CollectBackupChunksImpl.frbInternalSseDecode(sse_decode_usize(deserializer), sse_decode_i_32(deserializer)); }
-
-@protected EnvoyAridCache sse_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerEnvoyARIDCache(SseDeserializer deserializer){ // Codec=Sse (Serialization based), see doc to use other codecs
-return EnvoyAridCacheImpl.frbInternalSseDecode(sse_decode_usize(deserializer), sse_decode_i_32(deserializer)); }
-
-@protected EnvoyMasterDechunker sse_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerEnvoyMasterDechunker(SseDeserializer deserializer){ // Codec=Sse (Serialization based), see doc to use other codecs
-return EnvoyMasterDechunkerImpl.frbInternalSseDecode(sse_decode_usize(deserializer), sse_decode_i_32(deserializer)); }
-
-@protected PrimeBackupFile sse_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerPrimeBackupFile(SseDeserializer deserializer){ // Codec=Sse (Serialization based), see doc to use other codecs
-return PrimeBackupFileImpl.frbInternalSseDecode(sse_decode_usize(deserializer), sse_decode_i_32(deserializer)); }
-
-@protected QuantumLinkIdentity sse_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerQuantumLinkIdentity(SseDeserializer deserializer){ // Codec=Sse (Serialization based), see doc to use other codecs
-return QuantumLinkIdentityImpl.frbInternalSseDecode(sse_decode_usize(deserializer), sse_decode_i_32(deserializer)); }
-
-@protected XidDocument sse_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerXIDDocument(SseDeserializer deserializer){ // Codec=Sse (Serialization based), see doc to use other codecs
-return XidDocumentImpl.frbInternalSseDecode(sse_decode_usize(deserializer), sse_decode_i_32(deserializer)); }
-
-@protected CollectBackupChunks sse_decode_Auto_RefMut_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerCollectBackupChunks(SseDeserializer deserializer){ // Codec=Sse (Serialization based), see doc to use other codecs
-return CollectBackupChunksImpl.frbInternalSseDecode(sse_decode_usize(deserializer), sse_decode_i_32(deserializer)); }
-
-@protected EnvoyAridCache sse_decode_Auto_RefMut_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerEnvoyARIDCache(SseDeserializer deserializer){ // Codec=Sse (Serialization based), see doc to use other codecs
-return EnvoyAridCacheImpl.frbInternalSseDecode(sse_decode_usize(deserializer), sse_decode_i_32(deserializer)); }
-
-@protected EnvoyMasterDechunker sse_decode_Auto_RefMut_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerEnvoyMasterDechunker(SseDeserializer deserializer){ // Codec=Sse (Serialization based), see doc to use other codecs
-return EnvoyMasterDechunkerImpl.frbInternalSseDecode(sse_decode_usize(deserializer), sse_decode_i_32(deserializer)); }
-
-@protected PrimeBackupFile sse_decode_Auto_RefMut_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerPrimeBackupFile(SseDeserializer deserializer){ // Codec=Sse (Serialization based), see doc to use other codecs
-return PrimeBackupFileImpl.frbInternalSseDecode(sse_decode_usize(deserializer), sse_decode_i_32(deserializer)); }
-
-@protected ArcMutexDecoder sse_decode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerArcMutexDecoder(SseDeserializer deserializer){ // Codec=Sse (Serialization based), see doc to use other codecs
-return ArcMutexDecoderImpl.frbInternalSseDecode(sse_decode_usize(deserializer), sse_decode_i_32(deserializer)); }
-
-@protected CollectBackupChunks sse_decode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerCollectBackupChunks(SseDeserializer deserializer){ // Codec=Sse (Serialization based), see doc to use other codecs
-return CollectBackupChunksImpl.frbInternalSseDecode(sse_decode_usize(deserializer), sse_decode_i_32(deserializer)); }
-
-@protected PrimeBackupFile sse_decode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerPrimeBackupFile(SseDeserializer deserializer){ // Codec=Sse (Serialization based), see doc to use other codecs
-return PrimeBackupFileImpl.frbInternalSseDecode(sse_decode_usize(deserializer), sse_decode_i_32(deserializer)); }
-
-@protected QuantumLinkIdentity sse_decode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerQuantumLinkIdentity(SseDeserializer deserializer){ // Codec=Sse (Serialization based), see doc to use other codecs
-return QuantumLinkIdentityImpl.frbInternalSseDecode(sse_decode_usize(deserializer), sse_decode_i_32(deserializer)); }
-
-@protected XidDocument sse_decode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerXIDDocument(SseDeserializer deserializer){ // Codec=Sse (Serialization based), see doc to use other codecs
-return XidDocumentImpl.frbInternalSseDecode(sse_decode_usize(deserializer), sse_decode_i_32(deserializer)); }
-
-@protected ArcMutexDecoder sse_decode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerArcMutexDecoder(SseDeserializer deserializer){ // Codec=Sse (Serialization based), see doc to use other codecs
-return ArcMutexDecoderImpl.frbInternalSseDecode(sse_decode_usize(deserializer), sse_decode_i_32(deserializer)); }
-
-@protected CollectBackupChunks sse_decode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerCollectBackupChunks(SseDeserializer deserializer){ // Codec=Sse (Serialization based), see doc to use other codecs
-return CollectBackupChunksImpl.frbInternalSseDecode(sse_decode_usize(deserializer), sse_decode_i_32(deserializer)); }
-
-@protected EnvoyAridCache sse_decode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerEnvoyARIDCache(SseDeserializer deserializer){ // Codec=Sse (Serialization based), see doc to use other codecs
-return EnvoyAridCacheImpl.frbInternalSseDecode(sse_decode_usize(deserializer), sse_decode_i_32(deserializer)); }
-
-@protected EnvoyMasterDechunker sse_decode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerEnvoyMasterDechunker(SseDeserializer deserializer){ // Codec=Sse (Serialization based), see doc to use other codecs
-return EnvoyMasterDechunkerImpl.frbInternalSseDecode(sse_decode_usize(deserializer), sse_decode_i_32(deserializer)); }
-
-@protected PrimeBackupFile sse_decode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerPrimeBackupFile(SseDeserializer deserializer){ // Codec=Sse (Serialization based), see doc to use other codecs
-return PrimeBackupFileImpl.frbInternalSseDecode(sse_decode_usize(deserializer), sse_decode_i_32(deserializer)); }
-
-@protected QuantumLinkIdentity sse_decode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerQuantumLinkIdentity(SseDeserializer deserializer){ // Codec=Sse (Serialization based), see doc to use other codecs
-return QuantumLinkIdentityImpl.frbInternalSseDecode(sse_decode_usize(deserializer), sse_decode_i_32(deserializer)); }
-
-@protected XidDocument sse_decode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerXIDDocument(SseDeserializer deserializer){ // Codec=Sse (Serialization based), see doc to use other codecs
-return XidDocumentImpl.frbInternalSseDecode(sse_decode_usize(deserializer), sse_decode_i_32(deserializer)); }
-
-@protected String sse_decode_String(SseDeserializer deserializer){ // Codec=Sse (Serialization based), see doc to use other codecs
-var inner = sse_decode_list_prim_u_8_strict(deserializer);
-        return utf8.decoder.convert(inner); }
-
-@protected AccountUpdate sse_decode_account_update(SseDeserializer deserializer){ // Codec=Sse (Serialization based), see doc to use other codecs
-var var_accountId = sse_decode_String(deserializer);
-var var_update = sse_decode_list_prim_u_8_strict(deserializer);
-return AccountUpdate(accountId: var_accountId, update: var_update); }
-
-@protected ApplyPassphrase sse_decode_apply_passphrase(SseDeserializer deserializer){ // Codec=Sse (Serialization based), see doc to use other codecs
-var var_fingerprint = sse_decode_opt_String(deserializer);
-return ApplyPassphrase(fingerprint: var_fingerprint); }
-
-@protected BackupChunk sse_decode_backup_chunk(SseDeserializer deserializer){ // Codec=Sse (Serialization based), see doc to use other codecs
-var var_chunkIndex = sse_decode_u_32(deserializer);
-var var_totalChunks = sse_decode_u_32(deserializer);
-var var_data = sse_decode_list_prim_u_8_strict(deserializer);
-return BackupChunk(chunkIndex: var_chunkIndex, totalChunks: var_totalChunks, data: var_data); }
-
-@protected BackupMetadata sse_decode_backup_metadata(SseDeserializer deserializer){ // Codec=Sse (Serialization based), see doc to use other codecs
-var var_totalChunks = sse_decode_u_32(deserializer);
-return BackupMetadata(totalChunks: var_totalChunks); }
-
-@protected BackupShardRequest sse_decode_backup_shard_request(SseDeserializer deserializer){ // Codec=Sse (Serialization based), see doc to use other codecs
-var var_shard = sse_decode_shard(deserializer);
-return BackupShardRequest(shard: var_shard); }
-
-@protected BackupShardResponse sse_decode_backup_shard_response(SseDeserializer deserializer){ // Codec=Sse (Serialization based), see doc to use other codecs
-
-            var tag_ = sse_decode_i_32(deserializer);
-            switch (tag_) { case 0: return BackupShardResponse_Success();case 1: var var_error = sse_decode_String(deserializer);
-return BackupShardResponse_Error(error: var_error); default: throw UnimplementedError(''); }
-             }
-
-@protected bool sse_decode_bool(SseDeserializer deserializer){ // Codec=Sse (Serialization based), see doc to use other codecs
-return deserializer.buffer.getUint8() != 0; }
-
-@protected PrimeBackupFile sse_decode_box_autoadd_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerPrimeBackupFile(SseDeserializer deserializer){ // Codec=Sse (Serialization based), see doc to use other codecs
-return (sse_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerPrimeBackupFile(deserializer)); }
-
-@protected XidDocument sse_decode_box_autoadd_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerXIDDocument(SseDeserializer deserializer){ // Codec=Sse (Serialization based), see doc to use other codecs
-return (sse_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerXIDDocument(deserializer)); }
-
-@protected AccountUpdate sse_decode_box_autoadd_account_update(SseDeserializer deserializer){ // Codec=Sse (Serialization based), see doc to use other codecs
-return (sse_decode_account_update(deserializer)); }
-
-@protected ApplyPassphrase sse_decode_box_autoadd_apply_passphrase(SseDeserializer deserializer){ // Codec=Sse (Serialization based), see doc to use other codecs
-return (sse_decode_apply_passphrase(deserializer)); }
-
-@protected BackupChunk sse_decode_box_autoadd_backup_chunk(SseDeserializer deserializer){ // Codec=Sse (Serialization based), see doc to use other codecs
-return (sse_decode_backup_chunk(deserializer)); }
-
-@protected BackupMetadata sse_decode_box_autoadd_backup_metadata(SseDeserializer deserializer){ // Codec=Sse (Serialization based), see doc to use other codecs
-return (sse_decode_backup_metadata(deserializer)); }
-
-@protected BackupShardRequest sse_decode_box_autoadd_backup_shard_request(SseDeserializer deserializer){ // Codec=Sse (Serialization based), see doc to use other codecs
-return (sse_decode_backup_shard_request(deserializer)); }
-
-@protected BackupShardResponse sse_decode_box_autoadd_backup_shard_response(SseDeserializer deserializer){ // Codec=Sse (Serialization based), see doc to use other codecs
-return (sse_decode_backup_shard_response(deserializer)); }
-
-@protected BroadcastTransaction sse_decode_box_autoadd_broadcast_transaction(SseDeserializer deserializer){ // Codec=Sse (Serialization based), see doc to use other codecs
-return (sse_decode_broadcast_transaction(deserializer)); }
-
-@protected ChallengeRequest sse_decode_box_autoadd_challenge_request(SseDeserializer deserializer){ // Codec=Sse (Serialization based), see doc to use other codecs
-return (sse_decode_challenge_request(deserializer)); }
-
-@protected ChallengeResponseResult sse_decode_box_autoadd_challenge_response_result(SseDeserializer deserializer){ // Codec=Sse (Serialization based), see doc to use other codecs
-return (sse_decode_challenge_response_result(deserializer)); }
-
-@protected CreateMagicBackupEvent sse_decode_box_autoadd_create_magic_backup_event(SseDeserializer deserializer){ // Codec=Sse (Serialization based), see doc to use other codecs
-return (sse_decode_create_magic_backup_event(deserializer)); }
-
-@protected CreateMagicBackupResult sse_decode_box_autoadd_create_magic_backup_result(SseDeserializer deserializer){ // Codec=Sse (Serialization based), see doc to use other codecs
-return (sse_decode_create_magic_backup_result(deserializer)); }
-
-@protected CreateMagicBackupV2 sse_decode_box_autoadd_create_magic_backup_v_2(SseDeserializer deserializer){ // Codec=Sse (Serialization based), see doc to use other codecs
-return (sse_decode_create_magic_backup_v_2(deserializer)); }
-
-@protected DeleteMagicBackupV2 sse_decode_box_autoadd_delete_magic_backup_v_2(SseDeserializer deserializer){ // Codec=Sse (Serialization based), see doc to use other codecs
-return (sse_decode_delete_magic_backup_v_2(deserializer)); }
-
-@protected DeviceStatus sse_decode_box_autoadd_device_status(SseDeserializer deserializer){ // Codec=Sse (Serialization based), see doc to use other codecs
-return (sse_decode_device_status(deserializer)); }
-
-@protected EnvoyMagicBackupEnabledRequest sse_decode_box_autoadd_envoy_magic_backup_enabled_request(SseDeserializer deserializer){ // Codec=Sse (Serialization based), see doc to use other codecs
-return (sse_decode_envoy_magic_backup_enabled_request(deserializer)); }
-
-@protected EnvoyMagicBackupEnabledResponse sse_decode_box_autoadd_envoy_magic_backup_enabled_response(SseDeserializer deserializer){ // Codec=Sse (Serialization based), see doc to use other codecs
-return (sse_decode_envoy_magic_backup_enabled_response(deserializer)); }
-
-@protected EnvoyMessage sse_decode_box_autoadd_envoy_message(SseDeserializer deserializer){ // Codec=Sse (Serialization based), see doc to use other codecs
-return (sse_decode_envoy_message(deserializer)); }
-
-@protected EnvoyStatus sse_decode_box_autoadd_envoy_status(SseDeserializer deserializer){ // Codec=Sse (Serialization based), see doc to use other codecs
-return (sse_decode_envoy_status(deserializer)); }
-
-@protected ExchangeRate sse_decode_box_autoadd_exchange_rate(SseDeserializer deserializer){ // Codec=Sse (Serialization based), see doc to use other codecs
-return (sse_decode_exchange_rate(deserializer)); }
-
-@protected ExchangeRateHistory sse_decode_box_autoadd_exchange_rate_history(SseDeserializer deserializer){ // Codec=Sse (Serialization based), see doc to use other codecs
-return (sse_decode_exchange_rate_history(deserializer)); }
-
-@protected FirmwareChunk sse_decode_box_autoadd_firmware_chunk(SseDeserializer deserializer){ // Codec=Sse (Serialization based), see doc to use other codecs
-return (sse_decode_firmware_chunk(deserializer)); }
-
-@protected FirmwareFetchEvent sse_decode_box_autoadd_firmware_fetch_event(SseDeserializer deserializer){ // Codec=Sse (Serialization based), see doc to use other codecs
-return (sse_decode_firmware_fetch_event(deserializer)); }
-
-@protected FirmwareFetchRequest sse_decode_box_autoadd_firmware_fetch_request(SseDeserializer deserializer){ // Codec=Sse (Serialization based), see doc to use other codecs
-return (sse_decode_firmware_fetch_request(deserializer)); }
-
-@protected FirmwareInstallEvent sse_decode_box_autoadd_firmware_install_event(SseDeserializer deserializer){ // Codec=Sse (Serialization based), see doc to use other codecs
-return (sse_decode_firmware_install_event(deserializer)); }
-
-@protected FirmwareUpdateAvailable sse_decode_box_autoadd_firmware_update_available(SseDeserializer deserializer){ // Codec=Sse (Serialization based), see doc to use other codecs
-return (sse_decode_firmware_update_available(deserializer)); }
-
-@protected FirmwareUpdateCheckRequest sse_decode_box_autoadd_firmware_update_check_request(SseDeserializer deserializer){ // Codec=Sse (Serialization based), see doc to use other codecs
-return (sse_decode_firmware_update_check_request(deserializer)); }
-
-@protected FirmwareUpdateCheckResponse sse_decode_box_autoadd_firmware_update_check_response(SseDeserializer deserializer){ // Codec=Sse (Serialization based), see doc to use other codecs
-return (sse_decode_firmware_update_check_response(deserializer)); }
-
-@protected GetMagicBackupV2 sse_decode_box_autoadd_get_magic_backup_v_2(SseDeserializer deserializer){ // Codec=Sse (Serialization based), see doc to use other codecs
-return (sse_decode_get_magic_backup_v_2(deserializer)); }
-
-@protected Heartbeat sse_decode_box_autoadd_heartbeat(SseDeserializer deserializer){ // Codec=Sse (Serialization based), see doc to use other codecs
-return (sse_decode_heartbeat(deserializer)); }
-
-@protected MagicBackupRequestV2 sse_decode_box_autoadd_magic_backup_request_v_2(SseDeserializer deserializer){ // Codec=Sse (Serialization based), see doc to use other codecs
-return (sse_decode_magic_backup_request_v_2(deserializer)); }
-
-@protected MagicBackupResponseV2 sse_decode_box_autoadd_magic_backup_response_v_2(SseDeserializer deserializer){ // Codec=Sse (Serialization based), see doc to use other codecs
-return (sse_decode_magic_backup_response_v_2(deserializer)); }
-
-@protected PairingRequest sse_decode_box_autoadd_pairing_request(SseDeserializer deserializer){ // Codec=Sse (Serialization based), see doc to use other codecs
-return (sse_decode_pairing_request(deserializer)); }
-
-@protected PairingResponse sse_decode_box_autoadd_pairing_response(SseDeserializer deserializer){ // Codec=Sse (Serialization based), see doc to use other codecs
-return (sse_decode_pairing_response(deserializer)); }
-
-@protected PassportMessage sse_decode_box_autoadd_passport_message(SseDeserializer deserializer){ // Codec=Sse (Serialization based), see doc to use other codecs
-return (sse_decode_passport_message(deserializer)); }
-
-@protected PrimeMagicBackupEnabled sse_decode_box_autoadd_prime_magic_backup_enabled(SseDeserializer deserializer){ // Codec=Sse (Serialization based), see doc to use other codecs
-return (sse_decode_prime_magic_backup_enabled(deserializer)); }
-
-@protected PrimeMagicBackupStatusRequest sse_decode_box_autoadd_prime_magic_backup_status_request(SseDeserializer deserializer){ // Codec=Sse (Serialization based), see doc to use other codecs
-return (sse_decode_prime_magic_backup_status_request(deserializer)); }
-
-@protected PrimeMagicBackupStatusResponse sse_decode_box_autoadd_prime_magic_backup_status_response(SseDeserializer deserializer){ // Codec=Sse (Serialization based), see doc to use other codecs
-return (sse_decode_prime_magic_backup_status_response(deserializer)); }
-
-@protected RestoreMagicBackupEvent sse_decode_box_autoadd_restore_magic_backup_event(SseDeserializer deserializer){ // Codec=Sse (Serialization based), see doc to use other codecs
-return (sse_decode_restore_magic_backup_event(deserializer)); }
-
-@protected RestoreMagicBackupRequest sse_decode_box_autoadd_restore_magic_backup_request(SseDeserializer deserializer){ // Codec=Sse (Serialization based), see doc to use other codecs
-return (sse_decode_restore_magic_backup_request(deserializer)); }
-
-@protected RestoreMagicBackupResult sse_decode_box_autoadd_restore_magic_backup_result(SseDeserializer deserializer){ // Codec=Sse (Serialization based), see doc to use other codecs
-return (sse_decode_restore_magic_backup_result(deserializer)); }
-
-@protected RestoreShardRequest sse_decode_box_autoadd_restore_shard_request(SseDeserializer deserializer){ // Codec=Sse (Serialization based), see doc to use other codecs
-return (sse_decode_restore_shard_request(deserializer)); }
-
-@protected RestoreShardResponse sse_decode_box_autoadd_restore_shard_response(SseDeserializer deserializer){ // Codec=Sse (Serialization based), see doc to use other codecs
-return (sse_decode_restore_shard_response(deserializer)); }
-
-@protected SecurityCheck sse_decode_box_autoadd_security_check(SseDeserializer deserializer){ // Codec=Sse (Serialization based), see doc to use other codecs
-return (sse_decode_security_check(deserializer)); }
-
-@protected SeedFingerprint sse_decode_box_autoadd_seed_fingerprint(SseDeserializer deserializer){ // Codec=Sse (Serialization based), see doc to use other codecs
-return (sse_decode_seed_fingerprint(deserializer)); }
-
-@protected Shard sse_decode_box_autoadd_shard(SseDeserializer deserializer){ // Codec=Sse (Serialization based), see doc to use other codecs
-return (sse_decode_shard(deserializer)); }
-
-@protected SignPsbt sse_decode_box_autoadd_sign_psbt(SseDeserializer deserializer){ // Codec=Sse (Serialization based), see doc to use other codecs
-return (sse_decode_sign_psbt(deserializer)); }
-
-@protected StartMagicBackup sse_decode_box_autoadd_start_magic_backup(SseDeserializer deserializer){ // Codec=Sse (Serialization based), see doc to use other codecs
-return (sse_decode_start_magic_backup(deserializer)); }
-
-@protected TimezoneRequest sse_decode_box_autoadd_timezone_request(SseDeserializer deserializer){ // Codec=Sse (Serialization based), see doc to use other codecs
-return (sse_decode_timezone_request(deserializer)); }
-
-@protected TimezoneResponse sse_decode_box_autoadd_timezone_response(SseDeserializer deserializer){ // Codec=Sse (Serialization based), see doc to use other codecs
-return (sse_decode_timezone_response(deserializer)); }
-
-@protected BigInt sse_decode_box_autoadd_u_64(SseDeserializer deserializer){ // Codec=Sse (Serialization based), see doc to use other codecs
-return (sse_decode_u_64(deserializer)); }
-
-@protected int sse_decode_box_autoadd_u_8(SseDeserializer deserializer){ // Codec=Sse (Serialization based), see doc to use other codecs
-return (sse_decode_u_8(deserializer)); }
-
-@protected UnpairingRequest sse_decode_box_autoadd_unpairing_request(SseDeserializer deserializer){ // Codec=Sse (Serialization based), see doc to use other codecs
-return (sse_decode_unpairing_request(deserializer)); }
-
-@protected UnpairingResponse sse_decode_box_autoadd_unpairing_response(SseDeserializer deserializer){ // Codec=Sse (Serialization based), see doc to use other codecs
-return (sse_decode_unpairing_response(deserializer)); }
-
-@protected VerificationResult sse_decode_box_autoadd_verification_result(SseDeserializer deserializer){ // Codec=Sse (Serialization based), see doc to use other codecs
-return (sse_decode_verification_result(deserializer)); }
-
-@protected BroadcastTransaction sse_decode_broadcast_transaction(SseDeserializer deserializer){ // Codec=Sse (Serialization based), see doc to use other codecs
-var var_accountId = sse_decode_String(deserializer);
-var var_psbt = sse_decode_list_prim_u_8_strict(deserializer);
-return BroadcastTransaction(accountId: var_accountId, psbt: var_psbt); }
-
-@protected ChallengeRequest sse_decode_challenge_request(SseDeserializer deserializer){ // Codec=Sse (Serialization based), see doc to use other codecs
-var var_data = sse_decode_list_prim_u_8_strict(deserializer);
-return ChallengeRequest(data: var_data); }
-
-@protected ChallengeResponseResult sse_decode_challenge_response_result(SseDeserializer deserializer){ // Codec=Sse (Serialization based), see doc to use other codecs
-
-            var tag_ = sse_decode_i_32(deserializer);
-            switch (tag_) { case 0: var var_data = sse_decode_list_prim_u_8_strict(deserializer);
-return ChallengeResponseResult_Success(data: var_data);case 1: var var_error = sse_decode_String(deserializer);
-return ChallengeResponseResult_Error(error: var_error); default: throw UnimplementedError(''); }
-             }
-
-@protected CreateMagicBackupEvent sse_decode_create_magic_backup_event(SseDeserializer deserializer){ // Codec=Sse (Serialization based), see doc to use other codecs
-
-            var tag_ = sse_decode_i_32(deserializer);
-            switch (tag_) { case 0: var var_field0 = sse_decode_box_autoadd_start_magic_backup(deserializer);
-return CreateMagicBackupEvent_Start(var_field0);case 1: var var_field0 = sse_decode_box_autoadd_backup_chunk(deserializer);
-return CreateMagicBackupEvent_Chunk(var_field0); default: throw UnimplementedError(''); }
-             }
-
-@protected CreateMagicBackupResult sse_decode_create_magic_backup_result(SseDeserializer deserializer){ // Codec=Sse (Serialization based), see doc to use other codecs
-
-            var tag_ = sse_decode_i_32(deserializer);
-            switch (tag_) { case 0: return CreateMagicBackupResult_Success();case 1: var var_error = sse_decode_String(deserializer);
-return CreateMagicBackupResult_Error(error: var_error); default: throw UnimplementedError(''); }
-             }
-
-@protected CreateMagicBackupV2 sse_decode_create_magic_backup_v_2(SseDeserializer deserializer){ // Codec=Sse (Serialization based), see doc to use other codecs
-var var_timestamp = sse_decode_u_64(deserializer);
-var var_hash = sse_decode_list_prim_u_8_strict(deserializer);
-var var_pubkey = sse_decode_list_prim_u_8_strict(deserializer);
-var var_data = sse_decode_list_prim_u_8_strict(deserializer);
-var var_clientSignature = sse_decode_list_prim_u_8_strict(deserializer);
-return CreateMagicBackupV2(timestamp: var_timestamp, hash: var_hash, pubkey: var_pubkey, data: var_data, clientSignature: var_clientSignature); }
-
-@protected DecoderStatus sse_decode_decoder_status(SseDeserializer deserializer){ // Codec=Sse (Serialization based), see doc to use other codecs
-var var_progress = sse_decode_f_64(deserializer);
-var var_payload = sse_decode_opt_box_autoadd_passport_message(deserializer);
-return DecoderStatus(progress: var_progress, payload: var_payload); }
-
-@protected DeleteMagicBackupV2 sse_decode_delete_magic_backup_v_2(SseDeserializer deserializer){ // Codec=Sse (Serialization based), see doc to use other codecs
-var var_key = sse_decode_list_prim_u_8_strict(deserializer);
-var var_timestamp = sse_decode_u_64(deserializer);
-var var_signature = sse_decode_list_prim_u_8_strict(deserializer);
-return DeleteMagicBackupV2(key: var_key, timestamp: var_timestamp, signature: var_signature); }
-
-@protected DeviceStatus sse_decode_device_status(SseDeserializer deserializer){ // Codec=Sse (Serialization based), see doc to use other codecs
-var var_version = sse_decode_String(deserializer);
-var var_batteryLevel = sse_decode_u_8(deserializer);
-return DeviceStatus(version: var_version, batteryLevel: var_batteryLevel); }
-
-@protected EnvoyMagicBackupEnabledRequest sse_decode_envoy_magic_backup_enabled_request(SseDeserializer deserializer){ // Codec=Sse (Serialization based), see doc to use other codecs
-return EnvoyMagicBackupEnabledRequest(); }
-
-@protected EnvoyMagicBackupEnabledResponse sse_decode_envoy_magic_backup_enabled_response(SseDeserializer deserializer){ // Codec=Sse (Serialization based), see doc to use other codecs
-var var_enabled = sse_decode_bool(deserializer);
-return EnvoyMagicBackupEnabledResponse(enabled: var_enabled); }
-
-@protected EnvoyMessage sse_decode_envoy_message(SseDeserializer deserializer){ // Codec=Sse (Serialization based), see doc to use other codecs
-var var_message = sse_decode_quantum_link_message(deserializer);
-var var_timestamp = sse_decode_u_32(deserializer);
-var var_protocolVersion = sse_decode_opt_box_autoadd_u_8(deserializer);
-return EnvoyMessage(message: var_message, timestamp: var_timestamp, protocolVersion: var_protocolVersion); }
-
-@protected EnvoyStatus sse_decode_envoy_status(SseDeserializer deserializer){ // Codec=Sse (Serialization based), see doc to use other codecs
-var var_version = sse_decode_String(deserializer);
-return EnvoyStatus(version: var_version); }
-
-@protected ExchangeRate sse_decode_exchange_rate(SseDeserializer deserializer){ // Codec=Sse (Serialization based), see doc to use other codecs
-var var_currencyCode = sse_decode_String(deserializer);
-var var_rate = sse_decode_f_32(deserializer);
-var var_timestamp = sse_decode_u_64(deserializer);
-return ExchangeRate(currencyCode: var_currencyCode, rate: var_rate, timestamp: var_timestamp); }
-
-@protected ExchangeRateHistory sse_decode_exchange_rate_history(SseDeserializer deserializer){ // Codec=Sse (Serialization based), see doc to use other codecs
-var var_history = sse_decode_list_price_point(deserializer);
-var var_currencyCode = sse_decode_String(deserializer);
-return ExchangeRateHistory(history: var_history, currencyCode: var_currencyCode); }
-
-@protected double sse_decode_f_32(SseDeserializer deserializer){ // Codec=Sse (Serialization based), see doc to use other codecs
-return deserializer.buffer.getFloat32(); }
-
-@protected double sse_decode_f_64(SseDeserializer deserializer){ // Codec=Sse (Serialization based), see doc to use other codecs
-return deserializer.buffer.getFloat64(); }
-
-@protected FirmwareChunk sse_decode_firmware_chunk(SseDeserializer deserializer){ // Codec=Sse (Serialization based), see doc to use other codecs
-var var_patchIndex = sse_decode_u_8(deserializer);
-var var_totalPatches = sse_decode_u_8(deserializer);
-var var_chunkIndex = sse_decode_u_16(deserializer);
-var var_totalChunks = sse_decode_u_16(deserializer);
-var var_data = sse_decode_list_prim_u_8_strict(deserializer);
-return FirmwareChunk(patchIndex: var_patchIndex, totalPatches: var_totalPatches, chunkIndex: var_chunkIndex, totalChunks: var_totalChunks, data: var_data); }
-
-@protected FirmwareFetchEvent sse_decode_firmware_fetch_event(SseDeserializer deserializer){ // Codec=Sse (Serialization based), see doc to use other codecs
-
-            var tag_ = sse_decode_i_32(deserializer);
-            switch (tag_) { case 0: return FirmwareFetchEvent_UpdateNotAvailable();case 1: var var_field0 = sse_decode_box_autoadd_firmware_update_available(deserializer);
-return FirmwareFetchEvent_Starting(var_field0);case 2: return FirmwareFetchEvent_Downloading();case 3: var var_field0 = sse_decode_box_autoadd_firmware_chunk(deserializer);
-return FirmwareFetchEvent_Chunk(var_field0);case 4: var var_error = sse_decode_String(deserializer);
-return FirmwareFetchEvent_Error(error: var_error); default: throw UnimplementedError(''); }
-             }
-
-@protected FirmwareFetchRequest sse_decode_firmware_fetch_request(SseDeserializer deserializer){ // Codec=Sse (Serialization based), see doc to use other codecs
-var var_currentVersion = sse_decode_String(deserializer);
-var var_chunkOffset = sse_decode_opt_box_autoadd_u_64(deserializer);
-return FirmwareFetchRequest(currentVersion: var_currentVersion, chunkOffset: var_chunkOffset); }
-
-@protected FirmwareInstallEvent sse_decode_firmware_install_event(SseDeserializer deserializer){ // Codec=Sse (Serialization based), see doc to use other codecs
-
-            var tag_ = sse_decode_i_32(deserializer);
-            switch (tag_) { case 0: return FirmwareInstallEvent_UpdateVerified();case 1: return FirmwareInstallEvent_Installing();case 2: return FirmwareInstallEvent_Rebooting();case 3: var var_installedVersion = sse_decode_String(deserializer);
-return FirmwareInstallEvent_Success(installedVersion: var_installedVersion);case 4: var var_error = sse_decode_String(deserializer);
-var var_stage = sse_decode_install_error_stage(deserializer);
-return FirmwareInstallEvent_Error(error: var_error, stage: var_stage); default: throw UnimplementedError(''); }
-             }
-
-@protected FirmwareUpdateAvailable sse_decode_firmware_update_available(SseDeserializer deserializer){ // Codec=Sse (Serialization based), see doc to use other codecs
-var var_version = sse_decode_String(deserializer);
-var var_changelog = sse_decode_String(deserializer);
-var var_timestamp = sse_decode_u_32(deserializer);
-var var_totalSize = sse_decode_u_32(deserializer);
-var var_patchCount = sse_decode_u_8(deserializer);
-return FirmwareUpdateAvailable(version: var_version, changelog: var_changelog, timestamp: var_timestamp, totalSize: var_totalSize, patchCount: var_patchCount); }
-
-@protected FirmwareUpdateCheckRequest sse_decode_firmware_update_check_request(SseDeserializer deserializer){ // Codec=Sse (Serialization based), see doc to use other codecs
-var var_currentVersion = sse_decode_String(deserializer);
-return FirmwareUpdateCheckRequest(currentVersion: var_currentVersion); }
-
-@protected FirmwareUpdateCheckResponse sse_decode_firmware_update_check_response(SseDeserializer deserializer){ // Codec=Sse (Serialization based), see doc to use other codecs
-
-            var tag_ = sse_decode_i_32(deserializer);
-            switch (tag_) { case 0: var var_field0 = sse_decode_box_autoadd_firmware_update_available(deserializer);
-return FirmwareUpdateCheckResponse_Available(var_field0);case 1: return FirmwareUpdateCheckResponse_NotAvailable(); default: throw UnimplementedError(''); }
-             }
-
-@protected GetMagicBackupV2 sse_decode_get_magic_backup_v_2(SseDeserializer deserializer){ // Codec=Sse (Serialization based), see doc to use other codecs
-var var_key = sse_decode_list_prim_u_8_strict(deserializer);
-var var_timestamp = sse_decode_u_64(deserializer);
-var var_signature = sse_decode_list_prim_u_8_strict(deserializer);
-return GetMagicBackupV2(key: var_key, timestamp: var_timestamp, signature: var_signature); }
-
-@protected Heartbeat sse_decode_heartbeat(SseDeserializer deserializer){ // Codec=Sse (Serialization based), see doc to use other codecs
-return Heartbeat(); }
-
-@protected int sse_decode_i_32(SseDeserializer deserializer){ // Codec=Sse (Serialization based), see doc to use other codecs
-return deserializer.buffer.getInt32(); }
-
-@protected InstallErrorStage sse_decode_install_error_stage(SseDeserializer deserializer){ // Codec=Sse (Serialization based), see doc to use other codecs
-var inner = sse_decode_i_32(deserializer);
-        return InstallErrorStage.values[inner]; }
-
-@protected List<Uint8List> sse_decode_list_list_prim_u_8_strict(SseDeserializer deserializer){ // Codec=Sse (Serialization based), see doc to use other codecs
-
-        var len_ = sse_decode_i_32(deserializer);
-        var ans_ = <Uint8List>[];
-        for (var idx_ = 0; idx_ < len_; ++idx_) { ans_.add(sse_decode_list_prim_u_8_strict(deserializer)); }
-        return ans_;
-         }
-
-@protected List<PricePoint> sse_decode_list_price_point(SseDeserializer deserializer){ // Codec=Sse (Serialization based), see doc to use other codecs
-
-        var len_ = sse_decode_i_32(deserializer);
-        var ans_ = <PricePoint>[];
-        for (var idx_ = 0; idx_ < len_; ++idx_) { ans_.add(sse_decode_price_point(deserializer)); }
-        return ans_;
-         }
-
-@protected List<int> sse_decode_list_prim_u_8_loose(SseDeserializer deserializer){ // Codec=Sse (Serialization based), see doc to use other codecs
-var len_ = sse_decode_i_32(deserializer);
-                return deserializer.buffer.getUint8List(len_); }
-
-@protected Uint8List sse_decode_list_prim_u_8_strict(SseDeserializer deserializer){ // Codec=Sse (Serialization based), see doc to use other codecs
-var len_ = sse_decode_i_32(deserializer);
-                return deserializer.buffer.getUint8List(len_); }
-
-@protected List<QuantumLinkMessage> sse_decode_list_quantum_link_message(SseDeserializer deserializer){ // Codec=Sse (Serialization based), see doc to use other codecs
-
-        var len_ = sse_decode_i_32(deserializer);
-        var ans_ = <QuantumLinkMessage>[];
-        for (var idx_ = 0; idx_ < len_; ++idx_) { ans_.add(sse_decode_quantum_link_message(deserializer)); }
-        return ans_;
-         }
-
-@protected MagicBackupRequestV2 sse_decode_magic_backup_request_v_2(SseDeserializer deserializer){ // Codec=Sse (Serialization based), see doc to use other codecs
-
-            var tag_ = sse_decode_i_32(deserializer);
-            switch (tag_) { case 0: var var_field0 = sse_decode_box_autoadd_create_magic_backup_v_2(deserializer);
-return MagicBackupRequestV2_Create(var_field0);case 1: var var_field0 = sse_decode_box_autoadd_get_magic_backup_v_2(deserializer);
-return MagicBackupRequestV2_Get(var_field0);case 2: var var_field0 = sse_decode_box_autoadd_delete_magic_backup_v_2(deserializer);
-return MagicBackupRequestV2_Delete(var_field0); default: throw UnimplementedError(''); }
-             }
-
-@protected MagicBackupResponseV2 sse_decode_magic_backup_response_v_2(SseDeserializer deserializer){ // Codec=Sse (Serialization based), see doc to use other codecs
-
-            var tag_ = sse_decode_i_32(deserializer);
-            switch (tag_) { case 0: return MagicBackupResponseV2_Created();case 1: var var_data = sse_decode_list_prim_u_8_strict(deserializer);
-return MagicBackupResponseV2_Backup(data: var_data);case 2: return MagicBackupResponseV2_Deleted();case 3: var var_error = sse_decode_String(deserializer);
-return MagicBackupResponseV2_Error(error: var_error); default: throw UnimplementedError(''); }
-             }
-
-@protected OnboardingState sse_decode_onboarding_state(SseDeserializer deserializer){ // Codec=Sse (Serialization based), see doc to use other codecs
-var inner = sse_decode_i_32(deserializer);
-        return OnboardingState.values[inner]; }
-
-@protected String? sse_decode_opt_String(SseDeserializer deserializer){ // Codec=Sse (Serialization based), see doc to use other codecs
-
-            if (sse_decode_bool(deserializer)) {
-                return (sse_decode_String(deserializer));
-            } else {
-                return null;
-            }
-             }
-
-@protected PrimeBackupFile? sse_decode_opt_box_autoadd_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerPrimeBackupFile(SseDeserializer deserializer){ // Codec=Sse (Serialization based), see doc to use other codecs
-
-            if (sse_decode_bool(deserializer)) {
-                return (sse_decode_box_autoadd_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerPrimeBackupFile(deserializer));
-            } else {
-                return null;
-            }
-             }
-
-@protected XidDocument? sse_decode_opt_box_autoadd_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerXIDDocument(SseDeserializer deserializer){ // Codec=Sse (Serialization based), see doc to use other codecs
-
-            if (sse_decode_bool(deserializer)) {
-                return (sse_decode_box_autoadd_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerXIDDocument(deserializer));
-            } else {
-                return null;
-            }
-             }
-
-@protected PassportMessage? sse_decode_opt_box_autoadd_passport_message(SseDeserializer deserializer){ // Codec=Sse (Serialization based), see doc to use other codecs
-
-            if (sse_decode_bool(deserializer)) {
-                return (sse_decode_box_autoadd_passport_message(deserializer));
-            } else {
-                return null;
-            }
-             }
-
-@protected BigInt? sse_decode_opt_box_autoadd_u_64(SseDeserializer deserializer){ // Codec=Sse (Serialization based), see doc to use other codecs
-
-            if (sse_decode_bool(deserializer)) {
-                return (sse_decode_box_autoadd_u_64(deserializer));
-            } else {
-                return null;
-            }
-             }
-
-@protected int? sse_decode_opt_box_autoadd_u_8(SseDeserializer deserializer){ // Codec=Sse (Serialization based), see doc to use other codecs
-
-            if (sse_decode_bool(deserializer)) {
-                return (sse_decode_box_autoadd_u_8(deserializer));
-            } else {
-                return null;
-            }
-             }
-
-@protected PairingRequest sse_decode_pairing_request(SseDeserializer deserializer){ // Codec=Sse (Serialization based), see doc to use other codecs
-var var_xidDocument = sse_decode_list_prim_u_8_strict(deserializer);
-var var_deviceName = sse_decode_String(deserializer);
-return PairingRequest(xidDocument: var_xidDocument, deviceName: var_deviceName); }
-
-@protected PairingResponse sse_decode_pairing_response(SseDeserializer deserializer){ // Codec=Sse (Serialization based), see doc to use other codecs
-var var_passportModel = sse_decode_passport_model(deserializer);
-var var_passportFirmwareVersion = sse_decode_passport_firmware_version(deserializer);
-var var_passportSerial = sse_decode_passport_serial(deserializer);
-var var_passportColor = sse_decode_passport_color(deserializer);
-var var_onboardingComplete = sse_decode_bool(deserializer);
-return PairingResponse(passportModel: var_passportModel, passportFirmwareVersion: var_passportFirmwareVersion, passportSerial: var_passportSerial, passportColor: var_passportColor, onboardingComplete: var_onboardingComplete); }
-
-@protected PassportColor sse_decode_passport_color(SseDeserializer deserializer){ // Codec=Sse (Serialization based), see doc to use other codecs
-var inner = sse_decode_i_32(deserializer);
-        return PassportColor.values[inner]; }
-
-@protected PassportFirmwareVersion sse_decode_passport_firmware_version(SseDeserializer deserializer){ // Codec=Sse (Serialization based), see doc to use other codecs
-var var_field0 = sse_decode_String(deserializer);
-return PassportFirmwareVersion(field0: var_field0); }
-
-@protected PassportMessage sse_decode_passport_message(SseDeserializer deserializer){ // Codec=Sse (Serialization based), see doc to use other codecs
-var var_message = sse_decode_quantum_link_message(deserializer);
-var var_status = sse_decode_device_status(deserializer);
-var var_protocolVersion = sse_decode_opt_box_autoadd_u_8(deserializer);
-return PassportMessage(message: var_message, status: var_status, protocolVersion: var_protocolVersion); }
-
-@protected PassportModel sse_decode_passport_model(SseDeserializer deserializer){ // Codec=Sse (Serialization based), see doc to use other codecs
-var inner = sse_decode_i_32(deserializer);
-        return PassportModel.values[inner]; }
-
-@protected PassportSerial sse_decode_passport_serial(SseDeserializer deserializer){ // Codec=Sse (Serialization based), see doc to use other codecs
-var var_field0 = sse_decode_String(deserializer);
-return PassportSerial(field0: var_field0); }
-
-@protected PricePoint sse_decode_price_point(SseDeserializer deserializer){ // Codec=Sse (Serialization based), see doc to use other codecs
-var var_rate = sse_decode_f_32(deserializer);
-var var_timestamp = sse_decode_u_64(deserializer);
-return PricePoint(rate: var_rate, timestamp: var_timestamp); }
-
-@protected PrimeMagicBackupEnabled sse_decode_prime_magic_backup_enabled(SseDeserializer deserializer){ // Codec=Sse (Serialization based), see doc to use other codecs
-var var_enabled = sse_decode_bool(deserializer);
-var var_seedFingerprint = sse_decode_seed_fingerprint(deserializer);
-return PrimeMagicBackupEnabled(enabled: var_enabled, seedFingerprint: var_seedFingerprint); }
-
-@protected PrimeMagicBackupStatusRequest sse_decode_prime_magic_backup_status_request(SseDeserializer deserializer){ // Codec=Sse (Serialization based), see doc to use other codecs
-var var_seedFingerprint = sse_decode_seed_fingerprint(deserializer);
-return PrimeMagicBackupStatusRequest(seedFingerprint: var_seedFingerprint); }
-
-@protected PrimeMagicBackupStatusResponse sse_decode_prime_magic_backup_status_response(SseDeserializer deserializer){ // Codec=Sse (Serialization based), see doc to use other codecs
-var var_shardBackupFound = sse_decode_bool(deserializer);
-return PrimeMagicBackupStatusResponse(shardBackupFound: var_shardBackupFound); }
-
-@protected QrDecoderStatus sse_decode_qr_decoder_status(SseDeserializer deserializer){ // Codec=Sse (Serialization based), see doc to use other codecs
-var var_progress = sse_decode_f_64(deserializer);
-var var_payload = sse_decode_opt_box_autoadd_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerXIDDocument(deserializer);
-return QrDecoderStatus(progress: var_progress, payload: var_payload); }
-
-@protected QuantumLinkMessage sse_decode_quantum_link_message(SseDeserializer deserializer){ // Codec=Sse (Serialization based), see doc to use other codecs
-
-            var tag_ = sse_decode_i_32(deserializer);
-            switch (tag_) { case 0: var var_field0 = sse_decode_box_autoadd_exchange_rate(deserializer);
-return QuantumLinkMessage_ExchangeRate(var_field0);case 1: var var_field0 = sse_decode_box_autoadd_exchange_rate_history(deserializer);
-return QuantumLinkMessage_ExchangeRateHistory(var_field0);case 2: var var_field0 = sse_decode_box_autoadd_firmware_update_check_request(deserializer);
-return QuantumLinkMessage_FirmwareUpdateCheckRequest(var_field0);case 3: var var_field0 = sse_decode_box_autoadd_firmware_update_check_response(deserializer);
-return QuantumLinkMessage_FirmwareUpdateCheckResponse(var_field0);case 4: var var_field0 = sse_decode_box_autoadd_firmware_fetch_request(deserializer);
-return QuantumLinkMessage_FirmwareFetchRequest(var_field0);case 5: var var_field0 = sse_decode_box_autoadd_firmware_fetch_event(deserializer);
-return QuantumLinkMessage_FirmwareFetchEvent(var_field0);case 6: var var_field0 = sse_decode_box_autoadd_firmware_install_event(deserializer);
-return QuantumLinkMessage_FirmwareInstallEvent(var_field0);case 7: var var_field0 = sse_decode_box_autoadd_device_status(deserializer);
-return QuantumLinkMessage_DeviceStatus(var_field0);case 8: var var_field0 = sse_decode_box_autoadd_envoy_status(deserializer);
-return QuantumLinkMessage_EnvoyStatus(var_field0);case 9: var var_field0 = sse_decode_box_autoadd_pairing_request(deserializer);
-return QuantumLinkMessage_PairingRequest(var_field0);case 10: var var_field0 = sse_decode_box_autoadd_pairing_response(deserializer);
-return QuantumLinkMessage_PairingResponse(var_field0);case 11: var var_field0 = sse_decode_box_autoadd_security_check(deserializer);
-return QuantumLinkMessage_SecurityCheck(var_field0);case 12: var var_field0 = sse_decode_onboarding_state(deserializer);
-return QuantumLinkMessage_OnboardingState(var_field0);case 13: var var_field0 = sse_decode_box_autoadd_sign_psbt(deserializer);
-return QuantumLinkMessage_SignPsbt(var_field0);case 14: var var_field0 = sse_decode_box_autoadd_broadcast_transaction(deserializer);
-return QuantumLinkMessage_BroadcastTransaction(var_field0);case 15: var var_field0 = sse_decode_box_autoadd_account_update(deserializer);
-return QuantumLinkMessage_AccountUpdate(var_field0);case 16: var var_field0 = sse_decode_box_autoadd_apply_passphrase(deserializer);
-return QuantumLinkMessage_ApplyPassphrase(var_field0);case 17: var var_field0 = sse_decode_box_autoadd_envoy_magic_backup_enabled_request(deserializer);
-return QuantumLinkMessage_EnvoyMagicBackupEnabledRequest(var_field0);case 18: var var_field0 = sse_decode_box_autoadd_envoy_magic_backup_enabled_response(deserializer);
-return QuantumLinkMessage_EnvoyMagicBackupEnabledResponse(var_field0);case 19: var var_field0 = sse_decode_box_autoadd_prime_magic_backup_enabled(deserializer);
-return QuantumLinkMessage_PrimeMagicBackupEnabled(var_field0);case 20: var var_field0 = sse_decode_box_autoadd_prime_magic_backup_status_request(deserializer);
-return QuantumLinkMessage_PrimeMagicBackupStatusRequest(var_field0);case 21: var var_field0 = sse_decode_box_autoadd_prime_magic_backup_status_response(deserializer);
-return QuantumLinkMessage_PrimeMagicBackupStatusResponse(var_field0);case 22: var var_field0 = sse_decode_box_autoadd_backup_shard_request(deserializer);
-return QuantumLinkMessage_BackupShardRequest(var_field0);case 23: var var_field0 = sse_decode_box_autoadd_backup_shard_response(deserializer);
-return QuantumLinkMessage_BackupShardResponse(var_field0);case 24: var var_field0 = sse_decode_box_autoadd_restore_shard_request(deserializer);
-return QuantumLinkMessage_RestoreShardRequest(var_field0);case 25: var var_field0 = sse_decode_box_autoadd_restore_shard_response(deserializer);
-return QuantumLinkMessage_RestoreShardResponse(var_field0);case 26: var var_field0 = sse_decode_box_autoadd_create_magic_backup_event(deserializer);
-return QuantumLinkMessage_CreateMagicBackupEvent(var_field0);case 27: var var_field0 = sse_decode_box_autoadd_create_magic_backup_result(deserializer);
-return QuantumLinkMessage_CreateMagicBackupResult(var_field0);case 28: var var_field0 = sse_decode_box_autoadd_restore_magic_backup_request(deserializer);
-return QuantumLinkMessage_RestoreMagicBackupRequest(var_field0);case 29: var var_field0 = sse_decode_box_autoadd_restore_magic_backup_event(deserializer);
-return QuantumLinkMessage_RestoreMagicBackupEvent(var_field0);case 30: var var_field0 = sse_decode_box_autoadd_restore_magic_backup_result(deserializer);
-return QuantumLinkMessage_RestoreMagicBackupResult(var_field0);case 31: var var_field0 = sse_decode_box_autoadd_heartbeat(deserializer);
-return QuantumLinkMessage_Heartbeat(var_field0);case 32: var var_field0 = sse_decode_box_autoadd_timezone_request(deserializer);
-return QuantumLinkMessage_TimezoneRequest(var_field0);case 33: var var_field0 = sse_decode_box_autoadd_timezone_response(deserializer);
-return QuantumLinkMessage_TimezoneResponse(var_field0);case 34: var var_field0 = sse_decode_box_autoadd_unpairing_request(deserializer);
-return QuantumLinkMessage_UnpairingRequest(var_field0);case 35: var var_field0 = sse_decode_box_autoadd_unpairing_response(deserializer);
-return QuantumLinkMessage_UnpairingResponse(var_field0);case 36: var var_field0 = sse_decode_box_autoadd_magic_backup_request_v_2(deserializer);
-return QuantumLinkMessage_MagicBackupRequestV2(var_field0);case 37: var var_field0 = sse_decode_box_autoadd_magic_backup_response_v_2(deserializer);
-return QuantumLinkMessage_MagicBackupResponseV2(var_field0); default: throw UnimplementedError(''); }
-             }
-
-@protected RestoreMagicBackupEvent sse_decode_restore_magic_backup_event(SseDeserializer deserializer){ // Codec=Sse (Serialization based), see doc to use other codecs
-
-            var tag_ = sse_decode_i_32(deserializer);
-            switch (tag_) { case 0: return RestoreMagicBackupEvent_NotFound();case 1: var var_field0 = sse_decode_box_autoadd_backup_metadata(deserializer);
-return RestoreMagicBackupEvent_Starting(var_field0);case 2: var var_field0 = sse_decode_box_autoadd_backup_chunk(deserializer);
-return RestoreMagicBackupEvent_Chunk(var_field0);case 3: var var_error = sse_decode_String(deserializer);
-return RestoreMagicBackupEvent_Error(error: var_error); default: throw UnimplementedError(''); }
-             }
-
-@protected RestoreMagicBackupRequest sse_decode_restore_magic_backup_request(SseDeserializer deserializer){ // Codec=Sse (Serialization based), see doc to use other codecs
-var var_seedFingerprint = sse_decode_seed_fingerprint(deserializer);
-var var_resumeFromChunk = sse_decode_u_32(deserializer);
-return RestoreMagicBackupRequest(seedFingerprint: var_seedFingerprint, resumeFromChunk: var_resumeFromChunk); }
-
-@protected RestoreMagicBackupResult sse_decode_restore_magic_backup_result(SseDeserializer deserializer){ // Codec=Sse (Serialization based), see doc to use other codecs
-
-            var tag_ = sse_decode_i_32(deserializer);
-            switch (tag_) { case 0: return RestoreMagicBackupResult_Success();case 1: var var_error = sse_decode_String(deserializer);
-return RestoreMagicBackupResult_Error(error: var_error); default: throw UnimplementedError(''); }
-             }
-
-@protected RestoreShardRequest sse_decode_restore_shard_request(SseDeserializer deserializer){ // Codec=Sse (Serialization based), see doc to use other codecs
-var var_seedFingerprint = sse_decode_seed_fingerprint(deserializer);
-return RestoreShardRequest(seedFingerprint: var_seedFingerprint); }
-
-@protected RestoreShardResponse sse_decode_restore_shard_response(SseDeserializer deserializer){ // Codec=Sse (Serialization based), see doc to use other codecs
-
-            var tag_ = sse_decode_i_32(deserializer);
-            switch (tag_) { case 0: var var_shard = sse_decode_box_autoadd_shard(deserializer);
-return RestoreShardResponse_Success(shard: var_shard);case 1: var var_error = sse_decode_String(deserializer);
-return RestoreShardResponse_Error(error: var_error);case 2: return RestoreShardResponse_NotFound(); default: throw UnimplementedError(''); }
-             }
-
-@protected SecurityCheck sse_decode_security_check(SseDeserializer deserializer){ // Codec=Sse (Serialization based), see doc to use other codecs
-
-            var tag_ = sse_decode_i_32(deserializer);
-            switch (tag_) { case 0: var var_field0 = sse_decode_box_autoadd_challenge_request(deserializer);
-return SecurityCheck_ChallengeRequest(var_field0);case 1: var var_field0 = sse_decode_box_autoadd_challenge_response_result(deserializer);
-return SecurityCheck_ChallengeResponse(var_field0);case 2: var var_field0 = sse_decode_box_autoadd_verification_result(deserializer);
-return SecurityCheck_VerificationResult(var_field0); default: throw UnimplementedError(''); }
-             }
-
-@protected SeedFingerprint sse_decode_seed_fingerprint(SseDeserializer deserializer){ // Codec=Sse (Serialization based), see doc to use other codecs
-var var_field0 = sse_decode_u_8_array_32(deserializer);
-return SeedFingerprint(field0: var_field0); }
-
-@protected Shard sse_decode_shard(SseDeserializer deserializer){ // Codec=Sse (Serialization based), see doc to use other codecs
-var var_field0 = sse_decode_list_prim_u_8_strict(deserializer);
-return Shard(field0: var_field0); }
-
-@protected SignPsbt sse_decode_sign_psbt(SseDeserializer deserializer){ // Codec=Sse (Serialization based), see doc to use other codecs
-var var_accountId = sse_decode_String(deserializer);
-var var_psbt = sse_decode_list_prim_u_8_strict(deserializer);
-return SignPsbt(accountId: var_accountId, psbt: var_psbt); }
-
-@protected StartMagicBackup sse_decode_start_magic_backup(SseDeserializer deserializer){ // Codec=Sse (Serialization based), see doc to use other codecs
-var var_seedFingerprint = sse_decode_seed_fingerprint(deserializer);
-var var_totalChunks = sse_decode_u_32(deserializer);
-var var_hash = sse_decode_u_8_array_32(deserializer);
-return StartMagicBackup(seedFingerprint: var_seedFingerprint, totalChunks: var_totalChunks, hash: var_hash); }
-
-@protected TimezoneRequest sse_decode_timezone_request(SseDeserializer deserializer){ // Codec=Sse (Serialization based), see doc to use other codecs
-return TimezoneRequest(); }
-
-@protected TimezoneResponse sse_decode_timezone_response(SseDeserializer deserializer){ // Codec=Sse (Serialization based), see doc to use other codecs
-var var_offsetMinutes = sse_decode_i_32(deserializer);
-var var_zone = sse_decode_String(deserializer);
-return TimezoneResponse(offsetMinutes: var_offsetMinutes, zone: var_zone); }
-
-@protected int sse_decode_u_16(SseDeserializer deserializer){ // Codec=Sse (Serialization based), see doc to use other codecs
-return deserializer.buffer.getUint16(); }
-
-@protected int sse_decode_u_32(SseDeserializer deserializer){ // Codec=Sse (Serialization based), see doc to use other codecs
-return deserializer.buffer.getUint32(); }
-
-@protected BigInt sse_decode_u_64(SseDeserializer deserializer){ // Codec=Sse (Serialization based), see doc to use other codecs
-return deserializer.buffer.getBigUint64(); }
-
-@protected int sse_decode_u_8(SseDeserializer deserializer){ // Codec=Sse (Serialization based), see doc to use other codecs
-return deserializer.buffer.getUint8(); }
-
-@protected U8Array32 sse_decode_u_8_array_32(SseDeserializer deserializer){ // Codec=Sse (Serialization based), see doc to use other codecs
-var inner = sse_decode_list_prim_u_8_strict(deserializer);
-        return U8Array32(inner); }
-
-@protected void sse_decode_unit(SseDeserializer deserializer){ // Codec=Sse (Serialization based), see doc to use other codecs
- }
-
-@protected UnpairingRequest sse_decode_unpairing_request(SseDeserializer deserializer){ // Codec=Sse (Serialization based), see doc to use other codecs
-return UnpairingRequest(); }
-
-@protected UnpairingResponse sse_decode_unpairing_response(SseDeserializer deserializer){ // Codec=Sse (Serialization based), see doc to use other codecs
-var var_success = sse_decode_bool(deserializer);
-return UnpairingResponse(success: var_success); }
-
-@protected BigInt sse_decode_usize(SseDeserializer deserializer){ // Codec=Sse (Serialization based), see doc to use other codecs
-return deserializer.buffer.getBigUint64(); }
-
-@protected VerificationResult sse_decode_verification_result(SseDeserializer deserializer){ // Codec=Sse (Serialization based), see doc to use other codecs
-
-            var tag_ = sse_decode_i_32(deserializer);
-            switch (tag_) { case 0: return VerificationResult_Success();case 1: var var_error = sse_decode_String(deserializer);
-return VerificationResult_Error(error: var_error);case 2: return VerificationResult_Failure(); default: throw UnimplementedError(''); }
-             }
-
-@protected void sse_encode_AnyhowException(AnyhowException self, SseSerializer serializer){ // Codec=Sse (Serialization based), see doc to use other codecs
-sse_encode_String(self.message, serializer); }
-
-@protected void sse_encode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerArcMutexDecoder(ArcMutexDecoder self, SseSerializer serializer){ // Codec=Sse (Serialization based), see doc to use other codecs
-sse_encode_usize((self as ArcMutexDecoderImpl).frbInternalSseEncode(move: true), serializer); }
-
-@protected void sse_encode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerCollectBackupChunks(CollectBackupChunks self, SseSerializer serializer){ // Codec=Sse (Serialization based), see doc to use other codecs
-sse_encode_usize((self as CollectBackupChunksImpl).frbInternalSseEncode(move: true), serializer); }
-
-@protected void sse_encode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerEnvoyARIDCache(EnvoyAridCache self, SseSerializer serializer){ // Codec=Sse (Serialization based), see doc to use other codecs
-sse_encode_usize((self as EnvoyAridCacheImpl).frbInternalSseEncode(move: true), serializer); }
-
-@protected void sse_encode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerEnvoyMasterDechunker(EnvoyMasterDechunker self, SseSerializer serializer){ // Codec=Sse (Serialization based), see doc to use other codecs
-sse_encode_usize((self as EnvoyMasterDechunkerImpl).frbInternalSseEncode(move: true), serializer); }
-
-@protected void sse_encode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerPrimeBackupFile(PrimeBackupFile self, SseSerializer serializer){ // Codec=Sse (Serialization based), see doc to use other codecs
-sse_encode_usize((self as PrimeBackupFileImpl).frbInternalSseEncode(move: true), serializer); }
-
-@protected void sse_encode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerQuantumLinkIdentity(QuantumLinkIdentity self, SseSerializer serializer){ // Codec=Sse (Serialization based), see doc to use other codecs
-sse_encode_usize((self as QuantumLinkIdentityImpl).frbInternalSseEncode(move: true), serializer); }
-
-@protected void sse_encode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerXIDDocument(XidDocument self, SseSerializer serializer){ // Codec=Sse (Serialization based), see doc to use other codecs
-sse_encode_usize((self as XidDocumentImpl).frbInternalSseEncode(move: true), serializer); }
-
-@protected void sse_encode_Auto_RefMut_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerCollectBackupChunks(CollectBackupChunks self, SseSerializer serializer){ // Codec=Sse (Serialization based), see doc to use other codecs
-sse_encode_usize((self as CollectBackupChunksImpl).frbInternalSseEncode(move: false), serializer); }
-
-@protected void sse_encode_Auto_RefMut_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerEnvoyARIDCache(EnvoyAridCache self, SseSerializer serializer){ // Codec=Sse (Serialization based), see doc to use other codecs
-sse_encode_usize((self as EnvoyAridCacheImpl).frbInternalSseEncode(move: false), serializer); }
-
-@protected void sse_encode_Auto_RefMut_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerEnvoyMasterDechunker(EnvoyMasterDechunker self, SseSerializer serializer){ // Codec=Sse (Serialization based), see doc to use other codecs
-sse_encode_usize((self as EnvoyMasterDechunkerImpl).frbInternalSseEncode(move: false), serializer); }
-
-@protected void sse_encode_Auto_RefMut_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerPrimeBackupFile(PrimeBackupFile self, SseSerializer serializer){ // Codec=Sse (Serialization based), see doc to use other codecs
-sse_encode_usize((self as PrimeBackupFileImpl).frbInternalSseEncode(move: false), serializer); }
-
-@protected void sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerArcMutexDecoder(ArcMutexDecoder self, SseSerializer serializer){ // Codec=Sse (Serialization based), see doc to use other codecs
-sse_encode_usize((self as ArcMutexDecoderImpl).frbInternalSseEncode(move: false), serializer); }
-
-@protected void sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerCollectBackupChunks(CollectBackupChunks self, SseSerializer serializer){ // Codec=Sse (Serialization based), see doc to use other codecs
-sse_encode_usize((self as CollectBackupChunksImpl).frbInternalSseEncode(move: false), serializer); }
-
-@protected void sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerPrimeBackupFile(PrimeBackupFile self, SseSerializer serializer){ // Codec=Sse (Serialization based), see doc to use other codecs
-sse_encode_usize((self as PrimeBackupFileImpl).frbInternalSseEncode(move: false), serializer); }
-
-@protected void sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerQuantumLinkIdentity(QuantumLinkIdentity self, SseSerializer serializer){ // Codec=Sse (Serialization based), see doc to use other codecs
-sse_encode_usize((self as QuantumLinkIdentityImpl).frbInternalSseEncode(move: false), serializer); }
-
-@protected void sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerXIDDocument(XidDocument self, SseSerializer serializer){ // Codec=Sse (Serialization based), see doc to use other codecs
-sse_encode_usize((self as XidDocumentImpl).frbInternalSseEncode(move: false), serializer); }
-
-@protected void sse_encode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerArcMutexDecoder(ArcMutexDecoder self, SseSerializer serializer){ // Codec=Sse (Serialization based), see doc to use other codecs
-sse_encode_usize((self as ArcMutexDecoderImpl).frbInternalSseEncode(move: null), serializer); }
-
-@protected void sse_encode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerCollectBackupChunks(CollectBackupChunks self, SseSerializer serializer){ // Codec=Sse (Serialization based), see doc to use other codecs
-sse_encode_usize((self as CollectBackupChunksImpl).frbInternalSseEncode(move: null), serializer); }
-
-@protected void sse_encode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerEnvoyARIDCache(EnvoyAridCache self, SseSerializer serializer){ // Codec=Sse (Serialization based), see doc to use other codecs
-sse_encode_usize((self as EnvoyAridCacheImpl).frbInternalSseEncode(move: null), serializer); }
-
-@protected void sse_encode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerEnvoyMasterDechunker(EnvoyMasterDechunker self, SseSerializer serializer){ // Codec=Sse (Serialization based), see doc to use other codecs
-sse_encode_usize((self as EnvoyMasterDechunkerImpl).frbInternalSseEncode(move: null), serializer); }
-
-@protected void sse_encode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerPrimeBackupFile(PrimeBackupFile self, SseSerializer serializer){ // Codec=Sse (Serialization based), see doc to use other codecs
-sse_encode_usize((self as PrimeBackupFileImpl).frbInternalSseEncode(move: null), serializer); }
-
-@protected void sse_encode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerQuantumLinkIdentity(QuantumLinkIdentity self, SseSerializer serializer){ // Codec=Sse (Serialization based), see doc to use other codecs
-sse_encode_usize((self as QuantumLinkIdentityImpl).frbInternalSseEncode(move: null), serializer); }
-
-@protected void sse_encode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerXIDDocument(XidDocument self, SseSerializer serializer){ // Codec=Sse (Serialization based), see doc to use other codecs
-sse_encode_usize((self as XidDocumentImpl).frbInternalSseEncode(move: null), serializer); }
-
-@protected void sse_encode_String(String self, SseSerializer serializer){ // Codec=Sse (Serialization based), see doc to use other codecs
-sse_encode_list_prim_u_8_strict(utf8.encoder.convert(self), serializer); }
-
-@protected void sse_encode_account_update(AccountUpdate self, SseSerializer serializer){ // Codec=Sse (Serialization based), see doc to use other codecs
-sse_encode_String(self.accountId, serializer);
-sse_encode_list_prim_u_8_strict(self.update, serializer);
- }
-
-@protected void sse_encode_apply_passphrase(ApplyPassphrase self, SseSerializer serializer){ // Codec=Sse (Serialization based), see doc to use other codecs
-sse_encode_opt_String(self.fingerprint, serializer);
- }
-
-@protected void sse_encode_backup_chunk(BackupChunk self, SseSerializer serializer){ // Codec=Sse (Serialization based), see doc to use other codecs
-sse_encode_u_32(self.chunkIndex, serializer);
-sse_encode_u_32(self.totalChunks, serializer);
-sse_encode_list_prim_u_8_strict(self.data, serializer);
- }
-
-@protected void sse_encode_backup_metadata(BackupMetadata self, SseSerializer serializer){ // Codec=Sse (Serialization based), see doc to use other codecs
-sse_encode_u_32(self.totalChunks, serializer);
- }
-
-@protected void sse_encode_backup_shard_request(BackupShardRequest self, SseSerializer serializer){ // Codec=Sse (Serialization based), see doc to use other codecs
-sse_encode_shard(self.shard, serializer);
- }
-
-@protected void sse_encode_backup_shard_response(BackupShardResponse self, SseSerializer serializer){ // Codec=Sse (Serialization based), see doc to use other codecs
-switch (self) { case BackupShardResponse_Success(): sse_encode_i_32(0, serializer); case BackupShardResponse_Error(error: final error): sse_encode_i_32(1, serializer); sse_encode_String(error, serializer);
-  } }
-
-@protected void sse_encode_bool(bool self, SseSerializer serializer){ // Codec=Sse (Serialization based), see doc to use other codecs
-serializer.buffer.putUint8(self ? 1 : 0); }
-
-@protected void sse_encode_box_autoadd_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerPrimeBackupFile(PrimeBackupFile self, SseSerializer serializer){ // Codec=Sse (Serialization based), see doc to use other codecs
-sse_encode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerPrimeBackupFile(self, serializer); }
-
-@protected void sse_encode_box_autoadd_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerXIDDocument(XidDocument self, SseSerializer serializer){ // Codec=Sse (Serialization based), see doc to use other codecs
-sse_encode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerXIDDocument(self, serializer); }
-
-@protected void sse_encode_box_autoadd_account_update(AccountUpdate self, SseSerializer serializer){ // Codec=Sse (Serialization based), see doc to use other codecs
-sse_encode_account_update(self, serializer); }
-
-@protected void sse_encode_box_autoadd_apply_passphrase(ApplyPassphrase self, SseSerializer serializer){ // Codec=Sse (Serialization based), see doc to use other codecs
-sse_encode_apply_passphrase(self, serializer); }
-
-@protected void sse_encode_box_autoadd_backup_chunk(BackupChunk self, SseSerializer serializer){ // Codec=Sse (Serialization based), see doc to use other codecs
-sse_encode_backup_chunk(self, serializer); }
-
-@protected void sse_encode_box_autoadd_backup_metadata(BackupMetadata self, SseSerializer serializer){ // Codec=Sse (Serialization based), see doc to use other codecs
-sse_encode_backup_metadata(self, serializer); }
-
-@protected void sse_encode_box_autoadd_backup_shard_request(BackupShardRequest self, SseSerializer serializer){ // Codec=Sse (Serialization based), see doc to use other codecs
-sse_encode_backup_shard_request(self, serializer); }
-
-@protected void sse_encode_box_autoadd_backup_shard_response(BackupShardResponse self, SseSerializer serializer){ // Codec=Sse (Serialization based), see doc to use other codecs
-sse_encode_backup_shard_response(self, serializer); }
-
-@protected void sse_encode_box_autoadd_broadcast_transaction(BroadcastTransaction self, SseSerializer serializer){ // Codec=Sse (Serialization based), see doc to use other codecs
-sse_encode_broadcast_transaction(self, serializer); }
-
-@protected void sse_encode_box_autoadd_challenge_request(ChallengeRequest self, SseSerializer serializer){ // Codec=Sse (Serialization based), see doc to use other codecs
-sse_encode_challenge_request(self, serializer); }
-
-@protected void sse_encode_box_autoadd_challenge_response_result(ChallengeResponseResult self, SseSerializer serializer){ // Codec=Sse (Serialization based), see doc to use other codecs
-sse_encode_challenge_response_result(self, serializer); }
-
-@protected void sse_encode_box_autoadd_create_magic_backup_event(CreateMagicBackupEvent self, SseSerializer serializer){ // Codec=Sse (Serialization based), see doc to use other codecs
-sse_encode_create_magic_backup_event(self, serializer); }
-
-@protected void sse_encode_box_autoadd_create_magic_backup_result(CreateMagicBackupResult self, SseSerializer serializer){ // Codec=Sse (Serialization based), see doc to use other codecs
-sse_encode_create_magic_backup_result(self, serializer); }
-
-@protected void sse_encode_box_autoadd_create_magic_backup_v_2(CreateMagicBackupV2 self, SseSerializer serializer){ // Codec=Sse (Serialization based), see doc to use other codecs
-sse_encode_create_magic_backup_v_2(self, serializer); }
-
-@protected void sse_encode_box_autoadd_delete_magic_backup_v_2(DeleteMagicBackupV2 self, SseSerializer serializer){ // Codec=Sse (Serialization based), see doc to use other codecs
-sse_encode_delete_magic_backup_v_2(self, serializer); }
-
-@protected void sse_encode_box_autoadd_device_status(DeviceStatus self, SseSerializer serializer){ // Codec=Sse (Serialization based), see doc to use other codecs
-sse_encode_device_status(self, serializer); }
-
-@protected void sse_encode_box_autoadd_envoy_magic_backup_enabled_request(EnvoyMagicBackupEnabledRequest self, SseSerializer serializer){ // Codec=Sse (Serialization based), see doc to use other codecs
-sse_encode_envoy_magic_backup_enabled_request(self, serializer); }
-
-@protected void sse_encode_box_autoadd_envoy_magic_backup_enabled_response(EnvoyMagicBackupEnabledResponse self, SseSerializer serializer){ // Codec=Sse (Serialization based), see doc to use other codecs
-sse_encode_envoy_magic_backup_enabled_response(self, serializer); }
-
-@protected void sse_encode_box_autoadd_envoy_message(EnvoyMessage self, SseSerializer serializer){ // Codec=Sse (Serialization based), see doc to use other codecs
-sse_encode_envoy_message(self, serializer); }
-
-@protected void sse_encode_box_autoadd_envoy_status(EnvoyStatus self, SseSerializer serializer){ // Codec=Sse (Serialization based), see doc to use other codecs
-sse_encode_envoy_status(self, serializer); }
-
-@protected void sse_encode_box_autoadd_exchange_rate(ExchangeRate self, SseSerializer serializer){ // Codec=Sse (Serialization based), see doc to use other codecs
-sse_encode_exchange_rate(self, serializer); }
-
-@protected void sse_encode_box_autoadd_exchange_rate_history(ExchangeRateHistory self, SseSerializer serializer){ // Codec=Sse (Serialization based), see doc to use other codecs
-sse_encode_exchange_rate_history(self, serializer); }
-
-@protected void sse_encode_box_autoadd_firmware_chunk(FirmwareChunk self, SseSerializer serializer){ // Codec=Sse (Serialization based), see doc to use other codecs
-sse_encode_firmware_chunk(self, serializer); }
-
-@protected void sse_encode_box_autoadd_firmware_fetch_event(FirmwareFetchEvent self, SseSerializer serializer){ // Codec=Sse (Serialization based), see doc to use other codecs
-sse_encode_firmware_fetch_event(self, serializer); }
-
-@protected void sse_encode_box_autoadd_firmware_fetch_request(FirmwareFetchRequest self, SseSerializer serializer){ // Codec=Sse (Serialization based), see doc to use other codecs
-sse_encode_firmware_fetch_request(self, serializer); }
-
-@protected void sse_encode_box_autoadd_firmware_install_event(FirmwareInstallEvent self, SseSerializer serializer){ // Codec=Sse (Serialization based), see doc to use other codecs
-sse_encode_firmware_install_event(self, serializer); }
-
-@protected void sse_encode_box_autoadd_firmware_update_available(FirmwareUpdateAvailable self, SseSerializer serializer){ // Codec=Sse (Serialization based), see doc to use other codecs
-sse_encode_firmware_update_available(self, serializer); }
-
-@protected void sse_encode_box_autoadd_firmware_update_check_request(FirmwareUpdateCheckRequest self, SseSerializer serializer){ // Codec=Sse (Serialization based), see doc to use other codecs
-sse_encode_firmware_update_check_request(self, serializer); }
-
-@protected void sse_encode_box_autoadd_firmware_update_check_response(FirmwareUpdateCheckResponse self, SseSerializer serializer){ // Codec=Sse (Serialization based), see doc to use other codecs
-sse_encode_firmware_update_check_response(self, serializer); }
-
-@protected void sse_encode_box_autoadd_get_magic_backup_v_2(GetMagicBackupV2 self, SseSerializer serializer){ // Codec=Sse (Serialization based), see doc to use other codecs
-sse_encode_get_magic_backup_v_2(self, serializer); }
-
-@protected void sse_encode_box_autoadd_heartbeat(Heartbeat self, SseSerializer serializer){ // Codec=Sse (Serialization based), see doc to use other codecs
-sse_encode_heartbeat(self, serializer); }
-
-@protected void sse_encode_box_autoadd_magic_backup_request_v_2(MagicBackupRequestV2 self, SseSerializer serializer){ // Codec=Sse (Serialization based), see doc to use other codecs
-sse_encode_magic_backup_request_v_2(self, serializer); }
-
-@protected void sse_encode_box_autoadd_magic_backup_response_v_2(MagicBackupResponseV2 self, SseSerializer serializer){ // Codec=Sse (Serialization based), see doc to use other codecs
-sse_encode_magic_backup_response_v_2(self, serializer); }
-
-@protected void sse_encode_box_autoadd_pairing_request(PairingRequest self, SseSerializer serializer){ // Codec=Sse (Serialization based), see doc to use other codecs
-sse_encode_pairing_request(self, serializer); }
-
-@protected void sse_encode_box_autoadd_pairing_response(PairingResponse self, SseSerializer serializer){ // Codec=Sse (Serialization based), see doc to use other codecs
-sse_encode_pairing_response(self, serializer); }
-
-@protected void sse_encode_box_autoadd_passport_message(PassportMessage self, SseSerializer serializer){ // Codec=Sse (Serialization based), see doc to use other codecs
-sse_encode_passport_message(self, serializer); }
-
-@protected void sse_encode_box_autoadd_prime_magic_backup_enabled(PrimeMagicBackupEnabled self, SseSerializer serializer){ // Codec=Sse (Serialization based), see doc to use other codecs
-sse_encode_prime_magic_backup_enabled(self, serializer); }
-
-@protected void sse_encode_box_autoadd_prime_magic_backup_status_request(PrimeMagicBackupStatusRequest self, SseSerializer serializer){ // Codec=Sse (Serialization based), see doc to use other codecs
-sse_encode_prime_magic_backup_status_request(self, serializer); }
-
-@protected void sse_encode_box_autoadd_prime_magic_backup_status_response(PrimeMagicBackupStatusResponse self, SseSerializer serializer){ // Codec=Sse (Serialization based), see doc to use other codecs
-sse_encode_prime_magic_backup_status_response(self, serializer); }
-
-@protected void sse_encode_box_autoadd_restore_magic_backup_event(RestoreMagicBackupEvent self, SseSerializer serializer){ // Codec=Sse (Serialization based), see doc to use other codecs
-sse_encode_restore_magic_backup_event(self, serializer); }
-
-@protected void sse_encode_box_autoadd_restore_magic_backup_request(RestoreMagicBackupRequest self, SseSerializer serializer){ // Codec=Sse (Serialization based), see doc to use other codecs
-sse_encode_restore_magic_backup_request(self, serializer); }
-
-@protected void sse_encode_box_autoadd_restore_magic_backup_result(RestoreMagicBackupResult self, SseSerializer serializer){ // Codec=Sse (Serialization based), see doc to use other codecs
-sse_encode_restore_magic_backup_result(self, serializer); }
-
-@protected void sse_encode_box_autoadd_restore_shard_request(RestoreShardRequest self, SseSerializer serializer){ // Codec=Sse (Serialization based), see doc to use other codecs
-sse_encode_restore_shard_request(self, serializer); }
-
-@protected void sse_encode_box_autoadd_restore_shard_response(RestoreShardResponse self, SseSerializer serializer){ // Codec=Sse (Serialization based), see doc to use other codecs
-sse_encode_restore_shard_response(self, serializer); }
-
-@protected void sse_encode_box_autoadd_security_check(SecurityCheck self, SseSerializer serializer){ // Codec=Sse (Serialization based), see doc to use other codecs
-sse_encode_security_check(self, serializer); }
-
-@protected void sse_encode_box_autoadd_seed_fingerprint(SeedFingerprint self, SseSerializer serializer){ // Codec=Sse (Serialization based), see doc to use other codecs
-sse_encode_seed_fingerprint(self, serializer); }
-
-@protected void sse_encode_box_autoadd_shard(Shard self, SseSerializer serializer){ // Codec=Sse (Serialization based), see doc to use other codecs
-sse_encode_shard(self, serializer); }
-
-@protected void sse_encode_box_autoadd_sign_psbt(SignPsbt self, SseSerializer serializer){ // Codec=Sse (Serialization based), see doc to use other codecs
-sse_encode_sign_psbt(self, serializer); }
-
-@protected void sse_encode_box_autoadd_start_magic_backup(StartMagicBackup self, SseSerializer serializer){ // Codec=Sse (Serialization based), see doc to use other codecs
-sse_encode_start_magic_backup(self, serializer); }
-
-@protected void sse_encode_box_autoadd_timezone_request(TimezoneRequest self, SseSerializer serializer){ // Codec=Sse (Serialization based), see doc to use other codecs
-sse_encode_timezone_request(self, serializer); }
-
-@protected void sse_encode_box_autoadd_timezone_response(TimezoneResponse self, SseSerializer serializer){ // Codec=Sse (Serialization based), see doc to use other codecs
-sse_encode_timezone_response(self, serializer); }
-
-@protected void sse_encode_box_autoadd_u_64(BigInt self, SseSerializer serializer){ // Codec=Sse (Serialization based), see doc to use other codecs
-sse_encode_u_64(self, serializer); }
-
-@protected void sse_encode_box_autoadd_u_8(int self, SseSerializer serializer){ // Codec=Sse (Serialization based), see doc to use other codecs
-sse_encode_u_8(self, serializer); }
-
-@protected void sse_encode_box_autoadd_unpairing_request(UnpairingRequest self, SseSerializer serializer){ // Codec=Sse (Serialization based), see doc to use other codecs
-sse_encode_unpairing_request(self, serializer); }
-
-@protected void sse_encode_box_autoadd_unpairing_response(UnpairingResponse self, SseSerializer serializer){ // Codec=Sse (Serialization based), see doc to use other codecs
-sse_encode_unpairing_response(self, serializer); }
-
-@protected void sse_encode_box_autoadd_verification_result(VerificationResult self, SseSerializer serializer){ // Codec=Sse (Serialization based), see doc to use other codecs
-sse_encode_verification_result(self, serializer); }
-
-@protected void sse_encode_broadcast_transaction(BroadcastTransaction self, SseSerializer serializer){ // Codec=Sse (Serialization based), see doc to use other codecs
-sse_encode_String(self.accountId, serializer);
-sse_encode_list_prim_u_8_strict(self.psbt, serializer);
- }
-
-@protected void sse_encode_challenge_request(ChallengeRequest self, SseSerializer serializer){ // Codec=Sse (Serialization based), see doc to use other codecs
-sse_encode_list_prim_u_8_strict(self.data, serializer);
- }
-
-@protected void sse_encode_challenge_response_result(ChallengeResponseResult self, SseSerializer serializer){ // Codec=Sse (Serialization based), see doc to use other codecs
-switch (self) { case ChallengeResponseResult_Success(data: final data): sse_encode_i_32(0, serializer); sse_encode_list_prim_u_8_strict(data, serializer);
-case ChallengeResponseResult_Error(error: final error): sse_encode_i_32(1, serializer); sse_encode_String(error, serializer);
-  } }
-
-@protected void sse_encode_create_magic_backup_event(CreateMagicBackupEvent self, SseSerializer serializer){ // Codec=Sse (Serialization based), see doc to use other codecs
-switch (self) { case CreateMagicBackupEvent_Start(field0: final field0): sse_encode_i_32(0, serializer); sse_encode_box_autoadd_start_magic_backup(field0, serializer);
-case CreateMagicBackupEvent_Chunk(field0: final field0): sse_encode_i_32(1, serializer); sse_encode_box_autoadd_backup_chunk(field0, serializer);
-  } }
-
-@protected void sse_encode_create_magic_backup_result(CreateMagicBackupResult self, SseSerializer serializer){ // Codec=Sse (Serialization based), see doc to use other codecs
-switch (self) { case CreateMagicBackupResult_Success(): sse_encode_i_32(0, serializer); case CreateMagicBackupResult_Error(error: final error): sse_encode_i_32(1, serializer); sse_encode_String(error, serializer);
-  } }
-
-@protected void sse_encode_create_magic_backup_v_2(CreateMagicBackupV2 self, SseSerializer serializer){ // Codec=Sse (Serialization based), see doc to use other codecs
-sse_encode_u_64(self.timestamp, serializer);
-sse_encode_list_prim_u_8_strict(self.hash, serializer);
-sse_encode_list_prim_u_8_strict(self.pubkey, serializer);
-sse_encode_list_prim_u_8_strict(self.data, serializer);
-sse_encode_list_prim_u_8_strict(self.clientSignature, serializer);
- }
-
-@protected void sse_encode_decoder_status(DecoderStatus self, SseSerializer serializer){ // Codec=Sse (Serialization based), see doc to use other codecs
-sse_encode_f_64(self.progress, serializer);
-sse_encode_opt_box_autoadd_passport_message(self.payload, serializer);
- }
-
-@protected void sse_encode_delete_magic_backup_v_2(DeleteMagicBackupV2 self, SseSerializer serializer){ // Codec=Sse (Serialization based), see doc to use other codecs
-sse_encode_list_prim_u_8_strict(self.key, serializer);
-sse_encode_u_64(self.timestamp, serializer);
-sse_encode_list_prim_u_8_strict(self.signature, serializer);
- }
-
-@protected void sse_encode_device_status(DeviceStatus self, SseSerializer serializer){ // Codec=Sse (Serialization based), see doc to use other codecs
-sse_encode_String(self.version, serializer);
-sse_encode_u_8(self.batteryLevel, serializer);
- }
-
-@protected void sse_encode_envoy_magic_backup_enabled_request(EnvoyMagicBackupEnabledRequest self, SseSerializer serializer){ // Codec=Sse (Serialization based), see doc to use other codecs
- }
-
-@protected void sse_encode_envoy_magic_backup_enabled_response(EnvoyMagicBackupEnabledResponse self, SseSerializer serializer){ // Codec=Sse (Serialization based), see doc to use other codecs
-sse_encode_bool(self.enabled, serializer);
- }
-
-@protected void sse_encode_envoy_message(EnvoyMessage self, SseSerializer serializer){ // Codec=Sse (Serialization based), see doc to use other codecs
-sse_encode_quantum_link_message(self.message, serializer);
-sse_encode_u_32(self.timestamp, serializer);
-sse_encode_opt_box_autoadd_u_8(self.protocolVersion, serializer);
- }
-
-@protected void sse_encode_envoy_status(EnvoyStatus self, SseSerializer serializer){ // Codec=Sse (Serialization based), see doc to use other codecs
-sse_encode_String(self.version, serializer);
- }
-
-@protected void sse_encode_exchange_rate(ExchangeRate self, SseSerializer serializer){ // Codec=Sse (Serialization based), see doc to use other codecs
-sse_encode_String(self.currencyCode, serializer);
-sse_encode_f_32(self.rate, serializer);
-sse_encode_u_64(self.timestamp, serializer);
- }
-
-@protected void sse_encode_exchange_rate_history(ExchangeRateHistory self, SseSerializer serializer){ // Codec=Sse (Serialization based), see doc to use other codecs
-sse_encode_list_price_point(self.history, serializer);
-sse_encode_String(self.currencyCode, serializer);
- }
-
-@protected void sse_encode_f_32(double self, SseSerializer serializer){ // Codec=Sse (Serialization based), see doc to use other codecs
-serializer.buffer.putFloat32(self); }
-
-@protected void sse_encode_f_64(double self, SseSerializer serializer){ // Codec=Sse (Serialization based), see doc to use other codecs
-serializer.buffer.putFloat64(self); }
-
-@protected void sse_encode_firmware_chunk(FirmwareChunk self, SseSerializer serializer){ // Codec=Sse (Serialization based), see doc to use other codecs
-sse_encode_u_8(self.patchIndex, serializer);
-sse_encode_u_8(self.totalPatches, serializer);
-sse_encode_u_16(self.chunkIndex, serializer);
-sse_encode_u_16(self.totalChunks, serializer);
-sse_encode_list_prim_u_8_strict(self.data, serializer);
- }
-
-@protected void sse_encode_firmware_fetch_event(FirmwareFetchEvent self, SseSerializer serializer){ // Codec=Sse (Serialization based), see doc to use other codecs
-switch (self) { case FirmwareFetchEvent_UpdateNotAvailable(): sse_encode_i_32(0, serializer); case FirmwareFetchEvent_Starting(field0: final field0): sse_encode_i_32(1, serializer); sse_encode_box_autoadd_firmware_update_available(field0, serializer);
-case FirmwareFetchEvent_Downloading(): sse_encode_i_32(2, serializer); case FirmwareFetchEvent_Chunk(field0: final field0): sse_encode_i_32(3, serializer); sse_encode_box_autoadd_firmware_chunk(field0, serializer);
-case FirmwareFetchEvent_Error(error: final error): sse_encode_i_32(4, serializer); sse_encode_String(error, serializer);
-  } }
-
-@protected void sse_encode_firmware_fetch_request(FirmwareFetchRequest self, SseSerializer serializer){ // Codec=Sse (Serialization based), see doc to use other codecs
-sse_encode_String(self.currentVersion, serializer);
-sse_encode_opt_box_autoadd_u_64(self.chunkOffset, serializer);
- }
-
-@protected void sse_encode_firmware_install_event(FirmwareInstallEvent self, SseSerializer serializer){ // Codec=Sse (Serialization based), see doc to use other codecs
-switch (self) { case FirmwareInstallEvent_UpdateVerified(): sse_encode_i_32(0, serializer); case FirmwareInstallEvent_Installing(): sse_encode_i_32(1, serializer); case FirmwareInstallEvent_Rebooting(): sse_encode_i_32(2, serializer); case FirmwareInstallEvent_Success(installedVersion: final installedVersion): sse_encode_i_32(3, serializer); sse_encode_String(installedVersion, serializer);
-case FirmwareInstallEvent_Error(error: final error,stage: final stage): sse_encode_i_32(4, serializer); sse_encode_String(error, serializer);
-sse_encode_install_error_stage(stage, serializer);
-  } }
-
-@protected void sse_encode_firmware_update_available(FirmwareUpdateAvailable self, SseSerializer serializer){ // Codec=Sse (Serialization based), see doc to use other codecs
-sse_encode_String(self.version, serializer);
-sse_encode_String(self.changelog, serializer);
-sse_encode_u_32(self.timestamp, serializer);
-sse_encode_u_32(self.totalSize, serializer);
-sse_encode_u_8(self.patchCount, serializer);
- }
-
-@protected void sse_encode_firmware_update_check_request(FirmwareUpdateCheckRequest self, SseSerializer serializer){ // Codec=Sse (Serialization based), see doc to use other codecs
-sse_encode_String(self.currentVersion, serializer);
- }
-
-@protected void sse_encode_firmware_update_check_response(FirmwareUpdateCheckResponse self, SseSerializer serializer){ // Codec=Sse (Serialization based), see doc to use other codecs
-switch (self) { case FirmwareUpdateCheckResponse_Available(field0: final field0): sse_encode_i_32(0, serializer); sse_encode_box_autoadd_firmware_update_available(field0, serializer);
-case FirmwareUpdateCheckResponse_NotAvailable(): sse_encode_i_32(1, serializer);   } }
-
-@protected void sse_encode_get_magic_backup_v_2(GetMagicBackupV2 self, SseSerializer serializer){ // Codec=Sse (Serialization based), see doc to use other codecs
-sse_encode_list_prim_u_8_strict(self.key, serializer);
-sse_encode_u_64(self.timestamp, serializer);
-sse_encode_list_prim_u_8_strict(self.signature, serializer);
- }
-
-@protected void sse_encode_heartbeat(Heartbeat self, SseSerializer serializer){ // Codec=Sse (Serialization based), see doc to use other codecs
- }
-
-@protected void sse_encode_i_32(int self, SseSerializer serializer){ // Codec=Sse (Serialization based), see doc to use other codecs
-serializer.buffer.putInt32(self); }
-
-@protected void sse_encode_install_error_stage(InstallErrorStage self, SseSerializer serializer){ // Codec=Sse (Serialization based), see doc to use other codecs
-sse_encode_i_32(self.index, serializer); }
-
-@protected void sse_encode_list_list_prim_u_8_strict(List<Uint8List> self, SseSerializer serializer){ // Codec=Sse (Serialization based), see doc to use other codecs
-sse_encode_i_32(self.length, serializer);
-        for (final item in self) { sse_encode_list_prim_u_8_strict(item, serializer); } }
-
-@protected void sse_encode_list_price_point(List<PricePoint> self, SseSerializer serializer){ // Codec=Sse (Serialization based), see doc to use other codecs
-sse_encode_i_32(self.length, serializer);
-        for (final item in self) { sse_encode_price_point(item, serializer); } }
-
-@protected void sse_encode_list_prim_u_8_loose(List<int> self, SseSerializer serializer){ // Codec=Sse (Serialization based), see doc to use other codecs
-sse_encode_i_32(self.length, serializer);
-                    serializer.buffer.putUint8List(self is Uint8List ? self : Uint8List.fromList(self)); }
-
-@protected void sse_encode_list_prim_u_8_strict(Uint8List self, SseSerializer serializer){ // Codec=Sse (Serialization based), see doc to use other codecs
-sse_encode_i_32(self.length, serializer);
-                    serializer.buffer.putUint8List(self); }
-
-@protected void sse_encode_list_quantum_link_message(List<QuantumLinkMessage> self, SseSerializer serializer){ // Codec=Sse (Serialization based), see doc to use other codecs
-sse_encode_i_32(self.length, serializer);
-        for (final item in self) { sse_encode_quantum_link_message(item, serializer); } }
-
-@protected void sse_encode_magic_backup_request_v_2(MagicBackupRequestV2 self, SseSerializer serializer){ // Codec=Sse (Serialization based), see doc to use other codecs
-switch (self) { case MagicBackupRequestV2_Create(field0: final field0): sse_encode_i_32(0, serializer); sse_encode_box_autoadd_create_magic_backup_v_2(field0, serializer);
-case MagicBackupRequestV2_Get(field0: final field0): sse_encode_i_32(1, serializer); sse_encode_box_autoadd_get_magic_backup_v_2(field0, serializer);
-case MagicBackupRequestV2_Delete(field0: final field0): sse_encode_i_32(2, serializer); sse_encode_box_autoadd_delete_magic_backup_v_2(field0, serializer);
-  } }
-
-@protected void sse_encode_magic_backup_response_v_2(MagicBackupResponseV2 self, SseSerializer serializer){ // Codec=Sse (Serialization based), see doc to use other codecs
-switch (self) { case MagicBackupResponseV2_Created(): sse_encode_i_32(0, serializer); case MagicBackupResponseV2_Backup(data: final data): sse_encode_i_32(1, serializer); sse_encode_list_prim_u_8_strict(data, serializer);
-case MagicBackupResponseV2_Deleted(): sse_encode_i_32(2, serializer); case MagicBackupResponseV2_Error(error: final error): sse_encode_i_32(3, serializer); sse_encode_String(error, serializer);
-  } }
-
-@protected void sse_encode_onboarding_state(OnboardingState self, SseSerializer serializer){ // Codec=Sse (Serialization based), see doc to use other codecs
-sse_encode_i_32(self.index, serializer); }
-
-@protected void sse_encode_opt_String(String? self, SseSerializer serializer){ // Codec=Sse (Serialization based), see doc to use other codecs
-
-                sse_encode_bool(self != null, serializer);
-                if (self != null) {
-                    sse_encode_String(self, serializer);
-                }
-                 }
-
-@protected void sse_encode_opt_box_autoadd_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerPrimeBackupFile(PrimeBackupFile? self, SseSerializer serializer){ // Codec=Sse (Serialization based), see doc to use other codecs
-
-                sse_encode_bool(self != null, serializer);
-                if (self != null) {
-                    sse_encode_box_autoadd_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerPrimeBackupFile(self, serializer);
-                }
-                 }
-
-@protected void sse_encode_opt_box_autoadd_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerXIDDocument(XidDocument? self, SseSerializer serializer){ // Codec=Sse (Serialization based), see doc to use other codecs
-
-                sse_encode_bool(self != null, serializer);
-                if (self != null) {
-                    sse_encode_box_autoadd_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerXIDDocument(self, serializer);
-                }
-                 }
-
-@protected void sse_encode_opt_box_autoadd_passport_message(PassportMessage? self, SseSerializer serializer){ // Codec=Sse (Serialization based), see doc to use other codecs
-
-                sse_encode_bool(self != null, serializer);
-                if (self != null) {
-                    sse_encode_box_autoadd_passport_message(self, serializer);
-                }
-                 }
-
-@protected void sse_encode_opt_box_autoadd_u_64(BigInt? self, SseSerializer serializer){ // Codec=Sse (Serialization based), see doc to use other codecs
-
-                sse_encode_bool(self != null, serializer);
-                if (self != null) {
-                    sse_encode_box_autoadd_u_64(self, serializer);
-                }
-                 }
-
-@protected void sse_encode_opt_box_autoadd_u_8(int? self, SseSerializer serializer){ // Codec=Sse (Serialization based), see doc to use other codecs
-
-                sse_encode_bool(self != null, serializer);
-                if (self != null) {
-                    sse_encode_box_autoadd_u_8(self, serializer);
-                }
-                 }
-
-@protected void sse_encode_pairing_request(PairingRequest self, SseSerializer serializer){ // Codec=Sse (Serialization based), see doc to use other codecs
-sse_encode_list_prim_u_8_strict(self.xidDocument, serializer);
-sse_encode_String(self.deviceName, serializer);
- }
-
-@protected void sse_encode_pairing_response(PairingResponse self, SseSerializer serializer){ // Codec=Sse (Serialization based), see doc to use other codecs
-sse_encode_passport_model(self.passportModel, serializer);
-sse_encode_passport_firmware_version(self.passportFirmwareVersion, serializer);
-sse_encode_passport_serial(self.passportSerial, serializer);
-sse_encode_passport_color(self.passportColor, serializer);
-sse_encode_bool(self.onboardingComplete, serializer);
- }
-
-@protected void sse_encode_passport_color(PassportColor self, SseSerializer serializer){ // Codec=Sse (Serialization based), see doc to use other codecs
-sse_encode_i_32(self.index, serializer); }
-
-@protected void sse_encode_passport_firmware_version(PassportFirmwareVersion self, SseSerializer serializer){ // Codec=Sse (Serialization based), see doc to use other codecs
-sse_encode_String(self.field0, serializer);
- }
-
-@protected void sse_encode_passport_message(PassportMessage self, SseSerializer serializer){ // Codec=Sse (Serialization based), see doc to use other codecs
-sse_encode_quantum_link_message(self.message, serializer);
-sse_encode_device_status(self.status, serializer);
-sse_encode_opt_box_autoadd_u_8(self.protocolVersion, serializer);
- }
-
-@protected void sse_encode_passport_model(PassportModel self, SseSerializer serializer){ // Codec=Sse (Serialization based), see doc to use other codecs
-sse_encode_i_32(self.index, serializer); }
-
-@protected void sse_encode_passport_serial(PassportSerial self, SseSerializer serializer){ // Codec=Sse (Serialization based), see doc to use other codecs
-sse_encode_String(self.field0, serializer);
- }
-
-@protected void sse_encode_price_point(PricePoint self, SseSerializer serializer){ // Codec=Sse (Serialization based), see doc to use other codecs
-sse_encode_f_32(self.rate, serializer);
-sse_encode_u_64(self.timestamp, serializer);
- }
-
-@protected void sse_encode_prime_magic_backup_enabled(PrimeMagicBackupEnabled self, SseSerializer serializer){ // Codec=Sse (Serialization based), see doc to use other codecs
-sse_encode_bool(self.enabled, serializer);
-sse_encode_seed_fingerprint(self.seedFingerprint, serializer);
- }
-
-@protected void sse_encode_prime_magic_backup_status_request(PrimeMagicBackupStatusRequest self, SseSerializer serializer){ // Codec=Sse (Serialization based), see doc to use other codecs
-sse_encode_seed_fingerprint(self.seedFingerprint, serializer);
- }
-
-@protected void sse_encode_prime_magic_backup_status_response(PrimeMagicBackupStatusResponse self, SseSerializer serializer){ // Codec=Sse (Serialization based), see doc to use other codecs
-sse_encode_bool(self.shardBackupFound, serializer);
- }
-
-@protected void sse_encode_qr_decoder_status(QrDecoderStatus self, SseSerializer serializer){ // Codec=Sse (Serialization based), see doc to use other codecs
-sse_encode_f_64(self.progress, serializer);
-sse_encode_opt_box_autoadd_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerXIDDocument(self.payload, serializer);
- }
-
-@protected void sse_encode_quantum_link_message(QuantumLinkMessage self, SseSerializer serializer){ // Codec=Sse (Serialization based), see doc to use other codecs
-switch (self) { case QuantumLinkMessage_ExchangeRate(field0: final field0): sse_encode_i_32(0, serializer); sse_encode_box_autoadd_exchange_rate(field0, serializer);
-case QuantumLinkMessage_ExchangeRateHistory(field0: final field0): sse_encode_i_32(1, serializer); sse_encode_box_autoadd_exchange_rate_history(field0, serializer);
-case QuantumLinkMessage_FirmwareUpdateCheckRequest(field0: final field0): sse_encode_i_32(2, serializer); sse_encode_box_autoadd_firmware_update_check_request(field0, serializer);
-case QuantumLinkMessage_FirmwareUpdateCheckResponse(field0: final field0): sse_encode_i_32(3, serializer); sse_encode_box_autoadd_firmware_update_check_response(field0, serializer);
-case QuantumLinkMessage_FirmwareFetchRequest(field0: final field0): sse_encode_i_32(4, serializer); sse_encode_box_autoadd_firmware_fetch_request(field0, serializer);
-case QuantumLinkMessage_FirmwareFetchEvent(field0: final field0): sse_encode_i_32(5, serializer); sse_encode_box_autoadd_firmware_fetch_event(field0, serializer);
-case QuantumLinkMessage_FirmwareInstallEvent(field0: final field0): sse_encode_i_32(6, serializer); sse_encode_box_autoadd_firmware_install_event(field0, serializer);
-case QuantumLinkMessage_DeviceStatus(field0: final field0): sse_encode_i_32(7, serializer); sse_encode_box_autoadd_device_status(field0, serializer);
-case QuantumLinkMessage_EnvoyStatus(field0: final field0): sse_encode_i_32(8, serializer); sse_encode_box_autoadd_envoy_status(field0, serializer);
-case QuantumLinkMessage_PairingRequest(field0: final field0): sse_encode_i_32(9, serializer); sse_encode_box_autoadd_pairing_request(field0, serializer);
-case QuantumLinkMessage_PairingResponse(field0: final field0): sse_encode_i_32(10, serializer); sse_encode_box_autoadd_pairing_response(field0, serializer);
-case QuantumLinkMessage_SecurityCheck(field0: final field0): sse_encode_i_32(11, serializer); sse_encode_box_autoadd_security_check(field0, serializer);
-case QuantumLinkMessage_OnboardingState(field0: final field0): sse_encode_i_32(12, serializer); sse_encode_onboarding_state(field0, serializer);
-case QuantumLinkMessage_SignPsbt(field0: final field0): sse_encode_i_32(13, serializer); sse_encode_box_autoadd_sign_psbt(field0, serializer);
-case QuantumLinkMessage_BroadcastTransaction(field0: final field0): sse_encode_i_32(14, serializer); sse_encode_box_autoadd_broadcast_transaction(field0, serializer);
-case QuantumLinkMessage_AccountUpdate(field0: final field0): sse_encode_i_32(15, serializer); sse_encode_box_autoadd_account_update(field0, serializer);
-case QuantumLinkMessage_ApplyPassphrase(field0: final field0): sse_encode_i_32(16, serializer); sse_encode_box_autoadd_apply_passphrase(field0, serializer);
-case QuantumLinkMessage_EnvoyMagicBackupEnabledRequest(field0: final field0): sse_encode_i_32(17, serializer); sse_encode_box_autoadd_envoy_magic_backup_enabled_request(field0, serializer);
-case QuantumLinkMessage_EnvoyMagicBackupEnabledResponse(field0: final field0): sse_encode_i_32(18, serializer); sse_encode_box_autoadd_envoy_magic_backup_enabled_response(field0, serializer);
-case QuantumLinkMessage_PrimeMagicBackupEnabled(field0: final field0): sse_encode_i_32(19, serializer); sse_encode_box_autoadd_prime_magic_backup_enabled(field0, serializer);
-case QuantumLinkMessage_PrimeMagicBackupStatusRequest(field0: final field0): sse_encode_i_32(20, serializer); sse_encode_box_autoadd_prime_magic_backup_status_request(field0, serializer);
-case QuantumLinkMessage_PrimeMagicBackupStatusResponse(field0: final field0): sse_encode_i_32(21, serializer); sse_encode_box_autoadd_prime_magic_backup_status_response(field0, serializer);
-case QuantumLinkMessage_BackupShardRequest(field0: final field0): sse_encode_i_32(22, serializer); sse_encode_box_autoadd_backup_shard_request(field0, serializer);
-case QuantumLinkMessage_BackupShardResponse(field0: final field0): sse_encode_i_32(23, serializer); sse_encode_box_autoadd_backup_shard_response(field0, serializer);
-case QuantumLinkMessage_RestoreShardRequest(field0: final field0): sse_encode_i_32(24, serializer); sse_encode_box_autoadd_restore_shard_request(field0, serializer);
-case QuantumLinkMessage_RestoreShardResponse(field0: final field0): sse_encode_i_32(25, serializer); sse_encode_box_autoadd_restore_shard_response(field0, serializer);
-case QuantumLinkMessage_CreateMagicBackupEvent(field0: final field0): sse_encode_i_32(26, serializer); sse_encode_box_autoadd_create_magic_backup_event(field0, serializer);
-case QuantumLinkMessage_CreateMagicBackupResult(field0: final field0): sse_encode_i_32(27, serializer); sse_encode_box_autoadd_create_magic_backup_result(field0, serializer);
-case QuantumLinkMessage_RestoreMagicBackupRequest(field0: final field0): sse_encode_i_32(28, serializer); sse_encode_box_autoadd_restore_magic_backup_request(field0, serializer);
-case QuantumLinkMessage_RestoreMagicBackupEvent(field0: final field0): sse_encode_i_32(29, serializer); sse_encode_box_autoadd_restore_magic_backup_event(field0, serializer);
-case QuantumLinkMessage_RestoreMagicBackupResult(field0: final field0): sse_encode_i_32(30, serializer); sse_encode_box_autoadd_restore_magic_backup_result(field0, serializer);
-case QuantumLinkMessage_Heartbeat(field0: final field0): sse_encode_i_32(31, serializer); sse_encode_box_autoadd_heartbeat(field0, serializer);
-case QuantumLinkMessage_TimezoneRequest(field0: final field0): sse_encode_i_32(32, serializer); sse_encode_box_autoadd_timezone_request(field0, serializer);
-case QuantumLinkMessage_TimezoneResponse(field0: final field0): sse_encode_i_32(33, serializer); sse_encode_box_autoadd_timezone_response(field0, serializer);
-case QuantumLinkMessage_UnpairingRequest(field0: final field0): sse_encode_i_32(34, serializer); sse_encode_box_autoadd_unpairing_request(field0, serializer);
-case QuantumLinkMessage_UnpairingResponse(field0: final field0): sse_encode_i_32(35, serializer); sse_encode_box_autoadd_unpairing_response(field0, serializer);
-case QuantumLinkMessage_MagicBackupRequestV2(field0: final field0): sse_encode_i_32(36, serializer); sse_encode_box_autoadd_magic_backup_request_v_2(field0, serializer);
-case QuantumLinkMessage_MagicBackupResponseV2(field0: final field0): sse_encode_i_32(37, serializer); sse_encode_box_autoadd_magic_backup_response_v_2(field0, serializer);
-  } }
-
-@protected void sse_encode_restore_magic_backup_event(RestoreMagicBackupEvent self, SseSerializer serializer){ // Codec=Sse (Serialization based), see doc to use other codecs
-switch (self) { case RestoreMagicBackupEvent_NotFound(): sse_encode_i_32(0, serializer); case RestoreMagicBackupEvent_Starting(field0: final field0): sse_encode_i_32(1, serializer); sse_encode_box_autoadd_backup_metadata(field0, serializer);
-case RestoreMagicBackupEvent_Chunk(field0: final field0): sse_encode_i_32(2, serializer); sse_encode_box_autoadd_backup_chunk(field0, serializer);
-case RestoreMagicBackupEvent_Error(error: final error): sse_encode_i_32(3, serializer); sse_encode_String(error, serializer);
-  } }
-
-@protected void sse_encode_restore_magic_backup_request(RestoreMagicBackupRequest self, SseSerializer serializer){ // Codec=Sse (Serialization based), see doc to use other codecs
-sse_encode_seed_fingerprint(self.seedFingerprint, serializer);
-sse_encode_u_32(self.resumeFromChunk, serializer);
- }
-
-@protected void sse_encode_restore_magic_backup_result(RestoreMagicBackupResult self, SseSerializer serializer){ // Codec=Sse (Serialization based), see doc to use other codecs
-switch (self) { case RestoreMagicBackupResult_Success(): sse_encode_i_32(0, serializer); case RestoreMagicBackupResult_Error(error: final error): sse_encode_i_32(1, serializer); sse_encode_String(error, serializer);
-  } }
-
-@protected void sse_encode_restore_shard_request(RestoreShardRequest self, SseSerializer serializer){ // Codec=Sse (Serialization based), see doc to use other codecs
-sse_encode_seed_fingerprint(self.seedFingerprint, serializer);
- }
-
-@protected void sse_encode_restore_shard_response(RestoreShardResponse self, SseSerializer serializer){ // Codec=Sse (Serialization based), see doc to use other codecs
-switch (self) { case RestoreShardResponse_Success(shard: final shard): sse_encode_i_32(0, serializer); sse_encode_box_autoadd_shard(shard, serializer);
-case RestoreShardResponse_Error(error: final error): sse_encode_i_32(1, serializer); sse_encode_String(error, serializer);
-case RestoreShardResponse_NotFound(): sse_encode_i_32(2, serializer);   } }
-
-@protected void sse_encode_security_check(SecurityCheck self, SseSerializer serializer){ // Codec=Sse (Serialization based), see doc to use other codecs
-switch (self) { case SecurityCheck_ChallengeRequest(field0: final field0): sse_encode_i_32(0, serializer); sse_encode_box_autoadd_challenge_request(field0, serializer);
-case SecurityCheck_ChallengeResponse(field0: final field0): sse_encode_i_32(1, serializer); sse_encode_box_autoadd_challenge_response_result(field0, serializer);
-case SecurityCheck_VerificationResult(field0: final field0): sse_encode_i_32(2, serializer); sse_encode_box_autoadd_verification_result(field0, serializer);
-  } }
-
-@protected void sse_encode_seed_fingerprint(SeedFingerprint self, SseSerializer serializer){ // Codec=Sse (Serialization based), see doc to use other codecs
-sse_encode_u_8_array_32(self.field0, serializer);
- }
-
-@protected void sse_encode_shard(Shard self, SseSerializer serializer){ // Codec=Sse (Serialization based), see doc to use other codecs
-sse_encode_list_prim_u_8_strict(self.field0, serializer);
- }
-
-@protected void sse_encode_sign_psbt(SignPsbt self, SseSerializer serializer){ // Codec=Sse (Serialization based), see doc to use other codecs
-sse_encode_String(self.accountId, serializer);
-sse_encode_list_prim_u_8_strict(self.psbt, serializer);
- }
-
-@protected void sse_encode_start_magic_backup(StartMagicBackup self, SseSerializer serializer){ // Codec=Sse (Serialization based), see doc to use other codecs
-sse_encode_seed_fingerprint(self.seedFingerprint, serializer);
-sse_encode_u_32(self.totalChunks, serializer);
-sse_encode_u_8_array_32(self.hash, serializer);
- }
-
-@protected void sse_encode_timezone_request(TimezoneRequest self, SseSerializer serializer){ // Codec=Sse (Serialization based), see doc to use other codecs
- }
-
-@protected void sse_encode_timezone_response(TimezoneResponse self, SseSerializer serializer){ // Codec=Sse (Serialization based), see doc to use other codecs
-sse_encode_i_32(self.offsetMinutes, serializer);
-sse_encode_String(self.zone, serializer);
- }
-
-@protected void sse_encode_u_16(int self, SseSerializer serializer){ // Codec=Sse (Serialization based), see doc to use other codecs
-serializer.buffer.putUint16(self); }
-
-@protected void sse_encode_u_32(int self, SseSerializer serializer){ // Codec=Sse (Serialization based), see doc to use other codecs
-serializer.buffer.putUint32(self); }
-
-@protected void sse_encode_u_64(BigInt self, SseSerializer serializer){ // Codec=Sse (Serialization based), see doc to use other codecs
-serializer.buffer.putBigUint64(self); }
-
-@protected void sse_encode_u_8(int self, SseSerializer serializer){ // Codec=Sse (Serialization based), see doc to use other codecs
-serializer.buffer.putUint8(self); }
-
-@protected void sse_encode_u_8_array_32(U8Array32 self, SseSerializer serializer){ // Codec=Sse (Serialization based), see doc to use other codecs
-sse_encode_list_prim_u_8_strict(self.inner, serializer); }
-
-@protected void sse_encode_unit(void self, SseSerializer serializer){ // Codec=Sse (Serialization based), see doc to use other codecs
- }
-
-@protected void sse_encode_unpairing_request(UnpairingRequest self, SseSerializer serializer){ // Codec=Sse (Serialization based), see doc to use other codecs
- }
-
-@protected void sse_encode_unpairing_response(UnpairingResponse self, SseSerializer serializer){ // Codec=Sse (Serialization based), see doc to use other codecs
-sse_encode_bool(self.success, serializer);
- }
-
-@protected void sse_encode_usize(BigInt self, SseSerializer serializer){ // Codec=Sse (Serialization based), see doc to use other codecs
-serializer.buffer.putBigUint64(self); }
-
-@protected void sse_encode_verification_result(VerificationResult self, SseSerializer serializer){ // Codec=Sse (Serialization based), see doc to use other codecs
-switch (self) { case VerificationResult_Success(): sse_encode_i_32(0, serializer); case VerificationResult_Error(error: final error): sse_encode_i_32(1, serializer); sse_encode_String(error, serializer);
-case VerificationResult_Failure(): sse_encode_i_32(2, serializer);   } }
-                }
-                
-
-            @sealed class ArcMutexDecoderImpl extends RustOpaque implements ArcMutexDecoder {
-                // Not to be used by end users
-                ArcMutexDecoderImpl.frbInternalDcoDecode(List<dynamic> wire):
-                    super.frbInternalDcoDecode(wire, _kStaticData);
-
-                // Not to be used by end users
-                ArcMutexDecoderImpl.frbInternalSseDecode(BigInt ptr, int externalSizeOnNative):
-                    super.frbInternalSseDecode(ptr, externalSizeOnNative, _kStaticData);
-
-                static final _kStaticData = RustArcStaticData(
-                    rustArcIncrementStrongCount: RustLib.instance.api.rust_arc_increment_strong_count_ArcMutexDecoder,
-                    rustArcDecrementStrongCount: RustLib.instance.api.rust_arc_decrement_strong_count_ArcMutexDecoder,
-                    rustArcDecrementStrongCountPtr: RustLib.instance.api.rust_arc_decrement_strong_count_ArcMutexDecoderPtr,
-                );
-
-                
-            }
-            @sealed class CollectBackupChunksImpl extends RustOpaque implements CollectBackupChunks {
-                // Not to be used by end users
-                CollectBackupChunksImpl.frbInternalDcoDecode(List<dynamic> wire):
-                    super.frbInternalDcoDecode(wire, _kStaticData);
-
-                // Not to be used by end users
-                CollectBackupChunksImpl.frbInternalSseDecode(BigInt ptr, int externalSizeOnNative):
-                    super.frbInternalSseDecode(ptr, externalSizeOnNative, _kStaticData);
-
-                static final _kStaticData = RustArcStaticData(
-                    rustArcIncrementStrongCount: RustLib.instance.api.rust_arc_increment_strong_count_CollectBackupChunks,
-                    rustArcDecrementStrongCount: RustLib.instance.api.rust_arc_decrement_strong_count_CollectBackupChunks,
-                    rustArcDecrementStrongCountPtr: RustLib.instance.api.rust_arc_decrement_strong_count_CollectBackupChunksPtr,
-                );
-
-                 U8Array32 get backupHash=>RustLib.instance.api.crateApiQlCollectBackupChunksAutoAccessorGetBackupHash(that: this, );
-
-
- Uint8List get data=>RustLib.instance.api.crateApiQlCollectBackupChunksAutoAccessorGetData(that: this, );
-
-
- BigInt get nextChunkIndex=>RustLib.instance.api.crateApiQlCollectBackupChunksAutoAccessorGetNextChunkIndex(that: this, );
-
-
- SeedFingerprint get seedFingerprint=>RustLib.instance.api.crateApiQlCollectBackupChunksAutoAccessorGetSeedFingerprint(that: this, );
-
-
- BigInt get totalChunks=>RustLib.instance.api.crateApiQlCollectBackupChunksAutoAccessorGetTotalChunks(that: this, );
-
-
-  set backupHash(U8Array32 backupHash)=>RustLib.instance.api.crateApiQlCollectBackupChunksAutoAccessorSetBackupHash(that: this, backupHash: backupHash);
-
-
-  set data(Uint8List data)=>RustLib.instance.api.crateApiQlCollectBackupChunksAutoAccessorSetData(that: this, data: data);
-
-
-  set nextChunkIndex(BigInt nextChunkIndex)=>RustLib.instance.api.crateApiQlCollectBackupChunksAutoAccessorSetNextChunkIndex(that: this, nextChunkIndex: nextChunkIndex);
-
-
-  set seedFingerprint(SeedFingerprint seedFingerprint)=>RustLib.instance.api.crateApiQlCollectBackupChunksAutoAccessorSetSeedFingerprint(that: this, seedFingerprint: seedFingerprint);
-
-
-  set totalChunks(BigInt totalChunks)=>RustLib.instance.api.crateApiQlCollectBackupChunksAutoAccessorSetTotalChunks(that: this, totalChunks: totalChunks);
-
-
-            }
-            @sealed class EnvoyAridCacheImpl extends RustOpaque implements EnvoyAridCache {
-                // Not to be used by end users
-                EnvoyAridCacheImpl.frbInternalDcoDecode(List<dynamic> wire):
-                    super.frbInternalDcoDecode(wire, _kStaticData);
-
-                // Not to be used by end users
-                EnvoyAridCacheImpl.frbInternalSseDecode(BigInt ptr, int externalSizeOnNative):
-                    super.frbInternalSseDecode(ptr, externalSizeOnNative, _kStaticData);
-
-                static final _kStaticData = RustArcStaticData(
-                    rustArcIncrementStrongCount: RustLib.instance.api.rust_arc_increment_strong_count_EnvoyAridCache,
-                    rustArcDecrementStrongCount: RustLib.instance.api.rust_arc_decrement_strong_count_EnvoyAridCache,
-                    rustArcDecrementStrongCountPtr: RustLib.instance.api.rust_arc_decrement_strong_count_EnvoyAridCachePtr,
-                );
-
-                
-            }
-            @sealed class EnvoyMasterDechunkerImpl extends RustOpaque implements EnvoyMasterDechunker {
-                // Not to be used by end users
-                EnvoyMasterDechunkerImpl.frbInternalDcoDecode(List<dynamic> wire):
-                    super.frbInternalDcoDecode(wire, _kStaticData);
-
-                // Not to be used by end users
-                EnvoyMasterDechunkerImpl.frbInternalSseDecode(BigInt ptr, int externalSizeOnNative):
-                    super.frbInternalSseDecode(ptr, externalSizeOnNative, _kStaticData);
-
-                static final _kStaticData = RustArcStaticData(
-                    rustArcIncrementStrongCount: RustLib.instance.api.rust_arc_increment_strong_count_EnvoyMasterDechunker,
-                    rustArcDecrementStrongCount: RustLib.instance.api.rust_arc_decrement_strong_count_EnvoyMasterDechunker,
-                    rustArcDecrementStrongCountPtr: RustLib.instance.api.rust_arc_decrement_strong_count_EnvoyMasterDechunkerPtr,
-                );
-
-                
-            }
-            @sealed class PrimeBackupFileImpl extends RustOpaque implements PrimeBackupFile {
-                // Not to be used by end users
-                PrimeBackupFileImpl.frbInternalDcoDecode(List<dynamic> wire):
-                    super.frbInternalDcoDecode(wire, _kStaticData);
-
-                // Not to be used by end users
-                PrimeBackupFileImpl.frbInternalSseDecode(BigInt ptr, int externalSizeOnNative):
-                    super.frbInternalSseDecode(ptr, externalSizeOnNative, _kStaticData);
-
-                static final _kStaticData = RustArcStaticData(
-                    rustArcIncrementStrongCount: RustLib.instance.api.rust_arc_increment_strong_count_PrimeBackupFile,
-                    rustArcDecrementStrongCount: RustLib.instance.api.rust_arc_decrement_strong_count_PrimeBackupFile,
-                    rustArcDecrementStrongCountPtr: RustLib.instance.api.rust_arc_decrement_strong_count_PrimeBackupFilePtr,
-                );
-
-                 Uint8List get data=>RustLib.instance.api.crateApiQlPrimeBackupFileAutoAccessorGetData(that: this, );
-
-
- SeedFingerprint get seedFingerprint=>RustLib.instance.api.crateApiQlPrimeBackupFileAutoAccessorGetSeedFingerprint(that: this, );
-
-
-  set data(Uint8List data)=>RustLib.instance.api.crateApiQlPrimeBackupFileAutoAccessorSetData(that: this, data: data);
-
-
-  set seedFingerprint(SeedFingerprint seedFingerprint)=>RustLib.instance.api.crateApiQlPrimeBackupFileAutoAccessorSetSeedFingerprint(that: this, seedFingerprint: seedFingerprint);
-
-
-            }
-            @sealed class QuantumLinkIdentityImpl extends RustOpaque implements QuantumLinkIdentity {
-                // Not to be used by end users
-                QuantumLinkIdentityImpl.frbInternalDcoDecode(List<dynamic> wire):
-                    super.frbInternalDcoDecode(wire, _kStaticData);
-
-                // Not to be used by end users
-                QuantumLinkIdentityImpl.frbInternalSseDecode(BigInt ptr, int externalSizeOnNative):
-                    super.frbInternalSseDecode(ptr, externalSizeOnNative, _kStaticData);
-
-                static final _kStaticData = RustArcStaticData(
-                    rustArcIncrementStrongCount: RustLib.instance.api.rust_arc_increment_strong_count_QuantumLinkIdentity,
-                    rustArcDecrementStrongCount: RustLib.instance.api.rust_arc_decrement_strong_count_QuantumLinkIdentity,
-                    rustArcDecrementStrongCountPtr: RustLib.instance.api.rust_arc_decrement_strong_count_QuantumLinkIdentityPtr,
-                );
-
-                
-            }
-            @sealed class XidDocumentImpl extends RustOpaque implements XidDocument {
-                // Not to be used by end users
-                XidDocumentImpl.frbInternalDcoDecode(List<dynamic> wire):
-                    super.frbInternalDcoDecode(wire, _kStaticData);
-
-                // Not to be used by end users
-                XidDocumentImpl.frbInternalSseDecode(BigInt ptr, int externalSizeOnNative):
-                    super.frbInternalSseDecode(ptr, externalSizeOnNative, _kStaticData);
-
-                static final _kStaticData = RustArcStaticData(
-                    rustArcIncrementStrongCount: RustLib.instance.api.rust_arc_increment_strong_count_XidDocument,
-                    rustArcDecrementStrongCount: RustLib.instance.api.rust_arc_decrement_strong_count_XidDocument,
-                    rustArcDecrementStrongCountPtr: RustLib.instance.api.rust_arc_decrement_strong_count_XidDocumentPtr,
-                );
-
-                
-            }
+      case 4:
+        return QuantumLinkMessage_FirmwareFetchRequest(
+          dco_decode_box_autoadd_firmware_fetch_request(raw[1]),
+        );
+      case 5:
+        return QuantumLinkMessage_FirmwareFetchEvent(
+          dco_decode_box_autoadd_firmware_fetch_event(raw[1]),
+        );
+      case 6:
+        return QuantumLinkMessage_FirmwareInstallEvent(
+          dco_decode_box_autoadd_firmware_install_event(raw[1]),
+        );
+      case 7:
+        return QuantumLinkMessage_DeviceStatus(
+          dco_decode_box_autoadd_device_status(raw[1]),
+        );
+      case 8:
+        return QuantumLinkMessage_EnvoyStatus(
+          dco_decode_box_autoadd_envoy_status(raw[1]),
+        );
+      case 9:
+        return QuantumLinkMessage_PairingRequest(
+          dco_decode_box_autoadd_pairing_request(raw[1]),
+        );
+      case 10:
+        return QuantumLinkMessage_PairingResponse(
+          dco_decode_box_autoadd_pairing_response(raw[1]),
+        );
+      case 11:
+        return QuantumLinkMessage_SecurityCheck(
+          dco_decode_box_autoadd_security_check(raw[1]),
+        );
+      case 12:
+        return QuantumLinkMessage_OnboardingState(
+          dco_decode_onboarding_state(raw[1]),
+        );
+      case 13:
+        return QuantumLinkMessage_SignPsbt(
+          dco_decode_box_autoadd_sign_psbt(raw[1]),
+        );
+      case 14:
+        return QuantumLinkMessage_BroadcastTransaction(
+          dco_decode_box_autoadd_broadcast_transaction(raw[1]),
+        );
+      case 15:
+        return QuantumLinkMessage_AccountUpdate(
+          dco_decode_box_autoadd_account_update(raw[1]),
+        );
+      case 16:
+        return QuantumLinkMessage_ApplyPassphrase(
+          dco_decode_box_autoadd_apply_passphrase(raw[1]),
+        );
+      case 17:
+        return QuantumLinkMessage_EnvoyMagicBackupEnabledRequest(
+          dco_decode_box_autoadd_envoy_magic_backup_enabled_request(raw[1]),
+        );
+      case 18:
+        return QuantumLinkMessage_EnvoyMagicBackupEnabledResponse(
+          dco_decode_box_autoadd_envoy_magic_backup_enabled_response(raw[1]),
+        );
+      case 19:
+        return QuantumLinkMessage_PrimeMagicBackupEnabled(
+          dco_decode_box_autoadd_prime_magic_backup_enabled(raw[1]),
+        );
+      case 20:
+        return QuantumLinkMessage_PrimeMagicBackupStatusRequest(
+          dco_decode_box_autoadd_prime_magic_backup_status_request(raw[1]),
+        );
+      case 21:
+        return QuantumLinkMessage_PrimeMagicBackupStatusResponse(
+          dco_decode_box_autoadd_prime_magic_backup_status_response(raw[1]),
+        );
+      case 22:
+        return QuantumLinkMessage_BackupShardRequest(
+          dco_decode_box_autoadd_backup_shard_request(raw[1]),
+        );
+      case 23:
+        return QuantumLinkMessage_BackupShardResponse(
+          dco_decode_box_autoadd_backup_shard_response(raw[1]),
+        );
+      case 24:
+        return QuantumLinkMessage_RestoreShardRequest(
+          dco_decode_box_autoadd_restore_shard_request(raw[1]),
+        );
+      case 25:
+        return QuantumLinkMessage_RestoreShardResponse(
+          dco_decode_box_autoadd_restore_shard_response(raw[1]),
+        );
+      case 26:
+        return QuantumLinkMessage_CreateMagicBackupEvent(
+          dco_decode_box_autoadd_create_magic_backup_event(raw[1]),
+        );
+      case 27:
+        return QuantumLinkMessage_CreateMagicBackupResult(
+          dco_decode_box_autoadd_create_magic_backup_result(raw[1]),
+        );
+      case 28:
+        return QuantumLinkMessage_RestoreMagicBackupRequest(
+          dco_decode_box_autoadd_restore_magic_backup_request(raw[1]),
+        );
+      case 29:
+        return QuantumLinkMessage_RestoreMagicBackupEvent(
+          dco_decode_box_autoadd_restore_magic_backup_event(raw[1]),
+        );
+      case 30:
+        return QuantumLinkMessage_RestoreMagicBackupResult(
+          dco_decode_box_autoadd_restore_magic_backup_result(raw[1]),
+        );
+      case 31:
+        return QuantumLinkMessage_Heartbeat(
+          dco_decode_box_autoadd_heartbeat(raw[1]),
+        );
+      case 32:
+        return QuantumLinkMessage_TimezoneRequest(
+          dco_decode_box_autoadd_timezone_request(raw[1]),
+        );
+      case 33:
+        return QuantumLinkMessage_TimezoneResponse(
+          dco_decode_box_autoadd_timezone_response(raw[1]),
+        );
+      case 34:
+        return QuantumLinkMessage_UnpairingRequest(
+          dco_decode_box_autoadd_unpairing_request(raw[1]),
+        );
+      case 35:
+        return QuantumLinkMessage_UnpairingResponse(
+          dco_decode_box_autoadd_unpairing_response(raw[1]),
+        );
+      case 36:
+        return QuantumLinkMessage_MagicBackupRequestV2(
+          dco_decode_box_autoadd_magic_backup_request_v_2(raw[1]),
+        );
+      case 37:
+        return QuantumLinkMessage_MagicBackupResponseV2(
+          dco_decode_box_autoadd_magic_backup_response_v_2(raw[1]),
+        );
+      default:
+        throw Exception("unreachable");
+    }
+  }
+
+  @protected
+  RestoreMagicBackupEvent dco_decode_restore_magic_backup_event(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    switch (raw[0]) {
+      case 0:
+        return RestoreMagicBackupEvent_NotFound();
+      case 1:
+        return RestoreMagicBackupEvent_Starting(
+          dco_decode_box_autoadd_backup_metadata(raw[1]),
+        );
+      case 2:
+        return RestoreMagicBackupEvent_Chunk(
+          dco_decode_box_autoadd_backup_chunk(raw[1]),
+        );
+      case 3:
+        return RestoreMagicBackupEvent_Error(
+          error: dco_decode_String(raw[1]),
+        );
+      default:
+        throw Exception("unreachable");
+    }
+  }
+
+  @protected
+  RestoreMagicBackupRequest dco_decode_restore_magic_backup_request(
+      dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    final arr = raw as List<dynamic>;
+    if (arr.length != 2)
+      throw Exception('unexpected arr length: expect 2 but see ${arr.length}');
+    return RestoreMagicBackupRequest(
+      seedFingerprint: dco_decode_seed_fingerprint(arr[0]),
+      resumeFromChunk: dco_decode_u_32(arr[1]),
+    );
+  }
+
+  @protected
+  RestoreMagicBackupResult dco_decode_restore_magic_backup_result(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    switch (raw[0]) {
+      case 0:
+        return RestoreMagicBackupResult_Success();
+      case 1:
+        return RestoreMagicBackupResult_Error(
+          error: dco_decode_String(raw[1]),
+        );
+      default:
+        throw Exception("unreachable");
+    }
+  }
+
+  @protected
+  RestoreShardRequest dco_decode_restore_shard_request(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    final arr = raw as List<dynamic>;
+    if (arr.length != 1)
+      throw Exception('unexpected arr length: expect 1 but see ${arr.length}');
+    return RestoreShardRequest(
+      seedFingerprint: dco_decode_seed_fingerprint(arr[0]),
+    );
+  }
+
+  @protected
+  RestoreShardResponse dco_decode_restore_shard_response(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    switch (raw[0]) {
+      case 0:
+        return RestoreShardResponse_Success(
+          shard: dco_decode_box_autoadd_shard(raw[1]),
+        );
+      case 1:
+        return RestoreShardResponse_Error(
+          error: dco_decode_String(raw[1]),
+        );
+      case 2:
+        return RestoreShardResponse_NotFound();
+      default:
+        throw Exception("unreachable");
+    }
+  }
+
+  @protected
+  SecurityCheck dco_decode_security_check(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    switch (raw[0]) {
+      case 0:
+        return SecurityCheck_ChallengeRequest(
+          dco_decode_box_autoadd_challenge_request(raw[1]),
+        );
+      case 1:
+        return SecurityCheck_ChallengeResponse(
+          dco_decode_box_autoadd_challenge_response_result(raw[1]),
+        );
+      case 2:
+        return SecurityCheck_VerificationResult(
+          dco_decode_box_autoadd_verification_result(raw[1]),
+        );
+      default:
+        throw Exception("unreachable");
+    }
+  }
+
+  @protected
+  SeedFingerprint dco_decode_seed_fingerprint(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    final arr = raw as List<dynamic>;
+    if (arr.length != 1)
+      throw Exception('unexpected arr length: expect 1 but see ${arr.length}');
+    return SeedFingerprint(
+      field0: dco_decode_u_8_array_32(arr[0]),
+    );
+  }
+
+  @protected
+  Shard dco_decode_shard(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    final arr = raw as List<dynamic>;
+    if (arr.length != 1)
+      throw Exception('unexpected arr length: expect 1 but see ${arr.length}');
+    return Shard(
+      field0: dco_decode_list_prim_u_8_strict(arr[0]),
+    );
+  }
+
+  @protected
+  SignPsbt dco_decode_sign_psbt(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    final arr = raw as List<dynamic>;
+    if (arr.length != 2)
+      throw Exception('unexpected arr length: expect 2 but see ${arr.length}');
+    return SignPsbt(
+      accountId: dco_decode_String(arr[0]),
+      psbt: dco_decode_list_prim_u_8_strict(arr[1]),
+    );
+  }
+
+  @protected
+  StartMagicBackup dco_decode_start_magic_backup(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    final arr = raw as List<dynamic>;
+    if (arr.length != 3)
+      throw Exception('unexpected arr length: expect 3 but see ${arr.length}');
+    return StartMagicBackup(
+      seedFingerprint: dco_decode_seed_fingerprint(arr[0]),
+      totalChunks: dco_decode_u_32(arr[1]),
+      hash: dco_decode_u_8_array_32(arr[2]),
+    );
+  }
+
+  @protected
+  TimezoneRequest dco_decode_timezone_request(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    final arr = raw as List<dynamic>;
+    if (arr.length != 0)
+      throw Exception('unexpected arr length: expect 0 but see ${arr.length}');
+    return TimezoneRequest();
+  }
+
+  @protected
+  TimezoneResponse dco_decode_timezone_response(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    final arr = raw as List<dynamic>;
+    if (arr.length != 2)
+      throw Exception('unexpected arr length: expect 2 but see ${arr.length}');
+    return TimezoneResponse(
+      offsetMinutes: dco_decode_i_32(arr[0]),
+      zone: dco_decode_String(arr[1]),
+    );
+  }
+
+  @protected
+  int dco_decode_u_16(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return raw as int;
+  }
+
+  @protected
+  int dco_decode_u_32(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return raw as int;
+  }
+
+  @protected
+  BigInt dco_decode_u_64(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return dcoDecodeU64(raw);
+  }
+
+  @protected
+  int dco_decode_u_8(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return raw as int;
+  }
+
+  @protected
+  U8Array32 dco_decode_u_8_array_32(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return U8Array32(dco_decode_list_prim_u_8_strict(raw));
+  }
+
+  @protected
+  void dco_decode_unit(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return;
+  }
+
+  @protected
+  UnpairingRequest dco_decode_unpairing_request(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    final arr = raw as List<dynamic>;
+    if (arr.length != 0)
+      throw Exception('unexpected arr length: expect 0 but see ${arr.length}');
+    return UnpairingRequest();
+  }
+
+  @protected
+  UnpairingResponse dco_decode_unpairing_response(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    final arr = raw as List<dynamic>;
+    if (arr.length != 1)
+      throw Exception('unexpected arr length: expect 1 but see ${arr.length}');
+    return UnpairingResponse(
+      success: dco_decode_bool(arr[0]),
+    );
+  }
+
+  @protected
+  BigInt dco_decode_usize(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return dcoDecodeU64(raw);
+  }
+
+  @protected
+  VerificationResult dco_decode_verification_result(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    switch (raw[0]) {
+      case 0:
+        return VerificationResult_Success();
+      case 1:
+        return VerificationResult_Error(
+          error: dco_decode_String(raw[1]),
+        );
+      case 2:
+        return VerificationResult_Failure();
+      default:
+        throw Exception("unreachable");
+    }
+  }
+
+  @protected
+  AnyhowException sse_decode_AnyhowException(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    var inner = sse_decode_String(deserializer);
+    return AnyhowException(inner);
+  }
+
+  @protected
+  ArcMutexDecoder
+      sse_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerArcMutexDecoder(
+          SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    return ArcMutexDecoderImpl.frbInternalSseDecode(
+        sse_decode_usize(deserializer), sse_decode_i_32(deserializer));
+  }
+
+  @protected
+  CollectBackupChunks
+      sse_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerCollectBackupChunks(
+          SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    return CollectBackupChunksImpl.frbInternalSseDecode(
+        sse_decode_usize(deserializer), sse_decode_i_32(deserializer));
+  }
+
+  @protected
+  EnvoyAridCache
+      sse_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerEnvoyARIDCache(
+          SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    return EnvoyAridCacheImpl.frbInternalSseDecode(
+        sse_decode_usize(deserializer), sse_decode_i_32(deserializer));
+  }
+
+  @protected
+  EnvoyMasterDechunker
+      sse_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerEnvoyMasterDechunker(
+          SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    return EnvoyMasterDechunkerImpl.frbInternalSseDecode(
+        sse_decode_usize(deserializer), sse_decode_i_32(deserializer));
+  }
+
+  @protected
+  PrimeBackupFile
+      sse_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerPrimeBackupFile(
+          SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    return PrimeBackupFileImpl.frbInternalSseDecode(
+        sse_decode_usize(deserializer), sse_decode_i_32(deserializer));
+  }
+
+  @protected
+  QuantumLinkIdentity
+      sse_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerQuantumLinkIdentity(
+          SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    return QuantumLinkIdentityImpl.frbInternalSseDecode(
+        sse_decode_usize(deserializer), sse_decode_i_32(deserializer));
+  }
+
+  @protected
+  XidDocument
+      sse_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerXIDDocument(
+          SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    return XidDocumentImpl.frbInternalSseDecode(
+        sse_decode_usize(deserializer), sse_decode_i_32(deserializer));
+  }
+
+  @protected
+  CollectBackupChunks
+      sse_decode_Auto_RefMut_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerCollectBackupChunks(
+          SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    return CollectBackupChunksImpl.frbInternalSseDecode(
+        sse_decode_usize(deserializer), sse_decode_i_32(deserializer));
+  }
+
+  @protected
+  EnvoyAridCache
+      sse_decode_Auto_RefMut_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerEnvoyARIDCache(
+          SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    return EnvoyAridCacheImpl.frbInternalSseDecode(
+        sse_decode_usize(deserializer), sse_decode_i_32(deserializer));
+  }
+
+  @protected
+  EnvoyMasterDechunker
+      sse_decode_Auto_RefMut_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerEnvoyMasterDechunker(
+          SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    return EnvoyMasterDechunkerImpl.frbInternalSseDecode(
+        sse_decode_usize(deserializer), sse_decode_i_32(deserializer));
+  }
+
+  @protected
+  PrimeBackupFile
+      sse_decode_Auto_RefMut_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerPrimeBackupFile(
+          SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    return PrimeBackupFileImpl.frbInternalSseDecode(
+        sse_decode_usize(deserializer), sse_decode_i_32(deserializer));
+  }
+
+  @protected
+  ArcMutexDecoder
+      sse_decode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerArcMutexDecoder(
+          SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    return ArcMutexDecoderImpl.frbInternalSseDecode(
+        sse_decode_usize(deserializer), sse_decode_i_32(deserializer));
+  }
+
+  @protected
+  CollectBackupChunks
+      sse_decode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerCollectBackupChunks(
+          SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    return CollectBackupChunksImpl.frbInternalSseDecode(
+        sse_decode_usize(deserializer), sse_decode_i_32(deserializer));
+  }
+
+  @protected
+  PrimeBackupFile
+      sse_decode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerPrimeBackupFile(
+          SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    return PrimeBackupFileImpl.frbInternalSseDecode(
+        sse_decode_usize(deserializer), sse_decode_i_32(deserializer));
+  }
+
+  @protected
+  QuantumLinkIdentity
+      sse_decode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerQuantumLinkIdentity(
+          SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    return QuantumLinkIdentityImpl.frbInternalSseDecode(
+        sse_decode_usize(deserializer), sse_decode_i_32(deserializer));
+  }
+
+  @protected
+  XidDocument
+      sse_decode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerXIDDocument(
+          SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    return XidDocumentImpl.frbInternalSseDecode(
+        sse_decode_usize(deserializer), sse_decode_i_32(deserializer));
+  }
+
+  @protected
+  ArcMutexDecoder
+      sse_decode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerArcMutexDecoder(
+          SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    return ArcMutexDecoderImpl.frbInternalSseDecode(
+        sse_decode_usize(deserializer), sse_decode_i_32(deserializer));
+  }
+
+  @protected
+  CollectBackupChunks
+      sse_decode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerCollectBackupChunks(
+          SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    return CollectBackupChunksImpl.frbInternalSseDecode(
+        sse_decode_usize(deserializer), sse_decode_i_32(deserializer));
+  }
+
+  @protected
+  EnvoyAridCache
+      sse_decode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerEnvoyARIDCache(
+          SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    return EnvoyAridCacheImpl.frbInternalSseDecode(
+        sse_decode_usize(deserializer), sse_decode_i_32(deserializer));
+  }
+
+  @protected
+  EnvoyMasterDechunker
+      sse_decode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerEnvoyMasterDechunker(
+          SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    return EnvoyMasterDechunkerImpl.frbInternalSseDecode(
+        sse_decode_usize(deserializer), sse_decode_i_32(deserializer));
+  }
+
+  @protected
+  PrimeBackupFile
+      sse_decode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerPrimeBackupFile(
+          SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    return PrimeBackupFileImpl.frbInternalSseDecode(
+        sse_decode_usize(deserializer), sse_decode_i_32(deserializer));
+  }
+
+  @protected
+  QuantumLinkIdentity
+      sse_decode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerQuantumLinkIdentity(
+          SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    return QuantumLinkIdentityImpl.frbInternalSseDecode(
+        sse_decode_usize(deserializer), sse_decode_i_32(deserializer));
+  }
+
+  @protected
+  XidDocument
+      sse_decode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerXIDDocument(
+          SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    return XidDocumentImpl.frbInternalSseDecode(
+        sse_decode_usize(deserializer), sse_decode_i_32(deserializer));
+  }
+
+  @protected
+  String sse_decode_String(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    var inner = sse_decode_list_prim_u_8_strict(deserializer);
+    return utf8.decoder.convert(inner);
+  }
+
+  @protected
+  AccountUpdate sse_decode_account_update(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    var var_accountId = sse_decode_String(deserializer);
+    var var_update = sse_decode_list_prim_u_8_strict(deserializer);
+    return AccountUpdate(accountId: var_accountId, update: var_update);
+  }
+
+  @protected
+  ApplyPassphrase sse_decode_apply_passphrase(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    var var_fingerprint = sse_decode_opt_String(deserializer);
+    return ApplyPassphrase(fingerprint: var_fingerprint);
+  }
+
+  @protected
+  BackupChunk sse_decode_backup_chunk(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    var var_chunkIndex = sse_decode_u_32(deserializer);
+    var var_totalChunks = sse_decode_u_32(deserializer);
+    var var_data = sse_decode_list_prim_u_8_strict(deserializer);
+    return BackupChunk(
+        chunkIndex: var_chunkIndex,
+        totalChunks: var_totalChunks,
+        data: var_data);
+  }
+
+  @protected
+  BackupMetadata sse_decode_backup_metadata(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    var var_totalChunks = sse_decode_u_32(deserializer);
+    return BackupMetadata(totalChunks: var_totalChunks);
+  }
+
+  @protected
+  BackupShardRequest sse_decode_backup_shard_request(
+      SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    var var_shard = sse_decode_shard(deserializer);
+    return BackupShardRequest(shard: var_shard);
+  }
+
+  @protected
+  BackupShardResponse sse_decode_backup_shard_response(
+      SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+
+    var tag_ = sse_decode_i_32(deserializer);
+    switch (tag_) {
+      case 0:
+        return BackupShardResponse_Success();
+      case 1:
+        var var_error = sse_decode_String(deserializer);
+        return BackupShardResponse_Error(error: var_error);
+      default:
+        throw UnimplementedError('');
+    }
+  }
+
+  @protected
+  bool sse_decode_bool(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    return deserializer.buffer.getUint8() != 0;
+  }
+
+  @protected
+  PrimeBackupFile
+      sse_decode_box_autoadd_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerPrimeBackupFile(
+          SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    return (sse_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerPrimeBackupFile(
+        deserializer));
+  }
+
+  @protected
+  XidDocument
+      sse_decode_box_autoadd_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerXIDDocument(
+          SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    return (sse_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerXIDDocument(
+        deserializer));
+  }
+
+  @protected
+  AccountUpdate sse_decode_box_autoadd_account_update(
+      SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    return (sse_decode_account_update(deserializer));
+  }
+
+  @protected
+  ApplyPassphrase sse_decode_box_autoadd_apply_passphrase(
+      SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    return (sse_decode_apply_passphrase(deserializer));
+  }
+
+  @protected
+  BackupChunk sse_decode_box_autoadd_backup_chunk(
+      SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    return (sse_decode_backup_chunk(deserializer));
+  }
+
+  @protected
+  BackupMetadata sse_decode_box_autoadd_backup_metadata(
+      SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    return (sse_decode_backup_metadata(deserializer));
+  }
+
+  @protected
+  BackupShardRequest sse_decode_box_autoadd_backup_shard_request(
+      SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    return (sse_decode_backup_shard_request(deserializer));
+  }
+
+  @protected
+  BackupShardResponse sse_decode_box_autoadd_backup_shard_response(
+      SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    return (sse_decode_backup_shard_response(deserializer));
+  }
+
+  @protected
+  BroadcastTransaction sse_decode_box_autoadd_broadcast_transaction(
+      SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    return (sse_decode_broadcast_transaction(deserializer));
+  }
+
+  @protected
+  ChallengeRequest sse_decode_box_autoadd_challenge_request(
+      SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    return (sse_decode_challenge_request(deserializer));
+  }
+
+  @protected
+  ChallengeResponseResult sse_decode_box_autoadd_challenge_response_result(
+      SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    return (sse_decode_challenge_response_result(deserializer));
+  }
+
+  @protected
+  CreateMagicBackupEvent sse_decode_box_autoadd_create_magic_backup_event(
+      SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    return (sse_decode_create_magic_backup_event(deserializer));
+  }
+
+  @protected
+  CreateMagicBackupResult sse_decode_box_autoadd_create_magic_backup_result(
+      SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    return (sse_decode_create_magic_backup_result(deserializer));
+  }
+
+  @protected
+  CreateMagicBackupV2 sse_decode_box_autoadd_create_magic_backup_v_2(
+      SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    return (sse_decode_create_magic_backup_v_2(deserializer));
+  }
+
+  @protected
+  DeleteMagicBackupV2 sse_decode_box_autoadd_delete_magic_backup_v_2(
+      SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    return (sse_decode_delete_magic_backup_v_2(deserializer));
+  }
+
+  @protected
+  DeviceStatus sse_decode_box_autoadd_device_status(
+      SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    return (sse_decode_device_status(deserializer));
+  }
+
+  @protected
+  EnvoyMagicBackupEnabledRequest
+      sse_decode_box_autoadd_envoy_magic_backup_enabled_request(
+          SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    return (sse_decode_envoy_magic_backup_enabled_request(deserializer));
+  }
+
+  @protected
+  EnvoyMagicBackupEnabledResponse
+      sse_decode_box_autoadd_envoy_magic_backup_enabled_response(
+          SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    return (sse_decode_envoy_magic_backup_enabled_response(deserializer));
+  }
+
+  @protected
+  EnvoyMessage sse_decode_box_autoadd_envoy_message(
+      SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    return (sse_decode_envoy_message(deserializer));
+  }
+
+  @protected
+  EnvoyStatus sse_decode_box_autoadd_envoy_status(
+      SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    return (sse_decode_envoy_status(deserializer));
+  }
+
+  @protected
+  ExchangeRate sse_decode_box_autoadd_exchange_rate(
+      SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    return (sse_decode_exchange_rate(deserializer));
+  }
+
+  @protected
+  ExchangeRateHistory sse_decode_box_autoadd_exchange_rate_history(
+      SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    return (sse_decode_exchange_rate_history(deserializer));
+  }
+
+  @protected
+  FirmwareChunk sse_decode_box_autoadd_firmware_chunk(
+      SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    return (sse_decode_firmware_chunk(deserializer));
+  }
+
+  @protected
+  FirmwareFetchEvent sse_decode_box_autoadd_firmware_fetch_event(
+      SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    return (sse_decode_firmware_fetch_event(deserializer));
+  }
+
+  @protected
+  FirmwareFetchRequest sse_decode_box_autoadd_firmware_fetch_request(
+      SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    return (sse_decode_firmware_fetch_request(deserializer));
+  }
+
+  @protected
+  FirmwareInstallEvent sse_decode_box_autoadd_firmware_install_event(
+      SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    return (sse_decode_firmware_install_event(deserializer));
+  }
+
+  @protected
+  FirmwareUpdateAvailable sse_decode_box_autoadd_firmware_update_available(
+      SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    return (sse_decode_firmware_update_available(deserializer));
+  }
+
+  @protected
+  FirmwareUpdateCheckRequest
+      sse_decode_box_autoadd_firmware_update_check_request(
+          SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    return (sse_decode_firmware_update_check_request(deserializer));
+  }
+
+  @protected
+  FirmwareUpdateCheckResponse
+      sse_decode_box_autoadd_firmware_update_check_response(
+          SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    return (sse_decode_firmware_update_check_response(deserializer));
+  }
+
+  @protected
+  GetMagicBackupV2 sse_decode_box_autoadd_get_magic_backup_v_2(
+      SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    return (sse_decode_get_magic_backup_v_2(deserializer));
+  }
+
+  @protected
+  Heartbeat sse_decode_box_autoadd_heartbeat(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    return (sse_decode_heartbeat(deserializer));
+  }
+
+  @protected
+  MagicBackupRequestV2 sse_decode_box_autoadd_magic_backup_request_v_2(
+      SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    return (sse_decode_magic_backup_request_v_2(deserializer));
+  }
+
+  @protected
+  MagicBackupResponseV2 sse_decode_box_autoadd_magic_backup_response_v_2(
+      SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    return (sse_decode_magic_backup_response_v_2(deserializer));
+  }
+
+  @protected
+  PairingRequest sse_decode_box_autoadd_pairing_request(
+      SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    return (sse_decode_pairing_request(deserializer));
+  }
+
+  @protected
+  PairingResponse sse_decode_box_autoadd_pairing_response(
+      SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    return (sse_decode_pairing_response(deserializer));
+  }
+
+  @protected
+  PassportMessage sse_decode_box_autoadd_passport_message(
+      SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    return (sse_decode_passport_message(deserializer));
+  }
+
+  @protected
+  PrimeMagicBackupEnabled sse_decode_box_autoadd_prime_magic_backup_enabled(
+      SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    return (sse_decode_prime_magic_backup_enabled(deserializer));
+  }
+
+  @protected
+  PrimeMagicBackupStatusRequest
+      sse_decode_box_autoadd_prime_magic_backup_status_request(
+          SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    return (sse_decode_prime_magic_backup_status_request(deserializer));
+  }
+
+  @protected
+  PrimeMagicBackupStatusResponse
+      sse_decode_box_autoadd_prime_magic_backup_status_response(
+          SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    return (sse_decode_prime_magic_backup_status_response(deserializer));
+  }
+
+  @protected
+  RestoreMagicBackupEvent sse_decode_box_autoadd_restore_magic_backup_event(
+      SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    return (sse_decode_restore_magic_backup_event(deserializer));
+  }
+
+  @protected
+  RestoreMagicBackupRequest sse_decode_box_autoadd_restore_magic_backup_request(
+      SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    return (sse_decode_restore_magic_backup_request(deserializer));
+  }
+
+  @protected
+  RestoreMagicBackupResult sse_decode_box_autoadd_restore_magic_backup_result(
+      SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    return (sse_decode_restore_magic_backup_result(deserializer));
+  }
+
+  @protected
+  RestoreShardRequest sse_decode_box_autoadd_restore_shard_request(
+      SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    return (sse_decode_restore_shard_request(deserializer));
+  }
+
+  @protected
+  RestoreShardResponse sse_decode_box_autoadd_restore_shard_response(
+      SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    return (sse_decode_restore_shard_response(deserializer));
+  }
+
+  @protected
+  SecurityCheck sse_decode_box_autoadd_security_check(
+      SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    return (sse_decode_security_check(deserializer));
+  }
+
+  @protected
+  SeedFingerprint sse_decode_box_autoadd_seed_fingerprint(
+      SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    return (sse_decode_seed_fingerprint(deserializer));
+  }
+
+  @protected
+  Shard sse_decode_box_autoadd_shard(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    return (sse_decode_shard(deserializer));
+  }
+
+  @protected
+  SignPsbt sse_decode_box_autoadd_sign_psbt(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    return (sse_decode_sign_psbt(deserializer));
+  }
+
+  @protected
+  StartMagicBackup sse_decode_box_autoadd_start_magic_backup(
+      SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    return (sse_decode_start_magic_backup(deserializer));
+  }
+
+  @protected
+  TimezoneRequest sse_decode_box_autoadd_timezone_request(
+      SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    return (sse_decode_timezone_request(deserializer));
+  }
+
+  @protected
+  TimezoneResponse sse_decode_box_autoadd_timezone_response(
+      SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    return (sse_decode_timezone_response(deserializer));
+  }
+
+  @protected
+  BigInt sse_decode_box_autoadd_u_64(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    return (sse_decode_u_64(deserializer));
+  }
+
+  @protected
+  int sse_decode_box_autoadd_u_8(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    return (sse_decode_u_8(deserializer));
+  }
+
+  @protected
+  UnpairingRequest sse_decode_box_autoadd_unpairing_request(
+      SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    return (sse_decode_unpairing_request(deserializer));
+  }
+
+  @protected
+  UnpairingResponse sse_decode_box_autoadd_unpairing_response(
+      SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    return (sse_decode_unpairing_response(deserializer));
+  }
+
+  @protected
+  VerificationResult sse_decode_box_autoadd_verification_result(
+      SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    return (sse_decode_verification_result(deserializer));
+  }
+
+  @protected
+  BroadcastTransaction sse_decode_broadcast_transaction(
+      SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    var var_accountId = sse_decode_String(deserializer);
+    var var_psbt = sse_decode_list_prim_u_8_strict(deserializer);
+    return BroadcastTransaction(accountId: var_accountId, psbt: var_psbt);
+  }
+
+  @protected
+  ChallengeRequest sse_decode_challenge_request(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    var var_data = sse_decode_list_prim_u_8_strict(deserializer);
+    return ChallengeRequest(data: var_data);
+  }
+
+  @protected
+  ChallengeResponseResult sse_decode_challenge_response_result(
+      SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+
+    var tag_ = sse_decode_i_32(deserializer);
+    switch (tag_) {
+      case 0:
+        var var_data = sse_decode_list_prim_u_8_strict(deserializer);
+        return ChallengeResponseResult_Success(data: var_data);
+      case 1:
+        var var_error = sse_decode_String(deserializer);
+        return ChallengeResponseResult_Error(error: var_error);
+      default:
+        throw UnimplementedError('');
+    }
+  }
+
+  @protected
+  CreateMagicBackupEvent sse_decode_create_magic_backup_event(
+      SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+
+    var tag_ = sse_decode_i_32(deserializer);
+    switch (tag_) {
+      case 0:
+        var var_field0 =
+            sse_decode_box_autoadd_start_magic_backup(deserializer);
+        return CreateMagicBackupEvent_Start(var_field0);
+      case 1:
+        var var_field0 = sse_decode_box_autoadd_backup_chunk(deserializer);
+        return CreateMagicBackupEvent_Chunk(var_field0);
+      default:
+        throw UnimplementedError('');
+    }
+  }
+
+  @protected
+  CreateMagicBackupResult sse_decode_create_magic_backup_result(
+      SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+
+    var tag_ = sse_decode_i_32(deserializer);
+    switch (tag_) {
+      case 0:
+        return CreateMagicBackupResult_Success();
+      case 1:
+        var var_error = sse_decode_String(deserializer);
+        return CreateMagicBackupResult_Error(error: var_error);
+      default:
+        throw UnimplementedError('');
+    }
+  }
+
+  @protected
+  CreateMagicBackupV2 sse_decode_create_magic_backup_v_2(
+      SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    var var_timestamp = sse_decode_u_64(deserializer);
+    var var_hash = sse_decode_list_prim_u_8_strict(deserializer);
+    var var_pubkey = sse_decode_list_prim_u_8_strict(deserializer);
+    var var_data = sse_decode_list_prim_u_8_strict(deserializer);
+    var var_clientSignature = sse_decode_list_prim_u_8_strict(deserializer);
+    return CreateMagicBackupV2(
+        timestamp: var_timestamp,
+        hash: var_hash,
+        pubkey: var_pubkey,
+        data: var_data,
+        clientSignature: var_clientSignature);
+  }
+
+  @protected
+  DecoderStatus sse_decode_decoder_status(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    var var_progress = sse_decode_f_64(deserializer);
+    var var_payload = sse_decode_opt_box_autoadd_passport_message(deserializer);
+    return DecoderStatus(progress: var_progress, payload: var_payload);
+  }
+
+  @protected
+  DeleteMagicBackupV2 sse_decode_delete_magic_backup_v_2(
+      SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    var var_key = sse_decode_list_prim_u_8_strict(deserializer);
+    var var_timestamp = sse_decode_u_64(deserializer);
+    var var_signature = sse_decode_list_prim_u_8_strict(deserializer);
+    return DeleteMagicBackupV2(
+        key: var_key, timestamp: var_timestamp, signature: var_signature);
+  }
+
+  @protected
+  DeviceStatus sse_decode_device_status(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    var var_version = sse_decode_String(deserializer);
+    var var_batteryLevel = sse_decode_u_8(deserializer);
+    return DeviceStatus(version: var_version, batteryLevel: var_batteryLevel);
+  }
+
+  @protected
+  EnvoyMagicBackupEnabledRequest sse_decode_envoy_magic_backup_enabled_request(
+      SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    return EnvoyMagicBackupEnabledRequest();
+  }
+
+  @protected
+  EnvoyMagicBackupEnabledResponse
+      sse_decode_envoy_magic_backup_enabled_response(
+          SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    var var_enabled = sse_decode_bool(deserializer);
+    return EnvoyMagicBackupEnabledResponse(enabled: var_enabled);
+  }
+
+  @protected
+  EnvoyMessage sse_decode_envoy_message(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    var var_message = sse_decode_quantum_link_message(deserializer);
+    var var_timestamp = sse_decode_u_32(deserializer);
+    var var_protocolVersion = sse_decode_opt_box_autoadd_u_8(deserializer);
+    return EnvoyMessage(
+        message: var_message,
+        timestamp: var_timestamp,
+        protocolVersion: var_protocolVersion);
+  }
+
+  @protected
+  EnvoyStatus sse_decode_envoy_status(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    var var_version = sse_decode_String(deserializer);
+    return EnvoyStatus(version: var_version);
+  }
+
+  @protected
+  ExchangeRate sse_decode_exchange_rate(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    var var_currencyCode = sse_decode_String(deserializer);
+    var var_rate = sse_decode_f_32(deserializer);
+    var var_timestamp = sse_decode_u_64(deserializer);
+    return ExchangeRate(
+        currencyCode: var_currencyCode,
+        rate: var_rate,
+        timestamp: var_timestamp);
+  }
+
+  @protected
+  ExchangeRateHistory sse_decode_exchange_rate_history(
+      SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    var var_history = sse_decode_list_price_point(deserializer);
+    var var_currencyCode = sse_decode_String(deserializer);
+    return ExchangeRateHistory(
+        history: var_history, currencyCode: var_currencyCode);
+  }
+
+  @protected
+  double sse_decode_f_32(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    return deserializer.buffer.getFloat32();
+  }
+
+  @protected
+  double sse_decode_f_64(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    return deserializer.buffer.getFloat64();
+  }
+
+  @protected
+  FirmwareChunk sse_decode_firmware_chunk(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    var var_patchIndex = sse_decode_u_8(deserializer);
+    var var_totalPatches = sse_decode_u_8(deserializer);
+    var var_chunkIndex = sse_decode_u_16(deserializer);
+    var var_totalChunks = sse_decode_u_16(deserializer);
+    var var_data = sse_decode_list_prim_u_8_strict(deserializer);
+    return FirmwareChunk(
+        patchIndex: var_patchIndex,
+        totalPatches: var_totalPatches,
+        chunkIndex: var_chunkIndex,
+        totalChunks: var_totalChunks,
+        data: var_data);
+  }
+
+  @protected
+  FirmwareFetchEvent sse_decode_firmware_fetch_event(
+      SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+
+    var tag_ = sse_decode_i_32(deserializer);
+    switch (tag_) {
+      case 0:
+        return FirmwareFetchEvent_UpdateNotAvailable();
+      case 1:
+        var var_field0 =
+            sse_decode_box_autoadd_firmware_update_available(deserializer);
+        return FirmwareFetchEvent_Starting(var_field0);
+      case 2:
+        return FirmwareFetchEvent_Downloading();
+      case 3:
+        var var_field0 = sse_decode_box_autoadd_firmware_chunk(deserializer);
+        return FirmwareFetchEvent_Chunk(var_field0);
+      case 4:
+        var var_error = sse_decode_String(deserializer);
+        return FirmwareFetchEvent_Error(error: var_error);
+      default:
+        throw UnimplementedError('');
+    }
+  }
+
+  @protected
+  FirmwareFetchRequest sse_decode_firmware_fetch_request(
+      SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    var var_currentVersion = sse_decode_String(deserializer);
+    var var_chunkOffset = sse_decode_opt_box_autoadd_u_64(deserializer);
+    return FirmwareFetchRequest(
+        currentVersion: var_currentVersion, chunkOffset: var_chunkOffset);
+  }
+
+  @protected
+  FirmwareInstallEvent sse_decode_firmware_install_event(
+      SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+
+    var tag_ = sse_decode_i_32(deserializer);
+    switch (tag_) {
+      case 0:
+        return FirmwareInstallEvent_UpdateVerified();
+      case 1:
+        return FirmwareInstallEvent_Installing();
+      case 2:
+        return FirmwareInstallEvent_Rebooting();
+      case 3:
+        var var_installedVersion = sse_decode_String(deserializer);
+        return FirmwareInstallEvent_Success(
+            installedVersion: var_installedVersion);
+      case 4:
+        var var_error = sse_decode_String(deserializer);
+        var var_stage = sse_decode_install_error_stage(deserializer);
+        return FirmwareInstallEvent_Error(error: var_error, stage: var_stage);
+      default:
+        throw UnimplementedError('');
+    }
+  }
+
+  @protected
+  FirmwareUpdateAvailable sse_decode_firmware_update_available(
+      SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    var var_version = sse_decode_String(deserializer);
+    var var_changelog = sse_decode_String(deserializer);
+    var var_timestamp = sse_decode_u_32(deserializer);
+    var var_totalSize = sse_decode_u_32(deserializer);
+    var var_patchCount = sse_decode_u_8(deserializer);
+    return FirmwareUpdateAvailable(
+        version: var_version,
+        changelog: var_changelog,
+        timestamp: var_timestamp,
+        totalSize: var_totalSize,
+        patchCount: var_patchCount);
+  }
+
+  @protected
+  FirmwareUpdateCheckRequest sse_decode_firmware_update_check_request(
+      SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    var var_currentVersion = sse_decode_String(deserializer);
+    return FirmwareUpdateCheckRequest(currentVersion: var_currentVersion);
+  }
+
+  @protected
+  FirmwareUpdateCheckResponse sse_decode_firmware_update_check_response(
+      SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+
+    var tag_ = sse_decode_i_32(deserializer);
+    switch (tag_) {
+      case 0:
+        var var_field0 =
+            sse_decode_box_autoadd_firmware_update_available(deserializer);
+        return FirmwareUpdateCheckResponse_Available(var_field0);
+      case 1:
+        return FirmwareUpdateCheckResponse_NotAvailable();
+      default:
+        throw UnimplementedError('');
+    }
+  }
+
+  @protected
+  GetMagicBackupV2 sse_decode_get_magic_backup_v_2(
+      SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    var var_key = sse_decode_list_prim_u_8_strict(deserializer);
+    var var_timestamp = sse_decode_u_64(deserializer);
+    var var_signature = sse_decode_list_prim_u_8_strict(deserializer);
+    return GetMagicBackupV2(
+        key: var_key, timestamp: var_timestamp, signature: var_signature);
+  }
+
+  @protected
+  Heartbeat sse_decode_heartbeat(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    return Heartbeat();
+  }
+
+  @protected
+  int sse_decode_i_32(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    return deserializer.buffer.getInt32();
+  }
+
+  @protected
+  InstallErrorStage sse_decode_install_error_stage(
+      SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    var inner = sse_decode_i_32(deserializer);
+    return InstallErrorStage.values[inner];
+  }
+
+  @protected
+  List<Uint8List> sse_decode_list_list_prim_u_8_strict(
+      SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+
+    var len_ = sse_decode_i_32(deserializer);
+    var ans_ = <Uint8List>[];
+    for (var idx_ = 0; idx_ < len_; ++idx_) {
+      ans_.add(sse_decode_list_prim_u_8_strict(deserializer));
+    }
+    return ans_;
+  }
+
+  @protected
+  List<PricePoint> sse_decode_list_price_point(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+
+    var len_ = sse_decode_i_32(deserializer);
+    var ans_ = <PricePoint>[];
+    for (var idx_ = 0; idx_ < len_; ++idx_) {
+      ans_.add(sse_decode_price_point(deserializer));
+    }
+    return ans_;
+  }
+
+  @protected
+  List<int> sse_decode_list_prim_u_8_loose(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    var len_ = sse_decode_i_32(deserializer);
+    return deserializer.buffer.getUint8List(len_);
+  }
+
+  @protected
+  Uint8List sse_decode_list_prim_u_8_strict(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    var len_ = sse_decode_i_32(deserializer);
+    return deserializer.buffer.getUint8List(len_);
+  }
+
+  @protected
+  List<QuantumLinkMessage> sse_decode_list_quantum_link_message(
+      SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+
+    var len_ = sse_decode_i_32(deserializer);
+    var ans_ = <QuantumLinkMessage>[];
+    for (var idx_ = 0; idx_ < len_; ++idx_) {
+      ans_.add(sse_decode_quantum_link_message(deserializer));
+    }
+    return ans_;
+  }
+
+  @protected
+  MagicBackupRequestV2 sse_decode_magic_backup_request_v_2(
+      SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+
+    var tag_ = sse_decode_i_32(deserializer);
+    switch (tag_) {
+      case 0:
+        var var_field0 =
+            sse_decode_box_autoadd_create_magic_backup_v_2(deserializer);
+        return MagicBackupRequestV2_Create(var_field0);
+      case 1:
+        var var_field0 =
+            sse_decode_box_autoadd_get_magic_backup_v_2(deserializer);
+        return MagicBackupRequestV2_Get(var_field0);
+      case 2:
+        var var_field0 =
+            sse_decode_box_autoadd_delete_magic_backup_v_2(deserializer);
+        return MagicBackupRequestV2_Delete(var_field0);
+      default:
+        throw UnimplementedError('');
+    }
+  }
+
+  @protected
+  MagicBackupResponseV2 sse_decode_magic_backup_response_v_2(
+      SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+
+    var tag_ = sse_decode_i_32(deserializer);
+    switch (tag_) {
+      case 0:
+        return MagicBackupResponseV2_Created();
+      case 1:
+        var var_data = sse_decode_list_prim_u_8_strict(deserializer);
+        return MagicBackupResponseV2_Backup(data: var_data);
+      case 2:
+        return MagicBackupResponseV2_Deleted();
+      case 3:
+        var var_error = sse_decode_String(deserializer);
+        return MagicBackupResponseV2_Error(error: var_error);
+      default:
+        throw UnimplementedError('');
+    }
+  }
+
+  @protected
+  OnboardingState sse_decode_onboarding_state(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    var inner = sse_decode_i_32(deserializer);
+    return OnboardingState.values[inner];
+  }
+
+  @protected
+  String? sse_decode_opt_String(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+
+    if (sse_decode_bool(deserializer)) {
+      return (sse_decode_String(deserializer));
+    } else {
+      return null;
+    }
+  }
+
+  @protected
+  PrimeBackupFile?
+      sse_decode_opt_box_autoadd_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerPrimeBackupFile(
+          SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+
+    if (sse_decode_bool(deserializer)) {
+      return (sse_decode_box_autoadd_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerPrimeBackupFile(
+          deserializer));
+    } else {
+      return null;
+    }
+  }
+
+  @protected
+  XidDocument?
+      sse_decode_opt_box_autoadd_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerXIDDocument(
+          SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+
+    if (sse_decode_bool(deserializer)) {
+      return (sse_decode_box_autoadd_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerXIDDocument(
+          deserializer));
+    } else {
+      return null;
+    }
+  }
+
+  @protected
+  PassportMessage? sse_decode_opt_box_autoadd_passport_message(
+      SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+
+    if (sse_decode_bool(deserializer)) {
+      return (sse_decode_box_autoadd_passport_message(deserializer));
+    } else {
+      return null;
+    }
+  }
+
+  @protected
+  BigInt? sse_decode_opt_box_autoadd_u_64(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+
+    if (sse_decode_bool(deserializer)) {
+      return (sse_decode_box_autoadd_u_64(deserializer));
+    } else {
+      return null;
+    }
+  }
+
+  @protected
+  int? sse_decode_opt_box_autoadd_u_8(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+
+    if (sse_decode_bool(deserializer)) {
+      return (sse_decode_box_autoadd_u_8(deserializer));
+    } else {
+      return null;
+    }
+  }
+
+  @protected
+  PairingRequest sse_decode_pairing_request(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    var var_xidDocument = sse_decode_list_prim_u_8_strict(deserializer);
+    var var_deviceName = sse_decode_String(deserializer);
+    return PairingRequest(
+        xidDocument: var_xidDocument, deviceName: var_deviceName);
+  }
+
+  @protected
+  PairingResponse sse_decode_pairing_response(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    var var_passportModel = sse_decode_passport_model(deserializer);
+    var var_passportFirmwareVersion =
+        sse_decode_passport_firmware_version(deserializer);
+    var var_passportSerial = sse_decode_passport_serial(deserializer);
+    var var_passportColor = sse_decode_passport_color(deserializer);
+    var var_onboardingComplete = sse_decode_bool(deserializer);
+    return PairingResponse(
+        passportModel: var_passportModel,
+        passportFirmwareVersion: var_passportFirmwareVersion,
+        passportSerial: var_passportSerial,
+        passportColor: var_passportColor,
+        onboardingComplete: var_onboardingComplete);
+  }
+
+  @protected
+  PassportColor sse_decode_passport_color(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    var inner = sse_decode_i_32(deserializer);
+    return PassportColor.values[inner];
+  }
+
+  @protected
+  PassportFirmwareVersion sse_decode_passport_firmware_version(
+      SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    var var_field0 = sse_decode_String(deserializer);
+    return PassportFirmwareVersion(field0: var_field0);
+  }
+
+  @protected
+  PassportMessage sse_decode_passport_message(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    var var_message = sse_decode_quantum_link_message(deserializer);
+    var var_status = sse_decode_device_status(deserializer);
+    var var_protocolVersion = sse_decode_opt_box_autoadd_u_8(deserializer);
+    return PassportMessage(
+        message: var_message,
+        status: var_status,
+        protocolVersion: var_protocolVersion);
+  }
+
+  @protected
+  PassportModel sse_decode_passport_model(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    var inner = sse_decode_i_32(deserializer);
+    return PassportModel.values[inner];
+  }
+
+  @protected
+  PassportSerial sse_decode_passport_serial(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    var var_field0 = sse_decode_String(deserializer);
+    return PassportSerial(field0: var_field0);
+  }
+
+  @protected
+  PricePoint sse_decode_price_point(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    var var_rate = sse_decode_f_32(deserializer);
+    var var_timestamp = sse_decode_u_64(deserializer);
+    return PricePoint(rate: var_rate, timestamp: var_timestamp);
+  }
+
+  @protected
+  PrimeMagicBackupEnabled sse_decode_prime_magic_backup_enabled(
+      SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    var var_enabled = sse_decode_bool(deserializer);
+    var var_seedFingerprint = sse_decode_seed_fingerprint(deserializer);
+    return PrimeMagicBackupEnabled(
+        enabled: var_enabled, seedFingerprint: var_seedFingerprint);
+  }
+
+  @protected
+  PrimeMagicBackupStatusRequest sse_decode_prime_magic_backup_status_request(
+      SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    var var_seedFingerprint = sse_decode_seed_fingerprint(deserializer);
+    return PrimeMagicBackupStatusRequest(seedFingerprint: var_seedFingerprint);
+  }
+
+  @protected
+  PrimeMagicBackupStatusResponse sse_decode_prime_magic_backup_status_response(
+      SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    var var_shardBackupFound = sse_decode_bool(deserializer);
+    return PrimeMagicBackupStatusResponse(
+        shardBackupFound: var_shardBackupFound);
+  }
+
+  @protected
+  QrDecoderStatus sse_decode_qr_decoder_status(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    var var_progress = sse_decode_f_64(deserializer);
+    var var_payload =
+        sse_decode_opt_box_autoadd_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerXIDDocument(
+            deserializer);
+    return QrDecoderStatus(progress: var_progress, payload: var_payload);
+  }
+
+  @protected
+  QuantumLinkMessage sse_decode_quantum_link_message(
+      SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+
+    var tag_ = sse_decode_i_32(deserializer);
+    switch (tag_) {
+      case 0:
+        var var_field0 = sse_decode_box_autoadd_exchange_rate(deserializer);
+        return QuantumLinkMessage_ExchangeRate(var_field0);
+      case 1:
+        var var_field0 =
+            sse_decode_box_autoadd_exchange_rate_history(deserializer);
+        return QuantumLinkMessage_ExchangeRateHistory(var_field0);
+      case 2:
+        var var_field0 =
+            sse_decode_box_autoadd_firmware_update_check_request(deserializer);
+        return QuantumLinkMessage_FirmwareUpdateCheckRequest(var_field0);
+      case 3:
+        var var_field0 =
+            sse_decode_box_autoadd_firmware_update_check_response(deserializer);
+        return QuantumLinkMessage_FirmwareUpdateCheckResponse(var_field0);
+      case 4:
+        var var_field0 =
+            sse_decode_box_autoadd_firmware_fetch_request(deserializer);
+        return QuantumLinkMessage_FirmwareFetchRequest(var_field0);
+      case 5:
+        var var_field0 =
+            sse_decode_box_autoadd_firmware_fetch_event(deserializer);
+        return QuantumLinkMessage_FirmwareFetchEvent(var_field0);
+      case 6:
+        var var_field0 =
+            sse_decode_box_autoadd_firmware_install_event(deserializer);
+        return QuantumLinkMessage_FirmwareInstallEvent(var_field0);
+      case 7:
+        var var_field0 = sse_decode_box_autoadd_device_status(deserializer);
+        return QuantumLinkMessage_DeviceStatus(var_field0);
+      case 8:
+        var var_field0 = sse_decode_box_autoadd_envoy_status(deserializer);
+        return QuantumLinkMessage_EnvoyStatus(var_field0);
+      case 9:
+        var var_field0 = sse_decode_box_autoadd_pairing_request(deserializer);
+        return QuantumLinkMessage_PairingRequest(var_field0);
+      case 10:
+        var var_field0 = sse_decode_box_autoadd_pairing_response(deserializer);
+        return QuantumLinkMessage_PairingResponse(var_field0);
+      case 11:
+        var var_field0 = sse_decode_box_autoadd_security_check(deserializer);
+        return QuantumLinkMessage_SecurityCheck(var_field0);
+      case 12:
+        var var_field0 = sse_decode_onboarding_state(deserializer);
+        return QuantumLinkMessage_OnboardingState(var_field0);
+      case 13:
+        var var_field0 = sse_decode_box_autoadd_sign_psbt(deserializer);
+        return QuantumLinkMessage_SignPsbt(var_field0);
+      case 14:
+        var var_field0 =
+            sse_decode_box_autoadd_broadcast_transaction(deserializer);
+        return QuantumLinkMessage_BroadcastTransaction(var_field0);
+      case 15:
+        var var_field0 = sse_decode_box_autoadd_account_update(deserializer);
+        return QuantumLinkMessage_AccountUpdate(var_field0);
+      case 16:
+        var var_field0 = sse_decode_box_autoadd_apply_passphrase(deserializer);
+        return QuantumLinkMessage_ApplyPassphrase(var_field0);
+      case 17:
+        var var_field0 =
+            sse_decode_box_autoadd_envoy_magic_backup_enabled_request(
+                deserializer);
+        return QuantumLinkMessage_EnvoyMagicBackupEnabledRequest(var_field0);
+      case 18:
+        var var_field0 =
+            sse_decode_box_autoadd_envoy_magic_backup_enabled_response(
+                deserializer);
+        return QuantumLinkMessage_EnvoyMagicBackupEnabledResponse(var_field0);
+      case 19:
+        var var_field0 =
+            sse_decode_box_autoadd_prime_magic_backup_enabled(deserializer);
+        return QuantumLinkMessage_PrimeMagicBackupEnabled(var_field0);
+      case 20:
+        var var_field0 =
+            sse_decode_box_autoadd_prime_magic_backup_status_request(
+                deserializer);
+        return QuantumLinkMessage_PrimeMagicBackupStatusRequest(var_field0);
+      case 21:
+        var var_field0 =
+            sse_decode_box_autoadd_prime_magic_backup_status_response(
+                deserializer);
+        return QuantumLinkMessage_PrimeMagicBackupStatusResponse(var_field0);
+      case 22:
+        var var_field0 =
+            sse_decode_box_autoadd_backup_shard_request(deserializer);
+        return QuantumLinkMessage_BackupShardRequest(var_field0);
+      case 23:
+        var var_field0 =
+            sse_decode_box_autoadd_backup_shard_response(deserializer);
+        return QuantumLinkMessage_BackupShardResponse(var_field0);
+      case 24:
+        var var_field0 =
+            sse_decode_box_autoadd_restore_shard_request(deserializer);
+        return QuantumLinkMessage_RestoreShardRequest(var_field0);
+      case 25:
+        var var_field0 =
+            sse_decode_box_autoadd_restore_shard_response(deserializer);
+        return QuantumLinkMessage_RestoreShardResponse(var_field0);
+      case 26:
+        var var_field0 =
+            sse_decode_box_autoadd_create_magic_backup_event(deserializer);
+        return QuantumLinkMessage_CreateMagicBackupEvent(var_field0);
+      case 27:
+        var var_field0 =
+            sse_decode_box_autoadd_create_magic_backup_result(deserializer);
+        return QuantumLinkMessage_CreateMagicBackupResult(var_field0);
+      case 28:
+        var var_field0 =
+            sse_decode_box_autoadd_restore_magic_backup_request(deserializer);
+        return QuantumLinkMessage_RestoreMagicBackupRequest(var_field0);
+      case 29:
+        var var_field0 =
+            sse_decode_box_autoadd_restore_magic_backup_event(deserializer);
+        return QuantumLinkMessage_RestoreMagicBackupEvent(var_field0);
+      case 30:
+        var var_field0 =
+            sse_decode_box_autoadd_restore_magic_backup_result(deserializer);
+        return QuantumLinkMessage_RestoreMagicBackupResult(var_field0);
+      case 31:
+        var var_field0 = sse_decode_box_autoadd_heartbeat(deserializer);
+        return QuantumLinkMessage_Heartbeat(var_field0);
+      case 32:
+        var var_field0 = sse_decode_box_autoadd_timezone_request(deserializer);
+        return QuantumLinkMessage_TimezoneRequest(var_field0);
+      case 33:
+        var var_field0 = sse_decode_box_autoadd_timezone_response(deserializer);
+        return QuantumLinkMessage_TimezoneResponse(var_field0);
+      case 34:
+        var var_field0 = sse_decode_box_autoadd_unpairing_request(deserializer);
+        return QuantumLinkMessage_UnpairingRequest(var_field0);
+      case 35:
+        var var_field0 =
+            sse_decode_box_autoadd_unpairing_response(deserializer);
+        return QuantumLinkMessage_UnpairingResponse(var_field0);
+      case 36:
+        var var_field0 =
+            sse_decode_box_autoadd_magic_backup_request_v_2(deserializer);
+        return QuantumLinkMessage_MagicBackupRequestV2(var_field0);
+      case 37:
+        var var_field0 =
+            sse_decode_box_autoadd_magic_backup_response_v_2(deserializer);
+        return QuantumLinkMessage_MagicBackupResponseV2(var_field0);
+      default:
+        throw UnimplementedError('');
+    }
+  }
+
+  @protected
+  RestoreMagicBackupEvent sse_decode_restore_magic_backup_event(
+      SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+
+    var tag_ = sse_decode_i_32(deserializer);
+    switch (tag_) {
+      case 0:
+        return RestoreMagicBackupEvent_NotFound();
+      case 1:
+        var var_field0 = sse_decode_box_autoadd_backup_metadata(deserializer);
+        return RestoreMagicBackupEvent_Starting(var_field0);
+      case 2:
+        var var_field0 = sse_decode_box_autoadd_backup_chunk(deserializer);
+        return RestoreMagicBackupEvent_Chunk(var_field0);
+      case 3:
+        var var_error = sse_decode_String(deserializer);
+        return RestoreMagicBackupEvent_Error(error: var_error);
+      default:
+        throw UnimplementedError('');
+    }
+  }
+
+  @protected
+  RestoreMagicBackupRequest sse_decode_restore_magic_backup_request(
+      SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    var var_seedFingerprint = sse_decode_seed_fingerprint(deserializer);
+    var var_resumeFromChunk = sse_decode_u_32(deserializer);
+    return RestoreMagicBackupRequest(
+        seedFingerprint: var_seedFingerprint,
+        resumeFromChunk: var_resumeFromChunk);
+  }
+
+  @protected
+  RestoreMagicBackupResult sse_decode_restore_magic_backup_result(
+      SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+
+    var tag_ = sse_decode_i_32(deserializer);
+    switch (tag_) {
+      case 0:
+        return RestoreMagicBackupResult_Success();
+      case 1:
+        var var_error = sse_decode_String(deserializer);
+        return RestoreMagicBackupResult_Error(error: var_error);
+      default:
+        throw UnimplementedError('');
+    }
+  }
+
+  @protected
+  RestoreShardRequest sse_decode_restore_shard_request(
+      SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    var var_seedFingerprint = sse_decode_seed_fingerprint(deserializer);
+    return RestoreShardRequest(seedFingerprint: var_seedFingerprint);
+  }
+
+  @protected
+  RestoreShardResponse sse_decode_restore_shard_response(
+      SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+
+    var tag_ = sse_decode_i_32(deserializer);
+    switch (tag_) {
+      case 0:
+        var var_shard = sse_decode_box_autoadd_shard(deserializer);
+        return RestoreShardResponse_Success(shard: var_shard);
+      case 1:
+        var var_error = sse_decode_String(deserializer);
+        return RestoreShardResponse_Error(error: var_error);
+      case 2:
+        return RestoreShardResponse_NotFound();
+      default:
+        throw UnimplementedError('');
+    }
+  }
+
+  @protected
+  SecurityCheck sse_decode_security_check(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+
+    var tag_ = sse_decode_i_32(deserializer);
+    switch (tag_) {
+      case 0:
+        var var_field0 = sse_decode_box_autoadd_challenge_request(deserializer);
+        return SecurityCheck_ChallengeRequest(var_field0);
+      case 1:
+        var var_field0 =
+            sse_decode_box_autoadd_challenge_response_result(deserializer);
+        return SecurityCheck_ChallengeResponse(var_field0);
+      case 2:
+        var var_field0 =
+            sse_decode_box_autoadd_verification_result(deserializer);
+        return SecurityCheck_VerificationResult(var_field0);
+      default:
+        throw UnimplementedError('');
+    }
+  }
+
+  @protected
+  SeedFingerprint sse_decode_seed_fingerprint(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    var var_field0 = sse_decode_u_8_array_32(deserializer);
+    return SeedFingerprint(field0: var_field0);
+  }
+
+  @protected
+  Shard sse_decode_shard(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    var var_field0 = sse_decode_list_prim_u_8_strict(deserializer);
+    return Shard(field0: var_field0);
+  }
+
+  @protected
+  SignPsbt sse_decode_sign_psbt(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    var var_accountId = sse_decode_String(deserializer);
+    var var_psbt = sse_decode_list_prim_u_8_strict(deserializer);
+    return SignPsbt(accountId: var_accountId, psbt: var_psbt);
+  }
+
+  @protected
+  StartMagicBackup sse_decode_start_magic_backup(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    var var_seedFingerprint = sse_decode_seed_fingerprint(deserializer);
+    var var_totalChunks = sse_decode_u_32(deserializer);
+    var var_hash = sse_decode_u_8_array_32(deserializer);
+    return StartMagicBackup(
+        seedFingerprint: var_seedFingerprint,
+        totalChunks: var_totalChunks,
+        hash: var_hash);
+  }
+
+  @protected
+  TimezoneRequest sse_decode_timezone_request(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    return TimezoneRequest();
+  }
+
+  @protected
+  TimezoneResponse sse_decode_timezone_response(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    var var_offsetMinutes = sse_decode_i_32(deserializer);
+    var var_zone = sse_decode_String(deserializer);
+    return TimezoneResponse(offsetMinutes: var_offsetMinutes, zone: var_zone);
+  }
+
+  @protected
+  int sse_decode_u_16(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    return deserializer.buffer.getUint16();
+  }
+
+  @protected
+  int sse_decode_u_32(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    return deserializer.buffer.getUint32();
+  }
+
+  @protected
+  BigInt sse_decode_u_64(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    return deserializer.buffer.getBigUint64();
+  }
+
+  @protected
+  int sse_decode_u_8(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    return deserializer.buffer.getUint8();
+  }
+
+  @protected
+  U8Array32 sse_decode_u_8_array_32(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    var inner = sse_decode_list_prim_u_8_strict(deserializer);
+    return U8Array32(inner);
+  }
+
+  @protected
+  void sse_decode_unit(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+  }
+
+  @protected
+  UnpairingRequest sse_decode_unpairing_request(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    return UnpairingRequest();
+  }
+
+  @protected
+  UnpairingResponse sse_decode_unpairing_response(
+      SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    var var_success = sse_decode_bool(deserializer);
+    return UnpairingResponse(success: var_success);
+  }
+
+  @protected
+  BigInt sse_decode_usize(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    return deserializer.buffer.getBigUint64();
+  }
+
+  @protected
+  VerificationResult sse_decode_verification_result(
+      SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+
+    var tag_ = sse_decode_i_32(deserializer);
+    switch (tag_) {
+      case 0:
+        return VerificationResult_Success();
+      case 1:
+        var var_error = sse_decode_String(deserializer);
+        return VerificationResult_Error(error: var_error);
+      case 2:
+        return VerificationResult_Failure();
+      default:
+        throw UnimplementedError('');
+    }
+  }
+
+  @protected
+  void sse_encode_AnyhowException(
+      AnyhowException self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_String(self.message, serializer);
+  }
+
+  @protected
+  void
+      sse_encode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerArcMutexDecoder(
+          ArcMutexDecoder self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_usize(
+        (self as ArcMutexDecoderImpl).frbInternalSseEncode(move: true),
+        serializer);
+  }
+
+  @protected
+  void
+      sse_encode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerCollectBackupChunks(
+          CollectBackupChunks self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_usize(
+        (self as CollectBackupChunksImpl).frbInternalSseEncode(move: true),
+        serializer);
+  }
+
+  @protected
+  void
+      sse_encode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerEnvoyARIDCache(
+          EnvoyAridCache self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_usize(
+        (self as EnvoyAridCacheImpl).frbInternalSseEncode(move: true),
+        serializer);
+  }
+
+  @protected
+  void
+      sse_encode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerEnvoyMasterDechunker(
+          EnvoyMasterDechunker self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_usize(
+        (self as EnvoyMasterDechunkerImpl).frbInternalSseEncode(move: true),
+        serializer);
+  }
+
+  @protected
+  void
+      sse_encode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerPrimeBackupFile(
+          PrimeBackupFile self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_usize(
+        (self as PrimeBackupFileImpl).frbInternalSseEncode(move: true),
+        serializer);
+  }
+
+  @protected
+  void
+      sse_encode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerQuantumLinkIdentity(
+          QuantumLinkIdentity self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_usize(
+        (self as QuantumLinkIdentityImpl).frbInternalSseEncode(move: true),
+        serializer);
+  }
+
+  @protected
+  void
+      sse_encode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerXIDDocument(
+          XidDocument self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_usize(
+        (self as XidDocumentImpl).frbInternalSseEncode(move: true), serializer);
+  }
+
+  @protected
+  void
+      sse_encode_Auto_RefMut_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerCollectBackupChunks(
+          CollectBackupChunks self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_usize(
+        (self as CollectBackupChunksImpl).frbInternalSseEncode(move: false),
+        serializer);
+  }
+
+  @protected
+  void
+      sse_encode_Auto_RefMut_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerEnvoyARIDCache(
+          EnvoyAridCache self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_usize(
+        (self as EnvoyAridCacheImpl).frbInternalSseEncode(move: false),
+        serializer);
+  }
+
+  @protected
+  void
+      sse_encode_Auto_RefMut_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerEnvoyMasterDechunker(
+          EnvoyMasterDechunker self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_usize(
+        (self as EnvoyMasterDechunkerImpl).frbInternalSseEncode(move: false),
+        serializer);
+  }
+
+  @protected
+  void
+      sse_encode_Auto_RefMut_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerPrimeBackupFile(
+          PrimeBackupFile self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_usize(
+        (self as PrimeBackupFileImpl).frbInternalSseEncode(move: false),
+        serializer);
+  }
+
+  @protected
+  void
+      sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerArcMutexDecoder(
+          ArcMutexDecoder self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_usize(
+        (self as ArcMutexDecoderImpl).frbInternalSseEncode(move: false),
+        serializer);
+  }
+
+  @protected
+  void
+      sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerCollectBackupChunks(
+          CollectBackupChunks self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_usize(
+        (self as CollectBackupChunksImpl).frbInternalSseEncode(move: false),
+        serializer);
+  }
+
+  @protected
+  void
+      sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerPrimeBackupFile(
+          PrimeBackupFile self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_usize(
+        (self as PrimeBackupFileImpl).frbInternalSseEncode(move: false),
+        serializer);
+  }
+
+  @protected
+  void
+      sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerQuantumLinkIdentity(
+          QuantumLinkIdentity self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_usize(
+        (self as QuantumLinkIdentityImpl).frbInternalSseEncode(move: false),
+        serializer);
+  }
+
+  @protected
+  void
+      sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerXIDDocument(
+          XidDocument self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_usize(
+        (self as XidDocumentImpl).frbInternalSseEncode(move: false),
+        serializer);
+  }
+
+  @protected
+  void
+      sse_encode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerArcMutexDecoder(
+          ArcMutexDecoder self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_usize(
+        (self as ArcMutexDecoderImpl).frbInternalSseEncode(move: null),
+        serializer);
+  }
+
+  @protected
+  void
+      sse_encode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerCollectBackupChunks(
+          CollectBackupChunks self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_usize(
+        (self as CollectBackupChunksImpl).frbInternalSseEncode(move: null),
+        serializer);
+  }
+
+  @protected
+  void
+      sse_encode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerEnvoyARIDCache(
+          EnvoyAridCache self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_usize(
+        (self as EnvoyAridCacheImpl).frbInternalSseEncode(move: null),
+        serializer);
+  }
+
+  @protected
+  void
+      sse_encode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerEnvoyMasterDechunker(
+          EnvoyMasterDechunker self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_usize(
+        (self as EnvoyMasterDechunkerImpl).frbInternalSseEncode(move: null),
+        serializer);
+  }
+
+  @protected
+  void
+      sse_encode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerPrimeBackupFile(
+          PrimeBackupFile self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_usize(
+        (self as PrimeBackupFileImpl).frbInternalSseEncode(move: null),
+        serializer);
+  }
+
+  @protected
+  void
+      sse_encode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerQuantumLinkIdentity(
+          QuantumLinkIdentity self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_usize(
+        (self as QuantumLinkIdentityImpl).frbInternalSseEncode(move: null),
+        serializer);
+  }
+
+  @protected
+  void
+      sse_encode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerXIDDocument(
+          XidDocument self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_usize(
+        (self as XidDocumentImpl).frbInternalSseEncode(move: null), serializer);
+  }
+
+  @protected
+  void sse_encode_String(String self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_list_prim_u_8_strict(utf8.encoder.convert(self), serializer);
+  }
+
+  @protected
+  void sse_encode_account_update(AccountUpdate self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_String(self.accountId, serializer);
+    sse_encode_list_prim_u_8_strict(self.update, serializer);
+  }
+
+  @protected
+  void sse_encode_apply_passphrase(
+      ApplyPassphrase self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_opt_String(self.fingerprint, serializer);
+  }
+
+  @protected
+  void sse_encode_backup_chunk(BackupChunk self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_u_32(self.chunkIndex, serializer);
+    sse_encode_u_32(self.totalChunks, serializer);
+    sse_encode_list_prim_u_8_strict(self.data, serializer);
+  }
+
+  @protected
+  void sse_encode_backup_metadata(
+      BackupMetadata self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_u_32(self.totalChunks, serializer);
+  }
+
+  @protected
+  void sse_encode_backup_shard_request(
+      BackupShardRequest self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_shard(self.shard, serializer);
+  }
+
+  @protected
+  void sse_encode_backup_shard_response(
+      BackupShardResponse self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    switch (self) {
+      case BackupShardResponse_Success():
+        sse_encode_i_32(0, serializer);
+      case BackupShardResponse_Error(error: final error):
+        sse_encode_i_32(1, serializer);
+        sse_encode_String(error, serializer);
+    }
+  }
+
+  @protected
+  void sse_encode_bool(bool self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    serializer.buffer.putUint8(self ? 1 : 0);
+  }
+
+  @protected
+  void
+      sse_encode_box_autoadd_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerPrimeBackupFile(
+          PrimeBackupFile self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerPrimeBackupFile(
+        self, serializer);
+  }
+
+  @protected
+  void
+      sse_encode_box_autoadd_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerXIDDocument(
+          XidDocument self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerXIDDocument(
+        self, serializer);
+  }
+
+  @protected
+  void sse_encode_box_autoadd_account_update(
+      AccountUpdate self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_account_update(self, serializer);
+  }
+
+  @protected
+  void sse_encode_box_autoadd_apply_passphrase(
+      ApplyPassphrase self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_apply_passphrase(self, serializer);
+  }
+
+  @protected
+  void sse_encode_box_autoadd_backup_chunk(
+      BackupChunk self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_backup_chunk(self, serializer);
+  }
+
+  @protected
+  void sse_encode_box_autoadd_backup_metadata(
+      BackupMetadata self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_backup_metadata(self, serializer);
+  }
+
+  @protected
+  void sse_encode_box_autoadd_backup_shard_request(
+      BackupShardRequest self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_backup_shard_request(self, serializer);
+  }
+
+  @protected
+  void sse_encode_box_autoadd_backup_shard_response(
+      BackupShardResponse self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_backup_shard_response(self, serializer);
+  }
+
+  @protected
+  void sse_encode_box_autoadd_broadcast_transaction(
+      BroadcastTransaction self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_broadcast_transaction(self, serializer);
+  }
+
+  @protected
+  void sse_encode_box_autoadd_challenge_request(
+      ChallengeRequest self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_challenge_request(self, serializer);
+  }
+
+  @protected
+  void sse_encode_box_autoadd_challenge_response_result(
+      ChallengeResponseResult self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_challenge_response_result(self, serializer);
+  }
+
+  @protected
+  void sse_encode_box_autoadd_create_magic_backup_event(
+      CreateMagicBackupEvent self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_create_magic_backup_event(self, serializer);
+  }
+
+  @protected
+  void sse_encode_box_autoadd_create_magic_backup_result(
+      CreateMagicBackupResult self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_create_magic_backup_result(self, serializer);
+  }
+
+  @protected
+  void sse_encode_box_autoadd_create_magic_backup_v_2(
+      CreateMagicBackupV2 self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_create_magic_backup_v_2(self, serializer);
+  }
+
+  @protected
+  void sse_encode_box_autoadd_delete_magic_backup_v_2(
+      DeleteMagicBackupV2 self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_delete_magic_backup_v_2(self, serializer);
+  }
+
+  @protected
+  void sse_encode_box_autoadd_device_status(
+      DeviceStatus self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_device_status(self, serializer);
+  }
+
+  @protected
+  void sse_encode_box_autoadd_envoy_magic_backup_enabled_request(
+      EnvoyMagicBackupEnabledRequest self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_envoy_magic_backup_enabled_request(self, serializer);
+  }
+
+  @protected
+  void sse_encode_box_autoadd_envoy_magic_backup_enabled_response(
+      EnvoyMagicBackupEnabledResponse self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_envoy_magic_backup_enabled_response(self, serializer);
+  }
+
+  @protected
+  void sse_encode_box_autoadd_envoy_message(
+      EnvoyMessage self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_envoy_message(self, serializer);
+  }
+
+  @protected
+  void sse_encode_box_autoadd_envoy_status(
+      EnvoyStatus self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_envoy_status(self, serializer);
+  }
+
+  @protected
+  void sse_encode_box_autoadd_exchange_rate(
+      ExchangeRate self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_exchange_rate(self, serializer);
+  }
+
+  @protected
+  void sse_encode_box_autoadd_exchange_rate_history(
+      ExchangeRateHistory self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_exchange_rate_history(self, serializer);
+  }
+
+  @protected
+  void sse_encode_box_autoadd_firmware_chunk(
+      FirmwareChunk self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_firmware_chunk(self, serializer);
+  }
+
+  @protected
+  void sse_encode_box_autoadd_firmware_fetch_event(
+      FirmwareFetchEvent self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_firmware_fetch_event(self, serializer);
+  }
+
+  @protected
+  void sse_encode_box_autoadd_firmware_fetch_request(
+      FirmwareFetchRequest self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_firmware_fetch_request(self, serializer);
+  }
+
+  @protected
+  void sse_encode_box_autoadd_firmware_install_event(
+      FirmwareInstallEvent self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_firmware_install_event(self, serializer);
+  }
+
+  @protected
+  void sse_encode_box_autoadd_firmware_update_available(
+      FirmwareUpdateAvailable self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_firmware_update_available(self, serializer);
+  }
+
+  @protected
+  void sse_encode_box_autoadd_firmware_update_check_request(
+      FirmwareUpdateCheckRequest self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_firmware_update_check_request(self, serializer);
+  }
+
+  @protected
+  void sse_encode_box_autoadd_firmware_update_check_response(
+      FirmwareUpdateCheckResponse self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_firmware_update_check_response(self, serializer);
+  }
+
+  @protected
+  void sse_encode_box_autoadd_get_magic_backup_v_2(
+      GetMagicBackupV2 self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_get_magic_backup_v_2(self, serializer);
+  }
+
+  @protected
+  void sse_encode_box_autoadd_heartbeat(
+      Heartbeat self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_heartbeat(self, serializer);
+  }
+
+  @protected
+  void sse_encode_box_autoadd_magic_backup_request_v_2(
+      MagicBackupRequestV2 self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_magic_backup_request_v_2(self, serializer);
+  }
+
+  @protected
+  void sse_encode_box_autoadd_magic_backup_response_v_2(
+      MagicBackupResponseV2 self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_magic_backup_response_v_2(self, serializer);
+  }
+
+  @protected
+  void sse_encode_box_autoadd_pairing_request(
+      PairingRequest self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_pairing_request(self, serializer);
+  }
+
+  @protected
+  void sse_encode_box_autoadd_pairing_response(
+      PairingResponse self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_pairing_response(self, serializer);
+  }
+
+  @protected
+  void sse_encode_box_autoadd_passport_message(
+      PassportMessage self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_passport_message(self, serializer);
+  }
+
+  @protected
+  void sse_encode_box_autoadd_prime_magic_backup_enabled(
+      PrimeMagicBackupEnabled self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_prime_magic_backup_enabled(self, serializer);
+  }
+
+  @protected
+  void sse_encode_box_autoadd_prime_magic_backup_status_request(
+      PrimeMagicBackupStatusRequest self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_prime_magic_backup_status_request(self, serializer);
+  }
+
+  @protected
+  void sse_encode_box_autoadd_prime_magic_backup_status_response(
+      PrimeMagicBackupStatusResponse self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_prime_magic_backup_status_response(self, serializer);
+  }
+
+  @protected
+  void sse_encode_box_autoadd_restore_magic_backup_event(
+      RestoreMagicBackupEvent self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_restore_magic_backup_event(self, serializer);
+  }
+
+  @protected
+  void sse_encode_box_autoadd_restore_magic_backup_request(
+      RestoreMagicBackupRequest self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_restore_magic_backup_request(self, serializer);
+  }
+
+  @protected
+  void sse_encode_box_autoadd_restore_magic_backup_result(
+      RestoreMagicBackupResult self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_restore_magic_backup_result(self, serializer);
+  }
+
+  @protected
+  void sse_encode_box_autoadd_restore_shard_request(
+      RestoreShardRequest self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_restore_shard_request(self, serializer);
+  }
+
+  @protected
+  void sse_encode_box_autoadd_restore_shard_response(
+      RestoreShardResponse self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_restore_shard_response(self, serializer);
+  }
+
+  @protected
+  void sse_encode_box_autoadd_security_check(
+      SecurityCheck self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_security_check(self, serializer);
+  }
+
+  @protected
+  void sse_encode_box_autoadd_seed_fingerprint(
+      SeedFingerprint self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_seed_fingerprint(self, serializer);
+  }
+
+  @protected
+  void sse_encode_box_autoadd_shard(Shard self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_shard(self, serializer);
+  }
+
+  @protected
+  void sse_encode_box_autoadd_sign_psbt(
+      SignPsbt self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_sign_psbt(self, serializer);
+  }
+
+  @protected
+  void sse_encode_box_autoadd_start_magic_backup(
+      StartMagicBackup self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_start_magic_backup(self, serializer);
+  }
+
+  @protected
+  void sse_encode_box_autoadd_timezone_request(
+      TimezoneRequest self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_timezone_request(self, serializer);
+  }
+
+  @protected
+  void sse_encode_box_autoadd_timezone_response(
+      TimezoneResponse self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_timezone_response(self, serializer);
+  }
+
+  @protected
+  void sse_encode_box_autoadd_u_64(BigInt self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_u_64(self, serializer);
+  }
+
+  @protected
+  void sse_encode_box_autoadd_u_8(int self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_u_8(self, serializer);
+  }
+
+  @protected
+  void sse_encode_box_autoadd_unpairing_request(
+      UnpairingRequest self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_unpairing_request(self, serializer);
+  }
+
+  @protected
+  void sse_encode_box_autoadd_unpairing_response(
+      UnpairingResponse self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_unpairing_response(self, serializer);
+  }
+
+  @protected
+  void sse_encode_box_autoadd_verification_result(
+      VerificationResult self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_verification_result(self, serializer);
+  }
+
+  @protected
+  void sse_encode_broadcast_transaction(
+      BroadcastTransaction self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_String(self.accountId, serializer);
+    sse_encode_list_prim_u_8_strict(self.psbt, serializer);
+  }
+
+  @protected
+  void sse_encode_challenge_request(
+      ChallengeRequest self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_list_prim_u_8_strict(self.data, serializer);
+  }
+
+  @protected
+  void sse_encode_challenge_response_result(
+      ChallengeResponseResult self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    switch (self) {
+      case ChallengeResponseResult_Success(data: final data):
+        sse_encode_i_32(0, serializer);
+        sse_encode_list_prim_u_8_strict(data, serializer);
+      case ChallengeResponseResult_Error(error: final error):
+        sse_encode_i_32(1, serializer);
+        sse_encode_String(error, serializer);
+    }
+  }
+
+  @protected
+  void sse_encode_create_magic_backup_event(
+      CreateMagicBackupEvent self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    switch (self) {
+      case CreateMagicBackupEvent_Start(field0: final field0):
+        sse_encode_i_32(0, serializer);
+        sse_encode_box_autoadd_start_magic_backup(field0, serializer);
+      case CreateMagicBackupEvent_Chunk(field0: final field0):
+        sse_encode_i_32(1, serializer);
+        sse_encode_box_autoadd_backup_chunk(field0, serializer);
+    }
+  }
+
+  @protected
+  void sse_encode_create_magic_backup_result(
+      CreateMagicBackupResult self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    switch (self) {
+      case CreateMagicBackupResult_Success():
+        sse_encode_i_32(0, serializer);
+      case CreateMagicBackupResult_Error(error: final error):
+        sse_encode_i_32(1, serializer);
+        sse_encode_String(error, serializer);
+    }
+  }
+
+  @protected
+  void sse_encode_create_magic_backup_v_2(
+      CreateMagicBackupV2 self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_u_64(self.timestamp, serializer);
+    sse_encode_list_prim_u_8_strict(self.hash, serializer);
+    sse_encode_list_prim_u_8_strict(self.pubkey, serializer);
+    sse_encode_list_prim_u_8_strict(self.data, serializer);
+    sse_encode_list_prim_u_8_strict(self.clientSignature, serializer);
+  }
+
+  @protected
+  void sse_encode_decoder_status(DecoderStatus self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_f_64(self.progress, serializer);
+    sse_encode_opt_box_autoadd_passport_message(self.payload, serializer);
+  }
+
+  @protected
+  void sse_encode_delete_magic_backup_v_2(
+      DeleteMagicBackupV2 self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_list_prim_u_8_strict(self.key, serializer);
+    sse_encode_u_64(self.timestamp, serializer);
+    sse_encode_list_prim_u_8_strict(self.signature, serializer);
+  }
+
+  @protected
+  void sse_encode_device_status(DeviceStatus self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_String(self.version, serializer);
+    sse_encode_u_8(self.batteryLevel, serializer);
+  }
+
+  @protected
+  void sse_encode_envoy_magic_backup_enabled_request(
+      EnvoyMagicBackupEnabledRequest self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+  }
+
+  @protected
+  void sse_encode_envoy_magic_backup_enabled_response(
+      EnvoyMagicBackupEnabledResponse self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_bool(self.enabled, serializer);
+  }
+
+  @protected
+  void sse_encode_envoy_message(EnvoyMessage self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_quantum_link_message(self.message, serializer);
+    sse_encode_u_32(self.timestamp, serializer);
+    sse_encode_opt_box_autoadd_u_8(self.protocolVersion, serializer);
+  }
+
+  @protected
+  void sse_encode_envoy_status(EnvoyStatus self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_String(self.version, serializer);
+  }
+
+  @protected
+  void sse_encode_exchange_rate(ExchangeRate self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_String(self.currencyCode, serializer);
+    sse_encode_f_32(self.rate, serializer);
+    sse_encode_u_64(self.timestamp, serializer);
+  }
+
+  @protected
+  void sse_encode_exchange_rate_history(
+      ExchangeRateHistory self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_list_price_point(self.history, serializer);
+    sse_encode_String(self.currencyCode, serializer);
+  }
+
+  @protected
+  void sse_encode_f_32(double self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    serializer.buffer.putFloat32(self);
+  }
+
+  @protected
+  void sse_encode_f_64(double self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    serializer.buffer.putFloat64(self);
+  }
+
+  @protected
+  void sse_encode_firmware_chunk(FirmwareChunk self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_u_8(self.patchIndex, serializer);
+    sse_encode_u_8(self.totalPatches, serializer);
+    sse_encode_u_16(self.chunkIndex, serializer);
+    sse_encode_u_16(self.totalChunks, serializer);
+    sse_encode_list_prim_u_8_strict(self.data, serializer);
+  }
+
+  @protected
+  void sse_encode_firmware_fetch_event(
+      FirmwareFetchEvent self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    switch (self) {
+      case FirmwareFetchEvent_UpdateNotAvailable():
+        sse_encode_i_32(0, serializer);
+      case FirmwareFetchEvent_Starting(field0: final field0):
+        sse_encode_i_32(1, serializer);
+        sse_encode_box_autoadd_firmware_update_available(field0, serializer);
+      case FirmwareFetchEvent_Downloading():
+        sse_encode_i_32(2, serializer);
+      case FirmwareFetchEvent_Chunk(field0: final field0):
+        sse_encode_i_32(3, serializer);
+        sse_encode_box_autoadd_firmware_chunk(field0, serializer);
+      case FirmwareFetchEvent_Error(error: final error):
+        sse_encode_i_32(4, serializer);
+        sse_encode_String(error, serializer);
+    }
+  }
+
+  @protected
+  void sse_encode_firmware_fetch_request(
+      FirmwareFetchRequest self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_String(self.currentVersion, serializer);
+    sse_encode_opt_box_autoadd_u_64(self.chunkOffset, serializer);
+  }
+
+  @protected
+  void sse_encode_firmware_install_event(
+      FirmwareInstallEvent self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    switch (self) {
+      case FirmwareInstallEvent_UpdateVerified():
+        sse_encode_i_32(0, serializer);
+      case FirmwareInstallEvent_Installing():
+        sse_encode_i_32(1, serializer);
+      case FirmwareInstallEvent_Rebooting():
+        sse_encode_i_32(2, serializer);
+      case FirmwareInstallEvent_Success(
+          installedVersion: final installedVersion
+        ):
+        sse_encode_i_32(3, serializer);
+        sse_encode_String(installedVersion, serializer);
+      case FirmwareInstallEvent_Error(error: final error, stage: final stage):
+        sse_encode_i_32(4, serializer);
+        sse_encode_String(error, serializer);
+        sse_encode_install_error_stage(stage, serializer);
+    }
+  }
+
+  @protected
+  void sse_encode_firmware_update_available(
+      FirmwareUpdateAvailable self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_String(self.version, serializer);
+    sse_encode_String(self.changelog, serializer);
+    sse_encode_u_32(self.timestamp, serializer);
+    sse_encode_u_32(self.totalSize, serializer);
+    sse_encode_u_8(self.patchCount, serializer);
+  }
+
+  @protected
+  void sse_encode_firmware_update_check_request(
+      FirmwareUpdateCheckRequest self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_String(self.currentVersion, serializer);
+  }
+
+  @protected
+  void sse_encode_firmware_update_check_response(
+      FirmwareUpdateCheckResponse self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    switch (self) {
+      case FirmwareUpdateCheckResponse_Available(field0: final field0):
+        sse_encode_i_32(0, serializer);
+        sse_encode_box_autoadd_firmware_update_available(field0, serializer);
+      case FirmwareUpdateCheckResponse_NotAvailable():
+        sse_encode_i_32(1, serializer);
+    }
+  }
+
+  @protected
+  void sse_encode_get_magic_backup_v_2(
+      GetMagicBackupV2 self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_list_prim_u_8_strict(self.key, serializer);
+    sse_encode_u_64(self.timestamp, serializer);
+    sse_encode_list_prim_u_8_strict(self.signature, serializer);
+  }
+
+  @protected
+  void sse_encode_heartbeat(Heartbeat self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+  }
+
+  @protected
+  void sse_encode_i_32(int self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    serializer.buffer.putInt32(self);
+  }
+
+  @protected
+  void sse_encode_install_error_stage(
+      InstallErrorStage self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_i_32(self.index, serializer);
+  }
+
+  @protected
+  void sse_encode_list_list_prim_u_8_strict(
+      List<Uint8List> self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_i_32(self.length, serializer);
+    for (final item in self) {
+      sse_encode_list_prim_u_8_strict(item, serializer);
+    }
+  }
+
+  @protected
+  void sse_encode_list_price_point(
+      List<PricePoint> self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_i_32(self.length, serializer);
+    for (final item in self) {
+      sse_encode_price_point(item, serializer);
+    }
+  }
+
+  @protected
+  void sse_encode_list_prim_u_8_loose(
+      List<int> self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_i_32(self.length, serializer);
+    serializer.buffer
+        .putUint8List(self is Uint8List ? self : Uint8List.fromList(self));
+  }
+
+  @protected
+  void sse_encode_list_prim_u_8_strict(
+      Uint8List self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_i_32(self.length, serializer);
+    serializer.buffer.putUint8List(self);
+  }
+
+  @protected
+  void sse_encode_list_quantum_link_message(
+      List<QuantumLinkMessage> self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_i_32(self.length, serializer);
+    for (final item in self) {
+      sse_encode_quantum_link_message(item, serializer);
+    }
+  }
+
+  @protected
+  void sse_encode_magic_backup_request_v_2(
+      MagicBackupRequestV2 self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    switch (self) {
+      case MagicBackupRequestV2_Create(field0: final field0):
+        sse_encode_i_32(0, serializer);
+        sse_encode_box_autoadd_create_magic_backup_v_2(field0, serializer);
+      case MagicBackupRequestV2_Get(field0: final field0):
+        sse_encode_i_32(1, serializer);
+        sse_encode_box_autoadd_get_magic_backup_v_2(field0, serializer);
+      case MagicBackupRequestV2_Delete(field0: final field0):
+        sse_encode_i_32(2, serializer);
+        sse_encode_box_autoadd_delete_magic_backup_v_2(field0, serializer);
+    }
+  }
+
+  @protected
+  void sse_encode_magic_backup_response_v_2(
+      MagicBackupResponseV2 self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    switch (self) {
+      case MagicBackupResponseV2_Created():
+        sse_encode_i_32(0, serializer);
+      case MagicBackupResponseV2_Backup(data: final data):
+        sse_encode_i_32(1, serializer);
+        sse_encode_list_prim_u_8_strict(data, serializer);
+      case MagicBackupResponseV2_Deleted():
+        sse_encode_i_32(2, serializer);
+      case MagicBackupResponseV2_Error(error: final error):
+        sse_encode_i_32(3, serializer);
+        sse_encode_String(error, serializer);
+    }
+  }
+
+  @protected
+  void sse_encode_onboarding_state(
+      OnboardingState self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_i_32(self.index, serializer);
+  }
+
+  @protected
+  void sse_encode_opt_String(String? self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+
+    sse_encode_bool(self != null, serializer);
+    if (self != null) {
+      sse_encode_String(self, serializer);
+    }
+  }
+
+  @protected
+  void
+      sse_encode_opt_box_autoadd_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerPrimeBackupFile(
+          PrimeBackupFile? self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+
+    sse_encode_bool(self != null, serializer);
+    if (self != null) {
+      sse_encode_box_autoadd_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerPrimeBackupFile(
+          self, serializer);
+    }
+  }
+
+  @protected
+  void
+      sse_encode_opt_box_autoadd_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerXIDDocument(
+          XidDocument? self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+
+    sse_encode_bool(self != null, serializer);
+    if (self != null) {
+      sse_encode_box_autoadd_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerXIDDocument(
+          self, serializer);
+    }
+  }
+
+  @protected
+  void sse_encode_opt_box_autoadd_passport_message(
+      PassportMessage? self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+
+    sse_encode_bool(self != null, serializer);
+    if (self != null) {
+      sse_encode_box_autoadd_passport_message(self, serializer);
+    }
+  }
+
+  @protected
+  void sse_encode_opt_box_autoadd_u_64(BigInt? self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+
+    sse_encode_bool(self != null, serializer);
+    if (self != null) {
+      sse_encode_box_autoadd_u_64(self, serializer);
+    }
+  }
+
+  @protected
+  void sse_encode_opt_box_autoadd_u_8(int? self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+
+    sse_encode_bool(self != null, serializer);
+    if (self != null) {
+      sse_encode_box_autoadd_u_8(self, serializer);
+    }
+  }
+
+  @protected
+  void sse_encode_pairing_request(
+      PairingRequest self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_list_prim_u_8_strict(self.xidDocument, serializer);
+    sse_encode_String(self.deviceName, serializer);
+  }
+
+  @protected
+  void sse_encode_pairing_response(
+      PairingResponse self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_passport_model(self.passportModel, serializer);
+    sse_encode_passport_firmware_version(
+        self.passportFirmwareVersion, serializer);
+    sse_encode_passport_serial(self.passportSerial, serializer);
+    sse_encode_passport_color(self.passportColor, serializer);
+    sse_encode_bool(self.onboardingComplete, serializer);
+  }
+
+  @protected
+  void sse_encode_passport_color(PassportColor self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_i_32(self.index, serializer);
+  }
+
+  @protected
+  void sse_encode_passport_firmware_version(
+      PassportFirmwareVersion self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_String(self.field0, serializer);
+  }
+
+  @protected
+  void sse_encode_passport_message(
+      PassportMessage self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_quantum_link_message(self.message, serializer);
+    sse_encode_device_status(self.status, serializer);
+    sse_encode_opt_box_autoadd_u_8(self.protocolVersion, serializer);
+  }
+
+  @protected
+  void sse_encode_passport_model(PassportModel self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_i_32(self.index, serializer);
+  }
+
+  @protected
+  void sse_encode_passport_serial(
+      PassportSerial self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_String(self.field0, serializer);
+  }
+
+  @protected
+  void sse_encode_price_point(PricePoint self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_f_32(self.rate, serializer);
+    sse_encode_u_64(self.timestamp, serializer);
+  }
+
+  @protected
+  void sse_encode_prime_magic_backup_enabled(
+      PrimeMagicBackupEnabled self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_bool(self.enabled, serializer);
+    sse_encode_seed_fingerprint(self.seedFingerprint, serializer);
+  }
+
+  @protected
+  void sse_encode_prime_magic_backup_status_request(
+      PrimeMagicBackupStatusRequest self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_seed_fingerprint(self.seedFingerprint, serializer);
+  }
+
+  @protected
+  void sse_encode_prime_magic_backup_status_response(
+      PrimeMagicBackupStatusResponse self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_bool(self.shardBackupFound, serializer);
+  }
+
+  @protected
+  void sse_encode_qr_decoder_status(
+      QrDecoderStatus self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_f_64(self.progress, serializer);
+    sse_encode_opt_box_autoadd_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerXIDDocument(
+        self.payload, serializer);
+  }
+
+  @protected
+  void sse_encode_quantum_link_message(
+      QuantumLinkMessage self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    switch (self) {
+      case QuantumLinkMessage_ExchangeRate(field0: final field0):
+        sse_encode_i_32(0, serializer);
+        sse_encode_box_autoadd_exchange_rate(field0, serializer);
+      case QuantumLinkMessage_ExchangeRateHistory(field0: final field0):
+        sse_encode_i_32(1, serializer);
+        sse_encode_box_autoadd_exchange_rate_history(field0, serializer);
+      case QuantumLinkMessage_FirmwareUpdateCheckRequest(field0: final field0):
+        sse_encode_i_32(2, serializer);
+        sse_encode_box_autoadd_firmware_update_check_request(
+            field0, serializer);
+      case QuantumLinkMessage_FirmwareUpdateCheckResponse(field0: final field0):
+        sse_encode_i_32(3, serializer);
+        sse_encode_box_autoadd_firmware_update_check_response(
+            field0, serializer);
+      case QuantumLinkMessage_FirmwareFetchRequest(field0: final field0):
+        sse_encode_i_32(4, serializer);
+        sse_encode_box_autoadd_firmware_fetch_request(field0, serializer);
+      case QuantumLinkMessage_FirmwareFetchEvent(field0: final field0):
+        sse_encode_i_32(5, serializer);
+        sse_encode_box_autoadd_firmware_fetch_event(field0, serializer);
+      case QuantumLinkMessage_FirmwareInstallEvent(field0: final field0):
+        sse_encode_i_32(6, serializer);
+        sse_encode_box_autoadd_firmware_install_event(field0, serializer);
+      case QuantumLinkMessage_DeviceStatus(field0: final field0):
+        sse_encode_i_32(7, serializer);
+        sse_encode_box_autoadd_device_status(field0, serializer);
+      case QuantumLinkMessage_EnvoyStatus(field0: final field0):
+        sse_encode_i_32(8, serializer);
+        sse_encode_box_autoadd_envoy_status(field0, serializer);
+      case QuantumLinkMessage_PairingRequest(field0: final field0):
+        sse_encode_i_32(9, serializer);
+        sse_encode_box_autoadd_pairing_request(field0, serializer);
+      case QuantumLinkMessage_PairingResponse(field0: final field0):
+        sse_encode_i_32(10, serializer);
+        sse_encode_box_autoadd_pairing_response(field0, serializer);
+      case QuantumLinkMessage_SecurityCheck(field0: final field0):
+        sse_encode_i_32(11, serializer);
+        sse_encode_box_autoadd_security_check(field0, serializer);
+      case QuantumLinkMessage_OnboardingState(field0: final field0):
+        sse_encode_i_32(12, serializer);
+        sse_encode_onboarding_state(field0, serializer);
+      case QuantumLinkMessage_SignPsbt(field0: final field0):
+        sse_encode_i_32(13, serializer);
+        sse_encode_box_autoadd_sign_psbt(field0, serializer);
+      case QuantumLinkMessage_BroadcastTransaction(field0: final field0):
+        sse_encode_i_32(14, serializer);
+        sse_encode_box_autoadd_broadcast_transaction(field0, serializer);
+      case QuantumLinkMessage_AccountUpdate(field0: final field0):
+        sse_encode_i_32(15, serializer);
+        sse_encode_box_autoadd_account_update(field0, serializer);
+      case QuantumLinkMessage_ApplyPassphrase(field0: final field0):
+        sse_encode_i_32(16, serializer);
+        sse_encode_box_autoadd_apply_passphrase(field0, serializer);
+      case QuantumLinkMessage_EnvoyMagicBackupEnabledRequest(
+          field0: final field0
+        ):
+        sse_encode_i_32(17, serializer);
+        sse_encode_box_autoadd_envoy_magic_backup_enabled_request(
+            field0, serializer);
+      case QuantumLinkMessage_EnvoyMagicBackupEnabledResponse(
+          field0: final field0
+        ):
+        sse_encode_i_32(18, serializer);
+        sse_encode_box_autoadd_envoy_magic_backup_enabled_response(
+            field0, serializer);
+      case QuantumLinkMessage_PrimeMagicBackupEnabled(field0: final field0):
+        sse_encode_i_32(19, serializer);
+        sse_encode_box_autoadd_prime_magic_backup_enabled(field0, serializer);
+      case QuantumLinkMessage_PrimeMagicBackupStatusRequest(
+          field0: final field0
+        ):
+        sse_encode_i_32(20, serializer);
+        sse_encode_box_autoadd_prime_magic_backup_status_request(
+            field0, serializer);
+      case QuantumLinkMessage_PrimeMagicBackupStatusResponse(
+          field0: final field0
+        ):
+        sse_encode_i_32(21, serializer);
+        sse_encode_box_autoadd_prime_magic_backup_status_response(
+            field0, serializer);
+      case QuantumLinkMessage_BackupShardRequest(field0: final field0):
+        sse_encode_i_32(22, serializer);
+        sse_encode_box_autoadd_backup_shard_request(field0, serializer);
+      case QuantumLinkMessage_BackupShardResponse(field0: final field0):
+        sse_encode_i_32(23, serializer);
+        sse_encode_box_autoadd_backup_shard_response(field0, serializer);
+      case QuantumLinkMessage_RestoreShardRequest(field0: final field0):
+        sse_encode_i_32(24, serializer);
+        sse_encode_box_autoadd_restore_shard_request(field0, serializer);
+      case QuantumLinkMessage_RestoreShardResponse(field0: final field0):
+        sse_encode_i_32(25, serializer);
+        sse_encode_box_autoadd_restore_shard_response(field0, serializer);
+      case QuantumLinkMessage_CreateMagicBackupEvent(field0: final field0):
+        sse_encode_i_32(26, serializer);
+        sse_encode_box_autoadd_create_magic_backup_event(field0, serializer);
+      case QuantumLinkMessage_CreateMagicBackupResult(field0: final field0):
+        sse_encode_i_32(27, serializer);
+        sse_encode_box_autoadd_create_magic_backup_result(field0, serializer);
+      case QuantumLinkMessage_RestoreMagicBackupRequest(field0: final field0):
+        sse_encode_i_32(28, serializer);
+        sse_encode_box_autoadd_restore_magic_backup_request(field0, serializer);
+      case QuantumLinkMessage_RestoreMagicBackupEvent(field0: final field0):
+        sse_encode_i_32(29, serializer);
+        sse_encode_box_autoadd_restore_magic_backup_event(field0, serializer);
+      case QuantumLinkMessage_RestoreMagicBackupResult(field0: final field0):
+        sse_encode_i_32(30, serializer);
+        sse_encode_box_autoadd_restore_magic_backup_result(field0, serializer);
+      case QuantumLinkMessage_Heartbeat(field0: final field0):
+        sse_encode_i_32(31, serializer);
+        sse_encode_box_autoadd_heartbeat(field0, serializer);
+      case QuantumLinkMessage_TimezoneRequest(field0: final field0):
+        sse_encode_i_32(32, serializer);
+        sse_encode_box_autoadd_timezone_request(field0, serializer);
+      case QuantumLinkMessage_TimezoneResponse(field0: final field0):
+        sse_encode_i_32(33, serializer);
+        sse_encode_box_autoadd_timezone_response(field0, serializer);
+      case QuantumLinkMessage_UnpairingRequest(field0: final field0):
+        sse_encode_i_32(34, serializer);
+        sse_encode_box_autoadd_unpairing_request(field0, serializer);
+      case QuantumLinkMessage_UnpairingResponse(field0: final field0):
+        sse_encode_i_32(35, serializer);
+        sse_encode_box_autoadd_unpairing_response(field0, serializer);
+      case QuantumLinkMessage_MagicBackupRequestV2(field0: final field0):
+        sse_encode_i_32(36, serializer);
+        sse_encode_box_autoadd_magic_backup_request_v_2(field0, serializer);
+      case QuantumLinkMessage_MagicBackupResponseV2(field0: final field0):
+        sse_encode_i_32(37, serializer);
+        sse_encode_box_autoadd_magic_backup_response_v_2(field0, serializer);
+    }
+  }
+
+  @protected
+  void sse_encode_restore_magic_backup_event(
+      RestoreMagicBackupEvent self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    switch (self) {
+      case RestoreMagicBackupEvent_NotFound():
+        sse_encode_i_32(0, serializer);
+      case RestoreMagicBackupEvent_Starting(field0: final field0):
+        sse_encode_i_32(1, serializer);
+        sse_encode_box_autoadd_backup_metadata(field0, serializer);
+      case RestoreMagicBackupEvent_Chunk(field0: final field0):
+        sse_encode_i_32(2, serializer);
+        sse_encode_box_autoadd_backup_chunk(field0, serializer);
+      case RestoreMagicBackupEvent_Error(error: final error):
+        sse_encode_i_32(3, serializer);
+        sse_encode_String(error, serializer);
+    }
+  }
+
+  @protected
+  void sse_encode_restore_magic_backup_request(
+      RestoreMagicBackupRequest self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_seed_fingerprint(self.seedFingerprint, serializer);
+    sse_encode_u_32(self.resumeFromChunk, serializer);
+  }
+
+  @protected
+  void sse_encode_restore_magic_backup_result(
+      RestoreMagicBackupResult self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    switch (self) {
+      case RestoreMagicBackupResult_Success():
+        sse_encode_i_32(0, serializer);
+      case RestoreMagicBackupResult_Error(error: final error):
+        sse_encode_i_32(1, serializer);
+        sse_encode_String(error, serializer);
+    }
+  }
+
+  @protected
+  void sse_encode_restore_shard_request(
+      RestoreShardRequest self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_seed_fingerprint(self.seedFingerprint, serializer);
+  }
+
+  @protected
+  void sse_encode_restore_shard_response(
+      RestoreShardResponse self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    switch (self) {
+      case RestoreShardResponse_Success(shard: final shard):
+        sse_encode_i_32(0, serializer);
+        sse_encode_box_autoadd_shard(shard, serializer);
+      case RestoreShardResponse_Error(error: final error):
+        sse_encode_i_32(1, serializer);
+        sse_encode_String(error, serializer);
+      case RestoreShardResponse_NotFound():
+        sse_encode_i_32(2, serializer);
+    }
+  }
+
+  @protected
+  void sse_encode_security_check(SecurityCheck self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    switch (self) {
+      case SecurityCheck_ChallengeRequest(field0: final field0):
+        sse_encode_i_32(0, serializer);
+        sse_encode_box_autoadd_challenge_request(field0, serializer);
+      case SecurityCheck_ChallengeResponse(field0: final field0):
+        sse_encode_i_32(1, serializer);
+        sse_encode_box_autoadd_challenge_response_result(field0, serializer);
+      case SecurityCheck_VerificationResult(field0: final field0):
+        sse_encode_i_32(2, serializer);
+        sse_encode_box_autoadd_verification_result(field0, serializer);
+    }
+  }
+
+  @protected
+  void sse_encode_seed_fingerprint(
+      SeedFingerprint self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_u_8_array_32(self.field0, serializer);
+  }
+
+  @protected
+  void sse_encode_shard(Shard self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_list_prim_u_8_strict(self.field0, serializer);
+  }
+
+  @protected
+  void sse_encode_sign_psbt(SignPsbt self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_String(self.accountId, serializer);
+    sse_encode_list_prim_u_8_strict(self.psbt, serializer);
+  }
+
+  @protected
+  void sse_encode_start_magic_backup(
+      StartMagicBackup self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_seed_fingerprint(self.seedFingerprint, serializer);
+    sse_encode_u_32(self.totalChunks, serializer);
+    sse_encode_u_8_array_32(self.hash, serializer);
+  }
+
+  @protected
+  void sse_encode_timezone_request(
+      TimezoneRequest self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+  }
+
+  @protected
+  void sse_encode_timezone_response(
+      TimezoneResponse self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_i_32(self.offsetMinutes, serializer);
+    sse_encode_String(self.zone, serializer);
+  }
+
+  @protected
+  void sse_encode_u_16(int self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    serializer.buffer.putUint16(self);
+  }
+
+  @protected
+  void sse_encode_u_32(int self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    serializer.buffer.putUint32(self);
+  }
+
+  @protected
+  void sse_encode_u_64(BigInt self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    serializer.buffer.putBigUint64(self);
+  }
+
+  @protected
+  void sse_encode_u_8(int self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    serializer.buffer.putUint8(self);
+  }
+
+  @protected
+  void sse_encode_u_8_array_32(U8Array32 self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_list_prim_u_8_strict(self.inner, serializer);
+  }
+
+  @protected
+  void sse_encode_unit(void self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+  }
+
+  @protected
+  void sse_encode_unpairing_request(
+      UnpairingRequest self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+  }
+
+  @protected
+  void sse_encode_unpairing_response(
+      UnpairingResponse self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_bool(self.success, serializer);
+  }
+
+  @protected
+  void sse_encode_usize(BigInt self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    serializer.buffer.putBigUint64(self);
+  }
+
+  @protected
+  void sse_encode_verification_result(
+      VerificationResult self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    switch (self) {
+      case VerificationResult_Success():
+        sse_encode_i_32(0, serializer);
+      case VerificationResult_Error(error: final error):
+        sse_encode_i_32(1, serializer);
+        sse_encode_String(error, serializer);
+      case VerificationResult_Failure():
+        sse_encode_i_32(2, serializer);
+    }
+  }
+}
+
+@sealed
+class ArcMutexDecoderImpl extends RustOpaque implements ArcMutexDecoder {
+  // Not to be used by end users
+  ArcMutexDecoderImpl.frbInternalDcoDecode(List<dynamic> wire)
+      : super.frbInternalDcoDecode(wire, _kStaticData);
+
+  // Not to be used by end users
+  ArcMutexDecoderImpl.frbInternalSseDecode(BigInt ptr, int externalSizeOnNative)
+      : super.frbInternalSseDecode(ptr, externalSizeOnNative, _kStaticData);
+
+  static final _kStaticData = RustArcStaticData(
+    rustArcIncrementStrongCount:
+        RustLib.instance.api.rust_arc_increment_strong_count_ArcMutexDecoder,
+    rustArcDecrementStrongCount:
+        RustLib.instance.api.rust_arc_decrement_strong_count_ArcMutexDecoder,
+    rustArcDecrementStrongCountPtr:
+        RustLib.instance.api.rust_arc_decrement_strong_count_ArcMutexDecoderPtr,
+  );
+}
+
+@sealed
+class CollectBackupChunksImpl extends RustOpaque
+    implements CollectBackupChunks {
+  // Not to be used by end users
+  CollectBackupChunksImpl.frbInternalDcoDecode(List<dynamic> wire)
+      : super.frbInternalDcoDecode(wire, _kStaticData);
+
+  // Not to be used by end users
+  CollectBackupChunksImpl.frbInternalSseDecode(
+      BigInt ptr, int externalSizeOnNative)
+      : super.frbInternalSseDecode(ptr, externalSizeOnNative, _kStaticData);
+
+  static final _kStaticData = RustArcStaticData(
+    rustArcIncrementStrongCount: RustLib
+        .instance.api.rust_arc_increment_strong_count_CollectBackupChunks,
+    rustArcDecrementStrongCount: RustLib
+        .instance.api.rust_arc_decrement_strong_count_CollectBackupChunks,
+    rustArcDecrementStrongCountPtr: RustLib
+        .instance.api.rust_arc_decrement_strong_count_CollectBackupChunksPtr,
+  );
+
+  U8Array32 get backupHash => RustLib.instance.api
+          .crateApiQlCollectBackupChunksAutoAccessorGetBackupHash(
+        that: this,
+      );
+
+  Uint8List get data =>
+      RustLib.instance.api.crateApiQlCollectBackupChunksAutoAccessorGetData(
+        that: this,
+      );
+
+  BigInt get nextChunkIndex => RustLib.instance.api
+          .crateApiQlCollectBackupChunksAutoAccessorGetNextChunkIndex(
+        that: this,
+      );
+
+  SeedFingerprint get seedFingerprint => RustLib.instance.api
+          .crateApiQlCollectBackupChunksAutoAccessorGetSeedFingerprint(
+        that: this,
+      );
+
+  BigInt get totalChunks => RustLib.instance.api
+          .crateApiQlCollectBackupChunksAutoAccessorGetTotalChunks(
+        that: this,
+      );
+
+  set backupHash(U8Array32 backupHash) => RustLib.instance.api
+      .crateApiQlCollectBackupChunksAutoAccessorSetBackupHash(
+          that: this, backupHash: backupHash);
+
+  set data(Uint8List data) => RustLib.instance.api
+      .crateApiQlCollectBackupChunksAutoAccessorSetData(that: this, data: data);
+
+  set nextChunkIndex(BigInt nextChunkIndex) => RustLib.instance.api
+      .crateApiQlCollectBackupChunksAutoAccessorSetNextChunkIndex(
+          that: this, nextChunkIndex: nextChunkIndex);
+
+  set seedFingerprint(SeedFingerprint seedFingerprint) => RustLib.instance.api
+      .crateApiQlCollectBackupChunksAutoAccessorSetSeedFingerprint(
+          that: this, seedFingerprint: seedFingerprint);
+
+  set totalChunks(BigInt totalChunks) => RustLib.instance.api
+      .crateApiQlCollectBackupChunksAutoAccessorSetTotalChunks(
+          that: this, totalChunks: totalChunks);
+}
+
+@sealed
+class EnvoyAridCacheImpl extends RustOpaque implements EnvoyAridCache {
+  // Not to be used by end users
+  EnvoyAridCacheImpl.frbInternalDcoDecode(List<dynamic> wire)
+      : super.frbInternalDcoDecode(wire, _kStaticData);
+
+  // Not to be used by end users
+  EnvoyAridCacheImpl.frbInternalSseDecode(BigInt ptr, int externalSizeOnNative)
+      : super.frbInternalSseDecode(ptr, externalSizeOnNative, _kStaticData);
+
+  static final _kStaticData = RustArcStaticData(
+    rustArcIncrementStrongCount:
+        RustLib.instance.api.rust_arc_increment_strong_count_EnvoyAridCache,
+    rustArcDecrementStrongCount:
+        RustLib.instance.api.rust_arc_decrement_strong_count_EnvoyAridCache,
+    rustArcDecrementStrongCountPtr:
+        RustLib.instance.api.rust_arc_decrement_strong_count_EnvoyAridCachePtr,
+  );
+}
+
+@sealed
+class EnvoyMasterDechunkerImpl extends RustOpaque
+    implements EnvoyMasterDechunker {
+  // Not to be used by end users
+  EnvoyMasterDechunkerImpl.frbInternalDcoDecode(List<dynamic> wire)
+      : super.frbInternalDcoDecode(wire, _kStaticData);
+
+  // Not to be used by end users
+  EnvoyMasterDechunkerImpl.frbInternalSseDecode(
+      BigInt ptr, int externalSizeOnNative)
+      : super.frbInternalSseDecode(ptr, externalSizeOnNative, _kStaticData);
+
+  static final _kStaticData = RustArcStaticData(
+    rustArcIncrementStrongCount: RustLib
+        .instance.api.rust_arc_increment_strong_count_EnvoyMasterDechunker,
+    rustArcDecrementStrongCount: RustLib
+        .instance.api.rust_arc_decrement_strong_count_EnvoyMasterDechunker,
+    rustArcDecrementStrongCountPtr: RustLib
+        .instance.api.rust_arc_decrement_strong_count_EnvoyMasterDechunkerPtr,
+  );
+}
+
+@sealed
+class PrimeBackupFileImpl extends RustOpaque implements PrimeBackupFile {
+  // Not to be used by end users
+  PrimeBackupFileImpl.frbInternalDcoDecode(List<dynamic> wire)
+      : super.frbInternalDcoDecode(wire, _kStaticData);
+
+  // Not to be used by end users
+  PrimeBackupFileImpl.frbInternalSseDecode(BigInt ptr, int externalSizeOnNative)
+      : super.frbInternalSseDecode(ptr, externalSizeOnNative, _kStaticData);
+
+  static final _kStaticData = RustArcStaticData(
+    rustArcIncrementStrongCount:
+        RustLib.instance.api.rust_arc_increment_strong_count_PrimeBackupFile,
+    rustArcDecrementStrongCount:
+        RustLib.instance.api.rust_arc_decrement_strong_count_PrimeBackupFile,
+    rustArcDecrementStrongCountPtr:
+        RustLib.instance.api.rust_arc_decrement_strong_count_PrimeBackupFilePtr,
+  );
+
+  Uint8List get data =>
+      RustLib.instance.api.crateApiQlPrimeBackupFileAutoAccessorGetData(
+        that: this,
+      );
+
+  SeedFingerprint get seedFingerprint => RustLib.instance.api
+          .crateApiQlPrimeBackupFileAutoAccessorGetSeedFingerprint(
+        that: this,
+      );
+
+  set data(Uint8List data) => RustLib.instance.api
+      .crateApiQlPrimeBackupFileAutoAccessorSetData(that: this, data: data);
+
+  set seedFingerprint(SeedFingerprint seedFingerprint) => RustLib.instance.api
+      .crateApiQlPrimeBackupFileAutoAccessorSetSeedFingerprint(
+          that: this, seedFingerprint: seedFingerprint);
+}
+
+@sealed
+class QuantumLinkIdentityImpl extends RustOpaque
+    implements QuantumLinkIdentity {
+  // Not to be used by end users
+  QuantumLinkIdentityImpl.frbInternalDcoDecode(List<dynamic> wire)
+      : super.frbInternalDcoDecode(wire, _kStaticData);
+
+  // Not to be used by end users
+  QuantumLinkIdentityImpl.frbInternalSseDecode(
+      BigInt ptr, int externalSizeOnNative)
+      : super.frbInternalSseDecode(ptr, externalSizeOnNative, _kStaticData);
+
+  static final _kStaticData = RustArcStaticData(
+    rustArcIncrementStrongCount: RustLib
+        .instance.api.rust_arc_increment_strong_count_QuantumLinkIdentity,
+    rustArcDecrementStrongCount: RustLib
+        .instance.api.rust_arc_decrement_strong_count_QuantumLinkIdentity,
+    rustArcDecrementStrongCountPtr: RustLib
+        .instance.api.rust_arc_decrement_strong_count_QuantumLinkIdentityPtr,
+  );
+}
+
+@sealed
+class XidDocumentImpl extends RustOpaque implements XidDocument {
+  // Not to be used by end users
+  XidDocumentImpl.frbInternalDcoDecode(List<dynamic> wire)
+      : super.frbInternalDcoDecode(wire, _kStaticData);
+
+  // Not to be used by end users
+  XidDocumentImpl.frbInternalSseDecode(BigInt ptr, int externalSizeOnNative)
+      : super.frbInternalSseDecode(ptr, externalSizeOnNative, _kStaticData);
+
+  static final _kStaticData = RustArcStaticData(
+    rustArcIncrementStrongCount:
+        RustLib.instance.api.rust_arc_increment_strong_count_XidDocument,
+    rustArcDecrementStrongCount:
+        RustLib.instance.api.rust_arc_decrement_strong_count_XidDocument,
+    rustArcDecrementStrongCountPtr:
+        RustLib.instance.api.rust_arc_decrement_strong_count_XidDocumentPtr,
+  );
+}
