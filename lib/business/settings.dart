@@ -323,6 +323,22 @@ class Settings extends ChangeNotifier {
   }
 
   @JsonKey(includeFromJson: false, includeToJson: false)
+  String get backupServerV2Address {
+    switch (environment) {
+      case Environment.local:
+        return "http://127.0.0.1:8001";
+      case Environment.development:
+        return "https://development.backup.foundation.xyz";
+      case Environment.staging:
+        return "https://staging.backup.foundation.xyz";
+      case Environment.production:
+        return usingTor
+            ? "http://TODO-v2-onion-address.onion"
+            : "https://backup.foundation.xyz";
+    }
+  }
+
+  @JsonKey(includeFromJson: false, includeToJson: false)
   String get nguServerAddress {
     return usingTor
         ? "http://sz6grlqwcmxw5rxqc7jtep76gn4psaei2tdxcd4kxdfwjg3xdoaiqvqd.onion"

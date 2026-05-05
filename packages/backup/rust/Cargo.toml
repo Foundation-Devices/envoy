@@ -25,6 +25,8 @@ log ="0.4.14"
 lazy_static = "1.4"
 allo-isolate = "0.1.12"
 hex = "0.4"
+libcrux-ml-dsa = "0.0.8"
+sha2 = "0.10"
 
 [lints.rust]
 unexpected_cfgs = { level = "warn", check-cfg = ['cfg(frb_expand)'] }
