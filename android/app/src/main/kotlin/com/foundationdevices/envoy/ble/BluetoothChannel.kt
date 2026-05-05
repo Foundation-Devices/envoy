@@ -90,6 +90,9 @@ class BluetoothChannel(
     // Known device MAC addresses
     private var knownPrimeDevicesMAC: MutableSet<String> = mutableSetOf()
 
+    @Volatile
+    private var pendingPairDeviceName: String? = null
+
     // Connected QLConnection instances, keyed by MAC address
     private val devices: MutableMap<String, QLConnection> = mutableMapOf()
 
@@ -255,6 +258,13 @@ class BluetoothChannel(
         }
 
         val deviceId = call.argument<String>("deviceId")
+        pendingPairDeviceName = call.argument<String>("deviceName")
+            ?.trim()
+            ?.takeIf { it.isNotEmpty() }
+        Log.d(
+            TAG,
+            "pairWithDevice: deviceId=$deviceId deviceName=$pendingPairDeviceName"
+        )
         if (!deviceId.isNullOrBlank()) {
             knownPrimeDevicesMAC.add(deviceId)
             // Create QLConnection immediately so its channels are registered
@@ -401,6 +411,7 @@ class BluetoothChannel(
             mainHandler.postDelayed({
                 try {
                     bluetoothLeScanner?.stopScan(scanCallback)
+                    pendingPairDeviceName = null
                     sendScanEvent(BluetoothConnectionEventType.SCAN_STOPPED)
                 } catch (e: Exception) {
                     Log.w(TAG, "startDeviceScan: Error stopping scan: ${e.message}")
@@ -420,6 +431,7 @@ class BluetoothChannel(
         try {
             if (checkBluetoothPermissions()) {
                 bluetoothLeScanner?.stopScan(scanCallback)
+                pendingPairDeviceName = null
                 sendScanEvent(BluetoothConnectionEventType.SCAN_STOPPED)
                 result.success(mapOf("scanning" to false, "message" to "Scan stopped"))
             } else {
@@ -438,12 +450,16 @@ class BluetoothChannel(
                 sendScanEvent(BluetoothConnectionEventType.DEVICE_FOUND, device)
 
                 val isKnownDevice = knownPrimeDevicesMAC.contains(device.address)
-                val isPrimeByName = device.name?.contains("Prime", ignoreCase = true) == true
+                val expectedName = pendingPairDeviceName
+                val nameNeedle = expectedName ?: "Prime"
+                val isPrimeByName =
+                    device.name?.contains(nameNeedle, ignoreCase = true) == true
                 val isPrimeByService =
                     result.scanRecord?.serviceUuids?.any { it.uuid == PRIME_SERVICE_UUID } == true
 
                 if (isKnownDevice || isPrimeByName || isPrimeByService) {
                     bluetoothLeScanner?.stopScan(this)
+                    pendingPairDeviceName = null
                     connectToDevice(device)
                 } else {
                     Log.d(TAG, "onScanResult: No match, ignoring device")
