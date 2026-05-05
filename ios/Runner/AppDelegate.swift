@@ -34,23 +34,23 @@ func getSdCardBookmark() -> URL {
 
     // Retain BluetoothChannel to prevent deallocation during app lifecycle
     private var bluetoothChannel: BluetoothChannel?
-    
 
-    
+
+
     // MARK: - Application lifecycle
-    
+
     override func application(
         _ application: UIApplication,
         didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?
     ) -> Bool {
-        
+
         let controller: FlutterViewController = window?.rootViewController as! FlutterViewController
         FlutterEventChannel(name: sdCardEventChannel, binaryMessenger: controller.binaryMessenger)
             .setStreamHandler(self)
-        
+
         let envoyMethodChannel = FlutterMethodChannel(name: methodChannel,
                                                      binaryMessenger: controller.binaryMessenger)
-        
+
         setUpSecureScreen(window: window)
 
         bluetoothChannel = BluetoothChannel(flutterController: controller)
@@ -59,13 +59,13 @@ func getSdCardBookmark() -> URL {
         //  auditKeychainItems()
         // ----------------------------
 
-        
+
         envoyMethodChannel.setMethodCallHandler({ [weak self] (call: FlutterMethodCall, result: @escaping FlutterResult) -> Void in
             guard let self = self else {
                 result(FlutterError(code: "internal", message: "self deallocated", details: nil))
                 return
             }
-            
+
             switch call.method {
             case "make_screen_secure":
                 if let args = call.arguments as? [String: Any],
@@ -84,58 +84,92 @@ func getSdCardBookmark() -> URL {
                 let id = TimeZone.current.identifier
                 result(id)
                 return
-                
+
             case "access_folder":
                 do {
                     let sdCardBookMarkUrl = getSdCardBookmark()
                     let bookmarkData = try Data(contentsOf: sdCardBookMarkUrl)
                     var isStale = false
                     let bookmarkUrl = try URL(resolvingBookmarkData: bookmarkData, bookmarkDataIsStale: &isStale)
-                    
+
                     guard !isStale else {
                         // TODO: handle stale bookmark (ask user to pick again)
                         result(false)
                         return
                     }
-                    
+
                     let started = bookmarkUrl.startAccessingSecurityScopedResource()
                     result(started)
                 } catch {
                     result(false)
                 }
-                
+
             case "data_changed":
                 do {
                     let paths = FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask)
                     let localSecretURL = paths[0].appendingPathComponent(localSecretFileName)
                     let localSecret = try String(contentsOf: localSecretURL)
-                    
+
                     let primeSecretsURL = paths[0].appendingPathComponent(primeSecretsFileName)
-                    let primeSecret = try String(contentsOf: primeSecretsURL)
-                    
-                    NSUbiquitousKeyValueStore.default.set(primeSecret, forKey: primeSecretCloudStorageKey)
+                    let primeSecrets = try String(contentsOf: primeSecretsURL)
+
+                    NSUbiquitousKeyValueStore.default.set(primeSecrets, forKey: primeSecretCloudStorageKey)
                     NSUbiquitousKeyValueStore.default.set(localSecret, forKey: localSecretCloudStorageKey)
-                    
+
                     NSUbiquitousKeyValueStore.default.synchronize()
-                    
+
                     result(true)
                 } catch {
                     result(false)
                 }
+            case "get_shard_path_icloud":
+                // url(forUbiquityContainerIdentifier:) blocks until iCloud is ready — must run off main thread.
+                DispatchQueue.global(qos: .userInitiated).async {
+                    guard let ubiquityURL = FileManager.default.url(
+                        forUbiquityContainerIdentifier: "iCloud.com.foundationdevices.envoy"
+                    ) else {
+                        result(nil)
+                        return
+                    }
+                    let docsURL = ubiquityURL.appendingPathComponent("Documents")
+                    try? FileManager.default.createDirectory(at: docsURL, withIntermediateDirectories: true)
+                    let dst = docsURL.appendingPathComponent("prime.secret")
+
+                    // Migrate from App Group container (previous approach)
+                    if let container = FileManager.default.containerURL(forSecurityApplicationGroupIdentifier: appGroupID) {
+                        let src = container.appendingPathComponent("prime.secret")
+                        if FileManager.default.fileExists(atPath: src.path),
+                           !FileManager.default.fileExists(atPath: dst.path) {
+                            try? FileManager.default.copyItem(at: src, to: dst)
+                        }
+                    }
+
+                    // Migrate from applicationSupportDirectory (original location)
+                    let appSupport = FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask)[0]
+                    let legacySrc = appSupport.appendingPathComponent("prime.secret")
+                    if FileManager.default.fileExists(atPath: legacySrc.path),
+                       !FileManager.default.fileExists(atPath: dst.path) {
+                        try? FileManager.default.copyItem(at: legacySrc, to: dst)
+                    }
+
+                    result(dst.path)
+                }
+                return
+
             default:
                 result(FlutterMethodNotImplemented)
             }
         })
-        
+
         NotificationCenter.default.addObserver(self,
                                                selector: #selector(ubiquitousKeyValueStoreDidChange(_:)),
                                                name: NSUbiquitousKeyValueStore.didChangeExternallyNotification,
                                                object: NSUbiquitousKeyValueStore.default)
-        
+
         if NSUbiquitousKeyValueStore.default.synchronize() == false {
             fatalError("This app was not built with the proper entitlement requests.")
         }
-        
+
         GeneratedPluginRegistrant.register(with: self)
 
         // Bluetooth channel is already initialized in the property declaration
@@ -160,16 +194,16 @@ func getSdCardBookmark() -> URL {
         bluetoothChannel = nil
         super.applicationWillTerminate(application)
     }
-    
-    
+
+
     // Helper function to print Keychain attributes
     func auditKeychainItems() {
           print("\n--- STARTING KEYCHAIN AUDIT ---")
-          
+
           // helper to run a query
           func runQuery(sync: Bool) {
               let typeLabel = sync ? "☁️ iCLOUD (Synchronizable)" : "🏠 LOCAL (Not-Synchronizable)"
-              
+
               let query: [String: Any] = [
                   kSecClass as String: kSecClassGenericPassword,
                   kSecReturnAttributes as String: true,
@@ -198,35 +232,35 @@ func getSdCardBookmark() -> URL {
 
           // 1. Check Local
           runQuery(sync: false)
-          
+
           // 2. Check iCloud
           runQuery(sync: true)
-          
+
           print("\n--- AUDIT COMPLETE ---\n")
       }
-    
+
     // Deep links
     override func application(_ application: UIApplication,
                               open url: URL,
                               options: [UIApplication.OpenURLOptionsKey : Any] = [:] ) -> Bool {
-        
+
         let sendingAppID = options[.sourceApplication] ?? "Unknown"
         print("Source application: \(sendingAppID)")
-        
+
         if let controller = window?.rootViewController as? FlutterViewController {
             controller.engine.navigationChannel.invokeMethod("pushRoute", arguments: url.absoluteString)
         }
-        
+
         return true
     }
-    
+
     @objc
     func ubiquitousKeyValueStoreDidChange(_ notification: Notification) {
         guard let userInfo = notification.userInfo else { return }
         guard let reasonForChange = userInfo[NSUbiquitousKeyValueStoreChangeReasonKey] as? Int else { return }
         guard let keys = userInfo[NSUbiquitousKeyValueStoreChangedKeysKey] as? [String] else { return }
         guard keys.contains(localSecretCloudStorageKey) else { return }
-        
+
         // Save the timestamp
         let path: URL
         do {
@@ -237,17 +271,17 @@ func getSdCardBookmark() -> URL {
             print(error)
             return
         }
-        
+
         switch reasonForChange {
         case NSUbiquitousKeyValueStoreAccountChange, NSUbiquitousKeyValueStoreServerChange, NSUbiquitousKeyValueStoreInitialSyncChange:
             let localSecret = NSUbiquitousKeyValueStore.default.string(forKey: localSecretCloudStorageKey)
-            let primeSecret = NSUbiquitousKeyValueStore.default.string(forKey: primeSecretCloudStorageKey)
-            
+            let primeSecrets = NSUbiquitousKeyValueStore.default.string(forKey: primeSecretCloudStorageKey)
+
             do {
                 let localSecretURL = path.appendingPathComponent(localSecretFileName)
                 let localPrimeSecretURL = path.appendingPathComponent(primeSecretsFileName)
-                if let primeSecret = primeSecret {
-                    try primeSecret.write(to: localPrimeSecretURL, atomically: true, encoding: .ascii)
+                if let primeSecrets = primeSecrets {
+                    try primeSecrets.write(to: localPrimeSecretURL, atomically: true, encoding: .ascii)
                 }
                 if let localSecret = localSecret {
                     try localSecret.write(to: localSecretURL, atomically: true, encoding: .ascii)
@@ -255,6 +289,8 @@ func getSdCardBookmark() -> URL {
             } catch {
                 print(error)
             }
+
+          
         default:
             break
         }

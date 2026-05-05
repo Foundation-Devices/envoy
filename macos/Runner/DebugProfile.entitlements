@@ -9,6 +9,11 @@
 	<key>com.apple.security.network.server</key>
 	<true/>
 	<key>com.apple.security.network.client</key>
-    <true/>
+	<true/>
+	<key>keychain-access-groups</key>
+	<array>
+		<string>$(AppIdentifierPrefix)com.foundationdevices.envoy</string>
+		<string>$(AppIdentifierPrefix)com.foundationdevices.shared</string>
+	</array>
 </dict>
 </plist>

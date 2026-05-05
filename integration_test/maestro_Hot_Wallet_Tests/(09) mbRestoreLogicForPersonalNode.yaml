@@ -63,6 +63,10 @@ appId: com.foundationdevices.envoy
 - tapOn:
     id: PopUp Primary Button
 
+- extendedWaitUntil:
+    visible: Continue
+    timeout: 7000
+
 - tapOn: Continue
 
 # check that clearnet node is loaded and clearnet setting is selected
@@ -138,6 +142,10 @@ appId: com.foundationdevices.envoy
 # restore from server
 - tapOn:
     id: PopUp Primary Button
+
+- extendedWaitUntil:
+    visible: Continue
+    timeout: 7000
 
 - tapOn: Continue
 
@@ -222,6 +230,10 @@ appId: com.foundationdevices.envoy
 - tapOn:
     id: PopUp Primary Button
 
+- extendedWaitUntil:
+    visible: Continue
+    timeout: 7000
+
 - tapOn: Continue
 
 #  check that tor node is loaded
@@ -291,6 +303,10 @@ appId: com.foundationdevices.envoy
 # restore from server
 - tapOn:
     id: PopUp Primary Button
+
+- extendedWaitUntil:
+    visible: Continue
+    timeout: 7000
 
 - tapOn: Continue
 
@@ -369,6 +385,10 @@ appId: com.foundationdevices.envoy
 # restore from server
 - tapOn:
     id: PopUp Primary Button
+
+- extendedWaitUntil:
+    visible: Continue
+    timeout: 7000
 
 - tapOn: Continue
 
