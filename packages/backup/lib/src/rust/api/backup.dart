@@ -6,159 +6,227 @@
 import '../frb_generated.dart';
 import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated.dart';
 
-
-            // These functions are ignored because they are not marked as `pub`: `compute_backup_hash`, `derive_mldsa_keypair`, `sign_message`
+// These functions are ignored because they are not marked as `pub`: `compute_backup_hash`, `derive_mldsa_keypair`, `sign_message`
 // These types are ignored because they are neither used by any `pub` functions nor (for structs and enums) marked `#[frb(unignore)]`: `BackupRequestV2`, `BackupRequest`, `ChallengeResponse`, `GetBackupResponse`, `RUNTIME`
 // These function are ignored because they are on traits that is not defined in current crate (put an empty `#[frb]` on it to unignore): `deref`, `initialize`
 // These functions are ignored (category: IgnoreBecauseExplicitAttribute): `get_challenge_async`, `post_backup_async`
 
+// Rust type: RustOpaqueMoi<flutter_rust_bridge::for_generated::RustAutoOpaqueInner< Client>>
+abstract class Client implements RustOpaqueInterface {}
 
-            
+// Rust type: RustOpaqueMoi<flutter_rust_bridge::for_generated::RustAutoOpaqueInner<Response>>
+abstract class Response implements RustOpaqueInterface {}
 
-            
-                // Rust type: RustOpaqueMoi<flutter_rust_bridge::for_generated::RustAutoOpaqueInner< Client>>
-                abstract class Client implements RustOpaqueInterface {
-                    
+// Rust type: RustOpaqueMoi<flutter_rust_bridge::for_generated::RustAutoOpaqueInner<StaticSecret>>
+abstract class StaticSecret implements RustOpaqueInterface {}
 
-                    
-                }
-                
+class Backup {
+  const Backup();
 
+  static Future<List<(String, String)>> decryptBackup(
+          {required List<int> data, required StaticSecret secret}) =>
+      RustLib.instance.api
+          .crateApiBackupBackupDecryptBackup(data: data, secret: secret);
 
-                // Rust type: RustOpaqueMoi<flutter_rust_bridge::for_generated::RustAutoOpaqueInner<Response>>
-                abstract class Response implements RustOpaqueInterface {
-                    
+  static Future<int> delete(
+          {required String seedWords,
+          required String serverUrl,
+          required int proxyPort}) =>
+      RustLib.instance.api.crateApiBackupBackupDelete(
+          seedWords: seedWords, serverUrl: serverUrl, proxyPort: proxyPort);
 
-                    
-                }
-                
+  static Future<Response> deleteBackupAsync(
+          {required String serverUrl,
+          required int proxyPort,
+          required String hash}) =>
+      RustLib.instance.api.crateApiBackupBackupDeleteBackupAsync(
+          serverUrl: serverUrl, proxyPort: proxyPort, hash: hash);
 
+  /// Delete a Prime backup from the v2 server using pre-signed auth.
+  static Future<int> deletePrimeBackupV2(
+          {required String v2ServerUrl,
+          required int proxyPort,
+          required List<int> key,
+          required BigInt timestamp,
+          required List<int> signature}) =>
+      RustLib.instance.api.crateApiBackupBackupDeletePrimeBackupV2(
+          v2ServerUrl: v2ServerUrl,
+          proxyPort: proxyPort,
+          key: key,
+          timestamp: timestamp,
+          signature: signature);
 
-                // Rust type: RustOpaqueMoi<flutter_rust_bridge::for_generated::RustAutoOpaqueInner<StaticSecret>>
-                abstract class StaticSecret implements RustOpaqueInterface {
-                    
+  /// Delete Envoy's own backup from the v2 server.
+  static Future<int> deleteV2(
+          {required String seedWords,
+          required String v2ServerUrl,
+          required int proxyPort}) =>
+      RustLib.instance.api.crateApiBackupBackupDeleteV2(
+          seedWords: seedWords, v2ServerUrl: v2ServerUrl, proxyPort: proxyPort);
 
-                    
-                }
-                
+  static Future<Uint8List> encryptBackup(
+          {required List<(String, String)> files,
+          required StaticSecret secret}) =>
+      RustLib.instance.api
+          .crateApiBackupBackupEncryptBackup(files: files, secret: secret);
 
-class Backup  {
-                
+  static Future<List<(String, String)>> extractBackupData(
+          {required BackupPayload payload}) =>
+      RustLib.instance.api
+          .crateApiBackupBackupExtractBackupData(payload: payload);
 
-                const Backup();
+  static Future<List<(String, String)>> getBackup(
+          {required String seedWords,
+          required String serverUrl,
+          required int proxyPort}) =>
+      RustLib.instance.api.crateApiBackupBackupGetBackup(
+          seedWords: seedWords, serverUrl: serverUrl, proxyPort: proxyPort);
 
-                static Future<List<(String,String)>>  decryptBackup({required List<int> data , required StaticSecret secret })=>RustLib.instance.api.crateApiBackupBackupDecryptBackup(data: data, secret: secret);
+  static Future<List<(String, String)>> getBackupOffline(
+          {required String seedWords, required String filePath}) =>
+      RustLib.instance.api.crateApiBackupBackupGetBackupOffline(
+          seedWords: seedWords, filePath: filePath);
 
+  /// Retrieve Envoy's own backup from the v2 server.
+  static Future<List<(String, String)>> getBackupV2(
+          {required String seedWords,
+          required String v2ServerUrl,
+          required int proxyPort}) =>
+      RustLib.instance.api.crateApiBackupBackupGetBackupV2(
+          seedWords: seedWords, v2ServerUrl: v2ServerUrl, proxyPort: proxyPort);
 
-static Future<int>  delete({required String seedWords , required String serverUrl , required int proxyPort })=>RustLib.instance.api.crateApiBackupBackupDelete(seedWords: seedWords, serverUrl: serverUrl, proxyPort: proxyPort);
+  static Future<Uint8List> getPrimeBackup(
+          {required List<int> hash,
+          required String serverUrl,
+          required int proxyPort}) =>
+      RustLib.instance.api.crateApiBackupBackupGetPrimeBackup(
+          hash: hash, serverUrl: serverUrl, proxyPort: proxyPort);
 
+  /// Retrieve a Prime backup from the v2 server using pre-signed auth.
+  static Future<Uint8List> getPrimeBackupV2(
+          {required String v2ServerUrl,
+          required int proxyPort,
+          required List<int> key,
+          required BigInt timestamp,
+          required List<int> signature}) =>
+      RustLib.instance.api.crateApiBackupBackupGetPrimeBackupV2(
+          v2ServerUrl: v2ServerUrl,
+          proxyPort: proxyPort,
+          key: key,
+          timestamp: timestamp,
+          signature: signature);
 
-static Future<Response>  deleteBackupAsync({required String serverUrl , required int proxyPort , required String hash })=>RustLib.instance.api.crateApiBackupBackupDeleteBackupAsync(serverUrl: serverUrl, proxyPort: proxyPort, hash: hash);
+  static Future<Client> getReqwestClient({required int proxyPort}) =>
+      RustLib.instance.api
+          .crateApiBackupBackupGetReqwestClient(proxyPort: proxyPort);
 
+  static Future<StaticSecret> getStaticSecret({required String seedWords}) =>
+      RustLib.instance.api
+          .crateApiBackupBackupGetStaticSecret(seedWords: seedWords);
 
-/// Delete a Prime backup from the v2 server using pre-signed auth.
-static Future<int>  deletePrimeBackupV2({required String v2ServerUrl , required int proxyPort , required List<int> key , required BigInt timestamp , required List<int> signature })=>RustLib.instance.api.crateApiBackupBackupDeletePrimeBackupV2(v2ServerUrl: v2ServerUrl, proxyPort: proxyPort, key: key, timestamp: timestamp, signature: signature);
+  static Future<bool> performBackup(
+          {required Map<String, String> payload,
+          required String seedWords,
+          required String serverUrl,
+          required String localBackup,
+          required int proxyPort,
+          required bool performCloud}) =>
+      RustLib.instance.api.crateApiBackupBackupPerformBackup(
+          payload: payload,
+          seedWords: seedWords,
+          serverUrl: serverUrl,
+          localBackup: localBackup,
+          proxyPort: proxyPort,
+          performCloud: performCloud);
 
+  static Future<bool> performBackupOffline(
+          {required BackupPayload payload,
+          required String seedWords,
+          required String path}) =>
+      RustLib.instance.api.crateApiBackupBackupPerformBackupOffline(
+          payload: payload, seedWords: seedWords, path: path);
 
-/// Delete Envoy's own backup from the v2 server.
-static Future<int>  deleteV2({required String seedWords , required String v2ServerUrl , required int proxyPort })=>RustLib.instance.api.crateApiBackupBackupDeleteV2(seedWords: seedWords, v2ServerUrl: v2ServerUrl, proxyPort: proxyPort);
+  /// Encrypt and upload Envoy's own backup to the v2 server.
+  static Future<bool> performBackupV2(
+          {required Map<String, String> payload,
+          required String seedWords,
+          required String v2ServerUrl,
+          required String localBackup,
+          required int proxyPort,
+          required bool performCloud}) =>
+      RustLib.instance.api.crateApiBackupBackupPerformBackupV2(
+          payload: payload,
+          seedWords: seedWords,
+          v2ServerUrl: v2ServerUrl,
+          localBackup: localBackup,
+          proxyPort: proxyPort,
+          performCloud: performCloud);
 
+  static Future<bool> performPrimeBackup(
+          {required String serverUrl,
+          required int proxyPort,
+          required List<int> seedHash,
+          required List<int> payload}) =>
+      RustLib.instance.api.crateApiBackupBackupPerformPrimeBackup(
+          serverUrl: serverUrl,
+          proxyPort: proxyPort,
+          seedHash: seedHash,
+          payload: payload);
 
-static Future<Uint8List>  encryptBackup({required List<(String,String)> files , required StaticSecret secret })=>RustLib.instance.api.crateApiBackupBackupEncryptBackup(files: files, secret: secret);
+  /// Upload a pre-signed Prime backup to the v2 server.
+  static Future<bool> performPrimeBackupV2(
+          {required String v2ServerUrl,
+          required int proxyPort,
+          required BigInt timestamp,
+          required List<int> hash,
+          required List<int> pubkey,
+          required List<int> data,
+          required List<int> clientSignature}) =>
+      RustLib.instance.api.crateApiBackupBackupPerformPrimeBackupV2(
+          v2ServerUrl: v2ServerUrl,
+          proxyPort: proxyPort,
+          timestamp: timestamp,
+          hash: hash,
+          pubkey: pubkey,
+          data: data,
+          clientSignature: clientSignature);
 
+  @override
+  int get hashCode => 0;
 
-static Future<List<(String,String)>>  extractBackupData({required BackupPayload payload })=>RustLib.instance.api.crateApiBackupBackupExtractBackupData(payload: payload);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is Backup && runtimeType == other.runtimeType;
+}
 
+class BackupPayload {
+  final int keysNr;
+  final List<String> data;
 
-static Future<List<(String,String)>>  getBackup({required String seedWords , required String serverUrl , required int proxyPort })=>RustLib.instance.api.crateApiBackupBackupGetBackup(seedWords: seedWords, serverUrl: serverUrl, proxyPort: proxyPort);
+  const BackupPayload({
+    required this.keysNr,
+    required this.data,
+  });
 
+  @override
+  int get hashCode => keysNr.hashCode ^ data.hashCode;
 
-static Future<List<(String,String)>>  getBackupOffline({required String seedWords , required String filePath })=>RustLib.instance.api.crateApiBackupBackupGetBackupOffline(seedWords: seedWords, filePath: filePath);
-
-
-/// Retrieve Envoy's own backup from the v2 server.
-static Future<List<(String,String)>>  getBackupV2({required String seedWords , required String v2ServerUrl , required int proxyPort })=>RustLib.instance.api.crateApiBackupBackupGetBackupV2(seedWords: seedWords, v2ServerUrl: v2ServerUrl, proxyPort: proxyPort);
-
-
-static Future<Uint8List>  getPrimeBackup({required List<int> hash , required String serverUrl , required int proxyPort })=>RustLib.instance.api.crateApiBackupBackupGetPrimeBackup(hash: hash, serverUrl: serverUrl, proxyPort: proxyPort);
-
-
-/// Retrieve a Prime backup from the v2 server using pre-signed auth.
-static Future<Uint8List>  getPrimeBackupV2({required String v2ServerUrl , required int proxyPort , required List<int> key , required BigInt timestamp , required List<int> signature })=>RustLib.instance.api.crateApiBackupBackupGetPrimeBackupV2(v2ServerUrl: v2ServerUrl, proxyPort: proxyPort, key: key, timestamp: timestamp, signature: signature);
-
-
-static Future<Client>  getReqwestClient({required int proxyPort })=>RustLib.instance.api.crateApiBackupBackupGetReqwestClient(proxyPort: proxyPort);
-
-
-static Future<StaticSecret>  getStaticSecret({required String seedWords })=>RustLib.instance.api.crateApiBackupBackupGetStaticSecret(seedWords: seedWords);
-
-
-static Future<bool>  performBackup({required Map<String, String> payload , required String seedWords , required String serverUrl , required String localBackup , required int proxyPort , required bool performCloud })=>RustLib.instance.api.crateApiBackupBackupPerformBackup(payload: payload, seedWords: seedWords, serverUrl: serverUrl, localBackup: localBackup, proxyPort: proxyPort, performCloud: performCloud);
-
-
-static Future<bool>  performBackupOffline({required BackupPayload payload , required String seedWords , required String path })=>RustLib.instance.api.crateApiBackupBackupPerformBackupOffline(payload: payload, seedWords: seedWords, path: path);
-
-
-/// Encrypt and upload Envoy's own backup to the v2 server.
-static Future<bool>  performBackupV2({required Map<String, String> payload , required String seedWords , required String v2ServerUrl , required String localBackup , required int proxyPort , required bool performCloud })=>RustLib.instance.api.crateApiBackupBackupPerformBackupV2(payload: payload, seedWords: seedWords, v2ServerUrl: v2ServerUrl, localBackup: localBackup, proxyPort: proxyPort, performCloud: performCloud);
-
-
-static Future<bool>  performPrimeBackup({required String serverUrl , required int proxyPort , required List<int> seedHash , required List<int> payload })=>RustLib.instance.api.crateApiBackupBackupPerformPrimeBackup(serverUrl: serverUrl, proxyPort: proxyPort, seedHash: seedHash, payload: payload);
-
-
-/// Upload a pre-signed Prime backup to the v2 server.
-static Future<bool>  performPrimeBackupV2({required String v2ServerUrl , required int proxyPort , required BigInt timestamp , required List<int> hash , required List<int> pubkey , required List<int> data , required List<int> clientSignature })=>RustLib.instance.api.crateApiBackupBackupPerformPrimeBackupV2(v2ServerUrl: v2ServerUrl, proxyPort: proxyPort, timestamp: timestamp, hash: hash, pubkey: pubkey, data: data, clientSignature: clientSignature);
-
-
-                
-
-                
-        @override
-        int get hashCode => 0;
-        
-
-                
-        @override
-        bool operator ==(Object other) =>
-            identical(this, other) ||
-            other is Backup &&
-                runtimeType == other.runtimeType
-                ;
-        
-            }
-
-class BackupPayload  {
-                final int keysNr;
-final List<String> data;
-
-                const BackupPayload({required this.keysNr ,required this.data ,});
-
-                
-                
-
-                
-        @override
-        int get hashCode => keysNr.hashCode^data.hashCode;
-        
-
-                
-        @override
-        bool operator ==(Object other) =>
-            identical(this, other) ||
-            other is BackupPayload &&
-                runtimeType == other.runtimeType
-                && keysNr == other.keysNr&& data == other.data;
-        
-            }
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is BackupPayload &&
+          runtimeType == other.runtimeType &&
+          keysNr == other.keysNr &&
+          data == other.data;
+}
 
 enum GetBackupException {
-                    serverUnreachable,
-seedNotFound,
-backupNotFound,
-invalidSeed,
-invalidServer,
-invalidBackupFile,
-                    ;
-                    
-                }
-            
+  serverUnreachable,
+  seedNotFound,
+  backupNotFound,
+  invalidSeed,
+  invalidServer,
+  invalidBackupFile,
+  ;
+}
