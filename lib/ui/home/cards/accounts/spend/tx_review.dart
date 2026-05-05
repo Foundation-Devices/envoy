@@ -642,6 +642,9 @@ class _TransactionReviewScreenState
         kPrint("No device found for account, cannot init tx stream");
         return;
       }
+      if (device.type != DeviceType.passportPrime) {
+        return;
+      }
       _primeTransactionsSubscription = device
           .qlConnection()
           .qlHandler

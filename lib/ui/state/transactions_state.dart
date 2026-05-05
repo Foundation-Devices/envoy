@@ -101,9 +101,9 @@ final filteredTransactionsProvider =
   );
 
   List<EnvoyTransaction> pendingTransactions =
-      walletTransactions.where((e) => e.confirmations < 3).toList();
+      walletTransactions.where((e) => !e.isConfirmed).toList();
   List<EnvoyTransaction> confirmedTransactions =
-      walletTransactions.where((e) => e.confirmations >= 3).toList();
+      walletTransactions.where((e) => e.isConfirmed).toList();
 
   List<EnvoyTransaction> transactions = [];
 

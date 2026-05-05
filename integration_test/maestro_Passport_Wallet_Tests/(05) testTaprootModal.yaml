@@ -49,9 +49,8 @@ appId: com.foundationdevices.envoy
     id: hamburger_menu
 
 - swipe:
-    start: "50%, 40%"
-    end: "50%, 80%"
-    duration: 300
+      start: 50%, 30%
+      end: 50%, 80%
 
 - tapOn: Taproot modal test
 
