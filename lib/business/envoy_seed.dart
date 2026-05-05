@@ -475,7 +475,7 @@ class EnvoySeed {
         // Best-effort v1 cleanup
         try {
           await Backup.delete(
-            seedWords: seed!,
+            seedWords: seed,
             serverUrl: Settings().envoyServerAddress,
             proxyPort: Tor.instance.port,
           );
