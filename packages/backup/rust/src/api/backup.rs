@@ -493,11 +493,8 @@ impl Backup {
     ///
     /// seed = SHA256(entropy[0..32] || b"backup_signing")
     #[frb(ignore)]
-    fn derive_mldsa_keypair(
-        seed_words: &str,
-    ) -> anyhow::Result<ml_dsa_44::MLDSA44KeyPair> {
-        let mnemonic = Mnemonic::parse(seed_words)
-            .map_err(|e| anyhow!("invalid mnemonic: {e}"))?;
+    fn derive_mldsa_keypair(seed_words: &str) -> anyhow::Result<ml_dsa_44::MLDSA44KeyPair> {
+        let mnemonic = Mnemonic::parse(seed_words).map_err(|e| anyhow!("invalid mnemonic: {e}"))?;
         let entropy = mnemonic.to_entropy_array().0;
 
         let mut hasher = Sha256::new();
@@ -518,10 +515,7 @@ impl Backup {
     /// Sign an arbitrary message with the ML-DSA-44 signing key.
     /// Uses all-zero randomness for deterministic signatures.
     #[frb(ignore)]
-    fn sign_message(
-        sk: &ml_dsa_44::MLDSA44SigningKey,
-        message: &[u8],
-    ) -> anyhow::Result<Vec<u8>> {
+    fn sign_message(sk: &ml_dsa_44::MLDSA44SigningKey, message: &[u8]) -> anyhow::Result<Vec<u8>> {
         let sig = ml_dsa_44::sign(sk, message, b"", [0u8; 32])
             .map_err(|e| anyhow!("ML-DSA signing failed: {e:?}"))?;
         Ok(sig.as_ref().to_vec())
@@ -718,8 +712,8 @@ impl Backup {
             return Err(GetBackupException::InvalidServer);
         }
 
-        let kp = Self::derive_mldsa_keypair(seed_words)
-            .map_err(|_| GetBackupException::InvalidSeed)?;
+        let kp =
+            Self::derive_mldsa_keypair(seed_words).map_err(|_| GetBackupException::InvalidSeed)?;
         let backup_hash = Self::compute_backup_hash(&kp.verification_key);
         let timestamp = std::time::SystemTime::now()
             .duration_since(std::time::UNIX_EPOCH)
