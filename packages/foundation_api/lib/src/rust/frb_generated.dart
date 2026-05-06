@@ -1685,6 +1685,12 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  DeviceNameUpdate dco_decode_box_autoadd_device_name_update(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return dco_decode_device_name_update(raw);
+  }
+
+  @protected
   DeviceStatus dco_decode_box_autoadd_device_status(dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
     return dco_decode_device_status(raw);
@@ -1919,6 +1925,12 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  int dco_decode_box_autoadd_u_32(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return raw as int;
+  }
+
+  @protected
   BigInt dco_decode_box_autoadd_u_64(dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
     return dco_decode_u_64(raw);
@@ -2057,6 +2069,17 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       key: dco_decode_list_prim_u_8_strict(arr[0]),
       timestamp: dco_decode_u_64(arr[1]),
       signature: dco_decode_list_prim_u_8_strict(arr[2]),
+    );
+  }
+
+  @protected
+  DeviceNameUpdate dco_decode_device_name_update(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    final arr = raw as List<dynamic>;
+    if (arr.length != 1)
+      throw Exception('unexpected arr length: expect 1 but see ${arr.length}');
+    return DeviceNameUpdate(
+      deviceName: dco_decode_String(arr[0]),
     );
   }
 
@@ -2421,6 +2444,12 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  int? dco_decode_opt_box_autoadd_u_32(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return raw == null ? null : dco_decode_box_autoadd_u_32(raw);
+  }
+
+  @protected
   BigInt? dco_decode_opt_box_autoadd_u_64(dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
     return raw == null ? null : dco_decode_box_autoadd_u_64(raw);
@@ -2535,10 +2564,11 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
     final arr = raw as List<dynamic>;
-    if (arr.length != 1)
-      throw Exception('unexpected arr length: expect 1 but see ${arr.length}');
+    if (arr.length != 2)
+      throw Exception('unexpected arr length: expect 2 but see ${arr.length}');
     return PrimeMagicBackupStatusRequest(
       seedFingerprint: dco_decode_seed_fingerprint(arr[0]),
+      timestamp: dco_decode_opt_box_autoadd_u_32(arr[1]),
     );
   }
 
@@ -2717,10 +2747,14 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
           dco_decode_box_autoadd_unpairing_response(raw[1]),
         );
       case 36:
+        return QuantumLinkMessage_DeviceNameUpdate(
+          dco_decode_box_autoadd_device_name_update(raw[1]),
+        );
+      case 37:
         return QuantumLinkMessage_MagicBackupRequestV2(
           dco_decode_box_autoadd_magic_backup_request_v_2(raw[1]),
         );
-      case 37:
+      case 38:
         return QuantumLinkMessage_MagicBackupResponseV2(
           dco_decode_box_autoadd_magic_backup_response_v_2(raw[1]),
         );
@@ -2784,10 +2818,11 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   RestoreShardRequest dco_decode_restore_shard_request(dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
     final arr = raw as List<dynamic>;
-    if (arr.length != 1)
-      throw Exception('unexpected arr length: expect 1 but see ${arr.length}');
+    if (arr.length != 2)
+      throw Exception('unexpected arr length: expect 2 but see ${arr.length}');
     return RestoreShardRequest(
       seedFingerprint: dco_decode_seed_fingerprint(arr[0]),
+      timestamp: dco_decode_opt_box_autoadd_u_32(arr[1]),
     );
   }
 
@@ -3374,6 +3409,13 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  DeviceNameUpdate sse_decode_box_autoadd_device_name_update(
+      SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    return (sse_decode_device_name_update(deserializer));
+  }
+
+  @protected
   DeviceStatus sse_decode_box_autoadd_device_status(
       SseDeserializer deserializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
@@ -3629,6 +3671,12 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  int sse_decode_box_autoadd_u_32(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    return (sse_decode_u_32(deserializer));
+  }
+
+  @protected
   BigInt sse_decode_box_autoadd_u_64(SseDeserializer deserializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     return (sse_decode_u_64(deserializer));
@@ -3765,6 +3813,13 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
     var var_signature = sse_decode_list_prim_u_8_strict(deserializer);
     return DeleteMagicBackupV2(
         key: var_key, timestamp: var_timestamp, signature: var_signature);
+  }
+
+  @protected
+  DeviceNameUpdate sse_decode_device_name_update(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    var var_deviceName = sse_decode_String(deserializer);
+    return DeviceNameUpdate(deviceName: var_deviceName);
   }
 
   @protected
@@ -4153,6 +4208,17 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  int? sse_decode_opt_box_autoadd_u_32(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+
+    if (sse_decode_bool(deserializer)) {
+      return (sse_decode_box_autoadd_u_32(deserializer));
+    } else {
+      return null;
+    }
+  }
+
+  @protected
   BigInt? sse_decode_opt_box_autoadd_u_64(SseDeserializer deserializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
 
@@ -4264,7 +4330,9 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       SseDeserializer deserializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     var var_seedFingerprint = sse_decode_seed_fingerprint(deserializer);
-    return PrimeMagicBackupStatusRequest(seedFingerprint: var_seedFingerprint);
+    var var_timestamp = sse_decode_opt_box_autoadd_u_32(deserializer);
+    return PrimeMagicBackupStatusRequest(
+        seedFingerprint: var_seedFingerprint, timestamp: var_timestamp);
   }
 
   @protected
@@ -4429,9 +4497,13 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         return QuantumLinkMessage_UnpairingResponse(var_field0);
       case 36:
         var var_field0 =
+            sse_decode_box_autoadd_device_name_update(deserializer);
+        return QuantumLinkMessage_DeviceNameUpdate(var_field0);
+      case 37:
+        var var_field0 =
             sse_decode_box_autoadd_magic_backup_request_v_2(deserializer);
         return QuantumLinkMessage_MagicBackupRequestV2(var_field0);
-      case 37:
+      case 38:
         var var_field0 =
             sse_decode_box_autoadd_magic_backup_response_v_2(deserializer);
         return QuantumLinkMessage_MagicBackupResponseV2(var_field0);
@@ -4496,7 +4568,9 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       SseDeserializer deserializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     var var_seedFingerprint = sse_decode_seed_fingerprint(deserializer);
-    return RestoreShardRequest(seedFingerprint: var_seedFingerprint);
+    var var_timestamp = sse_decode_opt_box_autoadd_u_32(deserializer);
+    return RestoreShardRequest(
+        seedFingerprint: var_seedFingerprint, timestamp: var_timestamp);
   }
 
   @protected
@@ -5070,6 +5144,13 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  void sse_encode_box_autoadd_device_name_update(
+      DeviceNameUpdate self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_device_name_update(self, serializer);
+  }
+
+  @protected
   void sse_encode_box_autoadd_device_status(
       DeviceStatus self, SseSerializer serializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
@@ -5321,6 +5402,12 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  void sse_encode_box_autoadd_u_32(int self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_u_32(self, serializer);
+  }
+
+  @protected
   void sse_encode_box_autoadd_u_64(BigInt self, SseSerializer serializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     sse_encode_u_64(self, serializer);
@@ -5434,6 +5521,13 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
     sse_encode_list_prim_u_8_strict(self.key, serializer);
     sse_encode_u_64(self.timestamp, serializer);
     sse_encode_list_prim_u_8_strict(self.signature, serializer);
+  }
+
+  @protected
+  void sse_encode_device_name_update(
+      DeviceNameUpdate self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_String(self.deviceName, serializer);
   }
 
   @protected
@@ -5755,6 +5849,16 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  void sse_encode_opt_box_autoadd_u_32(int? self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+
+    sse_encode_bool(self != null, serializer);
+    if (self != null) {
+      sse_encode_box_autoadd_u_32(self, serializer);
+    }
+  }
+
+  @protected
   void sse_encode_opt_box_autoadd_u_64(BigInt? self, SseSerializer serializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
 
@@ -5849,6 +5953,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       PrimeMagicBackupStatusRequest self, SseSerializer serializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     sse_encode_seed_fingerprint(self.seedFingerprint, serializer);
+    sse_encode_opt_box_autoadd_u_32(self.timestamp, serializer);
   }
 
   @protected
@@ -5994,11 +6099,14 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       case QuantumLinkMessage_UnpairingResponse(field0: final field0):
         sse_encode_i_32(35, serializer);
         sse_encode_box_autoadd_unpairing_response(field0, serializer);
-      case QuantumLinkMessage_MagicBackupRequestV2(field0: final field0):
+      case QuantumLinkMessage_DeviceNameUpdate(field0: final field0):
         sse_encode_i_32(36, serializer);
+        sse_encode_box_autoadd_device_name_update(field0, serializer);
+      case QuantumLinkMessage_MagicBackupRequestV2(field0: final field0):
+        sse_encode_i_32(37, serializer);
         sse_encode_box_autoadd_magic_backup_request_v_2(field0, serializer);
       case QuantumLinkMessage_MagicBackupResponseV2(field0: final field0):
-        sse_encode_i_32(37, serializer);
+        sse_encode_i_32(38, serializer);
         sse_encode_box_autoadd_magic_backup_response_v_2(field0, serializer);
     }
   }
@@ -6048,6 +6156,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       RestoreShardRequest self, SseSerializer serializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     sse_encode_seed_fingerprint(self.seedFingerprint, serializer);
+    sse_encode_opt_box_autoadd_u_32(self.timestamp, serializer);
   }
 
   @protected

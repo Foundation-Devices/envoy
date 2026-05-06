@@ -226,7 +226,7 @@ dependencies = [
 [[package]]
 name = "backup-shard"
 version = "0.3.0"
-source = "git+https://github.com/Foundation-Devices/foundation-api?tag=5.4.1#bf750cf8b073add2ae62938fcd27c339a806dd6f"
+source = "git+https://github.com/Foundation-Devices/foundation-api?tag=5.6.0#1399a3584dfb9b9a36e3c67a2cbdbf9fdf1b82a9"
 dependencies = [
  "dcbor",
  "zeroize",
@@ -689,7 +689,7 @@ dependencies = [
 [[package]]
 name = "btp"
 version = "0.1.0"
-source = "git+https://github.com/Foundation-Devices/foundation-api?rev=d43c67a#d43c67ace8dda83b049af638cf0cd86202ec4e86"
+source = "git+https://github.com/Foundation-Devices/foundation-api?tag=5.6.0#1399a3584dfb9b9a36e3c67a2cbdbf9fdf1b82a9"
 dependencies = [
  "bytemuck",
  "consts",
@@ -827,7 +827,7 @@ checksum = "c2459377285ad874054d797f3ccebf984978aa39129f6eafde5cdc8315b612f8"
 [[package]]
 name = "consts"
 version = "2.0.0"
-source = "git+https://github.com/Foundation-Devices/prime-ble-firmware.git#7f82b61d6f1dbed66c57b9dab2c69df9201a45be"
+source = "git+https://github.com/Foundation-Devices/prime-ble-firmware.git#846ece0906ae81b9f5d7ef6cf0ba3ccd1b381f2c"
 
 [[package]]
 name = "core-foundation"
@@ -1237,7 +1237,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "39cab71617ae0d63f51a36d69f866391735b51691dbda63cf6f96d042b63efeb"
 dependencies = [
  "libc",
- "windows-sys 0.61.2",
+ "windows-sys 0.52.0",
 ]
 
 [[package]]
@@ -1361,7 +1361,7 @@ dependencies = [
 [[package]]
 name = "foundation-api"
 version = "2.0.0"
-source = "git+https://github.com/Foundation-Devices/foundation-api?rev=d43c67a#d43c67ace8dda83b049af638cf0cd86202ec4e86"
+source = "git+https://github.com/Foundation-Devices/foundation-api?tag=5.6.0#1399a3584dfb9b9a36e3c67a2cbdbf9fdf1b82a9"
 dependencies = [
  "bc-components",
  "bc-envelope",
@@ -3075,7 +3075,7 @@ dependencies = [
 [[package]]
 name = "quantum-link-macros"
 version = "0.1.0"
-source = "git+https://github.com/Foundation-Devices/foundation-api?rev=d43c67a#d43c67ace8dda83b049af638cf0cd86202ec4e86"
+source = "git+https://github.com/Foundation-Devices/foundation-api?tag=5.6.0#1399a3584dfb9b9a36e3c67a2cbdbf9fdf1b82a9"
 dependencies = [
  "proc-macro2",
  "quote",
@@ -3457,7 +3457,7 @@ dependencies = [
  "errno",
  "libc",
  "linux-raw-sys",
- "windows-sys 0.61.2",
+ "windows-sys 0.52.0",
 ]
 
 [[package]]
@@ -3574,7 +3574,7 @@ version = "0.29.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "9465315bc9d4566e1724f0fffcbcc446268cb522e60f9a27bcded6b19c108113"
 dependencies = [
- "bitcoin_hashes 0.14.0",
+ "bitcoin_hashes 0.13.0",
  "rand 0.8.5",
  "secp256k1-sys 0.10.1",
  "serde",
@@ -3963,7 +3963,7 @@ dependencies = [
  "getrandom 0.3.4",
  "once_cell",
  "rustix",
- "windows-sys 0.61.2",
+ "windows-sys 0.52.0",
 ]
 
 [[package]]

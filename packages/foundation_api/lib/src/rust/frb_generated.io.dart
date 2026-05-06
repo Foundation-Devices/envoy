@@ -257,6 +257,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
       dynamic raw);
 
   @protected
+  DeviceNameUpdate dco_decode_box_autoadd_device_name_update(dynamic raw);
+
+  @protected
   DeviceStatus dco_decode_box_autoadd_device_status(dynamic raw);
 
   @protected
@@ -381,6 +384,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   TimezoneResponse dco_decode_box_autoadd_timezone_response(dynamic raw);
 
   @protected
+  int dco_decode_box_autoadd_u_32(dynamic raw);
+
+  @protected
   BigInt dco_decode_box_autoadd_u_64(dynamic raw);
 
   @protected
@@ -418,6 +424,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   DeleteMagicBackupV2 dco_decode_delete_magic_backup_v_2(dynamic raw);
+
+  @protected
+  DeviceNameUpdate dco_decode_device_name_update(dynamic raw);
 
   @protected
   DeviceStatus dco_decode_device_status(dynamic raw);
@@ -522,6 +531,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   PassportMessage? dco_decode_opt_box_autoadd_passport_message(dynamic raw);
+
+  @protected
+  int? dco_decode_opt_box_autoadd_u_32(dynamic raw);
 
   @protected
   BigInt? dco_decode_opt_box_autoadd_u_64(dynamic raw);
@@ -843,6 +855,10 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
       SseDeserializer deserializer);
 
   @protected
+  DeviceNameUpdate sse_decode_box_autoadd_device_name_update(
+      SseDeserializer deserializer);
+
+  @protected
   DeviceStatus sse_decode_box_autoadd_device_status(
       SseDeserializer deserializer);
 
@@ -989,6 +1005,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
       SseDeserializer deserializer);
 
   @protected
+  int sse_decode_box_autoadd_u_32(SseDeserializer deserializer);
+
+  @protected
   BigInt sse_decode_box_autoadd_u_64(SseDeserializer deserializer);
 
   @protected
@@ -1035,6 +1054,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   @protected
   DeleteMagicBackupV2 sse_decode_delete_magic_backup_v_2(
       SseDeserializer deserializer);
+
+  @protected
+  DeviceNameUpdate sse_decode_device_name_update(SseDeserializer deserializer);
 
   @protected
   DeviceStatus sse_decode_device_status(SseDeserializer deserializer);
@@ -1152,6 +1174,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   @protected
   PassportMessage? sse_decode_opt_box_autoadd_passport_message(
       SseDeserializer deserializer);
+
+  @protected
+  int? sse_decode_opt_box_autoadd_u_32(SseDeserializer deserializer);
 
   @protected
   BigInt? sse_decode_opt_box_autoadd_u_64(SseDeserializer deserializer);
@@ -1485,6 +1510,10 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
       DeleteMagicBackupV2 self, SseSerializer serializer);
 
   @protected
+  void sse_encode_box_autoadd_device_name_update(
+      DeviceNameUpdate self, SseSerializer serializer);
+
+  @protected
   void sse_encode_box_autoadd_device_status(
       DeviceStatus self, SseSerializer serializer);
 
@@ -1628,6 +1657,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
       TimezoneResponse self, SseSerializer serializer);
 
   @protected
+  void sse_encode_box_autoadd_u_32(int self, SseSerializer serializer);
+
+  @protected
   void sse_encode_box_autoadd_u_64(BigInt self, SseSerializer serializer);
 
   @protected
@@ -1675,6 +1707,10 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   @protected
   void sse_encode_delete_magic_backup_v_2(
       DeleteMagicBackupV2 self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_device_name_update(
+      DeviceNameUpdate self, SseSerializer serializer);
 
   @protected
   void sse_encode_device_status(DeviceStatus self, SseSerializer serializer);
@@ -1794,6 +1830,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   @protected
   void sse_encode_opt_box_autoadd_passport_message(
       PassportMessage? self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_opt_box_autoadd_u_32(int? self, SseSerializer serializer);
 
   @protected
   void sse_encode_opt_box_autoadd_u_64(BigInt? self, SseSerializer serializer);

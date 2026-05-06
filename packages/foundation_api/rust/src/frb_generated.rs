@@ -1888,6 +1888,10 @@ const _: fn() = || {
         let _: Vec<u8> = DeleteMagicBackupV2.signature;
     }
     {
+        let DeviceNameUpdate = None::<foundation_api::api::status::DeviceNameUpdate>.unwrap();
+        let _: String = DeviceNameUpdate.device_name;
+    }
+    {
         let DeviceStatus = None::<foundation_api::api::status::DeviceStatus>.unwrap();
         let _: String = DeviceStatus.version;
         let _: u8 = DeviceStatus.battery_level;
@@ -2057,6 +2061,7 @@ const _: fn() = || {
             None::<foundation_api::api::backup::PrimeMagicBackupStatusRequest>.unwrap();
         let _: foundation_api::api::backup::SeedFingerprint =
             PrimeMagicBackupStatusRequest.seed_fingerprint;
+        let _: Option<u32> = PrimeMagicBackupStatusRequest.timestamp;
     }
     {
         let PrimeMagicBackupStatusResponse =
@@ -2178,6 +2183,9 @@ const _: fn() = || {
         foundation_api::api::message::QuantumLinkMessage::UnpairingResponse(field0) => {
             let _: foundation_api::api::pairing::UnpairingResponse = field0;
         }
+        foundation_api::api::message::QuantumLinkMessage::DeviceNameUpdate(field0) => {
+            let _: foundation_api::api::status::DeviceNameUpdate = field0;
+        }
         foundation_api::api::message::QuantumLinkMessage::MagicBackupRequestV2(field0) => {
             let _: foundation_api::api::backup::MagicBackupRequestV2 = field0;
         }
@@ -2213,6 +2221,7 @@ const _: fn() = || {
     {
         let RestoreShardRequest = None::<foundation_api::api::backup::RestoreShardRequest>.unwrap();
         let _: foundation_api::api::backup::SeedFingerprint = RestoreShardRequest.seed_fingerprint;
+        let _: Option<u32> = RestoreShardRequest.timestamp;
     }
     match None::<foundation_api::api::backup::RestoreShardResponse>.unwrap() {
         foundation_api::api::backup::RestoreShardResponse::Success { shard } => {
@@ -2669,6 +2678,16 @@ impl SseDecode for foundation_api::api::backup::DeleteMagicBackupV2 {
             key: var_key,
             timestamp: var_timestamp,
             signature: var_signature,
+        };
+    }
+}
+
+impl SseDecode for foundation_api::api::status::DeviceNameUpdate {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        let mut var_deviceName = <String>::sse_decode(deserializer);
+        return foundation_api::api::status::DeviceNameUpdate {
+            device_name: var_deviceName,
         };
     }
 }
@@ -3142,6 +3161,17 @@ impl SseDecode for Option<foundation_api::api::message::PassportMessage> {
     }
 }
 
+impl SseDecode for Option<u32> {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        if (<bool>::sse_decode(deserializer)) {
+            return Some(<u32>::sse_decode(deserializer));
+        } else {
+            return None;
+        }
+    }
+}
+
 impl SseDecode for Option<u64> {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
@@ -3284,8 +3314,10 @@ impl SseDecode for foundation_api::api::backup::PrimeMagicBackupStatusRequest {
     fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
         let mut var_seedFingerprint =
             <foundation_api::api::backup::SeedFingerprint>::sse_decode(deserializer);
+        let mut var_timestamp = <Option<u32>>::sse_decode(deserializer);
         return foundation_api::api::backup::PrimeMagicBackupStatusRequest {
             seed_fingerprint: var_seedFingerprint,
+            timestamp: var_timestamp,
         };
     }
 }
@@ -3567,12 +3599,19 @@ impl SseDecode for foundation_api::api::message::QuantumLinkMessage {
             }
             36 => {
                 let mut var_field0 =
+                    <foundation_api::api::status::DeviceNameUpdate>::sse_decode(deserializer);
+                return foundation_api::api::message::QuantumLinkMessage::DeviceNameUpdate(
+                    var_field0,
+                );
+            }
+            37 => {
+                let mut var_field0 =
                     <foundation_api::api::backup::MagicBackupRequestV2>::sse_decode(deserializer);
                 return foundation_api::api::message::QuantumLinkMessage::MagicBackupRequestV2(
                     var_field0,
                 );
             }
-            37 => {
+            38 => {
                 let mut var_field0 =
                     <foundation_api::api::backup::MagicBackupResponseV2>::sse_decode(deserializer);
                 return foundation_api::api::message::QuantumLinkMessage::MagicBackupResponseV2(
@@ -3656,8 +3695,10 @@ impl SseDecode for foundation_api::api::backup::RestoreShardRequest {
     fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
         let mut var_seedFingerprint =
             <foundation_api::api::backup::SeedFingerprint>::sse_decode(deserializer);
+        let mut var_timestamp = <Option<u32>>::sse_decode(deserializer);
         return foundation_api::api::backup::RestoreShardRequest {
             seed_fingerprint: var_seedFingerprint,
+            timestamp: var_timestamp,
         };
     }
 }
@@ -4430,6 +4471,23 @@ impl flutter_rust_bridge::IntoIntoDart<FrbWrapper<foundation_api::api::backup::D
     }
 }
 // Codec=Dco (DartCObject based), see doc to use other codecs
+impl flutter_rust_bridge::IntoDart for FrbWrapper<foundation_api::api::status::DeviceNameUpdate> {
+    fn into_dart(self) -> flutter_rust_bridge::for_generated::DartAbi {
+        [self.0.device_name.into_into_dart().into_dart()].into_dart()
+    }
+}
+impl flutter_rust_bridge::for_generated::IntoDartExceptPrimitive
+    for FrbWrapper<foundation_api::api::status::DeviceNameUpdate>
+{
+}
+impl flutter_rust_bridge::IntoIntoDart<FrbWrapper<foundation_api::api::status::DeviceNameUpdate>>
+    for foundation_api::api::status::DeviceNameUpdate
+{
+    fn into_into_dart(self) -> FrbWrapper<foundation_api::api::status::DeviceNameUpdate> {
+        self.into()
+    }
+}
+// Codec=Dco (DartCObject based), see doc to use other codecs
 impl flutter_rust_bridge::IntoDart for FrbWrapper<foundation_api::api::status::DeviceStatus> {
     fn into_dart(self) -> flutter_rust_bridge::for_generated::DartAbi {
         [
@@ -5174,7 +5232,11 @@ impl flutter_rust_bridge::IntoDart
     for FrbWrapper<foundation_api::api::backup::PrimeMagicBackupStatusRequest>
 {
     fn into_dart(self) -> flutter_rust_bridge::for_generated::DartAbi {
-        [self.0.seed_fingerprint.into_into_dart().into_dart()].into_dart()
+        [
+            self.0.seed_fingerprint.into_into_dart().into_dart(),
+            self.0.timestamp.into_into_dart().into_dart(),
+        ]
+        .into_dart()
     }
 }
 impl flutter_rust_bridge::for_generated::IntoDartExceptPrimitive
@@ -5350,11 +5412,14 @@ impl flutter_rust_bridge::IntoDart
             foundation_api::api::message::QuantumLinkMessage::UnpairingResponse(field0) => {
                 [35.into_dart(), field0.into_into_dart().into_dart()].into_dart()
             }
-            foundation_api::api::message::QuantumLinkMessage::MagicBackupRequestV2(field0) => {
+            foundation_api::api::message::QuantumLinkMessage::DeviceNameUpdate(field0) => {
                 [36.into_dart(), field0.into_into_dart().into_dart()].into_dart()
             }
-            foundation_api::api::message::QuantumLinkMessage::MagicBackupResponseV2(field0) => {
+            foundation_api::api::message::QuantumLinkMessage::MagicBackupRequestV2(field0) => {
                 [37.into_dart(), field0.into_into_dart().into_dart()].into_dart()
+            }
+            foundation_api::api::message::QuantumLinkMessage::MagicBackupResponseV2(field0) => {
+                [38.into_dart(), field0.into_into_dart().into_dart()].into_dart()
             }
             _ => {
                 unimplemented!("");
@@ -5471,7 +5536,11 @@ impl flutter_rust_bridge::IntoDart
     for FrbWrapper<foundation_api::api::backup::RestoreShardRequest>
 {
     fn into_dart(self) -> flutter_rust_bridge::for_generated::DartAbi {
-        [self.0.seed_fingerprint.into_into_dart().into_dart()].into_dart()
+        [
+            self.0.seed_fingerprint.into_into_dart().into_dart(),
+            self.0.timestamp.into_into_dart().into_dart(),
+        ]
+        .into_dart()
     }
 }
 impl flutter_rust_bridge::for_generated::IntoDartExceptPrimitive
@@ -6034,6 +6103,13 @@ impl SseEncode for foundation_api::api::backup::DeleteMagicBackupV2 {
     }
 }
 
+impl SseEncode for foundation_api::api::status::DeviceNameUpdate {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        <String>::sse_encode(self.device_name, serializer);
+    }
+}
+
 impl SseEncode for foundation_api::api::status::DeviceStatus {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
@@ -6415,6 +6491,16 @@ impl SseEncode for Option<foundation_api::api::message::PassportMessage> {
     }
 }
 
+impl SseEncode for Option<u32> {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        <bool>::sse_encode(self.is_some(), serializer);
+        if let Some(value) = self {
+            <u32>::sse_encode(value, serializer);
+        }
+    }
+}
+
 impl SseEncode for Option<u64> {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
@@ -6542,6 +6628,7 @@ impl SseEncode for foundation_api::api::backup::PrimeMagicBackupStatusRequest {
             self.seed_fingerprint,
             serializer,
         );
+        <Option<u32>>::sse_encode(self.timestamp, serializer);
     }
 }
 
@@ -6750,12 +6837,16 @@ impl SseEncode for foundation_api::api::message::QuantumLinkMessage {
                 <i32>::sse_encode(35, serializer);
                 <foundation_api::api::pairing::UnpairingResponse>::sse_encode(field0, serializer);
             }
-            foundation_api::api::message::QuantumLinkMessage::MagicBackupRequestV2(field0) => {
+            foundation_api::api::message::QuantumLinkMessage::DeviceNameUpdate(field0) => {
                 <i32>::sse_encode(36, serializer);
+                <foundation_api::api::status::DeviceNameUpdate>::sse_encode(field0, serializer);
+            }
+            foundation_api::api::message::QuantumLinkMessage::MagicBackupRequestV2(field0) => {
+                <i32>::sse_encode(37, serializer);
                 <foundation_api::api::backup::MagicBackupRequestV2>::sse_encode(field0, serializer);
             }
             foundation_api::api::message::QuantumLinkMessage::MagicBackupResponseV2(field0) => {
-                <i32>::sse_encode(37, serializer);
+                <i32>::sse_encode(38, serializer);
                 <foundation_api::api::backup::MagicBackupResponseV2>::sse_encode(
                     field0, serializer,
                 );
@@ -6829,6 +6920,7 @@ impl SseEncode for foundation_api::api::backup::RestoreShardRequest {
             self.seed_fingerprint,
             serializer,
         );
+        <Option<u32>>::sse_encode(self.timestamp, serializer);
     }
 }
 
