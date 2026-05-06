@@ -281,20 +281,23 @@ class PrimeMagicBackupEnabled {
 
 class PrimeMagicBackupStatusRequest {
   final SeedFingerprint seedFingerprint;
+  final int? timestamp;
 
   const PrimeMagicBackupStatusRequest({
     required this.seedFingerprint,
+    this.timestamp,
   });
 
   @override
-  int get hashCode => seedFingerprint.hashCode;
+  int get hashCode => seedFingerprint.hashCode ^ timestamp.hashCode;
 
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
       other is PrimeMagicBackupStatusRequest &&
           runtimeType == other.runtimeType &&
-          seedFingerprint == other.seedFingerprint;
+          seedFingerprint == other.seedFingerprint &&
+          timestamp == other.timestamp;
 }
 
 class PrimeMagicBackupStatusResponse {
@@ -368,20 +371,23 @@ sealed class RestoreMagicBackupResult with _$RestoreMagicBackupResult {
 
 class RestoreShardRequest {
   final SeedFingerprint seedFingerprint;
+  final int? timestamp;
 
   const RestoreShardRequest({
     required this.seedFingerprint,
+    this.timestamp,
   });
 
   @override
-  int get hashCode => seedFingerprint.hashCode;
+  int get hashCode => seedFingerprint.hashCode ^ timestamp.hashCode;
 
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
       other is RestoreShardRequest &&
           runtimeType == other.runtimeType &&
-          seedFingerprint == other.seedFingerprint;
+          seedFingerprint == other.seedFingerprint &&
+          timestamp == other.timestamp;
 }
 
 @freezed

@@ -67,6 +67,7 @@ mixin _$QuantumLinkMessage {
     required TResult Function(TimezoneResponse field0) timezoneResponse,
     required TResult Function(UnpairingRequest field0) unpairingRequest,
     required TResult Function(UnpairingResponse field0) unpairingResponse,
+    required TResult Function(DeviceNameUpdate field0) deviceNameUpdate,
     required TResult Function(MagicBackupRequestV2 field0) magicBackupRequestV2,
     required TResult Function(MagicBackupResponseV2 field0)
         magicBackupResponseV2,
@@ -118,6 +119,7 @@ mixin _$QuantumLinkMessage {
     TResult? Function(TimezoneResponse field0)? timezoneResponse,
     TResult? Function(UnpairingRequest field0)? unpairingRequest,
     TResult? Function(UnpairingResponse field0)? unpairingResponse,
+    TResult? Function(DeviceNameUpdate field0)? deviceNameUpdate,
     TResult? Function(MagicBackupRequestV2 field0)? magicBackupRequestV2,
     TResult? Function(MagicBackupResponseV2 field0)? magicBackupResponseV2,
   }) =>
@@ -167,6 +169,7 @@ mixin _$QuantumLinkMessage {
     TResult Function(TimezoneResponse field0)? timezoneResponse,
     TResult Function(UnpairingRequest field0)? unpairingRequest,
     TResult Function(UnpairingResponse field0)? unpairingResponse,
+    TResult Function(DeviceNameUpdate field0)? deviceNameUpdate,
     TResult Function(MagicBackupRequestV2 field0)? magicBackupRequestV2,
     TResult Function(MagicBackupResponseV2 field0)? magicBackupResponseV2,
     required TResult orElse(),
@@ -250,6 +253,8 @@ mixin _$QuantumLinkMessage {
         unpairingRequest,
     required TResult Function(QuantumLinkMessage_UnpairingResponse value)
         unpairingResponse,
+    required TResult Function(QuantumLinkMessage_DeviceNameUpdate value)
+        deviceNameUpdate,
     required TResult Function(QuantumLinkMessage_MagicBackupRequestV2 value)
         magicBackupRequestV2,
     required TResult Function(QuantumLinkMessage_MagicBackupResponseV2 value)
@@ -322,6 +327,8 @@ mixin _$QuantumLinkMessage {
         unpairingRequest,
     TResult? Function(QuantumLinkMessage_UnpairingResponse value)?
         unpairingResponse,
+    TResult? Function(QuantumLinkMessage_DeviceNameUpdate value)?
+        deviceNameUpdate,
     TResult? Function(QuantumLinkMessage_MagicBackupRequestV2 value)?
         magicBackupRequestV2,
     TResult? Function(QuantumLinkMessage_MagicBackupResponseV2 value)?
@@ -390,6 +397,8 @@ mixin _$QuantumLinkMessage {
         unpairingRequest,
     TResult Function(QuantumLinkMessage_UnpairingResponse value)?
         unpairingResponse,
+    TResult Function(QuantumLinkMessage_DeviceNameUpdate value)?
+        deviceNameUpdate,
     TResult Function(QuantumLinkMessage_MagicBackupRequestV2 value)?
         magicBackupRequestV2,
     TResult Function(QuantumLinkMessage_MagicBackupResponseV2 value)?
@@ -542,6 +551,7 @@ class _$QuantumLinkMessage_ExchangeRateImpl
     required TResult Function(TimezoneResponse field0) timezoneResponse,
     required TResult Function(UnpairingRequest field0) unpairingRequest,
     required TResult Function(UnpairingResponse field0) unpairingResponse,
+    required TResult Function(DeviceNameUpdate field0) deviceNameUpdate,
     required TResult Function(MagicBackupRequestV2 field0) magicBackupRequestV2,
     required TResult Function(MagicBackupResponseV2 field0)
         magicBackupResponseV2,
@@ -596,6 +606,7 @@ class _$QuantumLinkMessage_ExchangeRateImpl
     TResult? Function(TimezoneResponse field0)? timezoneResponse,
     TResult? Function(UnpairingRequest field0)? unpairingRequest,
     TResult? Function(UnpairingResponse field0)? unpairingResponse,
+    TResult? Function(DeviceNameUpdate field0)? deviceNameUpdate,
     TResult? Function(MagicBackupRequestV2 field0)? magicBackupRequestV2,
     TResult? Function(MagicBackupResponseV2 field0)? magicBackupResponseV2,
   }) {
@@ -648,6 +659,7 @@ class _$QuantumLinkMessage_ExchangeRateImpl
     TResult Function(TimezoneResponse field0)? timezoneResponse,
     TResult Function(UnpairingRequest field0)? unpairingRequest,
     TResult Function(UnpairingResponse field0)? unpairingResponse,
+    TResult Function(DeviceNameUpdate field0)? deviceNameUpdate,
     TResult Function(MagicBackupRequestV2 field0)? magicBackupRequestV2,
     TResult Function(MagicBackupResponseV2 field0)? magicBackupResponseV2,
     required TResult orElse(),
@@ -737,6 +749,8 @@ class _$QuantumLinkMessage_ExchangeRateImpl
         unpairingRequest,
     required TResult Function(QuantumLinkMessage_UnpairingResponse value)
         unpairingResponse,
+    required TResult Function(QuantumLinkMessage_DeviceNameUpdate value)
+        deviceNameUpdate,
     required TResult Function(QuantumLinkMessage_MagicBackupRequestV2 value)
         magicBackupRequestV2,
     required TResult Function(QuantumLinkMessage_MagicBackupResponseV2 value)
@@ -812,6 +826,8 @@ class _$QuantumLinkMessage_ExchangeRateImpl
         unpairingRequest,
     TResult? Function(QuantumLinkMessage_UnpairingResponse value)?
         unpairingResponse,
+    TResult? Function(QuantumLinkMessage_DeviceNameUpdate value)?
+        deviceNameUpdate,
     TResult? Function(QuantumLinkMessage_MagicBackupRequestV2 value)?
         magicBackupRequestV2,
     TResult? Function(QuantumLinkMessage_MagicBackupResponseV2 value)?
@@ -883,6 +899,8 @@ class _$QuantumLinkMessage_ExchangeRateImpl
         unpairingRequest,
     TResult Function(QuantumLinkMessage_UnpairingResponse value)?
         unpairingResponse,
+    TResult Function(QuantumLinkMessage_DeviceNameUpdate value)?
+        deviceNameUpdate,
     TResult Function(QuantumLinkMessage_MagicBackupRequestV2 value)?
         magicBackupRequestV2,
     TResult Function(QuantumLinkMessage_MagicBackupResponseV2 value)?
@@ -1035,6 +1053,7 @@ class _$QuantumLinkMessage_ExchangeRateHistoryImpl
     required TResult Function(TimezoneResponse field0) timezoneResponse,
     required TResult Function(UnpairingRequest field0) unpairingRequest,
     required TResult Function(UnpairingResponse field0) unpairingResponse,
+    required TResult Function(DeviceNameUpdate field0) deviceNameUpdate,
     required TResult Function(MagicBackupRequestV2 field0) magicBackupRequestV2,
     required TResult Function(MagicBackupResponseV2 field0)
         magicBackupResponseV2,
@@ -1089,6 +1108,7 @@ class _$QuantumLinkMessage_ExchangeRateHistoryImpl
     TResult? Function(TimezoneResponse field0)? timezoneResponse,
     TResult? Function(UnpairingRequest field0)? unpairingRequest,
     TResult? Function(UnpairingResponse field0)? unpairingResponse,
+    TResult? Function(DeviceNameUpdate field0)? deviceNameUpdate,
     TResult? Function(MagicBackupRequestV2 field0)? magicBackupRequestV2,
     TResult? Function(MagicBackupResponseV2 field0)? magicBackupResponseV2,
   }) {
@@ -1141,6 +1161,7 @@ class _$QuantumLinkMessage_ExchangeRateHistoryImpl
     TResult Function(TimezoneResponse field0)? timezoneResponse,
     TResult Function(UnpairingRequest field0)? unpairingRequest,
     TResult Function(UnpairingResponse field0)? unpairingResponse,
+    TResult Function(DeviceNameUpdate field0)? deviceNameUpdate,
     TResult Function(MagicBackupRequestV2 field0)? magicBackupRequestV2,
     TResult Function(MagicBackupResponseV2 field0)? magicBackupResponseV2,
     required TResult orElse(),
@@ -1230,6 +1251,8 @@ class _$QuantumLinkMessage_ExchangeRateHistoryImpl
         unpairingRequest,
     required TResult Function(QuantumLinkMessage_UnpairingResponse value)
         unpairingResponse,
+    required TResult Function(QuantumLinkMessage_DeviceNameUpdate value)
+        deviceNameUpdate,
     required TResult Function(QuantumLinkMessage_MagicBackupRequestV2 value)
         magicBackupRequestV2,
     required TResult Function(QuantumLinkMessage_MagicBackupResponseV2 value)
@@ -1305,6 +1328,8 @@ class _$QuantumLinkMessage_ExchangeRateHistoryImpl
         unpairingRequest,
     TResult? Function(QuantumLinkMessage_UnpairingResponse value)?
         unpairingResponse,
+    TResult? Function(QuantumLinkMessage_DeviceNameUpdate value)?
+        deviceNameUpdate,
     TResult? Function(QuantumLinkMessage_MagicBackupRequestV2 value)?
         magicBackupRequestV2,
     TResult? Function(QuantumLinkMessage_MagicBackupResponseV2 value)?
@@ -1376,6 +1401,8 @@ class _$QuantumLinkMessage_ExchangeRateHistoryImpl
         unpairingRequest,
     TResult Function(QuantumLinkMessage_UnpairingResponse value)?
         unpairingResponse,
+    TResult Function(QuantumLinkMessage_DeviceNameUpdate value)?
+        deviceNameUpdate,
     TResult Function(QuantumLinkMessage_MagicBackupRequestV2 value)?
         magicBackupRequestV2,
     TResult Function(QuantumLinkMessage_MagicBackupResponseV2 value)?
@@ -1535,6 +1562,7 @@ class _$QuantumLinkMessage_FirmwareUpdateCheckRequestImpl
     required TResult Function(TimezoneResponse field0) timezoneResponse,
     required TResult Function(UnpairingRequest field0) unpairingRequest,
     required TResult Function(UnpairingResponse field0) unpairingResponse,
+    required TResult Function(DeviceNameUpdate field0) deviceNameUpdate,
     required TResult Function(MagicBackupRequestV2 field0) magicBackupRequestV2,
     required TResult Function(MagicBackupResponseV2 field0)
         magicBackupResponseV2,
@@ -1589,6 +1617,7 @@ class _$QuantumLinkMessage_FirmwareUpdateCheckRequestImpl
     TResult? Function(TimezoneResponse field0)? timezoneResponse,
     TResult? Function(UnpairingRequest field0)? unpairingRequest,
     TResult? Function(UnpairingResponse field0)? unpairingResponse,
+    TResult? Function(DeviceNameUpdate field0)? deviceNameUpdate,
     TResult? Function(MagicBackupRequestV2 field0)? magicBackupRequestV2,
     TResult? Function(MagicBackupResponseV2 field0)? magicBackupResponseV2,
   }) {
@@ -1641,6 +1670,7 @@ class _$QuantumLinkMessage_FirmwareUpdateCheckRequestImpl
     TResult Function(TimezoneResponse field0)? timezoneResponse,
     TResult Function(UnpairingRequest field0)? unpairingRequest,
     TResult Function(UnpairingResponse field0)? unpairingResponse,
+    TResult Function(DeviceNameUpdate field0)? deviceNameUpdate,
     TResult Function(MagicBackupRequestV2 field0)? magicBackupRequestV2,
     TResult Function(MagicBackupResponseV2 field0)? magicBackupResponseV2,
     required TResult orElse(),
@@ -1730,6 +1760,8 @@ class _$QuantumLinkMessage_FirmwareUpdateCheckRequestImpl
         unpairingRequest,
     required TResult Function(QuantumLinkMessage_UnpairingResponse value)
         unpairingResponse,
+    required TResult Function(QuantumLinkMessage_DeviceNameUpdate value)
+        deviceNameUpdate,
     required TResult Function(QuantumLinkMessage_MagicBackupRequestV2 value)
         magicBackupRequestV2,
     required TResult Function(QuantumLinkMessage_MagicBackupResponseV2 value)
@@ -1805,6 +1837,8 @@ class _$QuantumLinkMessage_FirmwareUpdateCheckRequestImpl
         unpairingRequest,
     TResult? Function(QuantumLinkMessage_UnpairingResponse value)?
         unpairingResponse,
+    TResult? Function(QuantumLinkMessage_DeviceNameUpdate value)?
+        deviceNameUpdate,
     TResult? Function(QuantumLinkMessage_MagicBackupRequestV2 value)?
         magicBackupRequestV2,
     TResult? Function(QuantumLinkMessage_MagicBackupResponseV2 value)?
@@ -1876,6 +1910,8 @@ class _$QuantumLinkMessage_FirmwareUpdateCheckRequestImpl
         unpairingRequest,
     TResult Function(QuantumLinkMessage_UnpairingResponse value)?
         unpairingResponse,
+    TResult Function(QuantumLinkMessage_DeviceNameUpdate value)?
+        deviceNameUpdate,
     TResult Function(QuantumLinkMessage_MagicBackupRequestV2 value)?
         magicBackupRequestV2,
     TResult Function(QuantumLinkMessage_MagicBackupResponseV2 value)?
@@ -2047,6 +2083,7 @@ class _$QuantumLinkMessage_FirmwareUpdateCheckResponseImpl
     required TResult Function(TimezoneResponse field0) timezoneResponse,
     required TResult Function(UnpairingRequest field0) unpairingRequest,
     required TResult Function(UnpairingResponse field0) unpairingResponse,
+    required TResult Function(DeviceNameUpdate field0) deviceNameUpdate,
     required TResult Function(MagicBackupRequestV2 field0) magicBackupRequestV2,
     required TResult Function(MagicBackupResponseV2 field0)
         magicBackupResponseV2,
@@ -2101,6 +2138,7 @@ class _$QuantumLinkMessage_FirmwareUpdateCheckResponseImpl
     TResult? Function(TimezoneResponse field0)? timezoneResponse,
     TResult? Function(UnpairingRequest field0)? unpairingRequest,
     TResult? Function(UnpairingResponse field0)? unpairingResponse,
+    TResult? Function(DeviceNameUpdate field0)? deviceNameUpdate,
     TResult? Function(MagicBackupRequestV2 field0)? magicBackupRequestV2,
     TResult? Function(MagicBackupResponseV2 field0)? magicBackupResponseV2,
   }) {
@@ -2153,6 +2191,7 @@ class _$QuantumLinkMessage_FirmwareUpdateCheckResponseImpl
     TResult Function(TimezoneResponse field0)? timezoneResponse,
     TResult Function(UnpairingRequest field0)? unpairingRequest,
     TResult Function(UnpairingResponse field0)? unpairingResponse,
+    TResult Function(DeviceNameUpdate field0)? deviceNameUpdate,
     TResult Function(MagicBackupRequestV2 field0)? magicBackupRequestV2,
     TResult Function(MagicBackupResponseV2 field0)? magicBackupResponseV2,
     required TResult orElse(),
@@ -2242,6 +2281,8 @@ class _$QuantumLinkMessage_FirmwareUpdateCheckResponseImpl
         unpairingRequest,
     required TResult Function(QuantumLinkMessage_UnpairingResponse value)
         unpairingResponse,
+    required TResult Function(QuantumLinkMessage_DeviceNameUpdate value)
+        deviceNameUpdate,
     required TResult Function(QuantumLinkMessage_MagicBackupRequestV2 value)
         magicBackupRequestV2,
     required TResult Function(QuantumLinkMessage_MagicBackupResponseV2 value)
@@ -2317,6 +2358,8 @@ class _$QuantumLinkMessage_FirmwareUpdateCheckResponseImpl
         unpairingRequest,
     TResult? Function(QuantumLinkMessage_UnpairingResponse value)?
         unpairingResponse,
+    TResult? Function(QuantumLinkMessage_DeviceNameUpdate value)?
+        deviceNameUpdate,
     TResult? Function(QuantumLinkMessage_MagicBackupRequestV2 value)?
         magicBackupRequestV2,
     TResult? Function(QuantumLinkMessage_MagicBackupResponseV2 value)?
@@ -2388,6 +2431,8 @@ class _$QuantumLinkMessage_FirmwareUpdateCheckResponseImpl
         unpairingRequest,
     TResult Function(QuantumLinkMessage_UnpairingResponse value)?
         unpairingResponse,
+    TResult Function(QuantumLinkMessage_DeviceNameUpdate value)?
+        deviceNameUpdate,
     TResult Function(QuantumLinkMessage_MagicBackupRequestV2 value)?
         magicBackupRequestV2,
     TResult Function(QuantumLinkMessage_MagicBackupResponseV2 value)?
@@ -2542,6 +2587,7 @@ class _$QuantumLinkMessage_FirmwareFetchRequestImpl
     required TResult Function(TimezoneResponse field0) timezoneResponse,
     required TResult Function(UnpairingRequest field0) unpairingRequest,
     required TResult Function(UnpairingResponse field0) unpairingResponse,
+    required TResult Function(DeviceNameUpdate field0) deviceNameUpdate,
     required TResult Function(MagicBackupRequestV2 field0) magicBackupRequestV2,
     required TResult Function(MagicBackupResponseV2 field0)
         magicBackupResponseV2,
@@ -2596,6 +2642,7 @@ class _$QuantumLinkMessage_FirmwareFetchRequestImpl
     TResult? Function(TimezoneResponse field0)? timezoneResponse,
     TResult? Function(UnpairingRequest field0)? unpairingRequest,
     TResult? Function(UnpairingResponse field0)? unpairingResponse,
+    TResult? Function(DeviceNameUpdate field0)? deviceNameUpdate,
     TResult? Function(MagicBackupRequestV2 field0)? magicBackupRequestV2,
     TResult? Function(MagicBackupResponseV2 field0)? magicBackupResponseV2,
   }) {
@@ -2648,6 +2695,7 @@ class _$QuantumLinkMessage_FirmwareFetchRequestImpl
     TResult Function(TimezoneResponse field0)? timezoneResponse,
     TResult Function(UnpairingRequest field0)? unpairingRequest,
     TResult Function(UnpairingResponse field0)? unpairingResponse,
+    TResult Function(DeviceNameUpdate field0)? deviceNameUpdate,
     TResult Function(MagicBackupRequestV2 field0)? magicBackupRequestV2,
     TResult Function(MagicBackupResponseV2 field0)? magicBackupResponseV2,
     required TResult orElse(),
@@ -2737,6 +2785,8 @@ class _$QuantumLinkMessage_FirmwareFetchRequestImpl
         unpairingRequest,
     required TResult Function(QuantumLinkMessage_UnpairingResponse value)
         unpairingResponse,
+    required TResult Function(QuantumLinkMessage_DeviceNameUpdate value)
+        deviceNameUpdate,
     required TResult Function(QuantumLinkMessage_MagicBackupRequestV2 value)
         magicBackupRequestV2,
     required TResult Function(QuantumLinkMessage_MagicBackupResponseV2 value)
@@ -2812,6 +2862,8 @@ class _$QuantumLinkMessage_FirmwareFetchRequestImpl
         unpairingRequest,
     TResult? Function(QuantumLinkMessage_UnpairingResponse value)?
         unpairingResponse,
+    TResult? Function(QuantumLinkMessage_DeviceNameUpdate value)?
+        deviceNameUpdate,
     TResult? Function(QuantumLinkMessage_MagicBackupRequestV2 value)?
         magicBackupRequestV2,
     TResult? Function(QuantumLinkMessage_MagicBackupResponseV2 value)?
@@ -2883,6 +2935,8 @@ class _$QuantumLinkMessage_FirmwareFetchRequestImpl
         unpairingRequest,
     TResult Function(QuantumLinkMessage_UnpairingResponse value)?
         unpairingResponse,
+    TResult Function(QuantumLinkMessage_DeviceNameUpdate value)?
+        deviceNameUpdate,
     TResult Function(QuantumLinkMessage_MagicBackupRequestV2 value)?
         magicBackupRequestV2,
     TResult Function(QuantumLinkMessage_MagicBackupResponseV2 value)?
@@ -3048,6 +3102,7 @@ class _$QuantumLinkMessage_FirmwareFetchEventImpl
     required TResult Function(TimezoneResponse field0) timezoneResponse,
     required TResult Function(UnpairingRequest field0) unpairingRequest,
     required TResult Function(UnpairingResponse field0) unpairingResponse,
+    required TResult Function(DeviceNameUpdate field0) deviceNameUpdate,
     required TResult Function(MagicBackupRequestV2 field0) magicBackupRequestV2,
     required TResult Function(MagicBackupResponseV2 field0)
         magicBackupResponseV2,
@@ -3102,6 +3157,7 @@ class _$QuantumLinkMessage_FirmwareFetchEventImpl
     TResult? Function(TimezoneResponse field0)? timezoneResponse,
     TResult? Function(UnpairingRequest field0)? unpairingRequest,
     TResult? Function(UnpairingResponse field0)? unpairingResponse,
+    TResult? Function(DeviceNameUpdate field0)? deviceNameUpdate,
     TResult? Function(MagicBackupRequestV2 field0)? magicBackupRequestV2,
     TResult? Function(MagicBackupResponseV2 field0)? magicBackupResponseV2,
   }) {
@@ -3154,6 +3210,7 @@ class _$QuantumLinkMessage_FirmwareFetchEventImpl
     TResult Function(TimezoneResponse field0)? timezoneResponse,
     TResult Function(UnpairingRequest field0)? unpairingRequest,
     TResult Function(UnpairingResponse field0)? unpairingResponse,
+    TResult Function(DeviceNameUpdate field0)? deviceNameUpdate,
     TResult Function(MagicBackupRequestV2 field0)? magicBackupRequestV2,
     TResult Function(MagicBackupResponseV2 field0)? magicBackupResponseV2,
     required TResult orElse(),
@@ -3243,6 +3300,8 @@ class _$QuantumLinkMessage_FirmwareFetchEventImpl
         unpairingRequest,
     required TResult Function(QuantumLinkMessage_UnpairingResponse value)
         unpairingResponse,
+    required TResult Function(QuantumLinkMessage_DeviceNameUpdate value)
+        deviceNameUpdate,
     required TResult Function(QuantumLinkMessage_MagicBackupRequestV2 value)
         magicBackupRequestV2,
     required TResult Function(QuantumLinkMessage_MagicBackupResponseV2 value)
@@ -3318,6 +3377,8 @@ class _$QuantumLinkMessage_FirmwareFetchEventImpl
         unpairingRequest,
     TResult? Function(QuantumLinkMessage_UnpairingResponse value)?
         unpairingResponse,
+    TResult? Function(QuantumLinkMessage_DeviceNameUpdate value)?
+        deviceNameUpdate,
     TResult? Function(QuantumLinkMessage_MagicBackupRequestV2 value)?
         magicBackupRequestV2,
     TResult? Function(QuantumLinkMessage_MagicBackupResponseV2 value)?
@@ -3389,6 +3450,8 @@ class _$QuantumLinkMessage_FirmwareFetchEventImpl
         unpairingRequest,
     TResult Function(QuantumLinkMessage_UnpairingResponse value)?
         unpairingResponse,
+    TResult Function(QuantumLinkMessage_DeviceNameUpdate value)?
+        deviceNameUpdate,
     TResult Function(QuantumLinkMessage_MagicBackupRequestV2 value)?
         magicBackupRequestV2,
     TResult Function(QuantumLinkMessage_MagicBackupResponseV2 value)?
@@ -3555,6 +3618,7 @@ class _$QuantumLinkMessage_FirmwareInstallEventImpl
     required TResult Function(TimezoneResponse field0) timezoneResponse,
     required TResult Function(UnpairingRequest field0) unpairingRequest,
     required TResult Function(UnpairingResponse field0) unpairingResponse,
+    required TResult Function(DeviceNameUpdate field0) deviceNameUpdate,
     required TResult Function(MagicBackupRequestV2 field0) magicBackupRequestV2,
     required TResult Function(MagicBackupResponseV2 field0)
         magicBackupResponseV2,
@@ -3609,6 +3673,7 @@ class _$QuantumLinkMessage_FirmwareInstallEventImpl
     TResult? Function(TimezoneResponse field0)? timezoneResponse,
     TResult? Function(UnpairingRequest field0)? unpairingRequest,
     TResult? Function(UnpairingResponse field0)? unpairingResponse,
+    TResult? Function(DeviceNameUpdate field0)? deviceNameUpdate,
     TResult? Function(MagicBackupRequestV2 field0)? magicBackupRequestV2,
     TResult? Function(MagicBackupResponseV2 field0)? magicBackupResponseV2,
   }) {
@@ -3661,6 +3726,7 @@ class _$QuantumLinkMessage_FirmwareInstallEventImpl
     TResult Function(TimezoneResponse field0)? timezoneResponse,
     TResult Function(UnpairingRequest field0)? unpairingRequest,
     TResult Function(UnpairingResponse field0)? unpairingResponse,
+    TResult Function(DeviceNameUpdate field0)? deviceNameUpdate,
     TResult Function(MagicBackupRequestV2 field0)? magicBackupRequestV2,
     TResult Function(MagicBackupResponseV2 field0)? magicBackupResponseV2,
     required TResult orElse(),
@@ -3750,6 +3816,8 @@ class _$QuantumLinkMessage_FirmwareInstallEventImpl
         unpairingRequest,
     required TResult Function(QuantumLinkMessage_UnpairingResponse value)
         unpairingResponse,
+    required TResult Function(QuantumLinkMessage_DeviceNameUpdate value)
+        deviceNameUpdate,
     required TResult Function(QuantumLinkMessage_MagicBackupRequestV2 value)
         magicBackupRequestV2,
     required TResult Function(QuantumLinkMessage_MagicBackupResponseV2 value)
@@ -3825,6 +3893,8 @@ class _$QuantumLinkMessage_FirmwareInstallEventImpl
         unpairingRequest,
     TResult? Function(QuantumLinkMessage_UnpairingResponse value)?
         unpairingResponse,
+    TResult? Function(QuantumLinkMessage_DeviceNameUpdate value)?
+        deviceNameUpdate,
     TResult? Function(QuantumLinkMessage_MagicBackupRequestV2 value)?
         magicBackupRequestV2,
     TResult? Function(QuantumLinkMessage_MagicBackupResponseV2 value)?
@@ -3896,6 +3966,8 @@ class _$QuantumLinkMessage_FirmwareInstallEventImpl
         unpairingRequest,
     TResult Function(QuantumLinkMessage_UnpairingResponse value)?
         unpairingResponse,
+    TResult Function(QuantumLinkMessage_DeviceNameUpdate value)?
+        deviceNameUpdate,
     TResult Function(QuantumLinkMessage_MagicBackupRequestV2 value)?
         magicBackupRequestV2,
     TResult Function(QuantumLinkMessage_MagicBackupResponseV2 value)?
@@ -4049,6 +4121,7 @@ class _$QuantumLinkMessage_DeviceStatusImpl
     required TResult Function(TimezoneResponse field0) timezoneResponse,
     required TResult Function(UnpairingRequest field0) unpairingRequest,
     required TResult Function(UnpairingResponse field0) unpairingResponse,
+    required TResult Function(DeviceNameUpdate field0) deviceNameUpdate,
     required TResult Function(MagicBackupRequestV2 field0) magicBackupRequestV2,
     required TResult Function(MagicBackupResponseV2 field0)
         magicBackupResponseV2,
@@ -4103,6 +4176,7 @@ class _$QuantumLinkMessage_DeviceStatusImpl
     TResult? Function(TimezoneResponse field0)? timezoneResponse,
     TResult? Function(UnpairingRequest field0)? unpairingRequest,
     TResult? Function(UnpairingResponse field0)? unpairingResponse,
+    TResult? Function(DeviceNameUpdate field0)? deviceNameUpdate,
     TResult? Function(MagicBackupRequestV2 field0)? magicBackupRequestV2,
     TResult? Function(MagicBackupResponseV2 field0)? magicBackupResponseV2,
   }) {
@@ -4155,6 +4229,7 @@ class _$QuantumLinkMessage_DeviceStatusImpl
     TResult Function(TimezoneResponse field0)? timezoneResponse,
     TResult Function(UnpairingRequest field0)? unpairingRequest,
     TResult Function(UnpairingResponse field0)? unpairingResponse,
+    TResult Function(DeviceNameUpdate field0)? deviceNameUpdate,
     TResult Function(MagicBackupRequestV2 field0)? magicBackupRequestV2,
     TResult Function(MagicBackupResponseV2 field0)? magicBackupResponseV2,
     required TResult orElse(),
@@ -4244,6 +4319,8 @@ class _$QuantumLinkMessage_DeviceStatusImpl
         unpairingRequest,
     required TResult Function(QuantumLinkMessage_UnpairingResponse value)
         unpairingResponse,
+    required TResult Function(QuantumLinkMessage_DeviceNameUpdate value)
+        deviceNameUpdate,
     required TResult Function(QuantumLinkMessage_MagicBackupRequestV2 value)
         magicBackupRequestV2,
     required TResult Function(QuantumLinkMessage_MagicBackupResponseV2 value)
@@ -4319,6 +4396,8 @@ class _$QuantumLinkMessage_DeviceStatusImpl
         unpairingRequest,
     TResult? Function(QuantumLinkMessage_UnpairingResponse value)?
         unpairingResponse,
+    TResult? Function(QuantumLinkMessage_DeviceNameUpdate value)?
+        deviceNameUpdate,
     TResult? Function(QuantumLinkMessage_MagicBackupRequestV2 value)?
         magicBackupRequestV2,
     TResult? Function(QuantumLinkMessage_MagicBackupResponseV2 value)?
@@ -4390,6 +4469,8 @@ class _$QuantumLinkMessage_DeviceStatusImpl
         unpairingRequest,
     TResult Function(QuantumLinkMessage_UnpairingResponse value)?
         unpairingResponse,
+    TResult Function(QuantumLinkMessage_DeviceNameUpdate value)?
+        deviceNameUpdate,
     TResult Function(QuantumLinkMessage_MagicBackupRequestV2 value)?
         magicBackupRequestV2,
     TResult Function(QuantumLinkMessage_MagicBackupResponseV2 value)?
@@ -4541,6 +4622,7 @@ class _$QuantumLinkMessage_EnvoyStatusImpl
     required TResult Function(TimezoneResponse field0) timezoneResponse,
     required TResult Function(UnpairingRequest field0) unpairingRequest,
     required TResult Function(UnpairingResponse field0) unpairingResponse,
+    required TResult Function(DeviceNameUpdate field0) deviceNameUpdate,
     required TResult Function(MagicBackupRequestV2 field0) magicBackupRequestV2,
     required TResult Function(MagicBackupResponseV2 field0)
         magicBackupResponseV2,
@@ -4595,6 +4677,7 @@ class _$QuantumLinkMessage_EnvoyStatusImpl
     TResult? Function(TimezoneResponse field0)? timezoneResponse,
     TResult? Function(UnpairingRequest field0)? unpairingRequest,
     TResult? Function(UnpairingResponse field0)? unpairingResponse,
+    TResult? Function(DeviceNameUpdate field0)? deviceNameUpdate,
     TResult? Function(MagicBackupRequestV2 field0)? magicBackupRequestV2,
     TResult? Function(MagicBackupResponseV2 field0)? magicBackupResponseV2,
   }) {
@@ -4647,6 +4730,7 @@ class _$QuantumLinkMessage_EnvoyStatusImpl
     TResult Function(TimezoneResponse field0)? timezoneResponse,
     TResult Function(UnpairingRequest field0)? unpairingRequest,
     TResult Function(UnpairingResponse field0)? unpairingResponse,
+    TResult Function(DeviceNameUpdate field0)? deviceNameUpdate,
     TResult Function(MagicBackupRequestV2 field0)? magicBackupRequestV2,
     TResult Function(MagicBackupResponseV2 field0)? magicBackupResponseV2,
     required TResult orElse(),
@@ -4736,6 +4820,8 @@ class _$QuantumLinkMessage_EnvoyStatusImpl
         unpairingRequest,
     required TResult Function(QuantumLinkMessage_UnpairingResponse value)
         unpairingResponse,
+    required TResult Function(QuantumLinkMessage_DeviceNameUpdate value)
+        deviceNameUpdate,
     required TResult Function(QuantumLinkMessage_MagicBackupRequestV2 value)
         magicBackupRequestV2,
     required TResult Function(QuantumLinkMessage_MagicBackupResponseV2 value)
@@ -4811,6 +4897,8 @@ class _$QuantumLinkMessage_EnvoyStatusImpl
         unpairingRequest,
     TResult? Function(QuantumLinkMessage_UnpairingResponse value)?
         unpairingResponse,
+    TResult? Function(QuantumLinkMessage_DeviceNameUpdate value)?
+        deviceNameUpdate,
     TResult? Function(QuantumLinkMessage_MagicBackupRequestV2 value)?
         magicBackupRequestV2,
     TResult? Function(QuantumLinkMessage_MagicBackupResponseV2 value)?
@@ -4882,6 +4970,8 @@ class _$QuantumLinkMessage_EnvoyStatusImpl
         unpairingRequest,
     TResult Function(QuantumLinkMessage_UnpairingResponse value)?
         unpairingResponse,
+    TResult Function(QuantumLinkMessage_DeviceNameUpdate value)?
+        deviceNameUpdate,
     TResult Function(QuantumLinkMessage_MagicBackupRequestV2 value)?
         magicBackupRequestV2,
     TResult Function(QuantumLinkMessage_MagicBackupResponseV2 value)?
@@ -5033,6 +5123,7 @@ class _$QuantumLinkMessage_PairingRequestImpl
     required TResult Function(TimezoneResponse field0) timezoneResponse,
     required TResult Function(UnpairingRequest field0) unpairingRequest,
     required TResult Function(UnpairingResponse field0) unpairingResponse,
+    required TResult Function(DeviceNameUpdate field0) deviceNameUpdate,
     required TResult Function(MagicBackupRequestV2 field0) magicBackupRequestV2,
     required TResult Function(MagicBackupResponseV2 field0)
         magicBackupResponseV2,
@@ -5087,6 +5178,7 @@ class _$QuantumLinkMessage_PairingRequestImpl
     TResult? Function(TimezoneResponse field0)? timezoneResponse,
     TResult? Function(UnpairingRequest field0)? unpairingRequest,
     TResult? Function(UnpairingResponse field0)? unpairingResponse,
+    TResult? Function(DeviceNameUpdate field0)? deviceNameUpdate,
     TResult? Function(MagicBackupRequestV2 field0)? magicBackupRequestV2,
     TResult? Function(MagicBackupResponseV2 field0)? magicBackupResponseV2,
   }) {
@@ -5139,6 +5231,7 @@ class _$QuantumLinkMessage_PairingRequestImpl
     TResult Function(TimezoneResponse field0)? timezoneResponse,
     TResult Function(UnpairingRequest field0)? unpairingRequest,
     TResult Function(UnpairingResponse field0)? unpairingResponse,
+    TResult Function(DeviceNameUpdate field0)? deviceNameUpdate,
     TResult Function(MagicBackupRequestV2 field0)? magicBackupRequestV2,
     TResult Function(MagicBackupResponseV2 field0)? magicBackupResponseV2,
     required TResult orElse(),
@@ -5228,6 +5321,8 @@ class _$QuantumLinkMessage_PairingRequestImpl
         unpairingRequest,
     required TResult Function(QuantumLinkMessage_UnpairingResponse value)
         unpairingResponse,
+    required TResult Function(QuantumLinkMessage_DeviceNameUpdate value)
+        deviceNameUpdate,
     required TResult Function(QuantumLinkMessage_MagicBackupRequestV2 value)
         magicBackupRequestV2,
     required TResult Function(QuantumLinkMessage_MagicBackupResponseV2 value)
@@ -5303,6 +5398,8 @@ class _$QuantumLinkMessage_PairingRequestImpl
         unpairingRequest,
     TResult? Function(QuantumLinkMessage_UnpairingResponse value)?
         unpairingResponse,
+    TResult? Function(QuantumLinkMessage_DeviceNameUpdate value)?
+        deviceNameUpdate,
     TResult? Function(QuantumLinkMessage_MagicBackupRequestV2 value)?
         magicBackupRequestV2,
     TResult? Function(QuantumLinkMessage_MagicBackupResponseV2 value)?
@@ -5374,6 +5471,8 @@ class _$QuantumLinkMessage_PairingRequestImpl
         unpairingRequest,
     TResult Function(QuantumLinkMessage_UnpairingResponse value)?
         unpairingResponse,
+    TResult Function(QuantumLinkMessage_DeviceNameUpdate value)?
+        deviceNameUpdate,
     TResult Function(QuantumLinkMessage_MagicBackupRequestV2 value)?
         magicBackupRequestV2,
     TResult Function(QuantumLinkMessage_MagicBackupResponseV2 value)?
@@ -5525,6 +5624,7 @@ class _$QuantumLinkMessage_PairingResponseImpl
     required TResult Function(TimezoneResponse field0) timezoneResponse,
     required TResult Function(UnpairingRequest field0) unpairingRequest,
     required TResult Function(UnpairingResponse field0) unpairingResponse,
+    required TResult Function(DeviceNameUpdate field0) deviceNameUpdate,
     required TResult Function(MagicBackupRequestV2 field0) magicBackupRequestV2,
     required TResult Function(MagicBackupResponseV2 field0)
         magicBackupResponseV2,
@@ -5579,6 +5679,7 @@ class _$QuantumLinkMessage_PairingResponseImpl
     TResult? Function(TimezoneResponse field0)? timezoneResponse,
     TResult? Function(UnpairingRequest field0)? unpairingRequest,
     TResult? Function(UnpairingResponse field0)? unpairingResponse,
+    TResult? Function(DeviceNameUpdate field0)? deviceNameUpdate,
     TResult? Function(MagicBackupRequestV2 field0)? magicBackupRequestV2,
     TResult? Function(MagicBackupResponseV2 field0)? magicBackupResponseV2,
   }) {
@@ -5631,6 +5732,7 @@ class _$QuantumLinkMessage_PairingResponseImpl
     TResult Function(TimezoneResponse field0)? timezoneResponse,
     TResult Function(UnpairingRequest field0)? unpairingRequest,
     TResult Function(UnpairingResponse field0)? unpairingResponse,
+    TResult Function(DeviceNameUpdate field0)? deviceNameUpdate,
     TResult Function(MagicBackupRequestV2 field0)? magicBackupRequestV2,
     TResult Function(MagicBackupResponseV2 field0)? magicBackupResponseV2,
     required TResult orElse(),
@@ -5720,6 +5822,8 @@ class _$QuantumLinkMessage_PairingResponseImpl
         unpairingRequest,
     required TResult Function(QuantumLinkMessage_UnpairingResponse value)
         unpairingResponse,
+    required TResult Function(QuantumLinkMessage_DeviceNameUpdate value)
+        deviceNameUpdate,
     required TResult Function(QuantumLinkMessage_MagicBackupRequestV2 value)
         magicBackupRequestV2,
     required TResult Function(QuantumLinkMessage_MagicBackupResponseV2 value)
@@ -5795,6 +5899,8 @@ class _$QuantumLinkMessage_PairingResponseImpl
         unpairingRequest,
     TResult? Function(QuantumLinkMessage_UnpairingResponse value)?
         unpairingResponse,
+    TResult? Function(QuantumLinkMessage_DeviceNameUpdate value)?
+        deviceNameUpdate,
     TResult? Function(QuantumLinkMessage_MagicBackupRequestV2 value)?
         magicBackupRequestV2,
     TResult? Function(QuantumLinkMessage_MagicBackupResponseV2 value)?
@@ -5866,6 +5972,8 @@ class _$QuantumLinkMessage_PairingResponseImpl
         unpairingRequest,
     TResult Function(QuantumLinkMessage_UnpairingResponse value)?
         unpairingResponse,
+    TResult Function(QuantumLinkMessage_DeviceNameUpdate value)?
+        deviceNameUpdate,
     TResult Function(QuantumLinkMessage_MagicBackupRequestV2 value)?
         magicBackupRequestV2,
     TResult Function(QuantumLinkMessage_MagicBackupResponseV2 value)?
@@ -6029,6 +6137,7 @@ class _$QuantumLinkMessage_SecurityCheckImpl
     required TResult Function(TimezoneResponse field0) timezoneResponse,
     required TResult Function(UnpairingRequest field0) unpairingRequest,
     required TResult Function(UnpairingResponse field0) unpairingResponse,
+    required TResult Function(DeviceNameUpdate field0) deviceNameUpdate,
     required TResult Function(MagicBackupRequestV2 field0) magicBackupRequestV2,
     required TResult Function(MagicBackupResponseV2 field0)
         magicBackupResponseV2,
@@ -6083,6 +6192,7 @@ class _$QuantumLinkMessage_SecurityCheckImpl
     TResult? Function(TimezoneResponse field0)? timezoneResponse,
     TResult? Function(UnpairingRequest field0)? unpairingRequest,
     TResult? Function(UnpairingResponse field0)? unpairingResponse,
+    TResult? Function(DeviceNameUpdate field0)? deviceNameUpdate,
     TResult? Function(MagicBackupRequestV2 field0)? magicBackupRequestV2,
     TResult? Function(MagicBackupResponseV2 field0)? magicBackupResponseV2,
   }) {
@@ -6135,6 +6245,7 @@ class _$QuantumLinkMessage_SecurityCheckImpl
     TResult Function(TimezoneResponse field0)? timezoneResponse,
     TResult Function(UnpairingRequest field0)? unpairingRequest,
     TResult Function(UnpairingResponse field0)? unpairingResponse,
+    TResult Function(DeviceNameUpdate field0)? deviceNameUpdate,
     TResult Function(MagicBackupRequestV2 field0)? magicBackupRequestV2,
     TResult Function(MagicBackupResponseV2 field0)? magicBackupResponseV2,
     required TResult orElse(),
@@ -6224,6 +6335,8 @@ class _$QuantumLinkMessage_SecurityCheckImpl
         unpairingRequest,
     required TResult Function(QuantumLinkMessage_UnpairingResponse value)
         unpairingResponse,
+    required TResult Function(QuantumLinkMessage_DeviceNameUpdate value)
+        deviceNameUpdate,
     required TResult Function(QuantumLinkMessage_MagicBackupRequestV2 value)
         magicBackupRequestV2,
     required TResult Function(QuantumLinkMessage_MagicBackupResponseV2 value)
@@ -6299,6 +6412,8 @@ class _$QuantumLinkMessage_SecurityCheckImpl
         unpairingRequest,
     TResult? Function(QuantumLinkMessage_UnpairingResponse value)?
         unpairingResponse,
+    TResult? Function(QuantumLinkMessage_DeviceNameUpdate value)?
+        deviceNameUpdate,
     TResult? Function(QuantumLinkMessage_MagicBackupRequestV2 value)?
         magicBackupRequestV2,
     TResult? Function(QuantumLinkMessage_MagicBackupResponseV2 value)?
@@ -6370,6 +6485,8 @@ class _$QuantumLinkMessage_SecurityCheckImpl
         unpairingRequest,
     TResult Function(QuantumLinkMessage_UnpairingResponse value)?
         unpairingResponse,
+    TResult Function(QuantumLinkMessage_DeviceNameUpdate value)?
+        deviceNameUpdate,
     TResult Function(QuantumLinkMessage_MagicBackupRequestV2 value)?
         magicBackupRequestV2,
     TResult Function(QuantumLinkMessage_MagicBackupResponseV2 value)?
@@ -6521,6 +6638,7 @@ class _$QuantumLinkMessage_OnboardingStateImpl
     required TResult Function(TimezoneResponse field0) timezoneResponse,
     required TResult Function(UnpairingRequest field0) unpairingRequest,
     required TResult Function(UnpairingResponse field0) unpairingResponse,
+    required TResult Function(DeviceNameUpdate field0) deviceNameUpdate,
     required TResult Function(MagicBackupRequestV2 field0) magicBackupRequestV2,
     required TResult Function(MagicBackupResponseV2 field0)
         magicBackupResponseV2,
@@ -6575,6 +6693,7 @@ class _$QuantumLinkMessage_OnboardingStateImpl
     TResult? Function(TimezoneResponse field0)? timezoneResponse,
     TResult? Function(UnpairingRequest field0)? unpairingRequest,
     TResult? Function(UnpairingResponse field0)? unpairingResponse,
+    TResult? Function(DeviceNameUpdate field0)? deviceNameUpdate,
     TResult? Function(MagicBackupRequestV2 field0)? magicBackupRequestV2,
     TResult? Function(MagicBackupResponseV2 field0)? magicBackupResponseV2,
   }) {
@@ -6627,6 +6746,7 @@ class _$QuantumLinkMessage_OnboardingStateImpl
     TResult Function(TimezoneResponse field0)? timezoneResponse,
     TResult Function(UnpairingRequest field0)? unpairingRequest,
     TResult Function(UnpairingResponse field0)? unpairingResponse,
+    TResult Function(DeviceNameUpdate field0)? deviceNameUpdate,
     TResult Function(MagicBackupRequestV2 field0)? magicBackupRequestV2,
     TResult Function(MagicBackupResponseV2 field0)? magicBackupResponseV2,
     required TResult orElse(),
@@ -6716,6 +6836,8 @@ class _$QuantumLinkMessage_OnboardingStateImpl
         unpairingRequest,
     required TResult Function(QuantumLinkMessage_UnpairingResponse value)
         unpairingResponse,
+    required TResult Function(QuantumLinkMessage_DeviceNameUpdate value)
+        deviceNameUpdate,
     required TResult Function(QuantumLinkMessage_MagicBackupRequestV2 value)
         magicBackupRequestV2,
     required TResult Function(QuantumLinkMessage_MagicBackupResponseV2 value)
@@ -6791,6 +6913,8 @@ class _$QuantumLinkMessage_OnboardingStateImpl
         unpairingRequest,
     TResult? Function(QuantumLinkMessage_UnpairingResponse value)?
         unpairingResponse,
+    TResult? Function(QuantumLinkMessage_DeviceNameUpdate value)?
+        deviceNameUpdate,
     TResult? Function(QuantumLinkMessage_MagicBackupRequestV2 value)?
         magicBackupRequestV2,
     TResult? Function(QuantumLinkMessage_MagicBackupResponseV2 value)?
@@ -6862,6 +6986,8 @@ class _$QuantumLinkMessage_OnboardingStateImpl
         unpairingRequest,
     TResult Function(QuantumLinkMessage_UnpairingResponse value)?
         unpairingResponse,
+    TResult Function(QuantumLinkMessage_DeviceNameUpdate value)?
+        deviceNameUpdate,
     TResult Function(QuantumLinkMessage_MagicBackupRequestV2 value)?
         magicBackupRequestV2,
     TResult Function(QuantumLinkMessage_MagicBackupResponseV2 value)?
@@ -7011,6 +7137,7 @@ class _$QuantumLinkMessage_SignPsbtImpl extends QuantumLinkMessage_SignPsbt {
     required TResult Function(TimezoneResponse field0) timezoneResponse,
     required TResult Function(UnpairingRequest field0) unpairingRequest,
     required TResult Function(UnpairingResponse field0) unpairingResponse,
+    required TResult Function(DeviceNameUpdate field0) deviceNameUpdate,
     required TResult Function(MagicBackupRequestV2 field0) magicBackupRequestV2,
     required TResult Function(MagicBackupResponseV2 field0)
         magicBackupResponseV2,
@@ -7065,6 +7192,7 @@ class _$QuantumLinkMessage_SignPsbtImpl extends QuantumLinkMessage_SignPsbt {
     TResult? Function(TimezoneResponse field0)? timezoneResponse,
     TResult? Function(UnpairingRequest field0)? unpairingRequest,
     TResult? Function(UnpairingResponse field0)? unpairingResponse,
+    TResult? Function(DeviceNameUpdate field0)? deviceNameUpdate,
     TResult? Function(MagicBackupRequestV2 field0)? magicBackupRequestV2,
     TResult? Function(MagicBackupResponseV2 field0)? magicBackupResponseV2,
   }) {
@@ -7117,6 +7245,7 @@ class _$QuantumLinkMessage_SignPsbtImpl extends QuantumLinkMessage_SignPsbt {
     TResult Function(TimezoneResponse field0)? timezoneResponse,
     TResult Function(UnpairingRequest field0)? unpairingRequest,
     TResult Function(UnpairingResponse field0)? unpairingResponse,
+    TResult Function(DeviceNameUpdate field0)? deviceNameUpdate,
     TResult Function(MagicBackupRequestV2 field0)? magicBackupRequestV2,
     TResult Function(MagicBackupResponseV2 field0)? magicBackupResponseV2,
     required TResult orElse(),
@@ -7206,6 +7335,8 @@ class _$QuantumLinkMessage_SignPsbtImpl extends QuantumLinkMessage_SignPsbt {
         unpairingRequest,
     required TResult Function(QuantumLinkMessage_UnpairingResponse value)
         unpairingResponse,
+    required TResult Function(QuantumLinkMessage_DeviceNameUpdate value)
+        deviceNameUpdate,
     required TResult Function(QuantumLinkMessage_MagicBackupRequestV2 value)
         magicBackupRequestV2,
     required TResult Function(QuantumLinkMessage_MagicBackupResponseV2 value)
@@ -7281,6 +7412,8 @@ class _$QuantumLinkMessage_SignPsbtImpl extends QuantumLinkMessage_SignPsbt {
         unpairingRequest,
     TResult? Function(QuantumLinkMessage_UnpairingResponse value)?
         unpairingResponse,
+    TResult? Function(QuantumLinkMessage_DeviceNameUpdate value)?
+        deviceNameUpdate,
     TResult? Function(QuantumLinkMessage_MagicBackupRequestV2 value)?
         magicBackupRequestV2,
     TResult? Function(QuantumLinkMessage_MagicBackupResponseV2 value)?
@@ -7352,6 +7485,8 @@ class _$QuantumLinkMessage_SignPsbtImpl extends QuantumLinkMessage_SignPsbt {
         unpairingRequest,
     TResult Function(QuantumLinkMessage_UnpairingResponse value)?
         unpairingResponse,
+    TResult Function(QuantumLinkMessage_DeviceNameUpdate value)?
+        deviceNameUpdate,
     TResult Function(QuantumLinkMessage_MagicBackupRequestV2 value)?
         magicBackupRequestV2,
     TResult Function(QuantumLinkMessage_MagicBackupResponseV2 value)?
@@ -7503,6 +7638,7 @@ class _$QuantumLinkMessage_BroadcastTransactionImpl
     required TResult Function(TimezoneResponse field0) timezoneResponse,
     required TResult Function(UnpairingRequest field0) unpairingRequest,
     required TResult Function(UnpairingResponse field0) unpairingResponse,
+    required TResult Function(DeviceNameUpdate field0) deviceNameUpdate,
     required TResult Function(MagicBackupRequestV2 field0) magicBackupRequestV2,
     required TResult Function(MagicBackupResponseV2 field0)
         magicBackupResponseV2,
@@ -7557,6 +7693,7 @@ class _$QuantumLinkMessage_BroadcastTransactionImpl
     TResult? Function(TimezoneResponse field0)? timezoneResponse,
     TResult? Function(UnpairingRequest field0)? unpairingRequest,
     TResult? Function(UnpairingResponse field0)? unpairingResponse,
+    TResult? Function(DeviceNameUpdate field0)? deviceNameUpdate,
     TResult? Function(MagicBackupRequestV2 field0)? magicBackupRequestV2,
     TResult? Function(MagicBackupResponseV2 field0)? magicBackupResponseV2,
   }) {
@@ -7609,6 +7746,7 @@ class _$QuantumLinkMessage_BroadcastTransactionImpl
     TResult Function(TimezoneResponse field0)? timezoneResponse,
     TResult Function(UnpairingRequest field0)? unpairingRequest,
     TResult Function(UnpairingResponse field0)? unpairingResponse,
+    TResult Function(DeviceNameUpdate field0)? deviceNameUpdate,
     TResult Function(MagicBackupRequestV2 field0)? magicBackupRequestV2,
     TResult Function(MagicBackupResponseV2 field0)? magicBackupResponseV2,
     required TResult orElse(),
@@ -7698,6 +7836,8 @@ class _$QuantumLinkMessage_BroadcastTransactionImpl
         unpairingRequest,
     required TResult Function(QuantumLinkMessage_UnpairingResponse value)
         unpairingResponse,
+    required TResult Function(QuantumLinkMessage_DeviceNameUpdate value)
+        deviceNameUpdate,
     required TResult Function(QuantumLinkMessage_MagicBackupRequestV2 value)
         magicBackupRequestV2,
     required TResult Function(QuantumLinkMessage_MagicBackupResponseV2 value)
@@ -7773,6 +7913,8 @@ class _$QuantumLinkMessage_BroadcastTransactionImpl
         unpairingRequest,
     TResult? Function(QuantumLinkMessage_UnpairingResponse value)?
         unpairingResponse,
+    TResult? Function(QuantumLinkMessage_DeviceNameUpdate value)?
+        deviceNameUpdate,
     TResult? Function(QuantumLinkMessage_MagicBackupRequestV2 value)?
         magicBackupRequestV2,
     TResult? Function(QuantumLinkMessage_MagicBackupResponseV2 value)?
@@ -7844,6 +7986,8 @@ class _$QuantumLinkMessage_BroadcastTransactionImpl
         unpairingRequest,
     TResult Function(QuantumLinkMessage_UnpairingResponse value)?
         unpairingResponse,
+    TResult Function(QuantumLinkMessage_DeviceNameUpdate value)?
+        deviceNameUpdate,
     TResult Function(QuantumLinkMessage_MagicBackupRequestV2 value)?
         magicBackupRequestV2,
     TResult Function(QuantumLinkMessage_MagicBackupResponseV2 value)?
@@ -7997,6 +8141,7 @@ class _$QuantumLinkMessage_AccountUpdateImpl
     required TResult Function(TimezoneResponse field0) timezoneResponse,
     required TResult Function(UnpairingRequest field0) unpairingRequest,
     required TResult Function(UnpairingResponse field0) unpairingResponse,
+    required TResult Function(DeviceNameUpdate field0) deviceNameUpdate,
     required TResult Function(MagicBackupRequestV2 field0) magicBackupRequestV2,
     required TResult Function(MagicBackupResponseV2 field0)
         magicBackupResponseV2,
@@ -8051,6 +8196,7 @@ class _$QuantumLinkMessage_AccountUpdateImpl
     TResult? Function(TimezoneResponse field0)? timezoneResponse,
     TResult? Function(UnpairingRequest field0)? unpairingRequest,
     TResult? Function(UnpairingResponse field0)? unpairingResponse,
+    TResult? Function(DeviceNameUpdate field0)? deviceNameUpdate,
     TResult? Function(MagicBackupRequestV2 field0)? magicBackupRequestV2,
     TResult? Function(MagicBackupResponseV2 field0)? magicBackupResponseV2,
   }) {
@@ -8103,6 +8249,7 @@ class _$QuantumLinkMessage_AccountUpdateImpl
     TResult Function(TimezoneResponse field0)? timezoneResponse,
     TResult Function(UnpairingRequest field0)? unpairingRequest,
     TResult Function(UnpairingResponse field0)? unpairingResponse,
+    TResult Function(DeviceNameUpdate field0)? deviceNameUpdate,
     TResult Function(MagicBackupRequestV2 field0)? magicBackupRequestV2,
     TResult Function(MagicBackupResponseV2 field0)? magicBackupResponseV2,
     required TResult orElse(),
@@ -8192,6 +8339,8 @@ class _$QuantumLinkMessage_AccountUpdateImpl
         unpairingRequest,
     required TResult Function(QuantumLinkMessage_UnpairingResponse value)
         unpairingResponse,
+    required TResult Function(QuantumLinkMessage_DeviceNameUpdate value)
+        deviceNameUpdate,
     required TResult Function(QuantumLinkMessage_MagicBackupRequestV2 value)
         magicBackupRequestV2,
     required TResult Function(QuantumLinkMessage_MagicBackupResponseV2 value)
@@ -8267,6 +8416,8 @@ class _$QuantumLinkMessage_AccountUpdateImpl
         unpairingRequest,
     TResult? Function(QuantumLinkMessage_UnpairingResponse value)?
         unpairingResponse,
+    TResult? Function(QuantumLinkMessage_DeviceNameUpdate value)?
+        deviceNameUpdate,
     TResult? Function(QuantumLinkMessage_MagicBackupRequestV2 value)?
         magicBackupRequestV2,
     TResult? Function(QuantumLinkMessage_MagicBackupResponseV2 value)?
@@ -8338,6 +8489,8 @@ class _$QuantumLinkMessage_AccountUpdateImpl
         unpairingRequest,
     TResult Function(QuantumLinkMessage_UnpairingResponse value)?
         unpairingResponse,
+    TResult Function(QuantumLinkMessage_DeviceNameUpdate value)?
+        deviceNameUpdate,
     TResult Function(QuantumLinkMessage_MagicBackupRequestV2 value)?
         magicBackupRequestV2,
     TResult Function(QuantumLinkMessage_MagicBackupResponseV2 value)?
@@ -8489,6 +8642,7 @@ class _$QuantumLinkMessage_ApplyPassphraseImpl
     required TResult Function(TimezoneResponse field0) timezoneResponse,
     required TResult Function(UnpairingRequest field0) unpairingRequest,
     required TResult Function(UnpairingResponse field0) unpairingResponse,
+    required TResult Function(DeviceNameUpdate field0) deviceNameUpdate,
     required TResult Function(MagicBackupRequestV2 field0) magicBackupRequestV2,
     required TResult Function(MagicBackupResponseV2 field0)
         magicBackupResponseV2,
@@ -8543,6 +8697,7 @@ class _$QuantumLinkMessage_ApplyPassphraseImpl
     TResult? Function(TimezoneResponse field0)? timezoneResponse,
     TResult? Function(UnpairingRequest field0)? unpairingRequest,
     TResult? Function(UnpairingResponse field0)? unpairingResponse,
+    TResult? Function(DeviceNameUpdate field0)? deviceNameUpdate,
     TResult? Function(MagicBackupRequestV2 field0)? magicBackupRequestV2,
     TResult? Function(MagicBackupResponseV2 field0)? magicBackupResponseV2,
   }) {
@@ -8595,6 +8750,7 @@ class _$QuantumLinkMessage_ApplyPassphraseImpl
     TResult Function(TimezoneResponse field0)? timezoneResponse,
     TResult Function(UnpairingRequest field0)? unpairingRequest,
     TResult Function(UnpairingResponse field0)? unpairingResponse,
+    TResult Function(DeviceNameUpdate field0)? deviceNameUpdate,
     TResult Function(MagicBackupRequestV2 field0)? magicBackupRequestV2,
     TResult Function(MagicBackupResponseV2 field0)? magicBackupResponseV2,
     required TResult orElse(),
@@ -8684,6 +8840,8 @@ class _$QuantumLinkMessage_ApplyPassphraseImpl
         unpairingRequest,
     required TResult Function(QuantumLinkMessage_UnpairingResponse value)
         unpairingResponse,
+    required TResult Function(QuantumLinkMessage_DeviceNameUpdate value)
+        deviceNameUpdate,
     required TResult Function(QuantumLinkMessage_MagicBackupRequestV2 value)
         magicBackupRequestV2,
     required TResult Function(QuantumLinkMessage_MagicBackupResponseV2 value)
@@ -8759,6 +8917,8 @@ class _$QuantumLinkMessage_ApplyPassphraseImpl
         unpairingRequest,
     TResult? Function(QuantumLinkMessage_UnpairingResponse value)?
         unpairingResponse,
+    TResult? Function(QuantumLinkMessage_DeviceNameUpdate value)?
+        deviceNameUpdate,
     TResult? Function(QuantumLinkMessage_MagicBackupRequestV2 value)?
         magicBackupRequestV2,
     TResult? Function(QuantumLinkMessage_MagicBackupResponseV2 value)?
@@ -8830,6 +8990,8 @@ class _$QuantumLinkMessage_ApplyPassphraseImpl
         unpairingRequest,
     TResult Function(QuantumLinkMessage_UnpairingResponse value)?
         unpairingResponse,
+    TResult Function(QuantumLinkMessage_DeviceNameUpdate value)?
+        deviceNameUpdate,
     TResult Function(QuantumLinkMessage_MagicBackupRequestV2 value)?
         magicBackupRequestV2,
     TResult Function(QuantumLinkMessage_MagicBackupResponseV2 value)?
@@ -8990,6 +9152,7 @@ class _$QuantumLinkMessage_EnvoyMagicBackupEnabledRequestImpl
     required TResult Function(TimezoneResponse field0) timezoneResponse,
     required TResult Function(UnpairingRequest field0) unpairingRequest,
     required TResult Function(UnpairingResponse field0) unpairingResponse,
+    required TResult Function(DeviceNameUpdate field0) deviceNameUpdate,
     required TResult Function(MagicBackupRequestV2 field0) magicBackupRequestV2,
     required TResult Function(MagicBackupResponseV2 field0)
         magicBackupResponseV2,
@@ -9044,6 +9207,7 @@ class _$QuantumLinkMessage_EnvoyMagicBackupEnabledRequestImpl
     TResult? Function(TimezoneResponse field0)? timezoneResponse,
     TResult? Function(UnpairingRequest field0)? unpairingRequest,
     TResult? Function(UnpairingResponse field0)? unpairingResponse,
+    TResult? Function(DeviceNameUpdate field0)? deviceNameUpdate,
     TResult? Function(MagicBackupRequestV2 field0)? magicBackupRequestV2,
     TResult? Function(MagicBackupResponseV2 field0)? magicBackupResponseV2,
   }) {
@@ -9096,6 +9260,7 @@ class _$QuantumLinkMessage_EnvoyMagicBackupEnabledRequestImpl
     TResult Function(TimezoneResponse field0)? timezoneResponse,
     TResult Function(UnpairingRequest field0)? unpairingRequest,
     TResult Function(UnpairingResponse field0)? unpairingResponse,
+    TResult Function(DeviceNameUpdate field0)? deviceNameUpdate,
     TResult Function(MagicBackupRequestV2 field0)? magicBackupRequestV2,
     TResult Function(MagicBackupResponseV2 field0)? magicBackupResponseV2,
     required TResult orElse(),
@@ -9185,6 +9350,8 @@ class _$QuantumLinkMessage_EnvoyMagicBackupEnabledRequestImpl
         unpairingRequest,
     required TResult Function(QuantumLinkMessage_UnpairingResponse value)
         unpairingResponse,
+    required TResult Function(QuantumLinkMessage_DeviceNameUpdate value)
+        deviceNameUpdate,
     required TResult Function(QuantumLinkMessage_MagicBackupRequestV2 value)
         magicBackupRequestV2,
     required TResult Function(QuantumLinkMessage_MagicBackupResponseV2 value)
@@ -9260,6 +9427,8 @@ class _$QuantumLinkMessage_EnvoyMagicBackupEnabledRequestImpl
         unpairingRequest,
     TResult? Function(QuantumLinkMessage_UnpairingResponse value)?
         unpairingResponse,
+    TResult? Function(QuantumLinkMessage_DeviceNameUpdate value)?
+        deviceNameUpdate,
     TResult? Function(QuantumLinkMessage_MagicBackupRequestV2 value)?
         magicBackupRequestV2,
     TResult? Function(QuantumLinkMessage_MagicBackupResponseV2 value)?
@@ -9331,6 +9500,8 @@ class _$QuantumLinkMessage_EnvoyMagicBackupEnabledRequestImpl
         unpairingRequest,
     TResult Function(QuantumLinkMessage_UnpairingResponse value)?
         unpairingResponse,
+    TResult Function(QuantumLinkMessage_DeviceNameUpdate value)?
+        deviceNameUpdate,
     TResult Function(QuantumLinkMessage_MagicBackupRequestV2 value)?
         magicBackupRequestV2,
     TResult Function(QuantumLinkMessage_MagicBackupResponseV2 value)?
@@ -9495,6 +9666,7 @@ class _$QuantumLinkMessage_EnvoyMagicBackupEnabledResponseImpl
     required TResult Function(TimezoneResponse field0) timezoneResponse,
     required TResult Function(UnpairingRequest field0) unpairingRequest,
     required TResult Function(UnpairingResponse field0) unpairingResponse,
+    required TResult Function(DeviceNameUpdate field0) deviceNameUpdate,
     required TResult Function(MagicBackupRequestV2 field0) magicBackupRequestV2,
     required TResult Function(MagicBackupResponseV2 field0)
         magicBackupResponseV2,
@@ -9549,6 +9721,7 @@ class _$QuantumLinkMessage_EnvoyMagicBackupEnabledResponseImpl
     TResult? Function(TimezoneResponse field0)? timezoneResponse,
     TResult? Function(UnpairingRequest field0)? unpairingRequest,
     TResult? Function(UnpairingResponse field0)? unpairingResponse,
+    TResult? Function(DeviceNameUpdate field0)? deviceNameUpdate,
     TResult? Function(MagicBackupRequestV2 field0)? magicBackupRequestV2,
     TResult? Function(MagicBackupResponseV2 field0)? magicBackupResponseV2,
   }) {
@@ -9601,6 +9774,7 @@ class _$QuantumLinkMessage_EnvoyMagicBackupEnabledResponseImpl
     TResult Function(TimezoneResponse field0)? timezoneResponse,
     TResult Function(UnpairingRequest field0)? unpairingRequest,
     TResult Function(UnpairingResponse field0)? unpairingResponse,
+    TResult Function(DeviceNameUpdate field0)? deviceNameUpdate,
     TResult Function(MagicBackupRequestV2 field0)? magicBackupRequestV2,
     TResult Function(MagicBackupResponseV2 field0)? magicBackupResponseV2,
     required TResult orElse(),
@@ -9690,6 +9864,8 @@ class _$QuantumLinkMessage_EnvoyMagicBackupEnabledResponseImpl
         unpairingRequest,
     required TResult Function(QuantumLinkMessage_UnpairingResponse value)
         unpairingResponse,
+    required TResult Function(QuantumLinkMessage_DeviceNameUpdate value)
+        deviceNameUpdate,
     required TResult Function(QuantumLinkMessage_MagicBackupRequestV2 value)
         magicBackupRequestV2,
     required TResult Function(QuantumLinkMessage_MagicBackupResponseV2 value)
@@ -9765,6 +9941,8 @@ class _$QuantumLinkMessage_EnvoyMagicBackupEnabledResponseImpl
         unpairingRequest,
     TResult? Function(QuantumLinkMessage_UnpairingResponse value)?
         unpairingResponse,
+    TResult? Function(QuantumLinkMessage_DeviceNameUpdate value)?
+        deviceNameUpdate,
     TResult? Function(QuantumLinkMessage_MagicBackupRequestV2 value)?
         magicBackupRequestV2,
     TResult? Function(QuantumLinkMessage_MagicBackupResponseV2 value)?
@@ -9836,6 +10014,8 @@ class _$QuantumLinkMessage_EnvoyMagicBackupEnabledResponseImpl
         unpairingRequest,
     TResult Function(QuantumLinkMessage_UnpairingResponse value)?
         unpairingResponse,
+    TResult Function(QuantumLinkMessage_DeviceNameUpdate value)?
+        deviceNameUpdate,
     TResult Function(QuantumLinkMessage_MagicBackupRequestV2 value)?
         magicBackupRequestV2,
     TResult Function(QuantumLinkMessage_MagicBackupResponseV2 value)?
@@ -9993,6 +10173,7 @@ class _$QuantumLinkMessage_PrimeMagicBackupEnabledImpl
     required TResult Function(TimezoneResponse field0) timezoneResponse,
     required TResult Function(UnpairingRequest field0) unpairingRequest,
     required TResult Function(UnpairingResponse field0) unpairingResponse,
+    required TResult Function(DeviceNameUpdate field0) deviceNameUpdate,
     required TResult Function(MagicBackupRequestV2 field0) magicBackupRequestV2,
     required TResult Function(MagicBackupResponseV2 field0)
         magicBackupResponseV2,
@@ -10047,6 +10228,7 @@ class _$QuantumLinkMessage_PrimeMagicBackupEnabledImpl
     TResult? Function(TimezoneResponse field0)? timezoneResponse,
     TResult? Function(UnpairingRequest field0)? unpairingRequest,
     TResult? Function(UnpairingResponse field0)? unpairingResponse,
+    TResult? Function(DeviceNameUpdate field0)? deviceNameUpdate,
     TResult? Function(MagicBackupRequestV2 field0)? magicBackupRequestV2,
     TResult? Function(MagicBackupResponseV2 field0)? magicBackupResponseV2,
   }) {
@@ -10099,6 +10281,7 @@ class _$QuantumLinkMessage_PrimeMagicBackupEnabledImpl
     TResult Function(TimezoneResponse field0)? timezoneResponse,
     TResult Function(UnpairingRequest field0)? unpairingRequest,
     TResult Function(UnpairingResponse field0)? unpairingResponse,
+    TResult Function(DeviceNameUpdate field0)? deviceNameUpdate,
     TResult Function(MagicBackupRequestV2 field0)? magicBackupRequestV2,
     TResult Function(MagicBackupResponseV2 field0)? magicBackupResponseV2,
     required TResult orElse(),
@@ -10188,6 +10371,8 @@ class _$QuantumLinkMessage_PrimeMagicBackupEnabledImpl
         unpairingRequest,
     required TResult Function(QuantumLinkMessage_UnpairingResponse value)
         unpairingResponse,
+    required TResult Function(QuantumLinkMessage_DeviceNameUpdate value)
+        deviceNameUpdate,
     required TResult Function(QuantumLinkMessage_MagicBackupRequestV2 value)
         magicBackupRequestV2,
     required TResult Function(QuantumLinkMessage_MagicBackupResponseV2 value)
@@ -10263,6 +10448,8 @@ class _$QuantumLinkMessage_PrimeMagicBackupEnabledImpl
         unpairingRequest,
     TResult? Function(QuantumLinkMessage_UnpairingResponse value)?
         unpairingResponse,
+    TResult? Function(QuantumLinkMessage_DeviceNameUpdate value)?
+        deviceNameUpdate,
     TResult? Function(QuantumLinkMessage_MagicBackupRequestV2 value)?
         magicBackupRequestV2,
     TResult? Function(QuantumLinkMessage_MagicBackupResponseV2 value)?
@@ -10334,6 +10521,8 @@ class _$QuantumLinkMessage_PrimeMagicBackupEnabledImpl
         unpairingRequest,
     TResult Function(QuantumLinkMessage_UnpairingResponse value)?
         unpairingResponse,
+    TResult Function(QuantumLinkMessage_DeviceNameUpdate value)?
+        deviceNameUpdate,
     TResult Function(QuantumLinkMessage_MagicBackupRequestV2 value)?
         magicBackupRequestV2,
     TResult Function(QuantumLinkMessage_MagicBackupResponseV2 value)?
@@ -10495,6 +10684,7 @@ class _$QuantumLinkMessage_PrimeMagicBackupStatusRequestImpl
     required TResult Function(TimezoneResponse field0) timezoneResponse,
     required TResult Function(UnpairingRequest field0) unpairingRequest,
     required TResult Function(UnpairingResponse field0) unpairingResponse,
+    required TResult Function(DeviceNameUpdate field0) deviceNameUpdate,
     required TResult Function(MagicBackupRequestV2 field0) magicBackupRequestV2,
     required TResult Function(MagicBackupResponseV2 field0)
         magicBackupResponseV2,
@@ -10549,6 +10739,7 @@ class _$QuantumLinkMessage_PrimeMagicBackupStatusRequestImpl
     TResult? Function(TimezoneResponse field0)? timezoneResponse,
     TResult? Function(UnpairingRequest field0)? unpairingRequest,
     TResult? Function(UnpairingResponse field0)? unpairingResponse,
+    TResult? Function(DeviceNameUpdate field0)? deviceNameUpdate,
     TResult? Function(MagicBackupRequestV2 field0)? magicBackupRequestV2,
     TResult? Function(MagicBackupResponseV2 field0)? magicBackupResponseV2,
   }) {
@@ -10601,6 +10792,7 @@ class _$QuantumLinkMessage_PrimeMagicBackupStatusRequestImpl
     TResult Function(TimezoneResponse field0)? timezoneResponse,
     TResult Function(UnpairingRequest field0)? unpairingRequest,
     TResult Function(UnpairingResponse field0)? unpairingResponse,
+    TResult Function(DeviceNameUpdate field0)? deviceNameUpdate,
     TResult Function(MagicBackupRequestV2 field0)? magicBackupRequestV2,
     TResult Function(MagicBackupResponseV2 field0)? magicBackupResponseV2,
     required TResult orElse(),
@@ -10690,6 +10882,8 @@ class _$QuantumLinkMessage_PrimeMagicBackupStatusRequestImpl
         unpairingRequest,
     required TResult Function(QuantumLinkMessage_UnpairingResponse value)
         unpairingResponse,
+    required TResult Function(QuantumLinkMessage_DeviceNameUpdate value)
+        deviceNameUpdate,
     required TResult Function(QuantumLinkMessage_MagicBackupRequestV2 value)
         magicBackupRequestV2,
     required TResult Function(QuantumLinkMessage_MagicBackupResponseV2 value)
@@ -10765,6 +10959,8 @@ class _$QuantumLinkMessage_PrimeMagicBackupStatusRequestImpl
         unpairingRequest,
     TResult? Function(QuantumLinkMessage_UnpairingResponse value)?
         unpairingResponse,
+    TResult? Function(QuantumLinkMessage_DeviceNameUpdate value)?
+        deviceNameUpdate,
     TResult? Function(QuantumLinkMessage_MagicBackupRequestV2 value)?
         magicBackupRequestV2,
     TResult? Function(QuantumLinkMessage_MagicBackupResponseV2 value)?
@@ -10836,6 +11032,8 @@ class _$QuantumLinkMessage_PrimeMagicBackupStatusRequestImpl
         unpairingRequest,
     TResult Function(QuantumLinkMessage_UnpairingResponse value)?
         unpairingResponse,
+    TResult Function(QuantumLinkMessage_DeviceNameUpdate value)?
+        deviceNameUpdate,
     TResult Function(QuantumLinkMessage_MagicBackupRequestV2 value)?
         magicBackupRequestV2,
     TResult Function(QuantumLinkMessage_MagicBackupResponseV2 value)?
@@ -10998,6 +11196,7 @@ class _$QuantumLinkMessage_PrimeMagicBackupStatusResponseImpl
     required TResult Function(TimezoneResponse field0) timezoneResponse,
     required TResult Function(UnpairingRequest field0) unpairingRequest,
     required TResult Function(UnpairingResponse field0) unpairingResponse,
+    required TResult Function(DeviceNameUpdate field0) deviceNameUpdate,
     required TResult Function(MagicBackupRequestV2 field0) magicBackupRequestV2,
     required TResult Function(MagicBackupResponseV2 field0)
         magicBackupResponseV2,
@@ -11052,6 +11251,7 @@ class _$QuantumLinkMessage_PrimeMagicBackupStatusResponseImpl
     TResult? Function(TimezoneResponse field0)? timezoneResponse,
     TResult? Function(UnpairingRequest field0)? unpairingRequest,
     TResult? Function(UnpairingResponse field0)? unpairingResponse,
+    TResult? Function(DeviceNameUpdate field0)? deviceNameUpdate,
     TResult? Function(MagicBackupRequestV2 field0)? magicBackupRequestV2,
     TResult? Function(MagicBackupResponseV2 field0)? magicBackupResponseV2,
   }) {
@@ -11104,6 +11304,7 @@ class _$QuantumLinkMessage_PrimeMagicBackupStatusResponseImpl
     TResult Function(TimezoneResponse field0)? timezoneResponse,
     TResult Function(UnpairingRequest field0)? unpairingRequest,
     TResult Function(UnpairingResponse field0)? unpairingResponse,
+    TResult Function(DeviceNameUpdate field0)? deviceNameUpdate,
     TResult Function(MagicBackupRequestV2 field0)? magicBackupRequestV2,
     TResult Function(MagicBackupResponseV2 field0)? magicBackupResponseV2,
     required TResult orElse(),
@@ -11193,6 +11394,8 @@ class _$QuantumLinkMessage_PrimeMagicBackupStatusResponseImpl
         unpairingRequest,
     required TResult Function(QuantumLinkMessage_UnpairingResponse value)
         unpairingResponse,
+    required TResult Function(QuantumLinkMessage_DeviceNameUpdate value)
+        deviceNameUpdate,
     required TResult Function(QuantumLinkMessage_MagicBackupRequestV2 value)
         magicBackupRequestV2,
     required TResult Function(QuantumLinkMessage_MagicBackupResponseV2 value)
@@ -11268,6 +11471,8 @@ class _$QuantumLinkMessage_PrimeMagicBackupStatusResponseImpl
         unpairingRequest,
     TResult? Function(QuantumLinkMessage_UnpairingResponse value)?
         unpairingResponse,
+    TResult? Function(QuantumLinkMessage_DeviceNameUpdate value)?
+        deviceNameUpdate,
     TResult? Function(QuantumLinkMessage_MagicBackupRequestV2 value)?
         magicBackupRequestV2,
     TResult? Function(QuantumLinkMessage_MagicBackupResponseV2 value)?
@@ -11339,6 +11544,8 @@ class _$QuantumLinkMessage_PrimeMagicBackupStatusResponseImpl
         unpairingRequest,
     TResult Function(QuantumLinkMessage_UnpairingResponse value)?
         unpairingResponse,
+    TResult Function(QuantumLinkMessage_DeviceNameUpdate value)?
+        deviceNameUpdate,
     TResult Function(QuantumLinkMessage_MagicBackupRequestV2 value)?
         magicBackupRequestV2,
     TResult Function(QuantumLinkMessage_MagicBackupResponseV2 value)?
@@ -11492,6 +11699,7 @@ class _$QuantumLinkMessage_BackupShardRequestImpl
     required TResult Function(TimezoneResponse field0) timezoneResponse,
     required TResult Function(UnpairingRequest field0) unpairingRequest,
     required TResult Function(UnpairingResponse field0) unpairingResponse,
+    required TResult Function(DeviceNameUpdate field0) deviceNameUpdate,
     required TResult Function(MagicBackupRequestV2 field0) magicBackupRequestV2,
     required TResult Function(MagicBackupResponseV2 field0)
         magicBackupResponseV2,
@@ -11546,6 +11754,7 @@ class _$QuantumLinkMessage_BackupShardRequestImpl
     TResult? Function(TimezoneResponse field0)? timezoneResponse,
     TResult? Function(UnpairingRequest field0)? unpairingRequest,
     TResult? Function(UnpairingResponse field0)? unpairingResponse,
+    TResult? Function(DeviceNameUpdate field0)? deviceNameUpdate,
     TResult? Function(MagicBackupRequestV2 field0)? magicBackupRequestV2,
     TResult? Function(MagicBackupResponseV2 field0)? magicBackupResponseV2,
   }) {
@@ -11598,6 +11807,7 @@ class _$QuantumLinkMessage_BackupShardRequestImpl
     TResult Function(TimezoneResponse field0)? timezoneResponse,
     TResult Function(UnpairingRequest field0)? unpairingRequest,
     TResult Function(UnpairingResponse field0)? unpairingResponse,
+    TResult Function(DeviceNameUpdate field0)? deviceNameUpdate,
     TResult Function(MagicBackupRequestV2 field0)? magicBackupRequestV2,
     TResult Function(MagicBackupResponseV2 field0)? magicBackupResponseV2,
     required TResult orElse(),
@@ -11687,6 +11897,8 @@ class _$QuantumLinkMessage_BackupShardRequestImpl
         unpairingRequest,
     required TResult Function(QuantumLinkMessage_UnpairingResponse value)
         unpairingResponse,
+    required TResult Function(QuantumLinkMessage_DeviceNameUpdate value)
+        deviceNameUpdate,
     required TResult Function(QuantumLinkMessage_MagicBackupRequestV2 value)
         magicBackupRequestV2,
     required TResult Function(QuantumLinkMessage_MagicBackupResponseV2 value)
@@ -11762,6 +11974,8 @@ class _$QuantumLinkMessage_BackupShardRequestImpl
         unpairingRequest,
     TResult? Function(QuantumLinkMessage_UnpairingResponse value)?
         unpairingResponse,
+    TResult? Function(QuantumLinkMessage_DeviceNameUpdate value)?
+        deviceNameUpdate,
     TResult? Function(QuantumLinkMessage_MagicBackupRequestV2 value)?
         magicBackupRequestV2,
     TResult? Function(QuantumLinkMessage_MagicBackupResponseV2 value)?
@@ -11833,6 +12047,8 @@ class _$QuantumLinkMessage_BackupShardRequestImpl
         unpairingRequest,
     TResult Function(QuantumLinkMessage_UnpairingResponse value)?
         unpairingResponse,
+    TResult Function(QuantumLinkMessage_DeviceNameUpdate value)?
+        deviceNameUpdate,
     TResult Function(QuantumLinkMessage_MagicBackupRequestV2 value)?
         magicBackupRequestV2,
     TResult Function(QuantumLinkMessage_MagicBackupResponseV2 value)?
@@ -11999,6 +12215,7 @@ class _$QuantumLinkMessage_BackupShardResponseImpl
     required TResult Function(TimezoneResponse field0) timezoneResponse,
     required TResult Function(UnpairingRequest field0) unpairingRequest,
     required TResult Function(UnpairingResponse field0) unpairingResponse,
+    required TResult Function(DeviceNameUpdate field0) deviceNameUpdate,
     required TResult Function(MagicBackupRequestV2 field0) magicBackupRequestV2,
     required TResult Function(MagicBackupResponseV2 field0)
         magicBackupResponseV2,
@@ -12053,6 +12270,7 @@ class _$QuantumLinkMessage_BackupShardResponseImpl
     TResult? Function(TimezoneResponse field0)? timezoneResponse,
     TResult? Function(UnpairingRequest field0)? unpairingRequest,
     TResult? Function(UnpairingResponse field0)? unpairingResponse,
+    TResult? Function(DeviceNameUpdate field0)? deviceNameUpdate,
     TResult? Function(MagicBackupRequestV2 field0)? magicBackupRequestV2,
     TResult? Function(MagicBackupResponseV2 field0)? magicBackupResponseV2,
   }) {
@@ -12105,6 +12323,7 @@ class _$QuantumLinkMessage_BackupShardResponseImpl
     TResult Function(TimezoneResponse field0)? timezoneResponse,
     TResult Function(UnpairingRequest field0)? unpairingRequest,
     TResult Function(UnpairingResponse field0)? unpairingResponse,
+    TResult Function(DeviceNameUpdate field0)? deviceNameUpdate,
     TResult Function(MagicBackupRequestV2 field0)? magicBackupRequestV2,
     TResult Function(MagicBackupResponseV2 field0)? magicBackupResponseV2,
     required TResult orElse(),
@@ -12194,6 +12413,8 @@ class _$QuantumLinkMessage_BackupShardResponseImpl
         unpairingRequest,
     required TResult Function(QuantumLinkMessage_UnpairingResponse value)
         unpairingResponse,
+    required TResult Function(QuantumLinkMessage_DeviceNameUpdate value)
+        deviceNameUpdate,
     required TResult Function(QuantumLinkMessage_MagicBackupRequestV2 value)
         magicBackupRequestV2,
     required TResult Function(QuantumLinkMessage_MagicBackupResponseV2 value)
@@ -12269,6 +12490,8 @@ class _$QuantumLinkMessage_BackupShardResponseImpl
         unpairingRequest,
     TResult? Function(QuantumLinkMessage_UnpairingResponse value)?
         unpairingResponse,
+    TResult? Function(QuantumLinkMessage_DeviceNameUpdate value)?
+        deviceNameUpdate,
     TResult? Function(QuantumLinkMessage_MagicBackupRequestV2 value)?
         magicBackupRequestV2,
     TResult? Function(QuantumLinkMessage_MagicBackupResponseV2 value)?
@@ -12340,6 +12563,8 @@ class _$QuantumLinkMessage_BackupShardResponseImpl
         unpairingRequest,
     TResult Function(QuantumLinkMessage_UnpairingResponse value)?
         unpairingResponse,
+    TResult Function(QuantumLinkMessage_DeviceNameUpdate value)?
+        deviceNameUpdate,
     TResult Function(QuantumLinkMessage_MagicBackupRequestV2 value)?
         magicBackupRequestV2,
     TResult Function(QuantumLinkMessage_MagicBackupResponseV2 value)?
@@ -12494,6 +12719,7 @@ class _$QuantumLinkMessage_RestoreShardRequestImpl
     required TResult Function(TimezoneResponse field0) timezoneResponse,
     required TResult Function(UnpairingRequest field0) unpairingRequest,
     required TResult Function(UnpairingResponse field0) unpairingResponse,
+    required TResult Function(DeviceNameUpdate field0) deviceNameUpdate,
     required TResult Function(MagicBackupRequestV2 field0) magicBackupRequestV2,
     required TResult Function(MagicBackupResponseV2 field0)
         magicBackupResponseV2,
@@ -12548,6 +12774,7 @@ class _$QuantumLinkMessage_RestoreShardRequestImpl
     TResult? Function(TimezoneResponse field0)? timezoneResponse,
     TResult? Function(UnpairingRequest field0)? unpairingRequest,
     TResult? Function(UnpairingResponse field0)? unpairingResponse,
+    TResult? Function(DeviceNameUpdate field0)? deviceNameUpdate,
     TResult? Function(MagicBackupRequestV2 field0)? magicBackupRequestV2,
     TResult? Function(MagicBackupResponseV2 field0)? magicBackupResponseV2,
   }) {
@@ -12600,6 +12827,7 @@ class _$QuantumLinkMessage_RestoreShardRequestImpl
     TResult Function(TimezoneResponse field0)? timezoneResponse,
     TResult Function(UnpairingRequest field0)? unpairingRequest,
     TResult Function(UnpairingResponse field0)? unpairingResponse,
+    TResult Function(DeviceNameUpdate field0)? deviceNameUpdate,
     TResult Function(MagicBackupRequestV2 field0)? magicBackupRequestV2,
     TResult Function(MagicBackupResponseV2 field0)? magicBackupResponseV2,
     required TResult orElse(),
@@ -12689,6 +12917,8 @@ class _$QuantumLinkMessage_RestoreShardRequestImpl
         unpairingRequest,
     required TResult Function(QuantumLinkMessage_UnpairingResponse value)
         unpairingResponse,
+    required TResult Function(QuantumLinkMessage_DeviceNameUpdate value)
+        deviceNameUpdate,
     required TResult Function(QuantumLinkMessage_MagicBackupRequestV2 value)
         magicBackupRequestV2,
     required TResult Function(QuantumLinkMessage_MagicBackupResponseV2 value)
@@ -12764,6 +12994,8 @@ class _$QuantumLinkMessage_RestoreShardRequestImpl
         unpairingRequest,
     TResult? Function(QuantumLinkMessage_UnpairingResponse value)?
         unpairingResponse,
+    TResult? Function(QuantumLinkMessage_DeviceNameUpdate value)?
+        deviceNameUpdate,
     TResult? Function(QuantumLinkMessage_MagicBackupRequestV2 value)?
         magicBackupRequestV2,
     TResult? Function(QuantumLinkMessage_MagicBackupResponseV2 value)?
@@ -12835,6 +13067,8 @@ class _$QuantumLinkMessage_RestoreShardRequestImpl
         unpairingRequest,
     TResult Function(QuantumLinkMessage_UnpairingResponse value)?
         unpairingResponse,
+    TResult Function(QuantumLinkMessage_DeviceNameUpdate value)?
+        deviceNameUpdate,
     TResult Function(QuantumLinkMessage_MagicBackupRequestV2 value)?
         magicBackupRequestV2,
     TResult Function(QuantumLinkMessage_MagicBackupResponseV2 value)?
@@ -13001,6 +13235,7 @@ class _$QuantumLinkMessage_RestoreShardResponseImpl
     required TResult Function(TimezoneResponse field0) timezoneResponse,
     required TResult Function(UnpairingRequest field0) unpairingRequest,
     required TResult Function(UnpairingResponse field0) unpairingResponse,
+    required TResult Function(DeviceNameUpdate field0) deviceNameUpdate,
     required TResult Function(MagicBackupRequestV2 field0) magicBackupRequestV2,
     required TResult Function(MagicBackupResponseV2 field0)
         magicBackupResponseV2,
@@ -13055,6 +13290,7 @@ class _$QuantumLinkMessage_RestoreShardResponseImpl
     TResult? Function(TimezoneResponse field0)? timezoneResponse,
     TResult? Function(UnpairingRequest field0)? unpairingRequest,
     TResult? Function(UnpairingResponse field0)? unpairingResponse,
+    TResult? Function(DeviceNameUpdate field0)? deviceNameUpdate,
     TResult? Function(MagicBackupRequestV2 field0)? magicBackupRequestV2,
     TResult? Function(MagicBackupResponseV2 field0)? magicBackupResponseV2,
   }) {
@@ -13107,6 +13343,7 @@ class _$QuantumLinkMessage_RestoreShardResponseImpl
     TResult Function(TimezoneResponse field0)? timezoneResponse,
     TResult Function(UnpairingRequest field0)? unpairingRequest,
     TResult Function(UnpairingResponse field0)? unpairingResponse,
+    TResult Function(DeviceNameUpdate field0)? deviceNameUpdate,
     TResult Function(MagicBackupRequestV2 field0)? magicBackupRequestV2,
     TResult Function(MagicBackupResponseV2 field0)? magicBackupResponseV2,
     required TResult orElse(),
@@ -13196,6 +13433,8 @@ class _$QuantumLinkMessage_RestoreShardResponseImpl
         unpairingRequest,
     required TResult Function(QuantumLinkMessage_UnpairingResponse value)
         unpairingResponse,
+    required TResult Function(QuantumLinkMessage_DeviceNameUpdate value)
+        deviceNameUpdate,
     required TResult Function(QuantumLinkMessage_MagicBackupRequestV2 value)
         magicBackupRequestV2,
     required TResult Function(QuantumLinkMessage_MagicBackupResponseV2 value)
@@ -13271,6 +13510,8 @@ class _$QuantumLinkMessage_RestoreShardResponseImpl
         unpairingRequest,
     TResult? Function(QuantumLinkMessage_UnpairingResponse value)?
         unpairingResponse,
+    TResult? Function(QuantumLinkMessage_DeviceNameUpdate value)?
+        deviceNameUpdate,
     TResult? Function(QuantumLinkMessage_MagicBackupRequestV2 value)?
         magicBackupRequestV2,
     TResult? Function(QuantumLinkMessage_MagicBackupResponseV2 value)?
@@ -13342,6 +13583,8 @@ class _$QuantumLinkMessage_RestoreShardResponseImpl
         unpairingRequest,
     TResult Function(QuantumLinkMessage_UnpairingResponse value)?
         unpairingResponse,
+    TResult Function(QuantumLinkMessage_DeviceNameUpdate value)?
+        deviceNameUpdate,
     TResult Function(QuantumLinkMessage_MagicBackupRequestV2 value)?
         magicBackupRequestV2,
     TResult Function(QuantumLinkMessage_MagicBackupResponseV2 value)?
@@ -13510,6 +13753,7 @@ class _$QuantumLinkMessage_CreateMagicBackupEventImpl
     required TResult Function(TimezoneResponse field0) timezoneResponse,
     required TResult Function(UnpairingRequest field0) unpairingRequest,
     required TResult Function(UnpairingResponse field0) unpairingResponse,
+    required TResult Function(DeviceNameUpdate field0) deviceNameUpdate,
     required TResult Function(MagicBackupRequestV2 field0) magicBackupRequestV2,
     required TResult Function(MagicBackupResponseV2 field0)
         magicBackupResponseV2,
@@ -13564,6 +13808,7 @@ class _$QuantumLinkMessage_CreateMagicBackupEventImpl
     TResult? Function(TimezoneResponse field0)? timezoneResponse,
     TResult? Function(UnpairingRequest field0)? unpairingRequest,
     TResult? Function(UnpairingResponse field0)? unpairingResponse,
+    TResult? Function(DeviceNameUpdate field0)? deviceNameUpdate,
     TResult? Function(MagicBackupRequestV2 field0)? magicBackupRequestV2,
     TResult? Function(MagicBackupResponseV2 field0)? magicBackupResponseV2,
   }) {
@@ -13616,6 +13861,7 @@ class _$QuantumLinkMessage_CreateMagicBackupEventImpl
     TResult Function(TimezoneResponse field0)? timezoneResponse,
     TResult Function(UnpairingRequest field0)? unpairingRequest,
     TResult Function(UnpairingResponse field0)? unpairingResponse,
+    TResult Function(DeviceNameUpdate field0)? deviceNameUpdate,
     TResult Function(MagicBackupRequestV2 field0)? magicBackupRequestV2,
     TResult Function(MagicBackupResponseV2 field0)? magicBackupResponseV2,
     required TResult orElse(),
@@ -13705,6 +13951,8 @@ class _$QuantumLinkMessage_CreateMagicBackupEventImpl
         unpairingRequest,
     required TResult Function(QuantumLinkMessage_UnpairingResponse value)
         unpairingResponse,
+    required TResult Function(QuantumLinkMessage_DeviceNameUpdate value)
+        deviceNameUpdate,
     required TResult Function(QuantumLinkMessage_MagicBackupRequestV2 value)
         magicBackupRequestV2,
     required TResult Function(QuantumLinkMessage_MagicBackupResponseV2 value)
@@ -13780,6 +14028,8 @@ class _$QuantumLinkMessage_CreateMagicBackupEventImpl
         unpairingRequest,
     TResult? Function(QuantumLinkMessage_UnpairingResponse value)?
         unpairingResponse,
+    TResult? Function(QuantumLinkMessage_DeviceNameUpdate value)?
+        deviceNameUpdate,
     TResult? Function(QuantumLinkMessage_MagicBackupRequestV2 value)?
         magicBackupRequestV2,
     TResult? Function(QuantumLinkMessage_MagicBackupResponseV2 value)?
@@ -13851,6 +14101,8 @@ class _$QuantumLinkMessage_CreateMagicBackupEventImpl
         unpairingRequest,
     TResult Function(QuantumLinkMessage_UnpairingResponse value)?
         unpairingResponse,
+    TResult Function(QuantumLinkMessage_DeviceNameUpdate value)?
+        deviceNameUpdate,
     TResult Function(QuantumLinkMessage_MagicBackupRequestV2 value)?
         magicBackupRequestV2,
     TResult Function(QuantumLinkMessage_MagicBackupResponseV2 value)?
@@ -14020,6 +14272,7 @@ class _$QuantumLinkMessage_CreateMagicBackupResultImpl
     required TResult Function(TimezoneResponse field0) timezoneResponse,
     required TResult Function(UnpairingRequest field0) unpairingRequest,
     required TResult Function(UnpairingResponse field0) unpairingResponse,
+    required TResult Function(DeviceNameUpdate field0) deviceNameUpdate,
     required TResult Function(MagicBackupRequestV2 field0) magicBackupRequestV2,
     required TResult Function(MagicBackupResponseV2 field0)
         magicBackupResponseV2,
@@ -14074,6 +14327,7 @@ class _$QuantumLinkMessage_CreateMagicBackupResultImpl
     TResult? Function(TimezoneResponse field0)? timezoneResponse,
     TResult? Function(UnpairingRequest field0)? unpairingRequest,
     TResult? Function(UnpairingResponse field0)? unpairingResponse,
+    TResult? Function(DeviceNameUpdate field0)? deviceNameUpdate,
     TResult? Function(MagicBackupRequestV2 field0)? magicBackupRequestV2,
     TResult? Function(MagicBackupResponseV2 field0)? magicBackupResponseV2,
   }) {
@@ -14126,6 +14380,7 @@ class _$QuantumLinkMessage_CreateMagicBackupResultImpl
     TResult Function(TimezoneResponse field0)? timezoneResponse,
     TResult Function(UnpairingRequest field0)? unpairingRequest,
     TResult Function(UnpairingResponse field0)? unpairingResponse,
+    TResult Function(DeviceNameUpdate field0)? deviceNameUpdate,
     TResult Function(MagicBackupRequestV2 field0)? magicBackupRequestV2,
     TResult Function(MagicBackupResponseV2 field0)? magicBackupResponseV2,
     required TResult orElse(),
@@ -14215,6 +14470,8 @@ class _$QuantumLinkMessage_CreateMagicBackupResultImpl
         unpairingRequest,
     required TResult Function(QuantumLinkMessage_UnpairingResponse value)
         unpairingResponse,
+    required TResult Function(QuantumLinkMessage_DeviceNameUpdate value)
+        deviceNameUpdate,
     required TResult Function(QuantumLinkMessage_MagicBackupRequestV2 value)
         magicBackupRequestV2,
     required TResult Function(QuantumLinkMessage_MagicBackupResponseV2 value)
@@ -14290,6 +14547,8 @@ class _$QuantumLinkMessage_CreateMagicBackupResultImpl
         unpairingRequest,
     TResult? Function(QuantumLinkMessage_UnpairingResponse value)?
         unpairingResponse,
+    TResult? Function(QuantumLinkMessage_DeviceNameUpdate value)?
+        deviceNameUpdate,
     TResult? Function(QuantumLinkMessage_MagicBackupRequestV2 value)?
         magicBackupRequestV2,
     TResult? Function(QuantumLinkMessage_MagicBackupResponseV2 value)?
@@ -14361,6 +14620,8 @@ class _$QuantumLinkMessage_CreateMagicBackupResultImpl
         unpairingRequest,
     TResult Function(QuantumLinkMessage_UnpairingResponse value)?
         unpairingResponse,
+    TResult Function(QuantumLinkMessage_DeviceNameUpdate value)?
+        deviceNameUpdate,
     TResult Function(QuantumLinkMessage_MagicBackupRequestV2 value)?
         magicBackupRequestV2,
     TResult Function(QuantumLinkMessage_MagicBackupResponseV2 value)?
@@ -14520,6 +14781,7 @@ class _$QuantumLinkMessage_RestoreMagicBackupRequestImpl
     required TResult Function(TimezoneResponse field0) timezoneResponse,
     required TResult Function(UnpairingRequest field0) unpairingRequest,
     required TResult Function(UnpairingResponse field0) unpairingResponse,
+    required TResult Function(DeviceNameUpdate field0) deviceNameUpdate,
     required TResult Function(MagicBackupRequestV2 field0) magicBackupRequestV2,
     required TResult Function(MagicBackupResponseV2 field0)
         magicBackupResponseV2,
@@ -14574,6 +14836,7 @@ class _$QuantumLinkMessage_RestoreMagicBackupRequestImpl
     TResult? Function(TimezoneResponse field0)? timezoneResponse,
     TResult? Function(UnpairingRequest field0)? unpairingRequest,
     TResult? Function(UnpairingResponse field0)? unpairingResponse,
+    TResult? Function(DeviceNameUpdate field0)? deviceNameUpdate,
     TResult? Function(MagicBackupRequestV2 field0)? magicBackupRequestV2,
     TResult? Function(MagicBackupResponseV2 field0)? magicBackupResponseV2,
   }) {
@@ -14626,6 +14889,7 @@ class _$QuantumLinkMessage_RestoreMagicBackupRequestImpl
     TResult Function(TimezoneResponse field0)? timezoneResponse,
     TResult Function(UnpairingRequest field0)? unpairingRequest,
     TResult Function(UnpairingResponse field0)? unpairingResponse,
+    TResult Function(DeviceNameUpdate field0)? deviceNameUpdate,
     TResult Function(MagicBackupRequestV2 field0)? magicBackupRequestV2,
     TResult Function(MagicBackupResponseV2 field0)? magicBackupResponseV2,
     required TResult orElse(),
@@ -14715,6 +14979,8 @@ class _$QuantumLinkMessage_RestoreMagicBackupRequestImpl
         unpairingRequest,
     required TResult Function(QuantumLinkMessage_UnpairingResponse value)
         unpairingResponse,
+    required TResult Function(QuantumLinkMessage_DeviceNameUpdate value)
+        deviceNameUpdate,
     required TResult Function(QuantumLinkMessage_MagicBackupRequestV2 value)
         magicBackupRequestV2,
     required TResult Function(QuantumLinkMessage_MagicBackupResponseV2 value)
@@ -14790,6 +15056,8 @@ class _$QuantumLinkMessage_RestoreMagicBackupRequestImpl
         unpairingRequest,
     TResult? Function(QuantumLinkMessage_UnpairingResponse value)?
         unpairingResponse,
+    TResult? Function(QuantumLinkMessage_DeviceNameUpdate value)?
+        deviceNameUpdate,
     TResult? Function(QuantumLinkMessage_MagicBackupRequestV2 value)?
         magicBackupRequestV2,
     TResult? Function(QuantumLinkMessage_MagicBackupResponseV2 value)?
@@ -14861,6 +15129,8 @@ class _$QuantumLinkMessage_RestoreMagicBackupRequestImpl
         unpairingRequest,
     TResult Function(QuantumLinkMessage_UnpairingResponse value)?
         unpairingResponse,
+    TResult Function(QuantumLinkMessage_DeviceNameUpdate value)?
+        deviceNameUpdate,
     TResult Function(QuantumLinkMessage_MagicBackupRequestV2 value)?
         magicBackupRequestV2,
     TResult Function(QuantumLinkMessage_MagicBackupResponseV2 value)?
@@ -15030,6 +15300,7 @@ class _$QuantumLinkMessage_RestoreMagicBackupEventImpl
     required TResult Function(TimezoneResponse field0) timezoneResponse,
     required TResult Function(UnpairingRequest field0) unpairingRequest,
     required TResult Function(UnpairingResponse field0) unpairingResponse,
+    required TResult Function(DeviceNameUpdate field0) deviceNameUpdate,
     required TResult Function(MagicBackupRequestV2 field0) magicBackupRequestV2,
     required TResult Function(MagicBackupResponseV2 field0)
         magicBackupResponseV2,
@@ -15084,6 +15355,7 @@ class _$QuantumLinkMessage_RestoreMagicBackupEventImpl
     TResult? Function(TimezoneResponse field0)? timezoneResponse,
     TResult? Function(UnpairingRequest field0)? unpairingRequest,
     TResult? Function(UnpairingResponse field0)? unpairingResponse,
+    TResult? Function(DeviceNameUpdate field0)? deviceNameUpdate,
     TResult? Function(MagicBackupRequestV2 field0)? magicBackupRequestV2,
     TResult? Function(MagicBackupResponseV2 field0)? magicBackupResponseV2,
   }) {
@@ -15136,6 +15408,7 @@ class _$QuantumLinkMessage_RestoreMagicBackupEventImpl
     TResult Function(TimezoneResponse field0)? timezoneResponse,
     TResult Function(UnpairingRequest field0)? unpairingRequest,
     TResult Function(UnpairingResponse field0)? unpairingResponse,
+    TResult Function(DeviceNameUpdate field0)? deviceNameUpdate,
     TResult Function(MagicBackupRequestV2 field0)? magicBackupRequestV2,
     TResult Function(MagicBackupResponseV2 field0)? magicBackupResponseV2,
     required TResult orElse(),
@@ -15225,6 +15498,8 @@ class _$QuantumLinkMessage_RestoreMagicBackupEventImpl
         unpairingRequest,
     required TResult Function(QuantumLinkMessage_UnpairingResponse value)
         unpairingResponse,
+    required TResult Function(QuantumLinkMessage_DeviceNameUpdate value)
+        deviceNameUpdate,
     required TResult Function(QuantumLinkMessage_MagicBackupRequestV2 value)
         magicBackupRequestV2,
     required TResult Function(QuantumLinkMessage_MagicBackupResponseV2 value)
@@ -15300,6 +15575,8 @@ class _$QuantumLinkMessage_RestoreMagicBackupEventImpl
         unpairingRequest,
     TResult? Function(QuantumLinkMessage_UnpairingResponse value)?
         unpairingResponse,
+    TResult? Function(QuantumLinkMessage_DeviceNameUpdate value)?
+        deviceNameUpdate,
     TResult? Function(QuantumLinkMessage_MagicBackupRequestV2 value)?
         magicBackupRequestV2,
     TResult? Function(QuantumLinkMessage_MagicBackupResponseV2 value)?
@@ -15371,6 +15648,8 @@ class _$QuantumLinkMessage_RestoreMagicBackupEventImpl
         unpairingRequest,
     TResult Function(QuantumLinkMessage_UnpairingResponse value)?
         unpairingResponse,
+    TResult Function(QuantumLinkMessage_DeviceNameUpdate value)?
+        deviceNameUpdate,
     TResult Function(QuantumLinkMessage_MagicBackupRequestV2 value)?
         magicBackupRequestV2,
     TResult Function(QuantumLinkMessage_MagicBackupResponseV2 value)?
@@ -15542,6 +15821,7 @@ class _$QuantumLinkMessage_RestoreMagicBackupResultImpl
     required TResult Function(TimezoneResponse field0) timezoneResponse,
     required TResult Function(UnpairingRequest field0) unpairingRequest,
     required TResult Function(UnpairingResponse field0) unpairingResponse,
+    required TResult Function(DeviceNameUpdate field0) deviceNameUpdate,
     required TResult Function(MagicBackupRequestV2 field0) magicBackupRequestV2,
     required TResult Function(MagicBackupResponseV2 field0)
         magicBackupResponseV2,
@@ -15596,6 +15876,7 @@ class _$QuantumLinkMessage_RestoreMagicBackupResultImpl
     TResult? Function(TimezoneResponse field0)? timezoneResponse,
     TResult? Function(UnpairingRequest field0)? unpairingRequest,
     TResult? Function(UnpairingResponse field0)? unpairingResponse,
+    TResult? Function(DeviceNameUpdate field0)? deviceNameUpdate,
     TResult? Function(MagicBackupRequestV2 field0)? magicBackupRequestV2,
     TResult? Function(MagicBackupResponseV2 field0)? magicBackupResponseV2,
   }) {
@@ -15648,6 +15929,7 @@ class _$QuantumLinkMessage_RestoreMagicBackupResultImpl
     TResult Function(TimezoneResponse field0)? timezoneResponse,
     TResult Function(UnpairingRequest field0)? unpairingRequest,
     TResult Function(UnpairingResponse field0)? unpairingResponse,
+    TResult Function(DeviceNameUpdate field0)? deviceNameUpdate,
     TResult Function(MagicBackupRequestV2 field0)? magicBackupRequestV2,
     TResult Function(MagicBackupResponseV2 field0)? magicBackupResponseV2,
     required TResult orElse(),
@@ -15737,6 +16019,8 @@ class _$QuantumLinkMessage_RestoreMagicBackupResultImpl
         unpairingRequest,
     required TResult Function(QuantumLinkMessage_UnpairingResponse value)
         unpairingResponse,
+    required TResult Function(QuantumLinkMessage_DeviceNameUpdate value)
+        deviceNameUpdate,
     required TResult Function(QuantumLinkMessage_MagicBackupRequestV2 value)
         magicBackupRequestV2,
     required TResult Function(QuantumLinkMessage_MagicBackupResponseV2 value)
@@ -15812,6 +16096,8 @@ class _$QuantumLinkMessage_RestoreMagicBackupResultImpl
         unpairingRequest,
     TResult? Function(QuantumLinkMessage_UnpairingResponse value)?
         unpairingResponse,
+    TResult? Function(QuantumLinkMessage_DeviceNameUpdate value)?
+        deviceNameUpdate,
     TResult? Function(QuantumLinkMessage_MagicBackupRequestV2 value)?
         magicBackupRequestV2,
     TResult? Function(QuantumLinkMessage_MagicBackupResponseV2 value)?
@@ -15883,6 +16169,8 @@ class _$QuantumLinkMessage_RestoreMagicBackupResultImpl
         unpairingRequest,
     TResult Function(QuantumLinkMessage_UnpairingResponse value)?
         unpairingResponse,
+    TResult Function(QuantumLinkMessage_DeviceNameUpdate value)?
+        deviceNameUpdate,
     TResult Function(QuantumLinkMessage_MagicBackupRequestV2 value)?
         magicBackupRequestV2,
     TResult Function(QuantumLinkMessage_MagicBackupResponseV2 value)?
@@ -16035,6 +16323,7 @@ class _$QuantumLinkMessage_HeartbeatImpl extends QuantumLinkMessage_Heartbeat {
     required TResult Function(TimezoneResponse field0) timezoneResponse,
     required TResult Function(UnpairingRequest field0) unpairingRequest,
     required TResult Function(UnpairingResponse field0) unpairingResponse,
+    required TResult Function(DeviceNameUpdate field0) deviceNameUpdate,
     required TResult Function(MagicBackupRequestV2 field0) magicBackupRequestV2,
     required TResult Function(MagicBackupResponseV2 field0)
         magicBackupResponseV2,
@@ -16089,6 +16378,7 @@ class _$QuantumLinkMessage_HeartbeatImpl extends QuantumLinkMessage_Heartbeat {
     TResult? Function(TimezoneResponse field0)? timezoneResponse,
     TResult? Function(UnpairingRequest field0)? unpairingRequest,
     TResult? Function(UnpairingResponse field0)? unpairingResponse,
+    TResult? Function(DeviceNameUpdate field0)? deviceNameUpdate,
     TResult? Function(MagicBackupRequestV2 field0)? magicBackupRequestV2,
     TResult? Function(MagicBackupResponseV2 field0)? magicBackupResponseV2,
   }) {
@@ -16141,6 +16431,7 @@ class _$QuantumLinkMessage_HeartbeatImpl extends QuantumLinkMessage_Heartbeat {
     TResult Function(TimezoneResponse field0)? timezoneResponse,
     TResult Function(UnpairingRequest field0)? unpairingRequest,
     TResult Function(UnpairingResponse field0)? unpairingResponse,
+    TResult Function(DeviceNameUpdate field0)? deviceNameUpdate,
     TResult Function(MagicBackupRequestV2 field0)? magicBackupRequestV2,
     TResult Function(MagicBackupResponseV2 field0)? magicBackupResponseV2,
     required TResult orElse(),
@@ -16230,6 +16521,8 @@ class _$QuantumLinkMessage_HeartbeatImpl extends QuantumLinkMessage_Heartbeat {
         unpairingRequest,
     required TResult Function(QuantumLinkMessage_UnpairingResponse value)
         unpairingResponse,
+    required TResult Function(QuantumLinkMessage_DeviceNameUpdate value)
+        deviceNameUpdate,
     required TResult Function(QuantumLinkMessage_MagicBackupRequestV2 value)
         magicBackupRequestV2,
     required TResult Function(QuantumLinkMessage_MagicBackupResponseV2 value)
@@ -16305,6 +16598,8 @@ class _$QuantumLinkMessage_HeartbeatImpl extends QuantumLinkMessage_Heartbeat {
         unpairingRequest,
     TResult? Function(QuantumLinkMessage_UnpairingResponse value)?
         unpairingResponse,
+    TResult? Function(QuantumLinkMessage_DeviceNameUpdate value)?
+        deviceNameUpdate,
     TResult? Function(QuantumLinkMessage_MagicBackupRequestV2 value)?
         magicBackupRequestV2,
     TResult? Function(QuantumLinkMessage_MagicBackupResponseV2 value)?
@@ -16376,6 +16671,8 @@ class _$QuantumLinkMessage_HeartbeatImpl extends QuantumLinkMessage_Heartbeat {
         unpairingRequest,
     TResult Function(QuantumLinkMessage_UnpairingResponse value)?
         unpairingResponse,
+    TResult Function(QuantumLinkMessage_DeviceNameUpdate value)?
+        deviceNameUpdate,
     TResult Function(QuantumLinkMessage_MagicBackupRequestV2 value)?
         magicBackupRequestV2,
     TResult Function(QuantumLinkMessage_MagicBackupResponseV2 value)?
@@ -16527,6 +16824,7 @@ class _$QuantumLinkMessage_TimezoneRequestImpl
     required TResult Function(TimezoneResponse field0) timezoneResponse,
     required TResult Function(UnpairingRequest field0) unpairingRequest,
     required TResult Function(UnpairingResponse field0) unpairingResponse,
+    required TResult Function(DeviceNameUpdate field0) deviceNameUpdate,
     required TResult Function(MagicBackupRequestV2 field0) magicBackupRequestV2,
     required TResult Function(MagicBackupResponseV2 field0)
         magicBackupResponseV2,
@@ -16581,6 +16879,7 @@ class _$QuantumLinkMessage_TimezoneRequestImpl
     TResult? Function(TimezoneResponse field0)? timezoneResponse,
     TResult? Function(UnpairingRequest field0)? unpairingRequest,
     TResult? Function(UnpairingResponse field0)? unpairingResponse,
+    TResult? Function(DeviceNameUpdate field0)? deviceNameUpdate,
     TResult? Function(MagicBackupRequestV2 field0)? magicBackupRequestV2,
     TResult? Function(MagicBackupResponseV2 field0)? magicBackupResponseV2,
   }) {
@@ -16633,6 +16932,7 @@ class _$QuantumLinkMessage_TimezoneRequestImpl
     TResult Function(TimezoneResponse field0)? timezoneResponse,
     TResult Function(UnpairingRequest field0)? unpairingRequest,
     TResult Function(UnpairingResponse field0)? unpairingResponse,
+    TResult Function(DeviceNameUpdate field0)? deviceNameUpdate,
     TResult Function(MagicBackupRequestV2 field0)? magicBackupRequestV2,
     TResult Function(MagicBackupResponseV2 field0)? magicBackupResponseV2,
     required TResult orElse(),
@@ -16722,6 +17022,8 @@ class _$QuantumLinkMessage_TimezoneRequestImpl
         unpairingRequest,
     required TResult Function(QuantumLinkMessage_UnpairingResponse value)
         unpairingResponse,
+    required TResult Function(QuantumLinkMessage_DeviceNameUpdate value)
+        deviceNameUpdate,
     required TResult Function(QuantumLinkMessage_MagicBackupRequestV2 value)
         magicBackupRequestV2,
     required TResult Function(QuantumLinkMessage_MagicBackupResponseV2 value)
@@ -16797,6 +17099,8 @@ class _$QuantumLinkMessage_TimezoneRequestImpl
         unpairingRequest,
     TResult? Function(QuantumLinkMessage_UnpairingResponse value)?
         unpairingResponse,
+    TResult? Function(QuantumLinkMessage_DeviceNameUpdate value)?
+        deviceNameUpdate,
     TResult? Function(QuantumLinkMessage_MagicBackupRequestV2 value)?
         magicBackupRequestV2,
     TResult? Function(QuantumLinkMessage_MagicBackupResponseV2 value)?
@@ -16868,6 +17172,8 @@ class _$QuantumLinkMessage_TimezoneRequestImpl
         unpairingRequest,
     TResult Function(QuantumLinkMessage_UnpairingResponse value)?
         unpairingResponse,
+    TResult Function(QuantumLinkMessage_DeviceNameUpdate value)?
+        deviceNameUpdate,
     TResult Function(QuantumLinkMessage_MagicBackupRequestV2 value)?
         magicBackupRequestV2,
     TResult Function(QuantumLinkMessage_MagicBackupResponseV2 value)?
@@ -17019,6 +17325,7 @@ class _$QuantumLinkMessage_TimezoneResponseImpl
     required TResult Function(TimezoneResponse field0) timezoneResponse,
     required TResult Function(UnpairingRequest field0) unpairingRequest,
     required TResult Function(UnpairingResponse field0) unpairingResponse,
+    required TResult Function(DeviceNameUpdate field0) deviceNameUpdate,
     required TResult Function(MagicBackupRequestV2 field0) magicBackupRequestV2,
     required TResult Function(MagicBackupResponseV2 field0)
         magicBackupResponseV2,
@@ -17073,6 +17380,7 @@ class _$QuantumLinkMessage_TimezoneResponseImpl
     TResult? Function(TimezoneResponse field0)? timezoneResponse,
     TResult? Function(UnpairingRequest field0)? unpairingRequest,
     TResult? Function(UnpairingResponse field0)? unpairingResponse,
+    TResult? Function(DeviceNameUpdate field0)? deviceNameUpdate,
     TResult? Function(MagicBackupRequestV2 field0)? magicBackupRequestV2,
     TResult? Function(MagicBackupResponseV2 field0)? magicBackupResponseV2,
   }) {
@@ -17125,6 +17433,7 @@ class _$QuantumLinkMessage_TimezoneResponseImpl
     TResult Function(TimezoneResponse field0)? timezoneResponse,
     TResult Function(UnpairingRequest field0)? unpairingRequest,
     TResult Function(UnpairingResponse field0)? unpairingResponse,
+    TResult Function(DeviceNameUpdate field0)? deviceNameUpdate,
     TResult Function(MagicBackupRequestV2 field0)? magicBackupRequestV2,
     TResult Function(MagicBackupResponseV2 field0)? magicBackupResponseV2,
     required TResult orElse(),
@@ -17214,6 +17523,8 @@ class _$QuantumLinkMessage_TimezoneResponseImpl
         unpairingRequest,
     required TResult Function(QuantumLinkMessage_UnpairingResponse value)
         unpairingResponse,
+    required TResult Function(QuantumLinkMessage_DeviceNameUpdate value)
+        deviceNameUpdate,
     required TResult Function(QuantumLinkMessage_MagicBackupRequestV2 value)
         magicBackupRequestV2,
     required TResult Function(QuantumLinkMessage_MagicBackupResponseV2 value)
@@ -17289,6 +17600,8 @@ class _$QuantumLinkMessage_TimezoneResponseImpl
         unpairingRequest,
     TResult? Function(QuantumLinkMessage_UnpairingResponse value)?
         unpairingResponse,
+    TResult? Function(QuantumLinkMessage_DeviceNameUpdate value)?
+        deviceNameUpdate,
     TResult? Function(QuantumLinkMessage_MagicBackupRequestV2 value)?
         magicBackupRequestV2,
     TResult? Function(QuantumLinkMessage_MagicBackupResponseV2 value)?
@@ -17360,6 +17673,8 @@ class _$QuantumLinkMessage_TimezoneResponseImpl
         unpairingRequest,
     TResult Function(QuantumLinkMessage_UnpairingResponse value)?
         unpairingResponse,
+    TResult Function(QuantumLinkMessage_DeviceNameUpdate value)?
+        deviceNameUpdate,
     TResult Function(QuantumLinkMessage_MagicBackupRequestV2 value)?
         magicBackupRequestV2,
     TResult Function(QuantumLinkMessage_MagicBackupResponseV2 value)?
@@ -17512,6 +17827,7 @@ class _$QuantumLinkMessage_UnpairingRequestImpl
     required TResult Function(TimezoneResponse field0) timezoneResponse,
     required TResult Function(UnpairingRequest field0) unpairingRequest,
     required TResult Function(UnpairingResponse field0) unpairingResponse,
+    required TResult Function(DeviceNameUpdate field0) deviceNameUpdate,
     required TResult Function(MagicBackupRequestV2 field0) magicBackupRequestV2,
     required TResult Function(MagicBackupResponseV2 field0)
         magicBackupResponseV2,
@@ -17566,6 +17882,7 @@ class _$QuantumLinkMessage_UnpairingRequestImpl
     TResult? Function(TimezoneResponse field0)? timezoneResponse,
     TResult? Function(UnpairingRequest field0)? unpairingRequest,
     TResult? Function(UnpairingResponse field0)? unpairingResponse,
+    TResult? Function(DeviceNameUpdate field0)? deviceNameUpdate,
     TResult? Function(MagicBackupRequestV2 field0)? magicBackupRequestV2,
     TResult? Function(MagicBackupResponseV2 field0)? magicBackupResponseV2,
   }) {
@@ -17618,6 +17935,7 @@ class _$QuantumLinkMessage_UnpairingRequestImpl
     TResult Function(TimezoneResponse field0)? timezoneResponse,
     TResult Function(UnpairingRequest field0)? unpairingRequest,
     TResult Function(UnpairingResponse field0)? unpairingResponse,
+    TResult Function(DeviceNameUpdate field0)? deviceNameUpdate,
     TResult Function(MagicBackupRequestV2 field0)? magicBackupRequestV2,
     TResult Function(MagicBackupResponseV2 field0)? magicBackupResponseV2,
     required TResult orElse(),
@@ -17707,6 +18025,8 @@ class _$QuantumLinkMessage_UnpairingRequestImpl
         unpairingRequest,
     required TResult Function(QuantumLinkMessage_UnpairingResponse value)
         unpairingResponse,
+    required TResult Function(QuantumLinkMessage_DeviceNameUpdate value)
+        deviceNameUpdate,
     required TResult Function(QuantumLinkMessage_MagicBackupRequestV2 value)
         magicBackupRequestV2,
     required TResult Function(QuantumLinkMessage_MagicBackupResponseV2 value)
@@ -17782,6 +18102,8 @@ class _$QuantumLinkMessage_UnpairingRequestImpl
         unpairingRequest,
     TResult? Function(QuantumLinkMessage_UnpairingResponse value)?
         unpairingResponse,
+    TResult? Function(QuantumLinkMessage_DeviceNameUpdate value)?
+        deviceNameUpdate,
     TResult? Function(QuantumLinkMessage_MagicBackupRequestV2 value)?
         magicBackupRequestV2,
     TResult? Function(QuantumLinkMessage_MagicBackupResponseV2 value)?
@@ -17853,6 +18175,8 @@ class _$QuantumLinkMessage_UnpairingRequestImpl
         unpairingRequest,
     TResult Function(QuantumLinkMessage_UnpairingResponse value)?
         unpairingResponse,
+    TResult Function(QuantumLinkMessage_DeviceNameUpdate value)?
+        deviceNameUpdate,
     TResult Function(QuantumLinkMessage_MagicBackupRequestV2 value)?
         magicBackupRequestV2,
     TResult Function(QuantumLinkMessage_MagicBackupResponseV2 value)?
@@ -18005,6 +18329,7 @@ class _$QuantumLinkMessage_UnpairingResponseImpl
     required TResult Function(TimezoneResponse field0) timezoneResponse,
     required TResult Function(UnpairingRequest field0) unpairingRequest,
     required TResult Function(UnpairingResponse field0) unpairingResponse,
+    required TResult Function(DeviceNameUpdate field0) deviceNameUpdate,
     required TResult Function(MagicBackupRequestV2 field0) magicBackupRequestV2,
     required TResult Function(MagicBackupResponseV2 field0)
         magicBackupResponseV2,
@@ -18059,6 +18384,7 @@ class _$QuantumLinkMessage_UnpairingResponseImpl
     TResult? Function(TimezoneResponse field0)? timezoneResponse,
     TResult? Function(UnpairingRequest field0)? unpairingRequest,
     TResult? Function(UnpairingResponse field0)? unpairingResponse,
+    TResult? Function(DeviceNameUpdate field0)? deviceNameUpdate,
     TResult? Function(MagicBackupRequestV2 field0)? magicBackupRequestV2,
     TResult? Function(MagicBackupResponseV2 field0)? magicBackupResponseV2,
   }) {
@@ -18111,6 +18437,7 @@ class _$QuantumLinkMessage_UnpairingResponseImpl
     TResult Function(TimezoneResponse field0)? timezoneResponse,
     TResult Function(UnpairingRequest field0)? unpairingRequest,
     TResult Function(UnpairingResponse field0)? unpairingResponse,
+    TResult Function(DeviceNameUpdate field0)? deviceNameUpdate,
     TResult Function(MagicBackupRequestV2 field0)? magicBackupRequestV2,
     TResult Function(MagicBackupResponseV2 field0)? magicBackupResponseV2,
     required TResult orElse(),
@@ -18200,6 +18527,8 @@ class _$QuantumLinkMessage_UnpairingResponseImpl
         unpairingRequest,
     required TResult Function(QuantumLinkMessage_UnpairingResponse value)
         unpairingResponse,
+    required TResult Function(QuantumLinkMessage_DeviceNameUpdate value)
+        deviceNameUpdate,
     required TResult Function(QuantumLinkMessage_MagicBackupRequestV2 value)
         magicBackupRequestV2,
     required TResult Function(QuantumLinkMessage_MagicBackupResponseV2 value)
@@ -18275,6 +18604,8 @@ class _$QuantumLinkMessage_UnpairingResponseImpl
         unpairingRequest,
     TResult? Function(QuantumLinkMessage_UnpairingResponse value)?
         unpairingResponse,
+    TResult? Function(QuantumLinkMessage_DeviceNameUpdate value)?
+        deviceNameUpdate,
     TResult? Function(QuantumLinkMessage_MagicBackupRequestV2 value)?
         magicBackupRequestV2,
     TResult? Function(QuantumLinkMessage_MagicBackupResponseV2 value)?
@@ -18346,6 +18677,8 @@ class _$QuantumLinkMessage_UnpairingResponseImpl
         unpairingRequest,
     TResult Function(QuantumLinkMessage_UnpairingResponse value)?
         unpairingResponse,
+    TResult Function(QuantumLinkMessage_DeviceNameUpdate value)?
+        deviceNameUpdate,
     TResult Function(QuantumLinkMessage_MagicBackupRequestV2 value)?
         magicBackupRequestV2,
     TResult Function(QuantumLinkMessage_MagicBackupResponseV2 value)?
@@ -18373,6 +18706,508 @@ abstract class QuantumLinkMessage_UnpairingResponse extends QuantumLinkMessage {
   @JsonKey(includeFromJson: false, includeToJson: false)
   _$$QuantumLinkMessage_UnpairingResponseImplCopyWith<
           _$QuantumLinkMessage_UnpairingResponseImpl>
+      get copyWith => throw _privateConstructorUsedError;
+}
+
+/// @nodoc
+abstract class _$$QuantumLinkMessage_DeviceNameUpdateImplCopyWith<$Res> {
+  factory _$$QuantumLinkMessage_DeviceNameUpdateImplCopyWith(
+          _$QuantumLinkMessage_DeviceNameUpdateImpl value,
+          $Res Function(_$QuantumLinkMessage_DeviceNameUpdateImpl) then) =
+      __$$QuantumLinkMessage_DeviceNameUpdateImplCopyWithImpl<$Res>;
+  @useResult
+  $Res call({DeviceNameUpdate field0});
+}
+
+/// @nodoc
+class __$$QuantumLinkMessage_DeviceNameUpdateImplCopyWithImpl<$Res>
+    extends _$QuantumLinkMessageCopyWithImpl<$Res,
+        _$QuantumLinkMessage_DeviceNameUpdateImpl>
+    implements _$$QuantumLinkMessage_DeviceNameUpdateImplCopyWith<$Res> {
+  __$$QuantumLinkMessage_DeviceNameUpdateImplCopyWithImpl(
+      _$QuantumLinkMessage_DeviceNameUpdateImpl _value,
+      $Res Function(_$QuantumLinkMessage_DeviceNameUpdateImpl) _then)
+      : super(_value, _then);
+
+  /// Create a copy of QuantumLinkMessage
+  /// with the given fields replaced by the non-null parameter values.
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({
+    Object? field0 = null,
+  }) {
+    return _then(_$QuantumLinkMessage_DeviceNameUpdateImpl(
+      null == field0
+          ? _value.field0
+          : field0 // ignore: cast_nullable_to_non_nullable
+              as DeviceNameUpdate,
+    ));
+  }
+}
+
+/// @nodoc
+
+class _$QuantumLinkMessage_DeviceNameUpdateImpl
+    extends QuantumLinkMessage_DeviceNameUpdate {
+  const _$QuantumLinkMessage_DeviceNameUpdateImpl(this.field0) : super._();
+
+  @override
+  final DeviceNameUpdate field0;
+
+  @override
+  String toString() {
+    return 'QuantumLinkMessage.deviceNameUpdate(field0: $field0)';
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is _$QuantumLinkMessage_DeviceNameUpdateImpl &&
+            (identical(other.field0, field0) || other.field0 == field0));
+  }
+
+  @override
+  int get hashCode => Object.hash(runtimeType, field0);
+
+  /// Create a copy of QuantumLinkMessage
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @override
+  @pragma('vm:prefer-inline')
+  _$$QuantumLinkMessage_DeviceNameUpdateImplCopyWith<
+          _$QuantumLinkMessage_DeviceNameUpdateImpl>
+      get copyWith => __$$QuantumLinkMessage_DeviceNameUpdateImplCopyWithImpl<
+          _$QuantumLinkMessage_DeviceNameUpdateImpl>(this, _$identity);
+
+  @override
+  @optionalTypeArgs
+  TResult when<TResult extends Object?>({
+    required TResult Function(ExchangeRate field0) exchangeRate,
+    required TResult Function(ExchangeRateHistory field0) exchangeRateHistory,
+    required TResult Function(FirmwareUpdateCheckRequest field0)
+        firmwareUpdateCheckRequest,
+    required TResult Function(FirmwareUpdateCheckResponse field0)
+        firmwareUpdateCheckResponse,
+    required TResult Function(FirmwareFetchRequest field0) firmwareFetchRequest,
+    required TResult Function(FirmwareFetchEvent field0) firmwareFetchEvent,
+    required TResult Function(FirmwareInstallEvent field0) firmwareInstallEvent,
+    required TResult Function(DeviceStatus field0) deviceStatus,
+    required TResult Function(EnvoyStatus field0) envoyStatus,
+    required TResult Function(PairingRequest field0) pairingRequest,
+    required TResult Function(PairingResponse field0) pairingResponse,
+    required TResult Function(SecurityCheck field0) securityCheck,
+    required TResult Function(OnboardingState field0) onboardingState,
+    required TResult Function(SignPsbt field0) signPsbt,
+    required TResult Function(BroadcastTransaction field0) broadcastTransaction,
+    required TResult Function(AccountUpdate field0) accountUpdate,
+    required TResult Function(ApplyPassphrase field0) applyPassphrase,
+    required TResult Function(EnvoyMagicBackupEnabledRequest field0)
+        envoyMagicBackupEnabledRequest,
+    required TResult Function(EnvoyMagicBackupEnabledResponse field0)
+        envoyMagicBackupEnabledResponse,
+    required TResult Function(PrimeMagicBackupEnabled field0)
+        primeMagicBackupEnabled,
+    required TResult Function(PrimeMagicBackupStatusRequest field0)
+        primeMagicBackupStatusRequest,
+    required TResult Function(PrimeMagicBackupStatusResponse field0)
+        primeMagicBackupStatusResponse,
+    required TResult Function(BackupShardRequest field0) backupShardRequest,
+    required TResult Function(BackupShardResponse field0) backupShardResponse,
+    required TResult Function(RestoreShardRequest field0) restoreShardRequest,
+    required TResult Function(RestoreShardResponse field0) restoreShardResponse,
+    required TResult Function(CreateMagicBackupEvent field0)
+        createMagicBackupEvent,
+    required TResult Function(CreateMagicBackupResult field0)
+        createMagicBackupResult,
+    required TResult Function(RestoreMagicBackupRequest field0)
+        restoreMagicBackupRequest,
+    required TResult Function(RestoreMagicBackupEvent field0)
+        restoreMagicBackupEvent,
+    required TResult Function(RestoreMagicBackupResult field0)
+        restoreMagicBackupResult,
+    required TResult Function(Heartbeat field0) heartbeat,
+    required TResult Function(TimezoneRequest field0) timezoneRequest,
+    required TResult Function(TimezoneResponse field0) timezoneResponse,
+    required TResult Function(UnpairingRequest field0) unpairingRequest,
+    required TResult Function(UnpairingResponse field0) unpairingResponse,
+    required TResult Function(DeviceNameUpdate field0) deviceNameUpdate,
+    required TResult Function(MagicBackupRequestV2 field0) magicBackupRequestV2,
+    required TResult Function(MagicBackupResponseV2 field0)
+        magicBackupResponseV2,
+  }) {
+    return deviceNameUpdate(field0);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? whenOrNull<TResult extends Object?>({
+    TResult? Function(ExchangeRate field0)? exchangeRate,
+    TResult? Function(ExchangeRateHistory field0)? exchangeRateHistory,
+    TResult? Function(FirmwareUpdateCheckRequest field0)?
+        firmwareUpdateCheckRequest,
+    TResult? Function(FirmwareUpdateCheckResponse field0)?
+        firmwareUpdateCheckResponse,
+    TResult? Function(FirmwareFetchRequest field0)? firmwareFetchRequest,
+    TResult? Function(FirmwareFetchEvent field0)? firmwareFetchEvent,
+    TResult? Function(FirmwareInstallEvent field0)? firmwareInstallEvent,
+    TResult? Function(DeviceStatus field0)? deviceStatus,
+    TResult? Function(EnvoyStatus field0)? envoyStatus,
+    TResult? Function(PairingRequest field0)? pairingRequest,
+    TResult? Function(PairingResponse field0)? pairingResponse,
+    TResult? Function(SecurityCheck field0)? securityCheck,
+    TResult? Function(OnboardingState field0)? onboardingState,
+    TResult? Function(SignPsbt field0)? signPsbt,
+    TResult? Function(BroadcastTransaction field0)? broadcastTransaction,
+    TResult? Function(AccountUpdate field0)? accountUpdate,
+    TResult? Function(ApplyPassphrase field0)? applyPassphrase,
+    TResult? Function(EnvoyMagicBackupEnabledRequest field0)?
+        envoyMagicBackupEnabledRequest,
+    TResult? Function(EnvoyMagicBackupEnabledResponse field0)?
+        envoyMagicBackupEnabledResponse,
+    TResult? Function(PrimeMagicBackupEnabled field0)? primeMagicBackupEnabled,
+    TResult? Function(PrimeMagicBackupStatusRequest field0)?
+        primeMagicBackupStatusRequest,
+    TResult? Function(PrimeMagicBackupStatusResponse field0)?
+        primeMagicBackupStatusResponse,
+    TResult? Function(BackupShardRequest field0)? backupShardRequest,
+    TResult? Function(BackupShardResponse field0)? backupShardResponse,
+    TResult? Function(RestoreShardRequest field0)? restoreShardRequest,
+    TResult? Function(RestoreShardResponse field0)? restoreShardResponse,
+    TResult? Function(CreateMagicBackupEvent field0)? createMagicBackupEvent,
+    TResult? Function(CreateMagicBackupResult field0)? createMagicBackupResult,
+    TResult? Function(RestoreMagicBackupRequest field0)?
+        restoreMagicBackupRequest,
+    TResult? Function(RestoreMagicBackupEvent field0)? restoreMagicBackupEvent,
+    TResult? Function(RestoreMagicBackupResult field0)?
+        restoreMagicBackupResult,
+    TResult? Function(Heartbeat field0)? heartbeat,
+    TResult? Function(TimezoneRequest field0)? timezoneRequest,
+    TResult? Function(TimezoneResponse field0)? timezoneResponse,
+    TResult? Function(UnpairingRequest field0)? unpairingRequest,
+    TResult? Function(UnpairingResponse field0)? unpairingResponse,
+    TResult? Function(DeviceNameUpdate field0)? deviceNameUpdate,
+    TResult? Function(MagicBackupRequestV2 field0)? magicBackupRequestV2,
+    TResult? Function(MagicBackupResponseV2 field0)? magicBackupResponseV2,
+  }) {
+    return deviceNameUpdate?.call(field0);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeWhen<TResult extends Object?>({
+    TResult Function(ExchangeRate field0)? exchangeRate,
+    TResult Function(ExchangeRateHistory field0)? exchangeRateHistory,
+    TResult Function(FirmwareUpdateCheckRequest field0)?
+        firmwareUpdateCheckRequest,
+    TResult Function(FirmwareUpdateCheckResponse field0)?
+        firmwareUpdateCheckResponse,
+    TResult Function(FirmwareFetchRequest field0)? firmwareFetchRequest,
+    TResult Function(FirmwareFetchEvent field0)? firmwareFetchEvent,
+    TResult Function(FirmwareInstallEvent field0)? firmwareInstallEvent,
+    TResult Function(DeviceStatus field0)? deviceStatus,
+    TResult Function(EnvoyStatus field0)? envoyStatus,
+    TResult Function(PairingRequest field0)? pairingRequest,
+    TResult Function(PairingResponse field0)? pairingResponse,
+    TResult Function(SecurityCheck field0)? securityCheck,
+    TResult Function(OnboardingState field0)? onboardingState,
+    TResult Function(SignPsbt field0)? signPsbt,
+    TResult Function(BroadcastTransaction field0)? broadcastTransaction,
+    TResult Function(AccountUpdate field0)? accountUpdate,
+    TResult Function(ApplyPassphrase field0)? applyPassphrase,
+    TResult Function(EnvoyMagicBackupEnabledRequest field0)?
+        envoyMagicBackupEnabledRequest,
+    TResult Function(EnvoyMagicBackupEnabledResponse field0)?
+        envoyMagicBackupEnabledResponse,
+    TResult Function(PrimeMagicBackupEnabled field0)? primeMagicBackupEnabled,
+    TResult Function(PrimeMagicBackupStatusRequest field0)?
+        primeMagicBackupStatusRequest,
+    TResult Function(PrimeMagicBackupStatusResponse field0)?
+        primeMagicBackupStatusResponse,
+    TResult Function(BackupShardRequest field0)? backupShardRequest,
+    TResult Function(BackupShardResponse field0)? backupShardResponse,
+    TResult Function(RestoreShardRequest field0)? restoreShardRequest,
+    TResult Function(RestoreShardResponse field0)? restoreShardResponse,
+    TResult Function(CreateMagicBackupEvent field0)? createMagicBackupEvent,
+    TResult Function(CreateMagicBackupResult field0)? createMagicBackupResult,
+    TResult Function(RestoreMagicBackupRequest field0)?
+        restoreMagicBackupRequest,
+    TResult Function(RestoreMagicBackupEvent field0)? restoreMagicBackupEvent,
+    TResult Function(RestoreMagicBackupResult field0)? restoreMagicBackupResult,
+    TResult Function(Heartbeat field0)? heartbeat,
+    TResult Function(TimezoneRequest field0)? timezoneRequest,
+    TResult Function(TimezoneResponse field0)? timezoneResponse,
+    TResult Function(UnpairingRequest field0)? unpairingRequest,
+    TResult Function(UnpairingResponse field0)? unpairingResponse,
+    TResult Function(DeviceNameUpdate field0)? deviceNameUpdate,
+    TResult Function(MagicBackupRequestV2 field0)? magicBackupRequestV2,
+    TResult Function(MagicBackupResponseV2 field0)? magicBackupResponseV2,
+    required TResult orElse(),
+  }) {
+    if (deviceNameUpdate != null) {
+      return deviceNameUpdate(field0);
+    }
+    return orElse();
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult map<TResult extends Object?>({
+    required TResult Function(QuantumLinkMessage_ExchangeRate value)
+        exchangeRate,
+    required TResult Function(QuantumLinkMessage_ExchangeRateHistory value)
+        exchangeRateHistory,
+    required TResult Function(
+            QuantumLinkMessage_FirmwareUpdateCheckRequest value)
+        firmwareUpdateCheckRequest,
+    required TResult Function(
+            QuantumLinkMessage_FirmwareUpdateCheckResponse value)
+        firmwareUpdateCheckResponse,
+    required TResult Function(QuantumLinkMessage_FirmwareFetchRequest value)
+        firmwareFetchRequest,
+    required TResult Function(QuantumLinkMessage_FirmwareFetchEvent value)
+        firmwareFetchEvent,
+    required TResult Function(QuantumLinkMessage_FirmwareInstallEvent value)
+        firmwareInstallEvent,
+    required TResult Function(QuantumLinkMessage_DeviceStatus value)
+        deviceStatus,
+    required TResult Function(QuantumLinkMessage_EnvoyStatus value) envoyStatus,
+    required TResult Function(QuantumLinkMessage_PairingRequest value)
+        pairingRequest,
+    required TResult Function(QuantumLinkMessage_PairingResponse value)
+        pairingResponse,
+    required TResult Function(QuantumLinkMessage_SecurityCheck value)
+        securityCheck,
+    required TResult Function(QuantumLinkMessage_OnboardingState value)
+        onboardingState,
+    required TResult Function(QuantumLinkMessage_SignPsbt value) signPsbt,
+    required TResult Function(QuantumLinkMessage_BroadcastTransaction value)
+        broadcastTransaction,
+    required TResult Function(QuantumLinkMessage_AccountUpdate value)
+        accountUpdate,
+    required TResult Function(QuantumLinkMessage_ApplyPassphrase value)
+        applyPassphrase,
+    required TResult Function(
+            QuantumLinkMessage_EnvoyMagicBackupEnabledRequest value)
+        envoyMagicBackupEnabledRequest,
+    required TResult Function(
+            QuantumLinkMessage_EnvoyMagicBackupEnabledResponse value)
+        envoyMagicBackupEnabledResponse,
+    required TResult Function(QuantumLinkMessage_PrimeMagicBackupEnabled value)
+        primeMagicBackupEnabled,
+    required TResult Function(
+            QuantumLinkMessage_PrimeMagicBackupStatusRequest value)
+        primeMagicBackupStatusRequest,
+    required TResult Function(
+            QuantumLinkMessage_PrimeMagicBackupStatusResponse value)
+        primeMagicBackupStatusResponse,
+    required TResult Function(QuantumLinkMessage_BackupShardRequest value)
+        backupShardRequest,
+    required TResult Function(QuantumLinkMessage_BackupShardResponse value)
+        backupShardResponse,
+    required TResult Function(QuantumLinkMessage_RestoreShardRequest value)
+        restoreShardRequest,
+    required TResult Function(QuantumLinkMessage_RestoreShardResponse value)
+        restoreShardResponse,
+    required TResult Function(QuantumLinkMessage_CreateMagicBackupEvent value)
+        createMagicBackupEvent,
+    required TResult Function(QuantumLinkMessage_CreateMagicBackupResult value)
+        createMagicBackupResult,
+    required TResult Function(
+            QuantumLinkMessage_RestoreMagicBackupRequest value)
+        restoreMagicBackupRequest,
+    required TResult Function(QuantumLinkMessage_RestoreMagicBackupEvent value)
+        restoreMagicBackupEvent,
+    required TResult Function(QuantumLinkMessage_RestoreMagicBackupResult value)
+        restoreMagicBackupResult,
+    required TResult Function(QuantumLinkMessage_Heartbeat value) heartbeat,
+    required TResult Function(QuantumLinkMessage_TimezoneRequest value)
+        timezoneRequest,
+    required TResult Function(QuantumLinkMessage_TimezoneResponse value)
+        timezoneResponse,
+    required TResult Function(QuantumLinkMessage_UnpairingRequest value)
+        unpairingRequest,
+    required TResult Function(QuantumLinkMessage_UnpairingResponse value)
+        unpairingResponse,
+    required TResult Function(QuantumLinkMessage_DeviceNameUpdate value)
+        deviceNameUpdate,
+    required TResult Function(QuantumLinkMessage_MagicBackupRequestV2 value)
+        magicBackupRequestV2,
+    required TResult Function(QuantumLinkMessage_MagicBackupResponseV2 value)
+        magicBackupResponseV2,
+  }) {
+    return deviceNameUpdate(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? mapOrNull<TResult extends Object?>({
+    TResult? Function(QuantumLinkMessage_ExchangeRate value)? exchangeRate,
+    TResult? Function(QuantumLinkMessage_ExchangeRateHistory value)?
+        exchangeRateHistory,
+    TResult? Function(QuantumLinkMessage_FirmwareUpdateCheckRequest value)?
+        firmwareUpdateCheckRequest,
+    TResult? Function(QuantumLinkMessage_FirmwareUpdateCheckResponse value)?
+        firmwareUpdateCheckResponse,
+    TResult? Function(QuantumLinkMessage_FirmwareFetchRequest value)?
+        firmwareFetchRequest,
+    TResult? Function(QuantumLinkMessage_FirmwareFetchEvent value)?
+        firmwareFetchEvent,
+    TResult? Function(QuantumLinkMessage_FirmwareInstallEvent value)?
+        firmwareInstallEvent,
+    TResult? Function(QuantumLinkMessage_DeviceStatus value)? deviceStatus,
+    TResult? Function(QuantumLinkMessage_EnvoyStatus value)? envoyStatus,
+    TResult? Function(QuantumLinkMessage_PairingRequest value)? pairingRequest,
+    TResult? Function(QuantumLinkMessage_PairingResponse value)?
+        pairingResponse,
+    TResult? Function(QuantumLinkMessage_SecurityCheck value)? securityCheck,
+    TResult? Function(QuantumLinkMessage_OnboardingState value)?
+        onboardingState,
+    TResult? Function(QuantumLinkMessage_SignPsbt value)? signPsbt,
+    TResult? Function(QuantumLinkMessage_BroadcastTransaction value)?
+        broadcastTransaction,
+    TResult? Function(QuantumLinkMessage_AccountUpdate value)? accountUpdate,
+    TResult? Function(QuantumLinkMessage_ApplyPassphrase value)?
+        applyPassphrase,
+    TResult? Function(QuantumLinkMessage_EnvoyMagicBackupEnabledRequest value)?
+        envoyMagicBackupEnabledRequest,
+    TResult? Function(QuantumLinkMessage_EnvoyMagicBackupEnabledResponse value)?
+        envoyMagicBackupEnabledResponse,
+    TResult? Function(QuantumLinkMessage_PrimeMagicBackupEnabled value)?
+        primeMagicBackupEnabled,
+    TResult? Function(QuantumLinkMessage_PrimeMagicBackupStatusRequest value)?
+        primeMagicBackupStatusRequest,
+    TResult? Function(QuantumLinkMessage_PrimeMagicBackupStatusResponse value)?
+        primeMagicBackupStatusResponse,
+    TResult? Function(QuantumLinkMessage_BackupShardRequest value)?
+        backupShardRequest,
+    TResult? Function(QuantumLinkMessage_BackupShardResponse value)?
+        backupShardResponse,
+    TResult? Function(QuantumLinkMessage_RestoreShardRequest value)?
+        restoreShardRequest,
+    TResult? Function(QuantumLinkMessage_RestoreShardResponse value)?
+        restoreShardResponse,
+    TResult? Function(QuantumLinkMessage_CreateMagicBackupEvent value)?
+        createMagicBackupEvent,
+    TResult? Function(QuantumLinkMessage_CreateMagicBackupResult value)?
+        createMagicBackupResult,
+    TResult? Function(QuantumLinkMessage_RestoreMagicBackupRequest value)?
+        restoreMagicBackupRequest,
+    TResult? Function(QuantumLinkMessage_RestoreMagicBackupEvent value)?
+        restoreMagicBackupEvent,
+    TResult? Function(QuantumLinkMessage_RestoreMagicBackupResult value)?
+        restoreMagicBackupResult,
+    TResult? Function(QuantumLinkMessage_Heartbeat value)? heartbeat,
+    TResult? Function(QuantumLinkMessage_TimezoneRequest value)?
+        timezoneRequest,
+    TResult? Function(QuantumLinkMessage_TimezoneResponse value)?
+        timezoneResponse,
+    TResult? Function(QuantumLinkMessage_UnpairingRequest value)?
+        unpairingRequest,
+    TResult? Function(QuantumLinkMessage_UnpairingResponse value)?
+        unpairingResponse,
+    TResult? Function(QuantumLinkMessage_DeviceNameUpdate value)?
+        deviceNameUpdate,
+    TResult? Function(QuantumLinkMessage_MagicBackupRequestV2 value)?
+        magicBackupRequestV2,
+    TResult? Function(QuantumLinkMessage_MagicBackupResponseV2 value)?
+        magicBackupResponseV2,
+  }) {
+    return deviceNameUpdate?.call(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeMap<TResult extends Object?>({
+    TResult Function(QuantumLinkMessage_ExchangeRate value)? exchangeRate,
+    TResult Function(QuantumLinkMessage_ExchangeRateHistory value)?
+        exchangeRateHistory,
+    TResult Function(QuantumLinkMessage_FirmwareUpdateCheckRequest value)?
+        firmwareUpdateCheckRequest,
+    TResult Function(QuantumLinkMessage_FirmwareUpdateCheckResponse value)?
+        firmwareUpdateCheckResponse,
+    TResult Function(QuantumLinkMessage_FirmwareFetchRequest value)?
+        firmwareFetchRequest,
+    TResult Function(QuantumLinkMessage_FirmwareFetchEvent value)?
+        firmwareFetchEvent,
+    TResult Function(QuantumLinkMessage_FirmwareInstallEvent value)?
+        firmwareInstallEvent,
+    TResult Function(QuantumLinkMessage_DeviceStatus value)? deviceStatus,
+    TResult Function(QuantumLinkMessage_EnvoyStatus value)? envoyStatus,
+    TResult Function(QuantumLinkMessage_PairingRequest value)? pairingRequest,
+    TResult Function(QuantumLinkMessage_PairingResponse value)? pairingResponse,
+    TResult Function(QuantumLinkMessage_SecurityCheck value)? securityCheck,
+    TResult Function(QuantumLinkMessage_OnboardingState value)? onboardingState,
+    TResult Function(QuantumLinkMessage_SignPsbt value)? signPsbt,
+    TResult Function(QuantumLinkMessage_BroadcastTransaction value)?
+        broadcastTransaction,
+    TResult Function(QuantumLinkMessage_AccountUpdate value)? accountUpdate,
+    TResult Function(QuantumLinkMessage_ApplyPassphrase value)? applyPassphrase,
+    TResult Function(QuantumLinkMessage_EnvoyMagicBackupEnabledRequest value)?
+        envoyMagicBackupEnabledRequest,
+    TResult Function(QuantumLinkMessage_EnvoyMagicBackupEnabledResponse value)?
+        envoyMagicBackupEnabledResponse,
+    TResult Function(QuantumLinkMessage_PrimeMagicBackupEnabled value)?
+        primeMagicBackupEnabled,
+    TResult Function(QuantumLinkMessage_PrimeMagicBackupStatusRequest value)?
+        primeMagicBackupStatusRequest,
+    TResult Function(QuantumLinkMessage_PrimeMagicBackupStatusResponse value)?
+        primeMagicBackupStatusResponse,
+    TResult Function(QuantumLinkMessage_BackupShardRequest value)?
+        backupShardRequest,
+    TResult Function(QuantumLinkMessage_BackupShardResponse value)?
+        backupShardResponse,
+    TResult Function(QuantumLinkMessage_RestoreShardRequest value)?
+        restoreShardRequest,
+    TResult Function(QuantumLinkMessage_RestoreShardResponse value)?
+        restoreShardResponse,
+    TResult Function(QuantumLinkMessage_CreateMagicBackupEvent value)?
+        createMagicBackupEvent,
+    TResult Function(QuantumLinkMessage_CreateMagicBackupResult value)?
+        createMagicBackupResult,
+    TResult Function(QuantumLinkMessage_RestoreMagicBackupRequest value)?
+        restoreMagicBackupRequest,
+    TResult Function(QuantumLinkMessage_RestoreMagicBackupEvent value)?
+        restoreMagicBackupEvent,
+    TResult Function(QuantumLinkMessage_RestoreMagicBackupResult value)?
+        restoreMagicBackupResult,
+    TResult Function(QuantumLinkMessage_Heartbeat value)? heartbeat,
+    TResult Function(QuantumLinkMessage_TimezoneRequest value)? timezoneRequest,
+    TResult Function(QuantumLinkMessage_TimezoneResponse value)?
+        timezoneResponse,
+    TResult Function(QuantumLinkMessage_UnpairingRequest value)?
+        unpairingRequest,
+    TResult Function(QuantumLinkMessage_UnpairingResponse value)?
+        unpairingResponse,
+    TResult Function(QuantumLinkMessage_DeviceNameUpdate value)?
+        deviceNameUpdate,
+    TResult Function(QuantumLinkMessage_MagicBackupRequestV2 value)?
+        magicBackupRequestV2,
+    TResult Function(QuantumLinkMessage_MagicBackupResponseV2 value)?
+        magicBackupResponseV2,
+    required TResult orElse(),
+  }) {
+    if (deviceNameUpdate != null) {
+      return deviceNameUpdate(this);
+    }
+    return orElse();
+  }
+}
+
+abstract class QuantumLinkMessage_DeviceNameUpdate extends QuantumLinkMessage {
+  const factory QuantumLinkMessage_DeviceNameUpdate(
+          final DeviceNameUpdate field0) =
+      _$QuantumLinkMessage_DeviceNameUpdateImpl;
+  const QuantumLinkMessage_DeviceNameUpdate._() : super._();
+
+  @override
+  DeviceNameUpdate get field0;
+
+  /// Create a copy of QuantumLinkMessage
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  _$$QuantumLinkMessage_DeviceNameUpdateImplCopyWith<
+          _$QuantumLinkMessage_DeviceNameUpdateImpl>
       get copyWith => throw _privateConstructorUsedError;
 }
 
@@ -18511,6 +19346,7 @@ class _$QuantumLinkMessage_MagicBackupRequestV2Impl
     required TResult Function(TimezoneResponse field0) timezoneResponse,
     required TResult Function(UnpairingRequest field0) unpairingRequest,
     required TResult Function(UnpairingResponse field0) unpairingResponse,
+    required TResult Function(DeviceNameUpdate field0) deviceNameUpdate,
     required TResult Function(MagicBackupRequestV2 field0) magicBackupRequestV2,
     required TResult Function(MagicBackupResponseV2 field0)
         magicBackupResponseV2,
@@ -18565,6 +19401,7 @@ class _$QuantumLinkMessage_MagicBackupRequestV2Impl
     TResult? Function(TimezoneResponse field0)? timezoneResponse,
     TResult? Function(UnpairingRequest field0)? unpairingRequest,
     TResult? Function(UnpairingResponse field0)? unpairingResponse,
+    TResult? Function(DeviceNameUpdate field0)? deviceNameUpdate,
     TResult? Function(MagicBackupRequestV2 field0)? magicBackupRequestV2,
     TResult? Function(MagicBackupResponseV2 field0)? magicBackupResponseV2,
   }) {
@@ -18617,6 +19454,7 @@ class _$QuantumLinkMessage_MagicBackupRequestV2Impl
     TResult Function(TimezoneResponse field0)? timezoneResponse,
     TResult Function(UnpairingRequest field0)? unpairingRequest,
     TResult Function(UnpairingResponse field0)? unpairingResponse,
+    TResult Function(DeviceNameUpdate field0)? deviceNameUpdate,
     TResult Function(MagicBackupRequestV2 field0)? magicBackupRequestV2,
     TResult Function(MagicBackupResponseV2 field0)? magicBackupResponseV2,
     required TResult orElse(),
@@ -18706,6 +19544,8 @@ class _$QuantumLinkMessage_MagicBackupRequestV2Impl
         unpairingRequest,
     required TResult Function(QuantumLinkMessage_UnpairingResponse value)
         unpairingResponse,
+    required TResult Function(QuantumLinkMessage_DeviceNameUpdate value)
+        deviceNameUpdate,
     required TResult Function(QuantumLinkMessage_MagicBackupRequestV2 value)
         magicBackupRequestV2,
     required TResult Function(QuantumLinkMessage_MagicBackupResponseV2 value)
@@ -18781,6 +19621,8 @@ class _$QuantumLinkMessage_MagicBackupRequestV2Impl
         unpairingRequest,
     TResult? Function(QuantumLinkMessage_UnpairingResponse value)?
         unpairingResponse,
+    TResult? Function(QuantumLinkMessage_DeviceNameUpdate value)?
+        deviceNameUpdate,
     TResult? Function(QuantumLinkMessage_MagicBackupRequestV2 value)?
         magicBackupRequestV2,
     TResult? Function(QuantumLinkMessage_MagicBackupResponseV2 value)?
@@ -18852,6 +19694,8 @@ class _$QuantumLinkMessage_MagicBackupRequestV2Impl
         unpairingRequest,
     TResult Function(QuantumLinkMessage_UnpairingResponse value)?
         unpairingResponse,
+    TResult Function(QuantumLinkMessage_DeviceNameUpdate value)?
+        deviceNameUpdate,
     TResult Function(QuantumLinkMessage_MagicBackupRequestV2 value)?
         magicBackupRequestV2,
     TResult Function(QuantumLinkMessage_MagicBackupResponseV2 value)?
@@ -19018,6 +19862,7 @@ class _$QuantumLinkMessage_MagicBackupResponseV2Impl
     required TResult Function(TimezoneResponse field0) timezoneResponse,
     required TResult Function(UnpairingRequest field0) unpairingRequest,
     required TResult Function(UnpairingResponse field0) unpairingResponse,
+    required TResult Function(DeviceNameUpdate field0) deviceNameUpdate,
     required TResult Function(MagicBackupRequestV2 field0) magicBackupRequestV2,
     required TResult Function(MagicBackupResponseV2 field0)
         magicBackupResponseV2,
@@ -19072,6 +19917,7 @@ class _$QuantumLinkMessage_MagicBackupResponseV2Impl
     TResult? Function(TimezoneResponse field0)? timezoneResponse,
     TResult? Function(UnpairingRequest field0)? unpairingRequest,
     TResult? Function(UnpairingResponse field0)? unpairingResponse,
+    TResult? Function(DeviceNameUpdate field0)? deviceNameUpdate,
     TResult? Function(MagicBackupRequestV2 field0)? magicBackupRequestV2,
     TResult? Function(MagicBackupResponseV2 field0)? magicBackupResponseV2,
   }) {
@@ -19124,6 +19970,7 @@ class _$QuantumLinkMessage_MagicBackupResponseV2Impl
     TResult Function(TimezoneResponse field0)? timezoneResponse,
     TResult Function(UnpairingRequest field0)? unpairingRequest,
     TResult Function(UnpairingResponse field0)? unpairingResponse,
+    TResult Function(DeviceNameUpdate field0)? deviceNameUpdate,
     TResult Function(MagicBackupRequestV2 field0)? magicBackupRequestV2,
     TResult Function(MagicBackupResponseV2 field0)? magicBackupResponseV2,
     required TResult orElse(),
@@ -19213,6 +20060,8 @@ class _$QuantumLinkMessage_MagicBackupResponseV2Impl
         unpairingRequest,
     required TResult Function(QuantumLinkMessage_UnpairingResponse value)
         unpairingResponse,
+    required TResult Function(QuantumLinkMessage_DeviceNameUpdate value)
+        deviceNameUpdate,
     required TResult Function(QuantumLinkMessage_MagicBackupRequestV2 value)
         magicBackupRequestV2,
     required TResult Function(QuantumLinkMessage_MagicBackupResponseV2 value)
@@ -19288,6 +20137,8 @@ class _$QuantumLinkMessage_MagicBackupResponseV2Impl
         unpairingRequest,
     TResult? Function(QuantumLinkMessage_UnpairingResponse value)?
         unpairingResponse,
+    TResult? Function(QuantumLinkMessage_DeviceNameUpdate value)?
+        deviceNameUpdate,
     TResult? Function(QuantumLinkMessage_MagicBackupRequestV2 value)?
         magicBackupRequestV2,
     TResult? Function(QuantumLinkMessage_MagicBackupResponseV2 value)?
@@ -19359,6 +20210,8 @@ class _$QuantumLinkMessage_MagicBackupResponseV2Impl
         unpairingRequest,
     TResult Function(QuantumLinkMessage_UnpairingResponse value)?
         unpairingResponse,
+    TResult Function(QuantumLinkMessage_DeviceNameUpdate value)?
+        deviceNameUpdate,
     TResult Function(QuantumLinkMessage_MagicBackupRequestV2 value)?
         magicBackupRequestV2,
     TResult Function(QuantumLinkMessage_MagicBackupResponseV2 value)?
