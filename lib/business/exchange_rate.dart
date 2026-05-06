@@ -322,6 +322,26 @@ class ExchangeRate extends ChangeNotifier {
     }
   }
 
+  /// Fetches a 100-point history for [currencyCode] without mutating the
+  /// cached `_history`, so Envoy's own fiat selection isn't disturbed.
+  Future<ExchangeRateHistory?> fetchHistoryForCode(String currencyCode) async {
+    try {
+      final response = await _http.get('$_serverAddress/history/$currencyCode');
+      if (response.statusCode != 200) {
+        kPrint("History fetch failed for $currencyCode");
+        return null;
+      }
+      final jsonData = jsonDecode(response.body);
+      return ExchangeRateHistory.fromJson({
+        "currency": jsonData['fiat'],
+        "points": jsonData["points"],
+      });
+    } catch (e) {
+      kPrint("Failed to fetch history for $currencyCode: $e");
+      return null;
+    }
+  }
+
   double getUsdValue(int amountSats) {
     return (_usdRate ?? 0) * amountSats / 100000000;
   }

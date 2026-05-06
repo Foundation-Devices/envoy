@@ -108,6 +108,8 @@ class BleAccountHandler extends PassportMessageHandler {
     } else {
       unawaited(sendExchangeRate());
     }
+    // Also push a fresh chart in the new currency; bails if a send is in flight.
+    unawaited(sendExchangeRateHistory());
   }
 
   Future<void> _handleAccountUpdate(api.AccountUpdate accountUpdate) async {
@@ -251,8 +253,9 @@ class BleAccountHandler extends PassportMessageHandler {
       if (primeCurrency != null && primeCurrency.isEmpty) {
         return;
       }
-      final currencyCode =
-          (primeCurrency == null || primeCurrency.isEmpty) ? "USD" : primeCurrency;
+      final currencyCode = (primeCurrency == null || primeCurrency.isEmpty)
+          ? "USD"
+          : primeCurrency;
 
       final double rate;
       if (currencyCode == "USD") {
@@ -296,25 +299,38 @@ class BleAccountHandler extends PassportMessageHandler {
 
   Future<bool> sendExchangeRateHistory() async {
     if (_sendingData) return false;
+
+    final device = qlConnection.getDevice();
+    if (device?.onboardingComplete != true) {
+      kPrint("Device not onboarded, skipping sending exchange rate history.");
+      return false;
+    }
+
+    // Empty = Prime fiat disabled (skip). Null = legacy Prime (use Envoy's cached history).
+    final primeCurrency = device?.primeFiatCurrency;
+    if (primeCurrency != null && primeCurrency.isEmpty) {
+      return false;
+    }
+
     try {
       _sendingData = true;
 
-      final historyPoints = ExchangeRate().history.points;
-      final currency = ExchangeRate().history.currency;
-
-      if (qlConnection.getDevice()?.onboardingComplete != true) {
-        _sendingData = false;
-        kPrint("Device not onboarded, skipping sending exchange rate history.");
-        return false;
+      final ExchangeRateHistory? source;
+      if (primeCurrency != null &&
+          primeCurrency.isNotEmpty &&
+          primeCurrency != ExchangeRate().history.currency) {
+        // Fetch a fresh series for Prime's currency without disturbing Envoy's UI.
+        source = await ExchangeRate().fetchHistoryForCode(primeCurrency);
+      } else {
+        source = ExchangeRate().history;
       }
-      if (historyPoints.isEmpty) {
-        _sendingData = false;
+      if (source == null || source.points.isEmpty) {
         kPrint("No exchange rate history to send.");
         return false;
       }
 
       // Convert Dart RatePoint -> API PricePoint
-      final apiPoints = historyPoints.map((p) {
+      final apiPoints = source.points.map((p) {
         return api.PricePoint(
           rate: p.price,
           timestamp: BigInt.from(p.timestamp),
@@ -323,14 +339,14 @@ class BleAccountHandler extends PassportMessageHandler {
 
       final historyMessage = api.ExchangeRateHistory(
         history: apiPoints,
-        currencyCode: currency,
+        currencyCode: source.currency,
       );
 
       final result = await qlConnection.writeMessage(
         api.QuantumLinkMessage.exchangeRateHistory(historyMessage),
       );
       kPrint(
-        "Sent ${apiPoints.length} exchange rate points for currency $currency",
+        "Sent ${apiPoints.length} exchange rate points for currency ${source.currency}",
       );
       return result;
     } catch (e) {
