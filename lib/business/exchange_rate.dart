@@ -278,6 +278,9 @@ class ExchangeRate extends ChangeNotifier {
     }
   }
 
+  Future<double> getRateForCode(String currencyCode) =>
+      _getRateForCode(currencyCode);
+
   Future<double> _getRateForCode(String currencyCode) async {
     try {
       final response = await _http.get('$_serverAddress/price/$currencyCode');

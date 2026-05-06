@@ -39,7 +39,8 @@ class BleAccountHandler extends PassportMessageHandler {
     return message is api.QuantumLinkMessage_AccountUpdate ||
         message is api.QuantumLinkMessage_CreateMagicBackupEvent ||
         message is api.QuantumLinkMessage_UnpairingRequest ||
-        message is api.QuantumLinkMessage_ApplyPassphrase;
+        message is api.QuantumLinkMessage_ApplyPassphrase ||
+        message is api.QuantumLinkMessage_PrimeFiatPreference;
   }
 
   int lastExchangeRateHash = 0;
@@ -88,7 +89,20 @@ class BleAccountHandler extends PassportMessageHandler {
         await Devices().clearDeviceQLKeys(qlConnection.getDevice()!);
       }
       qlConnection.disconnect();
+    } else if (message
+        case api.QuantumLinkMessage_PrimeFiatPreference fiatPreference) {
+      await _handleFiatPreference(fiatPreference.field0);
     }
+  }
+
+  Future<void> _handleFiatPreference(api.PrimeFiatPreference pref) async {
+    final device = qlConnection.getDevice();
+    if (device == null) return;
+    if (device.primeFiatCurrency == pref.currencyCode) return;
+    await Devices().updatePrimeFiatCurrency(pref.currencyCode, device);
+    // Force a fresh send so Prime sees the new currency immediately.
+    _lastSentBtcPrice = 0.0;
+    unawaited(sendExchangeRate());
   }
 
   Future<void> _handleAccountUpdate(api.AccountUpdate accountUpdate) async {
@@ -208,7 +222,8 @@ class BleAccountHandler extends PassportMessageHandler {
   Future<void> sendExchangeRate() async {
     if (_sendingData) return;
 
-    if (qlConnection.getDevice()?.onboardingComplete != true) {
+    final device = qlConnection.getDevice();
+    if (device?.onboardingComplete != true) {
       kPrint(
           "Device not onboarded, skipping sending exchange rate history. ${qlConnection.deviceId}");
       return;
@@ -216,10 +231,25 @@ class BleAccountHandler extends PassportMessageHandler {
     try {
       _sendingData = true;
       final exchangeRate = ExchangeRate();
-      final currentExchange = exchangeRate.usdRate!;
+
+      // Honour Prime's selected fiat. Empty string means "fiat disabled" — skip.
+      // Null (older Prime, never sent a preference) falls back to USD.
+      final primeCurrency = device?.primeFiatCurrency;
+      if (primeCurrency != null && primeCurrency.isEmpty) {
+        return;
+      }
+      final currencyCode =
+          (primeCurrency == null || primeCurrency.isEmpty) ? "USD" : primeCurrency;
+
+      final double rate;
+      if (currencyCode == "USD") {
+        rate = exchangeRate.usdRate!;
+      } else {
+        rate = await exchangeRate.getRateForCode(currencyCode);
+      }
 
       // Only send if price actually changed
-      if (_lastSentBtcPrice == currentExchange) {
+      if (_lastSentBtcPrice == rate) {
         return;
       }
 
@@ -227,17 +257,18 @@ class BleAccountHandler extends PassportMessageHandler {
           DateTime.now().millisecondsSinceEpoch;
 
       final exchangeRateMessage = api.ExchangeRate(
-        currencyCode: "USD",
-        rate: currentExchange,
+        currencyCode: currencyCode,
+        rate: rate,
         timestamp: BigInt.from(timestamp / 1000),
       );
 
-      kPrint("Sending exchange rate to Prime: ${qlConnection.deviceId}");
+      kPrint(
+          "Sending exchange rate ($currencyCode) to Prime: ${qlConnection.deviceId}");
       qlConnection.writeMessage(
         api.QuantumLinkMessage.exchangeRate(exchangeRateMessage),
       );
 
-      _lastSentBtcPrice = currentExchange;
+      _lastSentBtcPrice = rate;
     } catch (e) {
       kPrint('Failed to send exchange rate to Prime: $e');
     } finally {
