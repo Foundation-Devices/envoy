@@ -114,7 +114,7 @@ impl ShardBackup {
 
     fn matches(&self, fingerprint: [u8; 32], timestamp: Option<u32>) -> bool {
         self.fingerprint == fingerprint
-            && timestamp.map_or(true, |timestamp| self.shard_timestamp() == Some(timestamp))
+            && timestamp.is_none_or(|timestamp| self.shard_timestamp() == Some(timestamp))
     }
 }
 
