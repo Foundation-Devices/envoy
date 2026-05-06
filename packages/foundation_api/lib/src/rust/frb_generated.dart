@@ -1671,6 +1671,20 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  CreateMagicBackupV2 dco_decode_box_autoadd_create_magic_backup_v_2(
+      dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return dco_decode_create_magic_backup_v_2(raw);
+  }
+
+  @protected
+  DeleteMagicBackupV2 dco_decode_box_autoadd_delete_magic_backup_v_2(
+      dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return dco_decode_delete_magic_backup_v_2(raw);
+  }
+
+  @protected
   DeviceNameUpdate dco_decode_box_autoadd_device_name_update(dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
     return dco_decode_device_name_update(raw);
@@ -1769,9 +1783,29 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  GetMagicBackupV2 dco_decode_box_autoadd_get_magic_backup_v_2(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return dco_decode_get_magic_backup_v_2(raw);
+  }
+
+  @protected
   Heartbeat dco_decode_box_autoadd_heartbeat(dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
     return dco_decode_heartbeat(raw);
+  }
+
+  @protected
+  MagicBackupRequestV2 dco_decode_box_autoadd_magic_backup_request_v_2(
+      dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return dco_decode_magic_backup_request_v_2(raw);
+  }
+
+  @protected
+  MagicBackupResponseV2 dco_decode_box_autoadd_magic_backup_response_v_2(
+      dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return dco_decode_magic_backup_response_v_2(raw);
   }
 
   @protected
@@ -1999,6 +2033,21 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  CreateMagicBackupV2 dco_decode_create_magic_backup_v_2(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    final arr = raw as List<dynamic>;
+    if (arr.length != 5)
+      throw Exception('unexpected arr length: expect 5 but see ${arr.length}');
+    return CreateMagicBackupV2(
+      timestamp: dco_decode_u_64(arr[0]),
+      hash: dco_decode_list_prim_u_8_strict(arr[1]),
+      pubkey: dco_decode_list_prim_u_8_strict(arr[2]),
+      data: dco_decode_list_prim_u_8_strict(arr[3]),
+      clientSignature: dco_decode_list_prim_u_8_strict(arr[4]),
+    );
+  }
+
+  @protected
   DecoderStatus dco_decode_decoder_status(dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
     final arr = raw as List<dynamic>;
@@ -2007,6 +2056,19 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
     return DecoderStatus(
       progress: dco_decode_f_64(arr[0]),
       payload: dco_decode_opt_box_autoadd_passport_message(arr[1]),
+    );
+  }
+
+  @protected
+  DeleteMagicBackupV2 dco_decode_delete_magic_backup_v_2(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    final arr = raw as List<dynamic>;
+    if (arr.length != 3)
+      throw Exception('unexpected arr length: expect 3 but see ${arr.length}');
+    return DeleteMagicBackupV2(
+      key: dco_decode_list_prim_u_8_strict(arr[0]),
+      timestamp: dco_decode_u_64(arr[1]),
+      signature: dco_decode_list_prim_u_8_strict(arr[2]),
     );
   }
 
@@ -2236,6 +2298,19 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  GetMagicBackupV2 dco_decode_get_magic_backup_v_2(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    final arr = raw as List<dynamic>;
+    if (arr.length != 3)
+      throw Exception('unexpected arr length: expect 3 but see ${arr.length}');
+    return GetMagicBackupV2(
+      key: dco_decode_list_prim_u_8_strict(arr[0]),
+      timestamp: dco_decode_u_64(arr[1]),
+      signature: dco_decode_list_prim_u_8_strict(arr[2]),
+    );
+  }
+
+  @protected
   Heartbeat dco_decode_heartbeat(dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
     final arr = raw as List<dynamic>;
@@ -2284,6 +2359,48 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   List<QuantumLinkMessage> dco_decode_list_quantum_link_message(dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
     return (raw as List<dynamic>).map(dco_decode_quantum_link_message).toList();
+  }
+
+  @protected
+  MagicBackupRequestV2 dco_decode_magic_backup_request_v_2(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    switch (raw[0]) {
+      case 0:
+        return MagicBackupRequestV2_Create(
+          dco_decode_box_autoadd_create_magic_backup_v_2(raw[1]),
+        );
+      case 1:
+        return MagicBackupRequestV2_Get(
+          dco_decode_box_autoadd_get_magic_backup_v_2(raw[1]),
+        );
+      case 2:
+        return MagicBackupRequestV2_Delete(
+          dco_decode_box_autoadd_delete_magic_backup_v_2(raw[1]),
+        );
+      default:
+        throw Exception("unreachable");
+    }
+  }
+
+  @protected
+  MagicBackupResponseV2 dco_decode_magic_backup_response_v_2(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    switch (raw[0]) {
+      case 0:
+        return MagicBackupResponseV2_Created();
+      case 1:
+        return MagicBackupResponseV2_Backup(
+          data: dco_decode_list_prim_u_8_strict(raw[1]),
+        );
+      case 2:
+        return MagicBackupResponseV2_Deleted();
+      case 3:
+        return MagicBackupResponseV2_Error(
+          error: dco_decode_String(raw[1]),
+        );
+      default:
+        throw Exception("unreachable");
+    }
   }
 
   @protected
@@ -2632,6 +2749,14 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       case 36:
         return QuantumLinkMessage_DeviceNameUpdate(
           dco_decode_box_autoadd_device_name_update(raw[1]),
+        );
+      case 37:
+        return QuantumLinkMessage_MagicBackupRequestV2(
+          dco_decode_box_autoadd_magic_backup_request_v_2(raw[1]),
+        );
+      case 38:
+        return QuantumLinkMessage_MagicBackupResponseV2(
+          dco_decode_box_autoadd_magic_backup_response_v_2(raw[1]),
         );
       default:
         throw Exception("unreachable");
@@ -3270,6 +3395,20 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  CreateMagicBackupV2 sse_decode_box_autoadd_create_magic_backup_v_2(
+      SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    return (sse_decode_create_magic_backup_v_2(deserializer));
+  }
+
+  @protected
+  DeleteMagicBackupV2 sse_decode_box_autoadd_delete_magic_backup_v_2(
+      SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    return (sse_decode_delete_magic_backup_v_2(deserializer));
+  }
+
+  @protected
   DeviceNameUpdate sse_decode_box_autoadd_device_name_update(
       SseDeserializer deserializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
@@ -3379,9 +3518,30 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  GetMagicBackupV2 sse_decode_box_autoadd_get_magic_backup_v_2(
+      SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    return (sse_decode_get_magic_backup_v_2(deserializer));
+  }
+
+  @protected
   Heartbeat sse_decode_box_autoadd_heartbeat(SseDeserializer deserializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     return (sse_decode_heartbeat(deserializer));
+  }
+
+  @protected
+  MagicBackupRequestV2 sse_decode_box_autoadd_magic_backup_request_v_2(
+      SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    return (sse_decode_magic_backup_request_v_2(deserializer));
+  }
+
+  @protected
+  MagicBackupResponseV2 sse_decode_box_autoadd_magic_backup_response_v_2(
+      SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    return (sse_decode_magic_backup_response_v_2(deserializer));
   }
 
   @protected
@@ -3620,11 +3780,39 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  CreateMagicBackupV2 sse_decode_create_magic_backup_v_2(
+      SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    var var_timestamp = sse_decode_u_64(deserializer);
+    var var_hash = sse_decode_list_prim_u_8_strict(deserializer);
+    var var_pubkey = sse_decode_list_prim_u_8_strict(deserializer);
+    var var_data = sse_decode_list_prim_u_8_strict(deserializer);
+    var var_clientSignature = sse_decode_list_prim_u_8_strict(deserializer);
+    return CreateMagicBackupV2(
+        timestamp: var_timestamp,
+        hash: var_hash,
+        pubkey: var_pubkey,
+        data: var_data,
+        clientSignature: var_clientSignature);
+  }
+
+  @protected
   DecoderStatus sse_decode_decoder_status(SseDeserializer deserializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     var var_progress = sse_decode_f_64(deserializer);
     var var_payload = sse_decode_opt_box_autoadd_passport_message(deserializer);
     return DecoderStatus(progress: var_progress, payload: var_payload);
+  }
+
+  @protected
+  DeleteMagicBackupV2 sse_decode_delete_magic_backup_v_2(
+      SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    var var_key = sse_decode_list_prim_u_8_strict(deserializer);
+    var var_timestamp = sse_decode_u_64(deserializer);
+    var var_signature = sse_decode_list_prim_u_8_strict(deserializer);
+    return DeleteMagicBackupV2(
+        key: var_key, timestamp: var_timestamp, signature: var_signature);
   }
 
   @protected
@@ -3833,6 +4021,17 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  GetMagicBackupV2 sse_decode_get_magic_backup_v_2(
+      SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    var var_key = sse_decode_list_prim_u_8_strict(deserializer);
+    var var_timestamp = sse_decode_u_64(deserializer);
+    var var_signature = sse_decode_list_prim_u_8_strict(deserializer);
+    return GetMagicBackupV2(
+        key: var_key, timestamp: var_timestamp, signature: var_signature);
+  }
+
+  @protected
   Heartbeat sse_decode_heartbeat(SseDeserializer deserializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     return Heartbeat();
@@ -3902,6 +4101,52 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       ans_.add(sse_decode_quantum_link_message(deserializer));
     }
     return ans_;
+  }
+
+  @protected
+  MagicBackupRequestV2 sse_decode_magic_backup_request_v_2(
+      SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+
+    var tag_ = sse_decode_i_32(deserializer);
+    switch (tag_) {
+      case 0:
+        var var_field0 =
+            sse_decode_box_autoadd_create_magic_backup_v_2(deserializer);
+        return MagicBackupRequestV2_Create(var_field0);
+      case 1:
+        var var_field0 =
+            sse_decode_box_autoadd_get_magic_backup_v_2(deserializer);
+        return MagicBackupRequestV2_Get(var_field0);
+      case 2:
+        var var_field0 =
+            sse_decode_box_autoadd_delete_magic_backup_v_2(deserializer);
+        return MagicBackupRequestV2_Delete(var_field0);
+      default:
+        throw UnimplementedError('');
+    }
+  }
+
+  @protected
+  MagicBackupResponseV2 sse_decode_magic_backup_response_v_2(
+      SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+
+    var tag_ = sse_decode_i_32(deserializer);
+    switch (tag_) {
+      case 0:
+        return MagicBackupResponseV2_Created();
+      case 1:
+        var var_data = sse_decode_list_prim_u_8_strict(deserializer);
+        return MagicBackupResponseV2_Backup(data: var_data);
+      case 2:
+        return MagicBackupResponseV2_Deleted();
+      case 3:
+        var var_error = sse_decode_String(deserializer);
+        return MagicBackupResponseV2_Error(error: var_error);
+      default:
+        throw UnimplementedError('');
+    }
   }
 
   @protected
@@ -4254,6 +4499,14 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         var var_field0 =
             sse_decode_box_autoadd_device_name_update(deserializer);
         return QuantumLinkMessage_DeviceNameUpdate(var_field0);
+      case 37:
+        var var_field0 =
+            sse_decode_box_autoadd_magic_backup_request_v_2(deserializer);
+        return QuantumLinkMessage_MagicBackupRequestV2(var_field0);
+      case 38:
+        var var_field0 =
+            sse_decode_box_autoadd_magic_backup_response_v_2(deserializer);
+        return QuantumLinkMessage_MagicBackupResponseV2(var_field0);
       default:
         throw UnimplementedError('');
     }
@@ -4877,6 +5130,20 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  void sse_encode_box_autoadd_create_magic_backup_v_2(
+      CreateMagicBackupV2 self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_create_magic_backup_v_2(self, serializer);
+  }
+
+  @protected
+  void sse_encode_box_autoadd_delete_magic_backup_v_2(
+      DeleteMagicBackupV2 self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_delete_magic_backup_v_2(self, serializer);
+  }
+
+  @protected
   void sse_encode_box_autoadd_device_name_update(
       DeviceNameUpdate self, SseSerializer serializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
@@ -4982,10 +5249,31 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  void sse_encode_box_autoadd_get_magic_backup_v_2(
+      GetMagicBackupV2 self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_get_magic_backup_v_2(self, serializer);
+  }
+
+  @protected
   void sse_encode_box_autoadd_heartbeat(
       Heartbeat self, SseSerializer serializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     sse_encode_heartbeat(self, serializer);
+  }
+
+  @protected
+  void sse_encode_box_autoadd_magic_backup_request_v_2(
+      MagicBackupRequestV2 self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_magic_backup_request_v_2(self, serializer);
+  }
+
+  @protected
+  void sse_encode_box_autoadd_magic_backup_response_v_2(
+      MagicBackupResponseV2 self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_magic_backup_response_v_2(self, serializer);
   }
 
   @protected
@@ -5209,10 +5497,30 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  void sse_encode_create_magic_backup_v_2(
+      CreateMagicBackupV2 self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_u_64(self.timestamp, serializer);
+    sse_encode_list_prim_u_8_strict(self.hash, serializer);
+    sse_encode_list_prim_u_8_strict(self.pubkey, serializer);
+    sse_encode_list_prim_u_8_strict(self.data, serializer);
+    sse_encode_list_prim_u_8_strict(self.clientSignature, serializer);
+  }
+
+  @protected
   void sse_encode_decoder_status(DecoderStatus self, SseSerializer serializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     sse_encode_f_64(self.progress, serializer);
     sse_encode_opt_box_autoadd_passport_message(self.payload, serializer);
+  }
+
+  @protected
+  void sse_encode_delete_magic_backup_v_2(
+      DeleteMagicBackupV2 self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_list_prim_u_8_strict(self.key, serializer);
+    sse_encode_u_64(self.timestamp, serializer);
+    sse_encode_list_prim_u_8_strict(self.signature, serializer);
   }
 
   @protected
@@ -5378,6 +5686,15 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  void sse_encode_get_magic_backup_v_2(
+      GetMagicBackupV2 self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_list_prim_u_8_strict(self.key, serializer);
+    sse_encode_u_64(self.timestamp, serializer);
+    sse_encode_list_prim_u_8_strict(self.signature, serializer);
+  }
+
+  @protected
   void sse_encode_heartbeat(Heartbeat self, SseSerializer serializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
   }
@@ -5439,6 +5756,41 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
     sse_encode_i_32(self.length, serializer);
     for (final item in self) {
       sse_encode_quantum_link_message(item, serializer);
+    }
+  }
+
+  @protected
+  void sse_encode_magic_backup_request_v_2(
+      MagicBackupRequestV2 self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    switch (self) {
+      case MagicBackupRequestV2_Create(field0: final field0):
+        sse_encode_i_32(0, serializer);
+        sse_encode_box_autoadd_create_magic_backup_v_2(field0, serializer);
+      case MagicBackupRequestV2_Get(field0: final field0):
+        sse_encode_i_32(1, serializer);
+        sse_encode_box_autoadd_get_magic_backup_v_2(field0, serializer);
+      case MagicBackupRequestV2_Delete(field0: final field0):
+        sse_encode_i_32(2, serializer);
+        sse_encode_box_autoadd_delete_magic_backup_v_2(field0, serializer);
+    }
+  }
+
+  @protected
+  void sse_encode_magic_backup_response_v_2(
+      MagicBackupResponseV2 self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    switch (self) {
+      case MagicBackupResponseV2_Created():
+        sse_encode_i_32(0, serializer);
+      case MagicBackupResponseV2_Backup(data: final data):
+        sse_encode_i_32(1, serializer);
+        sse_encode_list_prim_u_8_strict(data, serializer);
+      case MagicBackupResponseV2_Deleted():
+        sse_encode_i_32(2, serializer);
+      case MagicBackupResponseV2_Error(error: final error):
+        sse_encode_i_32(3, serializer);
+        sse_encode_String(error, serializer);
     }
   }
 
@@ -5750,6 +6102,12 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       case QuantumLinkMessage_DeviceNameUpdate(field0: final field0):
         sse_encode_i_32(36, serializer);
         sse_encode_box_autoadd_device_name_update(field0, serializer);
+      case QuantumLinkMessage_MagicBackupRequestV2(field0: final field0):
+        sse_encode_i_32(37, serializer);
+        sse_encode_box_autoadd_magic_backup_request_v_2(field0, serializer);
+      case QuantumLinkMessage_MagicBackupResponseV2(field0: final field0):
+        sse_encode_i_32(38, serializer);
+        sse_encode_box_autoadd_magic_backup_response_v_2(field0, serializer);
     }
   }
 

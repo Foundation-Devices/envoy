@@ -1874,6 +1874,20 @@ const _: fn() = || {
         }
     }
     {
+        let CreateMagicBackupV2 = None::<foundation_api::api::backup::CreateMagicBackupV2>.unwrap();
+        let _: u64 = CreateMagicBackupV2.timestamp;
+        let _: Vec<u8> = CreateMagicBackupV2.hash;
+        let _: Vec<u8> = CreateMagicBackupV2.pubkey;
+        let _: Vec<u8> = CreateMagicBackupV2.data;
+        let _: Vec<u8> = CreateMagicBackupV2.client_signature;
+    }
+    {
+        let DeleteMagicBackupV2 = None::<foundation_api::api::backup::DeleteMagicBackupV2>.unwrap();
+        let _: Vec<u8> = DeleteMagicBackupV2.key;
+        let _: u64 = DeleteMagicBackupV2.timestamp;
+        let _: Vec<u8> = DeleteMagicBackupV2.signature;
+    }
+    {
         let DeviceNameUpdate = None::<foundation_api::api::status::DeviceNameUpdate>.unwrap();
         let _: String = DeviceNameUpdate.device_name;
     }
@@ -1972,7 +1986,34 @@ const _: fn() = || {
         foundation_api::api::firmware::FirmwareUpdateCheckResponse::NotAvailable => {}
     }
     {
+        let GetMagicBackupV2 = None::<foundation_api::api::backup::GetMagicBackupV2>.unwrap();
+        let _: Vec<u8> = GetMagicBackupV2.key;
+        let _: u64 = GetMagicBackupV2.timestamp;
+        let _: Vec<u8> = GetMagicBackupV2.signature;
+    }
+    {
         let Heartbeat = None::<foundation_api::api::status::Heartbeat>.unwrap();
+    }
+    match None::<foundation_api::api::backup::MagicBackupRequestV2>.unwrap() {
+        foundation_api::api::backup::MagicBackupRequestV2::Create(field0) => {
+            let _: foundation_api::api::backup::CreateMagicBackupV2 = field0;
+        }
+        foundation_api::api::backup::MagicBackupRequestV2::Get(field0) => {
+            let _: foundation_api::api::backup::GetMagicBackupV2 = field0;
+        }
+        foundation_api::api::backup::MagicBackupRequestV2::Delete(field0) => {
+            let _: foundation_api::api::backup::DeleteMagicBackupV2 = field0;
+        }
+    }
+    match None::<foundation_api::api::backup::MagicBackupResponseV2>.unwrap() {
+        foundation_api::api::backup::MagicBackupResponseV2::Created => {}
+        foundation_api::api::backup::MagicBackupResponseV2::Backup { data } => {
+            let _: Vec<u8> = data;
+        }
+        foundation_api::api::backup::MagicBackupResponseV2::Deleted => {}
+        foundation_api::api::backup::MagicBackupResponseV2::Error { error } => {
+            let _: String = error;
+        }
     }
     {
         let PairingRequest = None::<foundation_api::api::pairing::PairingRequest>.unwrap();
@@ -2144,6 +2185,12 @@ const _: fn() = || {
         }
         foundation_api::api::message::QuantumLinkMessage::DeviceNameUpdate(field0) => {
             let _: foundation_api::api::status::DeviceNameUpdate = field0;
+        }
+        foundation_api::api::message::QuantumLinkMessage::MagicBackupRequestV2(field0) => {
+            let _: foundation_api::api::backup::MagicBackupRequestV2 = field0;
+        }
+        foundation_api::api::message::QuantumLinkMessage::MagicBackupResponseV2(field0) => {
+            let _: foundation_api::api::backup::MagicBackupResponseV2 = field0;
         }
     }
     match None::<foundation_api::api::backup::RestoreMagicBackupEvent>.unwrap() {
@@ -2590,6 +2637,24 @@ impl SseDecode for foundation_api::api::backup::CreateMagicBackupResult {
     }
 }
 
+impl SseDecode for foundation_api::api::backup::CreateMagicBackupV2 {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        let mut var_timestamp = <u64>::sse_decode(deserializer);
+        let mut var_hash = <Vec<u8>>::sse_decode(deserializer);
+        let mut var_pubkey = <Vec<u8>>::sse_decode(deserializer);
+        let mut var_data = <Vec<u8>>::sse_decode(deserializer);
+        let mut var_clientSignature = <Vec<u8>>::sse_decode(deserializer);
+        return foundation_api::api::backup::CreateMagicBackupV2 {
+            timestamp: var_timestamp,
+            hash: var_hash,
+            pubkey: var_pubkey,
+            data: var_data,
+            client_signature: var_clientSignature,
+        };
+    }
+}
+
 impl SseDecode for crate::api::ql::DecoderStatus {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
@@ -2599,6 +2664,20 @@ impl SseDecode for crate::api::ql::DecoderStatus {
         return crate::api::ql::DecoderStatus {
             progress: var_progress,
             payload: var_payload,
+        };
+    }
+}
+
+impl SseDecode for foundation_api::api::backup::DeleteMagicBackupV2 {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        let mut var_key = <Vec<u8>>::sse_decode(deserializer);
+        let mut var_timestamp = <u64>::sse_decode(deserializer);
+        let mut var_signature = <Vec<u8>>::sse_decode(deserializer);
+        return foundation_api::api::backup::DeleteMagicBackupV2 {
+            key: var_key,
+            timestamp: var_timestamp,
+            signature: var_signature,
         };
     }
 }
@@ -2861,6 +2940,20 @@ impl SseDecode for foundation_api::api::firmware::FirmwareUpdateCheckResponse {
     }
 }
 
+impl SseDecode for foundation_api::api::backup::GetMagicBackupV2 {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        let mut var_key = <Vec<u8>>::sse_decode(deserializer);
+        let mut var_timestamp = <u64>::sse_decode(deserializer);
+        let mut var_signature = <Vec<u8>>::sse_decode(deserializer);
+        return foundation_api::api::backup::GetMagicBackupV2 {
+            key: var_key,
+            timestamp: var_timestamp,
+            signature: var_signature,
+        };
+    }
+}
+
 impl SseDecode for foundation_api::api::status::Heartbeat {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
@@ -2935,6 +3028,63 @@ impl SseDecode for Vec<foundation_api::api::message::QuantumLinkMessage> {
             ans_.push(<foundation_api::api::message::QuantumLinkMessage>::sse_decode(deserializer));
         }
         return ans_;
+    }
+}
+
+impl SseDecode for foundation_api::api::backup::MagicBackupRequestV2 {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        let mut tag_ = <i32>::sse_decode(deserializer);
+        match tag_ {
+            0 => {
+                let mut var_field0 =
+                    <foundation_api::api::backup::CreateMagicBackupV2>::sse_decode(deserializer);
+                return foundation_api::api::backup::MagicBackupRequestV2::Create(var_field0);
+            }
+            1 => {
+                let mut var_field0 =
+                    <foundation_api::api::backup::GetMagicBackupV2>::sse_decode(deserializer);
+                return foundation_api::api::backup::MagicBackupRequestV2::Get(var_field0);
+            }
+            2 => {
+                let mut var_field0 =
+                    <foundation_api::api::backup::DeleteMagicBackupV2>::sse_decode(deserializer);
+                return foundation_api::api::backup::MagicBackupRequestV2::Delete(var_field0);
+            }
+            _ => {
+                unimplemented!("");
+            }
+        }
+    }
+}
+
+impl SseDecode for foundation_api::api::backup::MagicBackupResponseV2 {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        let mut tag_ = <i32>::sse_decode(deserializer);
+        match tag_ {
+            0 => {
+                return foundation_api::api::backup::MagicBackupResponseV2::Created;
+            }
+            1 => {
+                let mut var_data = <Vec<u8>>::sse_decode(deserializer);
+                return foundation_api::api::backup::MagicBackupResponseV2::Backup {
+                    data: var_data,
+                };
+            }
+            2 => {
+                return foundation_api::api::backup::MagicBackupResponseV2::Deleted;
+            }
+            3 => {
+                let mut var_error = <String>::sse_decode(deserializer);
+                return foundation_api::api::backup::MagicBackupResponseV2::Error {
+                    error: var_error,
+                };
+            }
+            _ => {
+                unimplemented!("");
+            }
+        }
     }
 }
 
@@ -3451,6 +3601,20 @@ impl SseDecode for foundation_api::api::message::QuantumLinkMessage {
                 let mut var_field0 =
                     <foundation_api::api::status::DeviceNameUpdate>::sse_decode(deserializer);
                 return foundation_api::api::message::QuantumLinkMessage::DeviceNameUpdate(
+                    var_field0,
+                );
+            }
+            37 => {
+                let mut var_field0 =
+                    <foundation_api::api::backup::MagicBackupRequestV2>::sse_decode(deserializer);
+                return foundation_api::api::message::QuantumLinkMessage::MagicBackupRequestV2(
+                    var_field0,
+                );
+            }
+            38 => {
+                let mut var_field0 =
+                    <foundation_api::api::backup::MagicBackupResponseV2>::sse_decode(deserializer);
+                return foundation_api::api::message::QuantumLinkMessage::MagicBackupResponseV2(
                     var_field0,
                 );
             }
@@ -4239,6 +4403,32 @@ impl
     }
 }
 // Codec=Dco (DartCObject based), see doc to use other codecs
+impl flutter_rust_bridge::IntoDart
+    for FrbWrapper<foundation_api::api::backup::CreateMagicBackupV2>
+{
+    fn into_dart(self) -> flutter_rust_bridge::for_generated::DartAbi {
+        [
+            self.0.timestamp.into_into_dart().into_dart(),
+            self.0.hash.into_into_dart().into_dart(),
+            self.0.pubkey.into_into_dart().into_dart(),
+            self.0.data.into_into_dart().into_dart(),
+            self.0.client_signature.into_into_dart().into_dart(),
+        ]
+        .into_dart()
+    }
+}
+impl flutter_rust_bridge::for_generated::IntoDartExceptPrimitive
+    for FrbWrapper<foundation_api::api::backup::CreateMagicBackupV2>
+{
+}
+impl flutter_rust_bridge::IntoIntoDart<FrbWrapper<foundation_api::api::backup::CreateMagicBackupV2>>
+    for foundation_api::api::backup::CreateMagicBackupV2
+{
+    fn into_into_dart(self) -> FrbWrapper<foundation_api::api::backup::CreateMagicBackupV2> {
+        self.into()
+    }
+}
+// Codec=Dco (DartCObject based), see doc to use other codecs
 impl flutter_rust_bridge::IntoDart for crate::api::ql::DecoderStatus {
     fn into_dart(self) -> flutter_rust_bridge::for_generated::DartAbi {
         [
@@ -4254,6 +4444,30 @@ impl flutter_rust_bridge::IntoIntoDart<crate::api::ql::DecoderStatus>
 {
     fn into_into_dart(self) -> crate::api::ql::DecoderStatus {
         self
+    }
+}
+// Codec=Dco (DartCObject based), see doc to use other codecs
+impl flutter_rust_bridge::IntoDart
+    for FrbWrapper<foundation_api::api::backup::DeleteMagicBackupV2>
+{
+    fn into_dart(self) -> flutter_rust_bridge::for_generated::DartAbi {
+        [
+            self.0.key.into_into_dart().into_dart(),
+            self.0.timestamp.into_into_dart().into_dart(),
+            self.0.signature.into_into_dart().into_dart(),
+        ]
+        .into_dart()
+    }
+}
+impl flutter_rust_bridge::for_generated::IntoDartExceptPrimitive
+    for FrbWrapper<foundation_api::api::backup::DeleteMagicBackupV2>
+{
+}
+impl flutter_rust_bridge::IntoIntoDart<FrbWrapper<foundation_api::api::backup::DeleteMagicBackupV2>>
+    for foundation_api::api::backup::DeleteMagicBackupV2
+{
+    fn into_into_dart(self) -> FrbWrapper<foundation_api::api::backup::DeleteMagicBackupV2> {
+        self.into()
     }
 }
 // Codec=Dco (DartCObject based), see doc to use other codecs
@@ -4640,6 +4854,28 @@ impl
     }
 }
 // Codec=Dco (DartCObject based), see doc to use other codecs
+impl flutter_rust_bridge::IntoDart for FrbWrapper<foundation_api::api::backup::GetMagicBackupV2> {
+    fn into_dart(self) -> flutter_rust_bridge::for_generated::DartAbi {
+        [
+            self.0.key.into_into_dart().into_dart(),
+            self.0.timestamp.into_into_dart().into_dart(),
+            self.0.signature.into_into_dart().into_dart(),
+        ]
+        .into_dart()
+    }
+}
+impl flutter_rust_bridge::for_generated::IntoDartExceptPrimitive
+    for FrbWrapper<foundation_api::api::backup::GetMagicBackupV2>
+{
+}
+impl flutter_rust_bridge::IntoIntoDart<FrbWrapper<foundation_api::api::backup::GetMagicBackupV2>>
+    for foundation_api::api::backup::GetMagicBackupV2
+{
+    fn into_into_dart(self) -> FrbWrapper<foundation_api::api::backup::GetMagicBackupV2> {
+        self.into()
+    }
+}
+// Codec=Dco (DartCObject based), see doc to use other codecs
 impl flutter_rust_bridge::IntoDart for FrbWrapper<foundation_api::api::status::Heartbeat> {
     fn into_dart(self) -> flutter_rust_bridge::for_generated::DartAbi {
         Vec::<u8>::new().into_dart()
@@ -4677,6 +4913,76 @@ impl flutter_rust_bridge::IntoIntoDart<FrbWrapper<foundation_api::api::firmware:
     for foundation_api::api::firmware::InstallErrorStage
 {
     fn into_into_dart(self) -> FrbWrapper<foundation_api::api::firmware::InstallErrorStage> {
+        self.into()
+    }
+}
+// Codec=Dco (DartCObject based), see doc to use other codecs
+impl flutter_rust_bridge::IntoDart
+    for FrbWrapper<foundation_api::api::backup::MagicBackupRequestV2>
+{
+    fn into_dart(self) -> flutter_rust_bridge::for_generated::DartAbi {
+        match self.0 {
+            foundation_api::api::backup::MagicBackupRequestV2::Create(field0) => {
+                [0.into_dart(), field0.into_into_dart().into_dart()].into_dart()
+            }
+            foundation_api::api::backup::MagicBackupRequestV2::Get(field0) => {
+                [1.into_dart(), field0.into_into_dart().into_dart()].into_dart()
+            }
+            foundation_api::api::backup::MagicBackupRequestV2::Delete(field0) => {
+                [2.into_dart(), field0.into_into_dart().into_dart()].into_dart()
+            }
+            _ => {
+                unimplemented!("");
+            }
+        }
+    }
+}
+impl flutter_rust_bridge::for_generated::IntoDartExceptPrimitive
+    for FrbWrapper<foundation_api::api::backup::MagicBackupRequestV2>
+{
+}
+impl
+    flutter_rust_bridge::IntoIntoDart<FrbWrapper<foundation_api::api::backup::MagicBackupRequestV2>>
+    for foundation_api::api::backup::MagicBackupRequestV2
+{
+    fn into_into_dart(self) -> FrbWrapper<foundation_api::api::backup::MagicBackupRequestV2> {
+        self.into()
+    }
+}
+// Codec=Dco (DartCObject based), see doc to use other codecs
+impl flutter_rust_bridge::IntoDart
+    for FrbWrapper<foundation_api::api::backup::MagicBackupResponseV2>
+{
+    fn into_dart(self) -> flutter_rust_bridge::for_generated::DartAbi {
+        match self.0 {
+            foundation_api::api::backup::MagicBackupResponseV2::Created => {
+                [0.into_dart()].into_dart()
+            }
+            foundation_api::api::backup::MagicBackupResponseV2::Backup { data } => {
+                [1.into_dart(), data.into_into_dart().into_dart()].into_dart()
+            }
+            foundation_api::api::backup::MagicBackupResponseV2::Deleted => {
+                [2.into_dart()].into_dart()
+            }
+            foundation_api::api::backup::MagicBackupResponseV2::Error { error } => {
+                [3.into_dart(), error.into_into_dart().into_dart()].into_dart()
+            }
+            _ => {
+                unimplemented!("");
+            }
+        }
+    }
+}
+impl flutter_rust_bridge::for_generated::IntoDartExceptPrimitive
+    for FrbWrapper<foundation_api::api::backup::MagicBackupResponseV2>
+{
+}
+impl
+    flutter_rust_bridge::IntoIntoDart<
+        FrbWrapper<foundation_api::api::backup::MagicBackupResponseV2>,
+    > for foundation_api::api::backup::MagicBackupResponseV2
+{
+    fn into_into_dart(self) -> FrbWrapper<foundation_api::api::backup::MagicBackupResponseV2> {
         self.into()
     }
 }
@@ -5108,6 +5414,12 @@ impl flutter_rust_bridge::IntoDart
             }
             foundation_api::api::message::QuantumLinkMessage::DeviceNameUpdate(field0) => {
                 [36.into_dart(), field0.into_into_dart().into_dart()].into_dart()
+            }
+            foundation_api::api::message::QuantumLinkMessage::MagicBackupRequestV2(field0) => {
+                [37.into_dart(), field0.into_into_dart().into_dart()].into_dart()
+            }
+            foundation_api::api::message::QuantumLinkMessage::MagicBackupResponseV2(field0) => {
+                [38.into_dart(), field0.into_into_dart().into_dart()].into_dart()
             }
             _ => {
                 unimplemented!("");
@@ -5760,6 +6072,17 @@ impl SseEncode for foundation_api::api::backup::CreateMagicBackupResult {
     }
 }
 
+impl SseEncode for foundation_api::api::backup::CreateMagicBackupV2 {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        <u64>::sse_encode(self.timestamp, serializer);
+        <Vec<u8>>::sse_encode(self.hash, serializer);
+        <Vec<u8>>::sse_encode(self.pubkey, serializer);
+        <Vec<u8>>::sse_encode(self.data, serializer);
+        <Vec<u8>>::sse_encode(self.client_signature, serializer);
+    }
+}
+
 impl SseEncode for crate::api::ql::DecoderStatus {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
@@ -5768,6 +6091,15 @@ impl SseEncode for crate::api::ql::DecoderStatus {
             self.payload,
             serializer,
         );
+    }
+}
+
+impl SseEncode for foundation_api::api::backup::DeleteMagicBackupV2 {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        <Vec<u8>>::sse_encode(self.key, serializer);
+        <u64>::sse_encode(self.timestamp, serializer);
+        <Vec<u8>>::sse_encode(self.signature, serializer);
     }
 }
 
@@ -5962,6 +6294,15 @@ impl SseEncode for foundation_api::api::firmware::FirmwareUpdateCheckResponse {
     }
 }
 
+impl SseEncode for foundation_api::api::backup::GetMagicBackupV2 {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        <Vec<u8>>::sse_encode(self.key, serializer);
+        <u64>::sse_encode(self.timestamp, serializer);
+        <Vec<u8>>::sse_encode(self.signature, serializer);
+    }
+}
+
 impl SseEncode for foundation_api::api::status::Heartbeat {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {}
@@ -6027,6 +6368,54 @@ impl SseEncode for Vec<foundation_api::api::message::QuantumLinkMessage> {
         <i32>::sse_encode(self.len() as _, serializer);
         for item in self {
             <foundation_api::api::message::QuantumLinkMessage>::sse_encode(item, serializer);
+        }
+    }
+}
+
+impl SseEncode for foundation_api::api::backup::MagicBackupRequestV2 {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        match self {
+            foundation_api::api::backup::MagicBackupRequestV2::Create(field0) => {
+                <i32>::sse_encode(0, serializer);
+                <foundation_api::api::backup::CreateMagicBackupV2>::sse_encode(field0, serializer);
+            }
+            foundation_api::api::backup::MagicBackupRequestV2::Get(field0) => {
+                <i32>::sse_encode(1, serializer);
+                <foundation_api::api::backup::GetMagicBackupV2>::sse_encode(field0, serializer);
+            }
+            foundation_api::api::backup::MagicBackupRequestV2::Delete(field0) => {
+                <i32>::sse_encode(2, serializer);
+                <foundation_api::api::backup::DeleteMagicBackupV2>::sse_encode(field0, serializer);
+            }
+            _ => {
+                unimplemented!("");
+            }
+        }
+    }
+}
+
+impl SseEncode for foundation_api::api::backup::MagicBackupResponseV2 {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        match self {
+            foundation_api::api::backup::MagicBackupResponseV2::Created => {
+                <i32>::sse_encode(0, serializer);
+            }
+            foundation_api::api::backup::MagicBackupResponseV2::Backup { data } => {
+                <i32>::sse_encode(1, serializer);
+                <Vec<u8>>::sse_encode(data, serializer);
+            }
+            foundation_api::api::backup::MagicBackupResponseV2::Deleted => {
+                <i32>::sse_encode(2, serializer);
+            }
+            foundation_api::api::backup::MagicBackupResponseV2::Error { error } => {
+                <i32>::sse_encode(3, serializer);
+                <String>::sse_encode(error, serializer);
+            }
+            _ => {
+                unimplemented!("");
+            }
         }
     }
 }
@@ -6451,6 +6840,16 @@ impl SseEncode for foundation_api::api::message::QuantumLinkMessage {
             foundation_api::api::message::QuantumLinkMessage::DeviceNameUpdate(field0) => {
                 <i32>::sse_encode(36, serializer);
                 <foundation_api::api::status::DeviceNameUpdate>::sse_encode(field0, serializer);
+            }
+            foundation_api::api::message::QuantumLinkMessage::MagicBackupRequestV2(field0) => {
+                <i32>::sse_encode(37, serializer);
+                <foundation_api::api::backup::MagicBackupRequestV2>::sse_encode(field0, serializer);
+            }
+            foundation_api::api::message::QuantumLinkMessage::MagicBackupResponseV2(field0) => {
+                <i32>::sse_encode(38, serializer);
+                <foundation_api::api::backup::MagicBackupResponseV2>::sse_encode(
+                    field0, serializer,
+                );
             }
             _ => {
                 unimplemented!("");

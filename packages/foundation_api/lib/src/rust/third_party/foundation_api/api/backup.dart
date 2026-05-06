@@ -103,6 +103,75 @@ sealed class CreateMagicBackupResult with _$CreateMagicBackupResult {
   }) = CreateMagicBackupResult_Error;
 }
 
+class CreateMagicBackupV2 {
+  final BigInt timestamp;
+
+  /// Backup identifier (SHA-256 hash).
+  final Uint8List hash;
+
+  /// ML-DSA-44 public key.
+  final Uint8List pubkey;
+
+  /// Encrypted backup payload.
+  final Uint8List data;
+
+  /// ML-DSA-44 client signature.
+  final Uint8List clientSignature;
+
+  const CreateMagicBackupV2({
+    required this.timestamp,
+    required this.hash,
+    required this.pubkey,
+    required this.data,
+    required this.clientSignature,
+  });
+
+  @override
+  int get hashCode =>
+      timestamp.hashCode ^
+      hash.hashCode ^
+      pubkey.hashCode ^
+      data.hashCode ^
+      clientSignature.hashCode;
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is CreateMagicBackupV2 &&
+          runtimeType == other.runtimeType &&
+          timestamp == other.timestamp &&
+          hash == other.hash &&
+          pubkey == other.pubkey &&
+          data == other.data &&
+          clientSignature == other.clientSignature;
+}
+
+class DeleteMagicBackupV2 {
+  final Uint8List key;
+  final BigInt timestamp;
+
+  /// ML-DSA-44 signature.
+  final Uint8List signature;
+
+  const DeleteMagicBackupV2({
+    required this.key,
+    required this.timestamp,
+    required this.signature,
+  });
+
+  @override
+  int get hashCode => key.hashCode ^ timestamp.hashCode ^ signature.hashCode;
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is DeleteMagicBackupV2 &&
+          runtimeType == other.runtimeType &&
+          key == other.key &&
+          timestamp == other.timestamp &&
+          signature == other.signature;
+}
+
 class EnvoyMagicBackupEnabledRequest {
   const EnvoyMagicBackupEnabledRequest();
 
@@ -132,6 +201,61 @@ class EnvoyMagicBackupEnabledResponse {
       other is EnvoyMagicBackupEnabledResponse &&
           runtimeType == other.runtimeType &&
           enabled == other.enabled;
+}
+
+class GetMagicBackupV2 {
+  final Uint8List key;
+  final BigInt timestamp;
+
+  /// ML-DSA-44 signature.
+  final Uint8List signature;
+
+  const GetMagicBackupV2({
+    required this.key,
+    required this.timestamp,
+    required this.signature,
+  });
+
+  @override
+  int get hashCode => key.hashCode ^ timestamp.hashCode ^ signature.hashCode;
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is GetMagicBackupV2 &&
+          runtimeType == other.runtimeType &&
+          key == other.key &&
+          timestamp == other.timestamp &&
+          signature == other.signature;
+}
+
+@freezed
+sealed class MagicBackupRequestV2 with _$MagicBackupRequestV2 {
+  const MagicBackupRequestV2._();
+
+  const factory MagicBackupRequestV2.create(
+    CreateMagicBackupV2 field0,
+  ) = MagicBackupRequestV2_Create;
+  const factory MagicBackupRequestV2.get_(
+    GetMagicBackupV2 field0,
+  ) = MagicBackupRequestV2_Get;
+  const factory MagicBackupRequestV2.delete(
+    DeleteMagicBackupV2 field0,
+  ) = MagicBackupRequestV2_Delete;
+}
+
+@freezed
+sealed class MagicBackupResponseV2 with _$MagicBackupResponseV2 {
+  const MagicBackupResponseV2._();
+
+  const factory MagicBackupResponseV2.created() = MagicBackupResponseV2_Created;
+  const factory MagicBackupResponseV2.backup({
+    required Uint8List data,
+  }) = MagicBackupResponseV2_Backup;
+  const factory MagicBackupResponseV2.deleted() = MagicBackupResponseV2_Deleted;
+  const factory MagicBackupResponseV2.error({
+    required String error,
+  }) = MagicBackupResponseV2_Error;
 }
 
 class PrimeMagicBackupEnabled {
