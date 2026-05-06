@@ -265,7 +265,10 @@ class Devices extends ChangeNotifier {
     final existingIndex = devices.indexWhere((d) => d.serial == device.serial);
 
     if (existingIndex != -1) {
-      device.pairedAccountIds = devices[existingIndex].pairedAccountIds;
+      final existing = devices[existingIndex];
+      device.pairedAccountIds = existing.pairedAccountIds;
+      device.primeBackupEnabled ??= existing.primeBackupEnabled;
+      device.primeFiatCurrency ??= existing.primeFiatCurrency;
       devices[existingIndex] = device;
     } else {
       devices.add(device);

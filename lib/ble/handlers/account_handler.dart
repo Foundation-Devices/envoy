@@ -102,7 +102,12 @@ class BleAccountHandler extends PassportMessageHandler {
     await Devices().updatePrimeFiatCurrency(pref.currencyCode, device);
     // Force a fresh send so Prime sees the new currency immediately.
     _lastSentBtcPrice = 0.0;
-    unawaited(sendExchangeRate());
+    if (_sendingData) {
+      // A history or rate send is in flight; queue a resend for after it.
+      _resendRateOnReady = true;
+    } else {
+      unawaited(sendExchangeRate());
+    }
   }
 
   Future<void> _handleAccountUpdate(api.AccountUpdate accountUpdate) async {
@@ -213,10 +218,18 @@ class BleAccountHandler extends PassportMessageHandler {
   }
 
   bool _sendingData = false;
+  bool _resendRateOnReady = false;
   double _lastSentBtcPrice = 0.0;
 
   void resetSendingState() {
     _sendingData = false;
+  }
+
+  void _scheduleResendIfPending() {
+    if (_resendRateOnReady) {
+      _resendRateOnReady = false;
+      unawaited(sendExchangeRate());
+    }
   }
 
   Future<void> sendExchangeRate() async {
@@ -253,13 +266,17 @@ class BleAccountHandler extends PassportMessageHandler {
         return;
       }
 
-      final timestamp = exchangeRate.usdRateTimestamp?.millisecondsSinceEpoch ??
-          DateTime.now().millisecondsSinceEpoch;
+      // Cached USD timestamp is meaningful for the USD branch; non-USD rates are
+      // freshly fetched here and should report a current timestamp.
+      final timestampMs = currencyCode == "USD"
+          ? (exchangeRate.usdRateTimestamp?.millisecondsSinceEpoch ??
+              DateTime.now().millisecondsSinceEpoch)
+          : DateTime.now().millisecondsSinceEpoch;
 
       final exchangeRateMessage = api.ExchangeRate(
         currencyCode: currencyCode,
         rate: rate,
-        timestamp: BigInt.from(timestamp / 1000),
+        timestamp: BigInt.from(timestampMs / 1000),
       );
 
       kPrint(
@@ -273,6 +290,7 @@ class BleAccountHandler extends PassportMessageHandler {
       kPrint('Failed to send exchange rate to Prime: $e');
     } finally {
       _sendingData = false;
+      _scheduleResendIfPending();
     }
   }
 
@@ -320,6 +338,7 @@ class BleAccountHandler extends PassportMessageHandler {
       return false;
     } finally {
       _sendingData = false;
+      _scheduleResendIfPending();
     }
   }
 }
