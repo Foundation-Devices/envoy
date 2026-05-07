@@ -12,7 +12,7 @@ appId: com.foundationdevices.envoy
 - tapOn: Advanced
 
 - runScript:
-      file: scripts/kebab.js
+      file: ../maestro_Prime_Tests/kebab_scripts/kebab.js
       env:
           KEBAB_COMMAND: "home"
 
@@ -28,7 +28,7 @@ appId: com.foundationdevices.envoy
       id: PopUp Primary Button
 
 - runScript:
-      file: scripts/kebab.js
+      file: ../maestro_Prime_Tests/kebab_scripts/kebab.js
       env:
           KEBAB_COMMAND: "face_tester_1"
 

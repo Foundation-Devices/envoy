@@ -36,6 +36,7 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 PROJECT_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
 HOT_WALLET_TESTS_DIR="$PROJECT_ROOT/integration_test/maestro_Hot_Wallet_Tests"
 PASSPORT_WALLET_TESTS_DIR="$PROJECT_ROOT/integration_test/maestro_Passport_Wallet_Tests"
+PRIME_TESTS_DIR="$PROJECT_ROOT/integration_test/maestro_Prime_Tests"
 
 FAIL_VIDEOS_DIR="$PROJECT_ROOT/fail-videos"
 mkdir -p "$FAIL_VIDEOS_DIR"
@@ -45,6 +46,7 @@ DEVICE_ID=""
 TEST_ARG=""
 BUILD_APP=false
 KEBAB_PID=""
+PRIME_PID=""
 
 # ------------------------------------------------------------
 # Commands (override here if needed later)
@@ -240,6 +242,7 @@ echo -e "${GREEN}✓${NC} Maestro found: $(command -v maestro)"
 echo -e "${GREEN}✓${NC} Platform: $PLATFORM"
 echo -e "${GREEN}✓${NC} Hot Wallet tests: $HOT_WALLET_TESTS_DIR"
 echo -e "${GREEN}✓${NC} Passport Wallet tests: $PASSPORT_WALLET_TESTS_DIR"
+echo -e "${GREEN}✓${NC} Prime tests: $PRIME_TESTS_DIR"
 
 # ------------------------------------------------------------
 # Kill ALL Maestro processes
@@ -489,7 +492,56 @@ stop_kebab_bridge() {
     fi
 }
 
+# ------------------------------------------------------------
+# Prime HTTP Bridge (passport-drive)
+# ------------------------------------------------------------
+# Lets Maestro flows drive Prime via runScript JS by hitting the bridge.
+# Starts best-effort: if Prime isn't connected or USB setup fails, warn
+# and continue — tests that don't touch Prime still work.
+start_prime_bridge() {
+    if [ -x "$SCRIPT_DIR/prime_driver_setup.sh" ]; then
+        echo -e "${YELLOW}Preparing Prime USB interface...${NC}"
+        if ! "$SCRIPT_DIR/prime_driver_setup.sh"; then
+            echo -e "${YELLOW}⚠ prime-driver-setup failed — Prime tests will not work${NC}"
+            return
+        fi
+    fi
+
+    # If port 7556 is already bound, free it (stale bridge from previous run)
+    if lsof -i :7556 >/dev/null 2>&1; then
+        local stale
+        stale=$(lsof -tiTCP:7556 2>/dev/null)
+        if [ -n "$stale" ]; then
+            echo -e "${YELLOW}Killing stale Prime bridge on port 7556 (PIDs: $stale)${NC}"
+            kill $stale 2>/dev/null || true
+            sleep 0.5
+        fi
+    fi
+
+    echo -e "${YELLOW}Starting Prime HTTP bridge...${NC}"
+    "$SCRIPT_DIR/prime_bridge.sh" &
+    PRIME_PID=$!
+
+    for i in $(seq 1 10); do
+        if curl -s http://localhost:7556/prime/screenshot >/dev/null 2>&1; then
+            echo -e "${GREEN}✓${NC} Prime bridge started (PID: $PRIME_PID)"
+            return
+        fi
+        sleep 1
+    done
+    echo -e "${YELLOW}⚠ Prime bridge may not be ready — Prime commands might fail${NC}"
+}
+
+stop_prime_bridge() {
+    if [ -n "$PRIME_PID" ]; then
+        kill "$PRIME_PID" 2>/dev/null
+        wait "$PRIME_PID" 2>/dev/null
+        echo -e "${GREEN}✓${NC} Prime bridge stopped"
+    fi
+}
+
 start_kebab_bridge
+start_prime_bridge
 
 # ------------------------------------------------------------
 # Test Runner
@@ -571,6 +623,9 @@ run_test_group "Hot Wallet Tests" "$HOT_WALLET_TESTS_DIR"
 # --- Group 2: Passport Wallet Tests ---
 run_test_group "Passport Wallet Tests" "$PASSPORT_WALLET_TESTS_DIR"
 
+# --- Group 3: Prime Tests (cross-device, Android + Prime via passport-drive) ---
+run_test_group "Prime Tests" "$PRIME_TESTS_DIR"
+
 # ------------------------------------------------------------
 # Summary
 # ------------------------------------------------------------
@@ -595,6 +650,7 @@ fi
 # ------------------------------------------------------------
 # Cleanup
 # ------------------------------------------------------------
+stop_prime_bridge
 stop_kebab_bridge
 
 echo -e "${YELLOW}Uninstalling app...${NC}"

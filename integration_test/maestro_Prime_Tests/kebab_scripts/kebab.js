@@ -12,10 +12,10 @@
 //   face_tester_2      - Face devices toward tester position 2 (right)
 //   disable_motors     - Disable all stepper motors (allows manual movement)
 //
-// Usage in a Maestro flow:
+// Usage in a Maestro flow (path is relative to the calling YAML):
 //
 //   - runScript:
-//       file: scripts/kebab.js
+//       file: ../maestro_Prime_Tests/kebab_scripts/kebab.js
 //       env:
 //         KEBAB_COMMAND: "home"
 

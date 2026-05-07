@@ -1,0 +1,19 @@
+# SPDX-FileCopyrightText: 2026 Foundation Devices Inc.
+#
+# SPDX-License-Identifier: GPL-3.0-or-later
+#
+# Smoke test: launch Envoy on Android, then ask the prime-bridge
+# (started by run-prime-test.sh) to fire a tap on Prime via passport-drive.
+#
+# This proves the wiring:
+#   Maestro YAML → runScript JS → prime-bridge HTTP → tap-prime-button.sh → passport-drive → Prime
+#
+# Useful as the building block for cross-device tests where each side does
+# something at a sync point.
+
+appId: com.foundationdevices.envoy
+---
+- launchApp:
+    clearState: false
+
+- runScript: prime_scripts/tap_prime_button.js
