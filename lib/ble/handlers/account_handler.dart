@@ -23,6 +23,7 @@ class BleAccountHandler extends PassportMessageHandler {
       _applyPassphraseStream.stream.asBroadcastStream();
 
   late final void Function() _onExchangeRateChanged;
+  Timer? _rateRefreshTimer;
 
   final _unpairRequestStream =
       StreamController<api.UnpairingRequest?>.broadcast();
@@ -32,6 +33,16 @@ class BleAccountHandler extends PassportMessageHandler {
 
   BleAccountHandler(super.connection) {
     setupExchangeRateListener();
+    // Re-push the rate periodically so Prime's "Last Update" indicator
+    // stays fresh even when the BTC price hasn't moved.
+    _rateRefreshTimer = Timer.periodic(const Duration(seconds: 30), (_) {
+      if (!qlConnection.isQLActive()) return;
+      if (_sendingData) {
+        _resendRateOnReady = true;
+        return;
+      }
+      unawaited(sendExchangeRate());
+    });
   }
 
   @override
@@ -59,6 +70,7 @@ class BleAccountHandler extends PassportMessageHandler {
 
   @override
   void dispose() {
+    _rateRefreshTimer?.cancel();
     ExchangeRate().removeListener(_onExchangeRateChanged);
     _applyPassphraseStream.close();
     _unpairRequestStream.close();
@@ -100,8 +112,6 @@ class BleAccountHandler extends PassportMessageHandler {
     if (device == null) return;
     if (device.primeFiatCurrency == pref.currencyCode) return;
     await Devices().updatePrimeFiatCurrency(pref.currencyCode, device);
-    // Force a fresh send so Prime sees the new currency immediately.
-    _lastSentBtcPrice = 0.0;
     if (_sendingData) {
       // A history or rate send is in flight; queue a resend for after it.
       _resendRateOnReady = true;
@@ -221,10 +231,11 @@ class BleAccountHandler extends PassportMessageHandler {
 
   bool _sendingData = false;
   bool _resendRateOnReady = false;
-  double _lastSentBtcPrice = 0.0;
 
   void resetSendingState() {
     _sendingData = false;
+    // Drop any queued periodic resend; the link is gone.
+    _resendRateOnReady = false;
   }
 
   void _scheduleResendIfPending() {
@@ -264,13 +275,8 @@ class BleAccountHandler extends PassportMessageHandler {
         rate = await exchangeRate.getRateForCode(currencyCode);
       }
 
-      // Only send if price actually changed
-      if (_lastSentBtcPrice == rate) {
-        return;
-      }
-
-      // Cached USD timestamp is meaningful for the USD branch; non-USD rates are
-      // freshly fetched here and should report a current timestamp.
+      // Cached USD timestamp is meaningful for the USD branch; non-USD rates
+      // are fetched here so the timestamp is "now".
       final timestampMs = currencyCode == "USD"
           ? (exchangeRate.usdRateTimestamp?.millisecondsSinceEpoch ??
               DateTime.now().millisecondsSinceEpoch)
@@ -282,13 +288,15 @@ class BleAccountHandler extends PassportMessageHandler {
         timestamp: BigInt.from(timestampMs / 1000),
       );
 
+      // Re-check liveness: a non-USD fetch above is async and the link
+      // could have dropped while we were awaiting it.
+      if (!qlConnection.isQLActive()) return;
+
       kPrint(
           "Sending exchange rate ($currencyCode) to Prime: ${qlConnection.deviceId}");
       qlConnection.writeMessage(
         api.QuantumLinkMessage.exchangeRate(exchangeRateMessage),
       );
-
-      _lastSentBtcPrice = rate;
     } catch (e) {
       kPrint('Failed to send exchange rate to Prime: $e');
     } finally {
