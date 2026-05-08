@@ -2028,6 +2028,7 @@ const _: fn() = || {
         let _: foundation_api::api::passport::PassportSerial = PairingResponse.passport_serial;
         let _: foundation_api::api::passport::PassportColor = PairingResponse.passport_color;
         let _: bool = PairingResponse.onboarding_complete;
+        let _: Option<String> = PairingResponse.device_name;
     }
     {
         let PassportFirmwareVersion_ =
@@ -3218,12 +3219,14 @@ impl SseDecode for foundation_api::api::pairing::PairingResponse {
         let mut var_passportColor =
             <foundation_api::api::passport::PassportColor>::sse_decode(deserializer);
         let mut var_onboardingComplete = <bool>::sse_decode(deserializer);
+        let mut var_deviceName = <Option<String>>::sse_decode(deserializer);
         return foundation_api::api::pairing::PairingResponse {
             passport_model: var_passportModel,
             passport_firmware_version: var_passportFirmwareVersion,
             passport_serial: var_passportSerial,
             passport_color: var_passportColor,
             onboarding_complete: var_onboardingComplete,
+            device_name: var_deviceName,
         };
     }
 }
@@ -5063,6 +5066,7 @@ impl flutter_rust_bridge::IntoDart for FrbWrapper<foundation_api::api::pairing::
             self.0.passport_serial.into_into_dart().into_dart(),
             self.0.passport_color.into_into_dart().into_dart(),
             self.0.onboarding_complete.into_into_dart().into_dart(),
+            self.0.device_name.into_into_dart().into_dart(),
         ]
         .into_dart()
     }
@@ -6543,6 +6547,7 @@ impl SseEncode for foundation_api::api::pairing::PairingResponse {
         );
         <foundation_api::api::passport::PassportColor>::sse_encode(self.passport_color, serializer);
         <bool>::sse_encode(self.onboarding_complete, serializer);
+        <Option<String>>::sse_encode(self.device_name, serializer);
     }
 }
 

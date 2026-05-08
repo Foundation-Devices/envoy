@@ -2477,14 +2477,15 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   PairingResponse dco_decode_pairing_response(dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
     final arr = raw as List<dynamic>;
-    if (arr.length != 5)
-      throw Exception('unexpected arr length: expect 5 but see ${arr.length}');
+    if (arr.length != 6)
+      throw Exception('unexpected arr length: expect 6 but see ${arr.length}');
     return PairingResponse(
       passportModel: dco_decode_passport_model(arr[0]),
       passportFirmwareVersion: dco_decode_passport_firmware_version(arr[1]),
       passportSerial: dco_decode_passport_serial(arr[2]),
       passportColor: dco_decode_passport_color(arr[3]),
       onboardingComplete: dco_decode_bool(arr[4]),
+      deviceName: dco_decode_opt_String(arr[5]),
     );
   }
 
@@ -4258,12 +4259,14 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
     var var_passportSerial = sse_decode_passport_serial(deserializer);
     var var_passportColor = sse_decode_passport_color(deserializer);
     var var_onboardingComplete = sse_decode_bool(deserializer);
+    var var_deviceName = sse_decode_opt_String(deserializer);
     return PairingResponse(
         passportModel: var_passportModel,
         passportFirmwareVersion: var_passportFirmwareVersion,
         passportSerial: var_passportSerial,
         passportColor: var_passportColor,
-        onboardingComplete: var_onboardingComplete);
+        onboardingComplete: var_onboardingComplete,
+        deviceName: var_deviceName);
   }
 
   @protected
@@ -5896,6 +5899,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
     sse_encode_passport_serial(self.passportSerial, serializer);
     sse_encode_passport_color(self.passportColor, serializer);
     sse_encode_bool(self.onboardingComplete, serializer);
+    sse_encode_opt_String(self.deviceName, serializer);
   }
 
   @protected
