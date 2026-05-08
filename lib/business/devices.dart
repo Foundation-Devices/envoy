@@ -303,9 +303,23 @@ class Devices extends ChangeNotifier {
   }
 
   Future renameDevice(Device device, String newName) async {
+    if (device.name == newName) return;
     device.name = newName;
     await storeDevices();
     notifyListeners();
+
+    if (device.type == DeviceType.passportPrime) {
+      try {
+        await device.qlConnection().writeMessage(
+              api.QuantumLinkMessage.deviceNameUpdate(
+                api.DeviceNameUpdate(deviceName: newName),
+              ),
+            );
+      } catch (e, stack) {
+        kPrint("Failed to push device name update to Prime: $e",
+            stackTrace: stack);
+      }
+    }
   }
 
   void markDeviceUpdated(int deviceId, String firmwareVersion) {

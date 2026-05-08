@@ -20,7 +20,19 @@ class DeviceHandler extends PassportMessageHandler {
   }
 
   @override
-  Future<void> handleMessage(api.QuantumLinkMessage message) async {}
+  Future<void> handleMessage(api.QuantumLinkMessage message) async {
+    if (message case api.QuantumLinkMessage_DeviceNameUpdate update) {
+      final device = qlConnection.getDevice();
+      if (device == null) {
+        kPrint("DeviceHandler: DeviceNameUpdate but no connected device");
+        return;
+      }
+      final newName = update.field0.deviceName;
+      if (device.name == newName) return;
+      unawaited(Devices().renameDevice(device, newName));
+      kPrint("Device name updated to '$newName'");
+    }
+  }
 
   @override
   void onDeviceStatus(api.DeviceStatus status) {
