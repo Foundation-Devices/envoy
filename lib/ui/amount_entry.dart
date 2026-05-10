@@ -131,8 +131,14 @@ class AmountEntryState extends ConsumerState<AmountEntry> {
 
       setState(() {
         unit = decodedInfo.unit ?? unit;
-        ref.read(displayFiatSendAmountProvider.notifier).state =
-            decodedInfo.displayFiat;
+        // Only overwrite the displayed fiat amount when the parse actually
+        // produced one (valid amount or address). For invalid pastes
+        // (random text) BitcoinParser returns null and we preserve the
+        // previous value — same as we already do for amountSats / unit.
+        if (decodedInfo.displayFiat != null) {
+          ref.read(displayFiatSendAmountProvider.notifier).state =
+              decodedInfo.displayFiat;
+        }
       });
 
       if (widget.onPaste != null) {
