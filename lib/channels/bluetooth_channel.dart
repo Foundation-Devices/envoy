@@ -194,16 +194,23 @@ class BluetoothChannel {
   /// Returns the QLConnection after pairing and connecting.
   /// On iOS this will show the accessory setup sheet.
   /// On Android this will initiate the android bonding dialog.
-  Future<QLConnection> setupBle(String deviceId, int colorWay) async {
+  Future<QLConnection> setupBle(
+    String deviceId,
+    int colorWay, {
+    String? deviceName,
+  }) async {
     kPrint(
-      "setupBle start: requestedDeviceId=$deviceId colorWay=$colorWay platform=${Platform.operatingSystem}",
+      "setupBle start: requestedDeviceId=$deviceId colorWay=$colorWay deviceName=$deviceName platform=${Platform.operatingSystem}",
     );
     var resolvedDeviceId = deviceId;
     if (Platform.isIOS) {
       kPrint("setupBle iOS: invoking showAccessorySetup");
       final iosDeviceId = await _methodChannel.invokeMethod<String?>(
         "showAccessorySetup",
-        {"c": colorWay},
+        {
+          "c": colorWay,
+          if (deviceName != null) "n": deviceName,
+        },
       );
       if (iosDeviceId == null || iosDeviceId.isEmpty) {
         throw BleSetupTimeoutException("Accessory setup cancelled");
@@ -215,7 +222,10 @@ class BluetoothChannel {
       // Android: Call native pair first to create QLConnection and register channels
       // This must happen before we create QLConnection on Dart side
       kPrint("setupBle android: invoking pair for deviceId=$deviceId");
-      await _methodChannel.invokeMethod("pair", {"deviceId": deviceId}).timeout(
+      await _methodChannel.invokeMethod("pair", {
+        "deviceId": deviceId,
+        if (deviceName != null) "deviceName": deviceName,
+      }).timeout(
         Duration(seconds: 10),
         onTimeout: () {
           throw BleSetupTimeoutException("Pairing timed out");
@@ -283,12 +293,19 @@ class BluetoothChannel {
   }
 
   /// Show the iOS accessory sheet for BLE pairing and return the device UUID
-  Future<String?> showAccessorySetup({int? colorWay}) async {
+  Future<String?> showAccessorySetup(
+      {int? colorWay, String? deviceName}) async {
     if (!Platform.isIOS) {
       throw Exception("showAccessorySetup is only supported on iOS");
     }
     try {
-      final args = colorWay == null ? null : {"c": colorWay};
+      final Map<String, dynamic>? args =
+          (colorWay == null && deviceName == null)
+              ? null
+              : {
+                  if (colorWay != null) "c": colorWay,
+                  if (deviceName != null) "n": deviceName,
+                };
       return await _methodChannel.invokeMethod<String?>(
         "showAccessorySetup",
         args,
