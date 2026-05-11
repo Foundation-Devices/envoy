@@ -40,15 +40,23 @@ class ScvDecoder extends ScannerDecoder {
       S().scv_cameraModalUnexpectedQrFormat_content,
       S().component_retry,
       (BuildContext context) {
-        if (onRetry != null) onRetry();
+        Navigator.of(context).pop(true);
       },
       icon: EnvoyIcons.alert,
+      dismissible: false,
       showCloseButton: false,
       typeOfMessage: PopUpState.warning,
       secondaryButtonLabel: S().component_cancel,
       onSecondaryButtonTap: (BuildContext context) {
-        if (onCancel != null) onCancel();
+        Navigator.of(context).pop(false);
       },
-    );
+    ).then((retry) {
+      reset();
+      if (retry == true) {
+        onRetry?.call();
+      } else {
+        onCancel?.call();
+      }
+    });
   }
 }
