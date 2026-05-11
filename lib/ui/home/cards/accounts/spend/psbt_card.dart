@@ -174,31 +174,47 @@ class _PsbtCardState extends ConsumerState<PsbtCard> {
                     child: Padding(
                       padding: const EdgeInsets.symmetric(
                           horizontal: EnvoySpacing.medium1),
-                      child: Container(
-                        width: double.infinity,
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          border: Border.all(
-                            width: 1,
-                            color: envoy_colors.EnvoyColors.border2,
+                      child: GestureDetector(
+                        behavior: HitTestBehavior.opaque,
+                        onHorizontalDragEnd: (details) {
+                          final velocity = details.primaryVelocity ?? 0;
+                          if (velocity == 0) return;
+                          final values = _QrDensity.values;
+                          final index = values.indexOf(_qrDensity);
+                          final next = velocity < 0
+                              ? (index + 1).clamp(0, values.length - 1)
+                              : (index - 1).clamp(0, values.length - 1);
+                          if (next != index) {
+                            setState(() => _qrDensity = values[next]);
+                          }
+                        },
+                        child: Container(
+                          width: double.infinity,
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            border: Border.all(
+                              width: 1,
+                              color: envoy_colors.EnvoyColors.border2,
+                            ),
+                            borderRadius: const BorderRadius.all(
+                              Radius.circular(EnvoySpacing.medium1),
+                            ),
                           ),
-                          borderRadius: const BorderRadius.all(
-                            Radius.circular(EnvoySpacing.medium1),
-                          ),
-                        ),
-                        child: AspectRatio(
-                          aspectRatio: 1.0,
-                          child: Align(
-                            alignment: Alignment.topCenter,
-                            child: Padding(
-                              padding:
-                                  const EdgeInsets.all(EnvoySpacing.medium1),
-                              child: AnimatedQrImage(
-                                key: ValueKey(_qrDensity),
-                                widget.transaction.psbt,
-                                urType: "crypto-psbt",
-                                binaryCborTag: true,
-                                maxFragmentLength: _qrDensity.maxFragmentLength,
+                          child: AspectRatio(
+                            aspectRatio: 1.0,
+                            child: Align(
+                              alignment: Alignment.topCenter,
+                              child: Padding(
+                                padding:
+                                    const EdgeInsets.all(EnvoySpacing.medium1),
+                                child: AnimatedQrImage(
+                                  key: ValueKey(_qrDensity),
+                                  widget.transaction.psbt,
+                                  urType: "crypto-psbt",
+                                  binaryCborTag: true,
+                                  maxFragmentLength:
+                                      _qrDensity.maxFragmentLength,
+                                ),
                               ),
                             ),
                           ),
