@@ -1827,6 +1827,13 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  PrimeFiatPreference dco_decode_box_autoadd_prime_fiat_preference(
+      dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return dco_decode_prime_fiat_preference(raw);
+  }
+
+  @protected
   PrimeMagicBackupEnabled dco_decode_box_autoadd_prime_magic_backup_enabled(
       dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
@@ -2549,6 +2556,17 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  PrimeFiatPreference dco_decode_prime_fiat_preference(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    final arr = raw as List<dynamic>;
+    if (arr.length != 1)
+      throw Exception('unexpected arr length: expect 1 but see ${arr.length}');
+    return PrimeFiatPreference(
+      currencyCode: dco_decode_String(arr[0]),
+    );
+  }
+
+  @protected
   PrimeMagicBackupEnabled dco_decode_prime_magic_backup_enabled(dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
     final arr = raw as List<dynamic>;
@@ -2758,6 +2776,10 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       case 38:
         return QuantumLinkMessage_MagicBackupResponseV2(
           dco_decode_box_autoadd_magic_backup_response_v_2(raw[1]),
+        );
+      case 39:
+        return QuantumLinkMessage_PrimeFiatPreference(
+          dco_decode_box_autoadd_prime_fiat_preference(raw[1]),
         );
       default:
         throw Exception("unreachable");
@@ -3567,6 +3589,13 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  PrimeFiatPreference sse_decode_box_autoadd_prime_fiat_preference(
+      SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    return (sse_decode_prime_fiat_preference(deserializer));
+  }
+
+  @protected
   PrimeMagicBackupEnabled sse_decode_box_autoadd_prime_magic_backup_enabled(
       SseDeserializer deserializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
@@ -4319,6 +4348,14 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  PrimeFiatPreference sse_decode_prime_fiat_preference(
+      SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    var var_currencyCode = sse_decode_String(deserializer);
+    return PrimeFiatPreference(currencyCode: var_currencyCode);
+  }
+
+  @protected
   PrimeMagicBackupEnabled sse_decode_prime_magic_backup_enabled(
       SseDeserializer deserializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
@@ -4510,6 +4547,10 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         var var_field0 =
             sse_decode_box_autoadd_magic_backup_response_v_2(deserializer);
         return QuantumLinkMessage_MagicBackupResponseV2(var_field0);
+      case 39:
+        var var_field0 =
+            sse_decode_box_autoadd_prime_fiat_preference(deserializer);
+        return QuantumLinkMessage_PrimeFiatPreference(var_field0);
       default:
         throw UnimplementedError('');
     }
@@ -5301,6 +5342,13 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  void sse_encode_box_autoadd_prime_fiat_preference(
+      PrimeFiatPreference self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_prime_fiat_preference(self, serializer);
+  }
+
+  @protected
   void sse_encode_box_autoadd_prime_magic_backup_enabled(
       PrimeMagicBackupEnabled self, SseSerializer serializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
@@ -5945,6 +5993,13 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  void sse_encode_prime_fiat_preference(
+      PrimeFiatPreference self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_String(self.currencyCode, serializer);
+  }
+
+  @protected
   void sse_encode_prime_magic_backup_enabled(
       PrimeMagicBackupEnabled self, SseSerializer serializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
@@ -6112,6 +6167,9 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       case QuantumLinkMessage_MagicBackupResponseV2(field0: final field0):
         sse_encode_i_32(38, serializer);
         sse_encode_box_autoadd_magic_backup_response_v_2(field0, serializer);
+      case QuantumLinkMessage_PrimeFiatPreference(field0: final field0):
+        sse_encode_i_32(39, serializer);
+        sse_encode_box_autoadd_prime_fiat_preference(field0, serializer);
     }
   }
 

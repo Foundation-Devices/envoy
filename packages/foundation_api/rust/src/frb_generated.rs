@@ -2051,6 +2051,10 @@ const _: fn() = || {
         let _: u64 = PricePoint.timestamp;
     }
     {
+        let PrimeFiatPreference = None::<foundation_api::api::fx::PrimeFiatPreference>.unwrap();
+        let _: String = PrimeFiatPreference.currency_code;
+    }
+    {
         let PrimeMagicBackupEnabled =
             None::<foundation_api::api::backup::PrimeMagicBackupEnabled>.unwrap();
         let _: bool = PrimeMagicBackupEnabled.enabled;
@@ -2192,6 +2196,9 @@ const _: fn() = || {
         }
         foundation_api::api::message::QuantumLinkMessage::MagicBackupResponseV2(field0) => {
             let _: foundation_api::api::backup::MagicBackupResponseV2 = field0;
+        }
+        foundation_api::api::message::QuantumLinkMessage::PrimeFiatPreference(field0) => {
+            let _: foundation_api::api::fx::PrimeFiatPreference = field0;
         }
     }
     match None::<foundation_api::api::backup::RestoreMagicBackupEvent>.unwrap() {
@@ -3299,6 +3306,16 @@ impl SseDecode for foundation_api::api::fx::PricePoint {
     }
 }
 
+impl SseDecode for foundation_api::api::fx::PrimeFiatPreference {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        let mut var_currencyCode = <String>::sse_decode(deserializer);
+        return foundation_api::api::fx::PrimeFiatPreference {
+            currency_code: var_currencyCode,
+        };
+    }
+}
+
 impl SseDecode for foundation_api::api::backup::PrimeMagicBackupEnabled {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
@@ -3618,6 +3635,13 @@ impl SseDecode for foundation_api::api::message::QuantumLinkMessage {
                 let mut var_field0 =
                     <foundation_api::api::backup::MagicBackupResponseV2>::sse_decode(deserializer);
                 return foundation_api::api::message::QuantumLinkMessage::MagicBackupResponseV2(
+                    var_field0,
+                );
+            }
+            39 => {
+                let mut var_field0 =
+                    <foundation_api::api::fx::PrimeFiatPreference>::sse_decode(deserializer);
+                return foundation_api::api::message::QuantumLinkMessage::PrimeFiatPreference(
                     var_field0,
                 );
             }
@@ -5207,6 +5231,23 @@ impl flutter_rust_bridge::IntoIntoDart<FrbWrapper<foundation_api::api::fx::Price
     }
 }
 // Codec=Dco (DartCObject based), see doc to use other codecs
+impl flutter_rust_bridge::IntoDart for FrbWrapper<foundation_api::api::fx::PrimeFiatPreference> {
+    fn into_dart(self) -> flutter_rust_bridge::for_generated::DartAbi {
+        [self.0.currency_code.into_into_dart().into_dart()].into_dart()
+    }
+}
+impl flutter_rust_bridge::for_generated::IntoDartExceptPrimitive
+    for FrbWrapper<foundation_api::api::fx::PrimeFiatPreference>
+{
+}
+impl flutter_rust_bridge::IntoIntoDart<FrbWrapper<foundation_api::api::fx::PrimeFiatPreference>>
+    for foundation_api::api::fx::PrimeFiatPreference
+{
+    fn into_into_dart(self) -> FrbWrapper<foundation_api::api::fx::PrimeFiatPreference> {
+        self.into()
+    }
+}
+// Codec=Dco (DartCObject based), see doc to use other codecs
 impl flutter_rust_bridge::IntoDart
     for FrbWrapper<foundation_api::api::backup::PrimeMagicBackupEnabled>
 {
@@ -5424,6 +5465,9 @@ impl flutter_rust_bridge::IntoDart
             }
             foundation_api::api::message::QuantumLinkMessage::MagicBackupResponseV2(field0) => {
                 [38.into_dart(), field0.into_into_dart().into_dart()].into_dart()
+            }
+            foundation_api::api::message::QuantumLinkMessage::PrimeFiatPreference(field0) => {
+                [39.into_dart(), field0.into_into_dart().into_dart()].into_dart()
             }
             _ => {
                 unimplemented!("");
@@ -6615,6 +6659,13 @@ impl SseEncode for foundation_api::api::fx::PricePoint {
     }
 }
 
+impl SseEncode for foundation_api::api::fx::PrimeFiatPreference {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        <String>::sse_encode(self.currency_code, serializer);
+    }
+}
+
 impl SseEncode for foundation_api::api::backup::PrimeMagicBackupEnabled {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
@@ -6855,6 +6906,10 @@ impl SseEncode for foundation_api::api::message::QuantumLinkMessage {
                 <foundation_api::api::backup::MagicBackupResponseV2>::sse_encode(
                     field0, serializer,
                 );
+            }
+            foundation_api::api::message::QuantumLinkMessage::PrimeFiatPreference(field0) => {
+                <i32>::sse_encode(39, serializer);
+                <foundation_api::api::fx::PrimeFiatPreference>::sse_encode(field0, serializer);
             }
             _ => {
                 unimplemented!("");
