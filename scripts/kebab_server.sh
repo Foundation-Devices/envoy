@@ -35,7 +35,7 @@ MQTT_QOS = 1  # AtLeastOnce, matches the Dart MCP client
 
 VALID_COMMANDS = {
     "home", "iphone_scan_prime", "prime_scan_iphone",
-    "face_tester_1", "face_tester_2", "disable_motors",
+    "face_tester_1", "face_tester_2", "disable_motors", "wake",
 }
 
 # --- Persistent MQTT connection ---

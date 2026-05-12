@@ -540,6 +540,31 @@ stop_prime_bridge() {
     fi
 }
 
+# ------------------------------------------------------------
+# Cleanup trap — fires on normal exit and on SIGINT/SIGTERM, so the
+# Kebab motors don't stay energized if a Prime test run is interrupted.
+# ------------------------------------------------------------
+KEBAB_WAKE_ACTIVE=0
+
+sleep_kebab_motors() {
+    [ "$KEBAB_WAKE_ACTIVE" = "1" ] || return 0
+    echo -e "${YELLOW}Sleeping Kebab motors...${NC}"
+    if curl -s -o /dev/null --max-time 3 http://localhost:7555/disable_motors; then
+        echo -e "${GREEN}✓${NC} Kebab motors sleeping"
+    else
+        echo -e "${YELLOW}⚠ Kebab sleep request failed${NC}"
+    fi
+    KEBAB_WAKE_ACTIVE=0
+}
+
+cleanup() {
+    # Order matters: send the sleep command before killing the HTTP bridge.
+    sleep_kebab_motors
+    stop_prime_bridge
+    stop_kebab_bridge
+}
+trap cleanup EXIT INT TERM
+
 start_kebab_bridge
 start_prime_bridge
 
@@ -624,7 +649,21 @@ run_test_group "Hot Wallet Tests" "$HOT_WALLET_TESTS_DIR"
 run_test_group "Passport Wallet Tests" "$PASSPORT_WALLET_TESTS_DIR"
 
 # --- Group 3: Prime Tests (cross-device, Android + Prime via passport-drive) ---
+# Wake the Kebab motors (enable → home → park at FaceTesterPos2) before the
+# group, and sleep them again after, so the steppers aren't energized while
+# idle between runs. The cleanup trap above guarantees the sleep command
+# is sent even if the script is interrupted mid-group.
+echo -e "${YELLOW}Waking Kebab motors for Prime tests...${NC}"
+if curl -s -o /dev/null --max-time 5 http://localhost:7555/wake; then
+    KEBAB_WAKE_ACTIVE=1
+    echo -e "${GREEN}✓${NC} Kebab motors awake"
+else
+    echo -e "${YELLOW}⚠ Kebab wake request failed — continuing${NC}"
+fi
+
 run_test_group "Prime Tests" "$PRIME_TESTS_DIR"
+
+sleep_kebab_motors
 
 # ------------------------------------------------------------
 # Summary
@@ -648,10 +687,8 @@ if [ ${#FAILED_TESTS[@]} -gt 0 ]; then
 fi
 
 # ------------------------------------------------------------
-# Cleanup
+# Cleanup — bridges + Kebab sleep are handled by the EXIT trap above.
 # ------------------------------------------------------------
-stop_prime_bridge
-stop_kebab_bridge
 
 echo -e "${YELLOW}Uninstalling app...${NC}"
 $ADB_CMD -s "$DEVICE_ID" uninstall com.foundationdevices.envoy >/dev/null 2>&1 || true
