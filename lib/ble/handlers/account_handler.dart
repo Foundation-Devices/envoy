@@ -7,6 +7,7 @@ import 'dart:async';
 import 'package:collection/collection.dart';
 import 'package:envoy/account/accounts_manager.dart';
 import 'package:envoy/ble/quantum_link_router.dart';
+import 'package:envoy/business/devices.dart';
 import 'package:envoy/business/exchange_rate.dart';
 import 'package:envoy/business/settings.dart';
 import 'package:envoy/util/bug_report_helper.dart';
@@ -23,6 +24,12 @@ class BleAccountHandler extends PassportMessageHandler {
 
   late final void Function() _onExchangeRateChanged;
 
+  final _unpairRequestStream =
+      StreamController<api.UnpairingRequest?>.broadcast();
+
+  Stream<api.UnpairingRequest?> get unpairRequestStream =>
+      _unpairRequestStream.stream.asBroadcastStream();
+
   BleAccountHandler(super.connection) {
     setupExchangeRateListener();
   }
@@ -31,6 +38,7 @@ class BleAccountHandler extends PassportMessageHandler {
   bool canHandle(api.QuantumLinkMessage message) {
     return message is api.QuantumLinkMessage_AccountUpdate ||
         message is api.QuantumLinkMessage_CreateMagicBackupEvent ||
+        message is api.QuantumLinkMessage_UnpairingRequest ||
         message is api.QuantumLinkMessage_ApplyPassphrase;
   }
 
@@ -52,6 +60,7 @@ class BleAccountHandler extends PassportMessageHandler {
   void dispose() {
     ExchangeRate().removeListener(_onExchangeRateChanged);
     _applyPassphraseStream.close();
+    _unpairRequestStream.close();
     super.dispose();
   }
 
@@ -63,6 +72,22 @@ class BleAccountHandler extends PassportMessageHandler {
     } else if (message
         case api.QuantumLinkMessage_ApplyPassphrase applyPassphrase) {
       _applyPassphraseStream.add(applyPassphrase.field0);
+    } else if (message
+        case api.QuantumLinkMessage_UnpairingRequest unpairingRequest) {
+      //Acknowledge the unpairing request, then disconnect and trigger the unpairing flow in the UI
+      qlConnection.writeMessage(
+        api.QuantumLinkMessage.unpairingResponse(
+          api.UnpairingResponse(
+            success: true,
+          ),
+        ),
+      );
+      await Future.delayed(const Duration(seconds: 1));
+      _unpairRequestStream.add(unpairingRequest.field0);
+      if (qlConnection.getDevice() != null) {
+        await Devices().clearDeviceQLKeys(qlConnection.getDevice()!);
+      }
+      qlConnection.disconnect();
     }
   }
 

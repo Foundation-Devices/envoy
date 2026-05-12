@@ -48,11 +48,11 @@ class Device {
   @JsonKey(defaultValue: false)
   bool onboardingComplete;
   @Uint8ListConverter()
-  final Uint8List? xid;
+  Uint8List? xid;
 
   //type QuantumLinkIdentity
   @Uint8ListConverter()
-  final Uint8List? senderXid;
+  Uint8List? senderXid;
   final DateTime datePaired;
   String firmwareVersion;
   List<String>? pairedAccountIds;
@@ -303,9 +303,23 @@ class Devices extends ChangeNotifier {
   }
 
   Future renameDevice(Device device, String newName) async {
+    if (device.name == newName) return;
     device.name = newName;
     await storeDevices();
     notifyListeners();
+
+    if (device.type == DeviceType.passportPrime) {
+      try {
+        await device.qlConnection().writeMessage(
+              api.QuantumLinkMessage.deviceNameUpdate(
+                api.DeviceNameUpdate(deviceName: newName),
+              ),
+            );
+      } catch (e, stack) {
+        kPrint("Failed to push device name update to Prime: $e",
+            stackTrace: stack);
+      }
+    }
   }
 
   void markDeviceUpdated(int deviceId, String firmwareVersion) {
@@ -439,6 +453,18 @@ class Devices extends ChangeNotifier {
       if (device.type == DeviceType.passportPrime &&
           device.serial == targetDevice.serial) {
         device.onboardingComplete = onboarded;
+        await storeDevices();
+        notifyListeners();
+        return;
+      }
+    }
+  }
+
+  Future<void> clearDeviceQLKeys(Device targetDevice) async {
+    for (var device in devices) {
+      if (device.serial == targetDevice.serial) {
+        device.xid = null;
+        device.senderXid = null;
         await storeDevices();
         notifyListeners();
         return;

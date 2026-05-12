@@ -16,6 +16,7 @@ import 'package:envoy/ui/envoy_dialog.dart';
 import 'package:envoy/ui/home/cards/devices/device_list_tile.dart';
 import 'package:envoy/ui/home/cards/text_entry.dart';
 import 'package:envoy/ui/home/home_state.dart';
+import 'package:envoy/ui/home/setup_overlay.dart';
 import 'package:envoy/ui/routes/devices_router.dart';
 import 'package:envoy/ui/theme/envoy_colors.dart';
 import 'package:envoy/ui/theme/envoy_icons.dart';
@@ -25,6 +26,7 @@ import 'package:envoy/ui/theme/new_envoy_color.dart';
 import 'package:envoy/ui/widgets/blur_dialog.dart';
 import 'package:envoy/util/list_utils.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:timeago/timeago.dart' as timeago;
@@ -144,6 +146,10 @@ class _DeviceCardState extends ConsumerState<DeviceCard> {
       deviceRemovedFromHostSystemSettings = false;
     }
 
+    // Prime cleared its QL keys via UnpairingRequest
+    final primeUnpaired = widget.device.type == DeviceType.passportPrime &&
+        (widget.device.xid == null || widget.device.xid!.isEmpty);
+
     final listItemTitleTheme = EnvoyTypography.body.copyWith(
         color: deviceRemovedFromHostSystemSettings
             ? NewEnvoyColor.contentDisabled
@@ -158,146 +164,187 @@ class _DeviceCardState extends ConsumerState<DeviceCard> {
 
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: EnvoySpacing.xs),
-      child: ListView(
-        shrinkWrap: true,
-        padding: EdgeInsets.zero,
-        physics: const BouncingScrollPhysics(),
-        children: [
-          Padding(
-            padding: const EdgeInsets.only(
-              left: EnvoySpacing.medium2,
-              top: EnvoySpacing.medium2,
-              right: EnvoySpacing.medium2,
-            ),
-            child: DeviceListTile(
-              widget.device,
-              onTap: () {
-                GoRouter.of(context).pop();
-              },
-            ),
-          ),
-          Padding(
-              padding: const EdgeInsets.symmetric(
-                vertical: EnvoySpacing.medium2,
-                horizontal: EnvoySpacing.medium2,
-              ),
-              child: Container(
-                padding: const EdgeInsets.symmetric(
-                  vertical: EnvoySpacing.small,
-                  horizontal: EnvoySpacing.medium1,
-                ),
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(16),
-                  boxShadow: [
-                    BoxShadow(
-                      color: const Color.fromRGBO(0, 0, 0, 0.15),
-                      offset: const Offset(0, 3),
-                      blurRadius: 8,
-                      spreadRadius: 0,
+      child: LayoutBuilder(
+        builder: (context, constraints) => SingleChildScrollView(
+          physics: const BouncingScrollPhysics(),
+          child: ConstrainedBox(
+            constraints: BoxConstraints(minHeight: constraints.maxHeight),
+            child: IntrinsicHeight(
+              child: Column(
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.only(
+                      left: EnvoySpacing.medium2,
+                      top: EnvoySpacing.medium2,
+                      right: EnvoySpacing.medium2,
                     ),
-                  ],
-                ),
-                child: Column(
-                  children: [
-                    ListTile(
-                      contentPadding: EdgeInsets.symmetric(
-                        horizontal: EnvoySpacing.xs,
+                    child: DeviceListTile(
+                      widget.device,
+                      onTap: () {
+                        GoRouter.of(context).pop();
+                      },
+                    ),
+                  ),
+                  Padding(
+                      padding: const EdgeInsets.symmetric(
+                        vertical: EnvoySpacing.medium2,
+                        horizontal: EnvoySpacing.medium2,
                       ),
-                      title: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Flexible(
-                            child: MediaQuery.withClampedTextScaling(
-                              maxScaleFactor: 1.3,
-                              child: Text(
-                                S().manage_device_details_deviceSerial,
-                                style: listItemTheme,
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(
+                          vertical: EnvoySpacing.small,
+                          horizontal: EnvoySpacing.medium1,
+                        ),
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(16),
+                          boxShadow: [
+                            BoxShadow(
+                              color: const Color.fromRGBO(0, 0, 0, 0.15),
+                              offset: const Offset(0, 3),
+                              blurRadius: 8,
+                              spreadRadius: 0,
+                            ),
+                          ],
+                        ),
+                        child: Column(
+                          children: [
+                            ListTile(
+                              contentPadding: EdgeInsets.symmetric(
+                                horizontal: EnvoySpacing.xs,
+                              ),
+                              title: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Flexible(
+                                    child: MediaQuery.withClampedTextScaling(
+                                      maxScaleFactor: 1.3,
+                                      child: Text(
+                                        S().manage_device_details_deviceSerial,
+                                        style: listItemTheme,
+                                      ),
+                                    ),
+                                  ),
+                                  MediaQuery.withClampedTextScaling(
+                                    maxScaleFactor: 1.3,
+                                    child: Text(
+                                      widget.device.serial,
+                                      style: listItemTheme,
+                                    ),
+                                  ),
+                                ],
                               ),
                             ),
-                          ),
-                          MediaQuery.withClampedTextScaling(
-                            maxScaleFactor: 1.3,
-                            child: Text(
-                              widget.device.serial,
-                              style: listItemTheme,
-                            ),
-                          ),
-                        ],
+                            Divider(color: NewEnvoyColor.neutral200, height: 1),
+                            if (primeUnpaired)
+                              ListTile(
+                                contentPadding: EdgeInsets.symmetric(
+                                  horizontal: EnvoySpacing.xs,
+                                ),
+                                dense: true,
+                                minLeadingWidth: 0,
+                                leading: EnvoyIcon(
+                                  EnvoyIcons.chain,
+                                  color: Colors.black,
+                                  size: EnvoyIconSize.small,
+                                ),
+                                horizontalTitleGap: EnvoySpacing.xs,
+                                title: Text(
+                                  S().manage_device_details_unpaired,
+                                  style: listItemTheme,
+                                ),
+                              )
+                            else
+                              ListTile(
+                                contentPadding: EdgeInsets.symmetric(
+                                  horizontal: EnvoySpacing.xs,
+                                ),
+                                dense: true,
+                                minLeadingWidth: 0,
+                                leading: EnvoyIcon(
+                                  EnvoyIcons.chain,
+                                  color: deviceRemovedFromHostSystemSettings
+                                      ? NewEnvoyColor.contentDisabled
+                                      : Colors.black,
+                                  size: EnvoyIconSize.small,
+                                ),
+                                horizontalTitleGap: EnvoySpacing.xs,
+                                title: Text(
+                                  S().manage_device_details_devicePaired,
+                                  style: listItemTheme?.copyWith(
+                                    color: deviceRemovedFromHostSystemSettings
+                                        ? NewEnvoyColor.contentDisabled
+                                        : Colors.black,
+                                  ),
+                                ),
+                                trailing: Text(
+                                  timeago.format(
+                                    widget.device.datePaired,
+                                    locale: activeLocale.languageCode,
+                                  ),
+                                  style: listItemTheme?.copyWith(
+                                    color: deviceRemovedFromHostSystemSettings
+                                        ? NewEnvoyColor.contentDisabled
+                                        : Colors.black,
+                                  ),
+                                ),
+                              ),
+                            if (!primeUnpaired &&
+                                widget.device.type == DeviceType.passportPrime)
+                              Divider(
+                                  color: NewEnvoyColor.neutral200, height: 1),
+                            if (!primeUnpaired &&
+                                widget.device.type == DeviceType.passportPrime)
+                              ListTile(
+                                contentPadding: EdgeInsets.symmetric(
+                                  horizontal: EnvoySpacing.xs,
+                                ),
+                                dense: true,
+                                minLeadingWidth: 0,
+                                leading: EnvoyIcon(
+                                  EnvoyIcons.quantum,
+                                  color: deviceRemovedFromHostSystemSettings
+                                      ? NewEnvoyColor.contentDisabled
+                                      : Colors.black,
+                                  size: EnvoyIconSize.small,
+                                ),
+                                horizontalTitleGap: EnvoySpacing.xs,
+                                title: Text(
+                                  S().manage_device_details_QuantumLink,
+                                  style: listItemTitleTheme,
+                                ),
+                                trailing: Text(
+                                  isConnected
+                                      ? S().manage_device_details_active
+                                      : S().manage_device_details_inactive,
+                                  style: isConnectedItemTheme,
+                                ),
+                              ),
+                          ],
+                        ),
+                      )),
+                  if (widget.device.type == DeviceType.passportPrime) ...[
+                    Expanded(
+                      child: PrimeOptionsWidget(
+                        device: widget.device,
+                        deviceRemovedFromHostSystemSettings:
+                            deviceRemovedFromHostSystemSettings,
+                        primeUnpaired: primeUnpaired,
+                        onRepairComplete: () {
+                          loadDevicePairingInfo();
+                        },
                       ),
                     ),
-                    Divider(color: NewEnvoyColor.neutral200, height: 1),
-                    ListTile(
-                      contentPadding: EdgeInsets.symmetric(
-                        horizontal: EnvoySpacing.xs,
-                      ),
-                      dense: true,
-                      minLeadingWidth: 0,
-                      leading: EnvoyIcon(
-                        EnvoyIcons.chain,
-                        color: deviceRemovedFromHostSystemSettings
-                            ? NewEnvoyColor.contentDisabled
-                            : Colors.black,
-                        size: EnvoyIconSize.small,
-                      ),
-                      horizontalTitleGap: EnvoySpacing.xs,
-                      title: Text(
-                        S().manage_device_details_devicePaired,
-                        style: listItemTheme,
-                      ),
-                      trailing: Text(
-                        timeago.format(
-                          widget.device.datePaired,
-                          locale: activeLocale.languageCode,
-                        ),
-                        style: listItemTheme,
-                      ),
-                    ),
-                    if (widget.device.type == DeviceType.passportPrime)
-                      Divider(color: NewEnvoyColor.neutral200, height: 1),
-                    if (widget.device.type == DeviceType.passportPrime)
-                      ListTile(
-                        contentPadding: EdgeInsets.symmetric(
-                          horizontal: EnvoySpacing.xs,
-                        ),
-                        dense: true,
-                        minLeadingWidth: 0,
-                        leading: EnvoyIcon(
-                          EnvoyIcons.quantum,
-                          color: deviceRemovedFromHostSystemSettings
-                              ? NewEnvoyColor.contentDisabled
-                              : Colors.black,
-                          size: EnvoyIconSize.small,
-                        ),
-                        horizontalTitleGap: EnvoySpacing.xs,
-                        title: Text(
-                          S().manage_device_details_QuantumLink,
-                          style: listItemTitleTheme,
-                        ),
-                        trailing: Text(
-                          isConnected
-                              ? S().manage_device_details_active
-                              : S().manage_device_details_inactive,
-                          style: isConnectedItemTheme,
-                        ),
-                      ),
-                  ],
-                ),
-              )),
-          if (widget.device.type == DeviceType.passportPrime) ...[
-            PrimeOptionsWidget(
-              device: widget.device,
-              deviceRemovedFromHostSystemSettings:
-                  deviceRemovedFromHostSystemSettings,
-              onRepairComplete: () {
-                loadDevicePairingInfo();
-              },
+                    SizedBox(
+                      height: EnvoySpacing.large1,
+                    )
+                  ]
+                ],
+              ),
             ),
-            SizedBox(
-              height: EnvoySpacing.large1,
-            )
-          ]
-        ],
+          ),
+        ),
       ),
     );
   }
@@ -306,12 +353,14 @@ class _DeviceCardState extends ConsumerState<DeviceCard> {
 class PrimeOptionsWidget extends ConsumerStatefulWidget {
   final Device device;
   final bool deviceRemovedFromHostSystemSettings;
+  final bool primeUnpaired;
   final VoidCallback onRepairComplete;
 
   const PrimeOptionsWidget(
       {super.key,
       required this.device,
       this.deviceRemovedFromHostSystemSettings = false,
+      this.primeUnpaired = false,
       required this.onRepairComplete});
 
   @override
@@ -319,10 +368,32 @@ class PrimeOptionsWidget extends ConsumerStatefulWidget {
 }
 
 class _PrimeOptionsWidgetState extends ConsumerState<PrimeOptionsWidget> {
+  /// Re-pair the host BLE accessory after the user removed it in system
+  /// settings. If Bluetooth is off (Android only), prompt to enable it and
+  Future<void> _repairAccessory() async {
+    try {
+      final qlConnection = await BluetoothChannel().setupBle(
+        widget.device.bleId,
+        widget.device.color == Colors.black ? 0 : 1,
+      );
+      // after repairing the connection, restore XID's
+      await qlConnection.reconnect(widget.device);
+      widget.onRepairComplete.call();
+    } on PlatformException catch (e) {
+      if (e.code == "BLUETOOTH_DISABLED") {
+        final allowed = await BluetoothChannel().requestEnableBle();
+        if (allowed == true) {
+          await _repairAccessory();
+        }
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final deviceRemovedFromHostSystemSettings =
         widget.deviceRemovedFromHostSystemSettings;
+    final primeUnpaired = widget.primeUnpaired;
     final devicePixelRatio = MediaQuery.devicePixelRatioOf(context);
     final verticalActionPadding = devicePixelRatio >= 3.0
         ? EnvoySpacing.medium1
@@ -335,11 +406,24 @@ class _PrimeOptionsWidgetState extends ConsumerState<PrimeOptionsWidget> {
       child: Column(
         mainAxisSize: MainAxisSize.max,
         crossAxisAlignment: CrossAxisAlignment.center,
-        mainAxisAlignment: deviceRemovedFromHostSystemSettings
+        mainAxisAlignment: deviceRemovedFromHostSystemSettings && !primeUnpaired
             ? MainAxisAlignment.spaceBetween
             : MainAxisAlignment.end,
         children: [
-          if (deviceRemovedFromHostSystemSettings)
+          if (primeUnpaired)
+            Padding(
+              padding: EdgeInsets.only(
+                  left: EnvoySpacing.medium2,
+                  right: EnvoySpacing.medium2,
+                  bottom: EnvoySpacing.xs),
+              child: EnvoyButton(
+                S().manage_deviceDetailsUnpaired_pairAgain,
+                onTap: () async {
+                  scanForDevice(context, ref);
+                },
+              ),
+            ),
+          if (!primeUnpaired && deviceRemovedFromHostSystemSettings) ...[
             Column(
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.center,
@@ -357,28 +441,19 @@ class _PrimeOptionsWidgetState extends ConsumerState<PrimeOptionsWidget> {
                     ))
               ],
             ),
-          if (deviceRemovedFromHostSystemSettings)
             Padding(
               padding: EdgeInsets.symmetric(
                   horizontal: EnvoySpacing.medium2,
                   vertical: verticalActionPadding),
               child: EnvoyButton(
-                  Platform.isIOS
-                      ? S()
-                          .device_deviceDetailsPrimeRemoved_completeAccessorySetup
-                      : S().device_deviceDetailsPrimeRemoved_pairPassportAgain,
-                  onTap: () async {
-                if (deviceRemovedFromHostSystemSettings) {
-                  final qlConnection = await BluetoothChannel().setupBle(
-                      widget.device.bleId,
-                      widget.device.color == Colors.black ? 0 : 1);
-                  //after repairing the connection,  restore XID's
-                  await qlConnection.reconnect(widget.device);
-                  widget.onRepairComplete.call();
-                }
-              }),
+                Platform.isIOS
+                    ? S()
+                        .device_deviceDetailsPrimeRemoved_completeAccessorySetup
+                    : S().device_deviceDetailsPrimeRemoved_pairPassportAgain,
+                onTap: _repairAccessory,
+              ),
             ),
-          SizedBox(height: EnvoySpacing.xs),
+          ],
         ],
       ),
     );
