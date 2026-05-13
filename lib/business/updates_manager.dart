@@ -310,10 +310,13 @@ class UpdatesManager {
 }
 
 String sanitizeVersion(String version) {
-  // Remove the v (and optional dot after it) and keep only letters and numbers (Prime sends us NULL chars sometimes)
-  return version
+  // Strip leading v/v., non-printables (Prime sends NULL chars), then extract
+  // MAJOR.MINOR.PATCH so Version.parse can consume beta-tagged strings like "2.3.2b8".
+  final cleaned = version
       .replaceAll(RegExp(r'^v\.?'), '')
-      .replaceAll(RegExp(r'[^a-zA-Z0-9.]'), '');
+      .replaceAll(RegExp(r'[^\x20-\x7E]'), '');
+  final match = RegExp(r'^(\d+\.\d+\.\d+)').firstMatch(cleaned);
+  return match?.group(1) ?? cleaned;
 }
 
 /// Returns true if [version] is a pre-release (e.g. "2.1.1b3", "2.1.1beta3", "2.1.1-rc1").
