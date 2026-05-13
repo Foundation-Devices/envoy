@@ -48,6 +48,14 @@ BUILD_APP=false
 KEBAB_PID=""
 PRIME_PID=""
 
+# On macOS workstations the KeyOS-dev checkout often lives on an external
+# drive rather than under $HOME. If KEYOS_DEV_DIR isn't already set and the
+# external location exists, prefer it so the spawned prime_bridge inherits
+# the correct path. No-op on Linux/CI and when $HOME/KeyOS-dev is used.
+if [ "$PLATFORM" = "mac" ] && [ -z "${KEYOS_DEV_DIR:-}" ] && [ -d /Volumes/External2TB/KeyOS-dev ]; then
+    export KEYOS_DEV_DIR=/Volumes/External2TB/KeyOS-dev
+fi
+
 # ------------------------------------------------------------
 # Commands (override here if needed later)
 # ------------------------------------------------------------
@@ -313,6 +321,21 @@ if [ "$BUILD_APP" = true ]; then
     }
 
     echo -e "${GREEN}✓${NC} APK installed"
+
+    # Android can persist runtime permission grants across uninstall/reinstall
+    # for the same signature. Revoke explicitly so the runtime dialogs that
+    # the Maestro flows interact with always appear on a fresh install.
+    echo -e "${YELLOW}Revoking runtime permissions for clean dialog state...${NC}"
+    for perm in \
+        android.permission.CAMERA \
+        android.permission.ACCESS_FINE_LOCATION \
+        android.permission.ACCESS_COARSE_LOCATION \
+        android.permission.BLUETOOTH_SCAN \
+        android.permission.BLUETOOTH_CONNECT \
+        android.permission.POST_NOTIFICATIONS; do
+        $ADB_CMD -s "$DEVICE_ID" shell pm revoke "$APP_ID" "$perm" 2>/dev/null || true
+    done
+    echo -e "${GREEN}✓${NC} Runtime permissions revoked"
 
     # Launch app after clean install and wait for cold start to finish
     echo -e "${YELLOW}Launching app (cold start after clean install)...${NC}"

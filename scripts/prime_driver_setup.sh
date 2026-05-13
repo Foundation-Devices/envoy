@@ -122,8 +122,10 @@ setup_linux() {
 setup_macos() {
     log "macOS: no udev rule needed (IOKit handles permissions)"
 
-    # Confirm Prime is enumerated. system_profiler is slow but reliable.
-    if ! system_profiler SPUSBDataType 2>/dev/null | grep -qE '0x1307|0x2c97'; then
+    # Confirm Prime is enumerated. ioreg is faster than system_profiler and
+    # doesn't suffer from the silent-empty-output failures we've seen on some
+    # macs. VID 4871 = 0x1307 (Foundation); 11415 = 0x2c97 (legacy).
+    if ! ioreg -p IOUSB -l 2>/dev/null | grep -qE '"idVendor" = (4871|11415)\b'; then
         warn "Prime not detected — plugged in? USB enabled in Settings?"
         exit 1
     fi

@@ -19,7 +19,6 @@
 #   POST /prime/swipe-screenshot  — body: { sx, sy, ex, ey, wait_ms?, path? }
 #   POST /prime/input-text        — body: { text }
 #   POST /prime/close-app         — body: { pid }
-#   POST /prime/tap-button        — canned (24, 760) tap (legacy alias)
 #
 # Run before maestro starts, kill on exit (run_maestro.sh does both).
 
@@ -79,9 +78,6 @@ class Handler(http.server.BaseHTTPRequestHandler):
 
         if path == "/prime/setup" and method == "POST":
             self._exec([os.path.join(SCRIPT_DIR, "prime_driver_setup.sh")])
-
-        elif path == "/prime/tap-button" and method == "POST":
-            self._exec([script("tap-prime-button.sh")])
 
         elif path == "/prime/screenshot":
             out_path = body.get("path", "/tmp/prime-bridge-shot.png")

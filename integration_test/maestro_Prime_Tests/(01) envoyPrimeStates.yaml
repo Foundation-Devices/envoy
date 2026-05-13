@@ -1,0 +1,202 @@
+# SPDX-FileCopyrightText: 2026 Foundation Devices Inc.
+#
+# SPDX-License-Identifier: GPL-3.0-or-later
+
+# (01) envoyPrimeStates
+appId: com.foundationdevices.envoy
+---
+
+# PRIME: go to settings (bottom left button in home)
+- runScript:
+    file: prime_scripts/prime_tap.js
+    env:
+      X: "24"
+      Y: "760"
+
+# PRIME: tap at "Envoy not Connected"
+- runScript:
+      file: prime_scripts/prime_tap.js
+      env:
+          X: "240"
+          Y: "150"
+
+- tapOn: "Set Up a \nPassport Device"
+
+# TODO: for some reason when running maestro tests it will not ask a permission on motorola, not possible to adjust
+- runFlow:
+    when:
+      visible: "While using the app"
+    commands:
+      - tapOn: "While using the app"
+
+# KEBAB: turn on the kebab to "phone scans Prime" position
+- runScript:
+      file: kebab_scripts/kebab.js
+      env:
+        KEBAB_COMMAND: "iphone_scan_prime"
+
+# wait for the first Envoy QR scan
+- swipe:
+    start: "50%, 5%"
+    end: "50%, 5%"
+    duration: 15000
+
+# wait until you can press Continue
+- swipe:
+    start: "50%, 5%"
+    end: "50%, 5%"
+    duration: 15000
+
+- tapOn: "Continue"
+
+- tapOn: "Connect with QuantumLink"
+
+# allow ble and pair
+- tapOn: "Allow"
+
+# TODO: for some reason when running maestro tests it will not ask a permission on motorola, not possible to adjust
+- runFlow:
+    when:
+      visible: "Pair"
+    commands:
+      - tapOn: "Pair"
+
+# wait for second Envoy QR scan
+- swipe:
+    start: "50%, 5%"
+    end: "50%, 5%"
+    duration: 15000
+
+- tapOn: "Continue"
+
+# KEBAB: face both phones towards tester
+- runScript:
+    file: kebab_scripts/kebab.js
+    env:
+      KEBAB_COMMAND: "face_tester_2"
+
+# make sure you can see new device Prime
+- assertVisible: "Passport Prime\nPassport Prime"
+
+# enter into Prime and check QL state
+- tapOn: "Passport Prime\nPassport Prime"
+
+# wait a bit
+- swipe:
+    start: "50%, 5%"
+    end: "50%, 5%"
+    duration: 15000
+
+# (1.) CHECK active
+- assertVisible: "QuantumLink\nActive"
+
+# PRIME: Pull down the top drawer on Prime
+- runScript:
+    file: prime_scripts/prime_swipe.js
+    env:
+      SX: "240"
+      SY: "5"
+      EX: "240"
+      EY: "500"
+
+# PRIME: tap Prime's Bluetooth button (turn it OFF)
+- runScript:
+    file: prime_scripts/prime_tap.js
+    env:
+      X: "288"
+      Y: "160"
+
+# wait for the state to change
+- swipe:
+    start: "50%, 5%"
+    end: "50%, 5%"
+    duration: 15000
+
+# (2.) CHECK inactive
+- assertVisible: "QuantumLink\nInactive"
+
+# PRIME: tap Prime's Bluetooth button (turn it ON)
+- runScript:
+    file: prime_scripts/prime_tap.js
+    env:
+      X: "288"
+      Y: "160"
+
+# PRIME: close the top bar
+- runScript:
+    file: prime_scripts/prime_tap.js
+    env:
+      X: "288"
+      Y: "600"
+
+# forget the Prime (MOTOROLA ONLY FLOW)
+- swipe:
+    start: "50%, 1%"
+    end: "50%, 80%"
+    duration: 500
+
+- tapOn: "Bluetooth"
+
+- tapOn:
+    id: "gear_icon_image"
+
+- tapOn: "Forget"
+- tapOn: "Forget device"
+
+
+# (3.) CHECK if the Prime is forgotten
+- assertVisible: "Accessory removed, please reconnect Prime."
+
+# pair it again
+- tapOn: "Pair Passport Again"
+
+# TODO: for some reason when running maestro tests it will not ask a permission on motorola, not possible to adjust
+- runFlow:
+    when:
+      visible: "Pair"
+    commands:
+      - tapOn: "Pair"
+
+# wait to make sure it is connected again
+- swipe:
+    start: "50%, 5%"
+    end: "50%, 5%"
+    duration: 15000
+
+- assertVisible: "QuantumLink\nActive"
+
+# PRIME: disconnect prime from Envoy
+- runScript:
+    file: prime_scripts/prime_tap.js
+    env:
+      X: "240"
+      Y: "760"
+
+# PRIME: tap Continue
+- runScript:
+    file: prime_scripts/prime_tap.js
+    env:
+      X: "240"
+      Y: "600"
+
+- tapOn: "Confirm"
+
+# (4.) CHECK if the Prime is unpaired
+- assertVisible: "Unpaired"
+
+# go home
+- tapOn: "Accounts"
+
+# PRIME: go home
+# go back
+- runScript:
+    file: prime_scripts/prime_tap.js
+    env:
+      X: "48"
+      Y: "80"
+
+- runScript:
+    file: prime_scripts/prime_tap.js
+    env:
+      X: "48"
+      Y: "80"

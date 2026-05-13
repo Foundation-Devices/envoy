@@ -24,7 +24,7 @@ if (!command) {
     throw 'KEBAB_COMMAND env var is required';
 }
 
-var response = http.get('http://localhost:5555/' + command);
+var response = http.get('http://localhost:7555/' + command);
 
 if (response.status !== 200) {
     throw 'Kebab command "' + command + '" failed: ' + response.body;
