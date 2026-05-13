@@ -332,6 +332,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   PassportMessage dco_decode_box_autoadd_passport_message(dynamic raw);
 
   @protected
+  PrimeFiatPreference dco_decode_box_autoadd_prime_fiat_preference(dynamic raw);
+
+  @protected
   PrimeMagicBackupEnabled dco_decode_box_autoadd_prime_magic_backup_enabled(
       dynamic raw);
 
@@ -564,6 +567,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   PricePoint dco_decode_price_point(dynamic raw);
+
+  @protected
+  PrimeFiatPreference dco_decode_prime_fiat_preference(dynamic raw);
 
   @protected
   PrimeMagicBackupEnabled dco_decode_prime_magic_backup_enabled(dynamic raw);
@@ -945,6 +951,10 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
       SseDeserializer deserializer);
 
   @protected
+  PrimeFiatPreference sse_decode_box_autoadd_prime_fiat_preference(
+      SseDeserializer deserializer);
+
+  @protected
   PrimeMagicBackupEnabled sse_decode_box_autoadd_prime_magic_backup_enabled(
       SseDeserializer deserializer);
 
@@ -1208,6 +1218,10 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   PricePoint sse_decode_price_point(SseDeserializer deserializer);
+
+  @protected
+  PrimeFiatPreference sse_decode_prime_fiat_preference(
+      SseDeserializer deserializer);
 
   @protected
   PrimeMagicBackupEnabled sse_decode_prime_magic_backup_enabled(
@@ -1598,6 +1612,10 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
       PassportMessage self, SseSerializer serializer);
 
   @protected
+  void sse_encode_box_autoadd_prime_fiat_preference(
+      PrimeFiatPreference self, SseSerializer serializer);
+
+  @protected
   void sse_encode_box_autoadd_prime_magic_backup_enabled(
       PrimeMagicBackupEnabled self, SseSerializer serializer);
 
@@ -1868,6 +1886,10 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   void sse_encode_price_point(PricePoint self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_prime_fiat_preference(
+      PrimeFiatPreference self, SseSerializer serializer);
 
   @protected
   void sse_encode_prime_magic_backup_enabled(
