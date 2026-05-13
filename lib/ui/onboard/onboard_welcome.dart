@@ -610,6 +610,7 @@ class _LegacyFirmwareAlertState extends State<LegacyFirmwareAlert>
                               ),
                             ),
                             onPressed: () async {
+                              context.pop();
                               context.pushNamed(ONBOARD_PASSPORT_SETUP);
                             },
                           ),
