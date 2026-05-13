@@ -172,8 +172,10 @@ class _AccountCardState extends ConsumerState<AccountCard>
   @override
   Widget build(BuildContext context) {
     ref.watch(settingsProvider);
-    account =
-        ref.read(selectedAccountProvider) ?? NgAccountManager().accounts[0];
+    final selectedId = ref.read(selectedAccountProvider)?.id ??
+        NgAccountManager().accounts[0].id;
+    account = ref.watch(accountStateProvider(selectedId)) ??
+        NgAccountManager().accounts[0];
 
     List<EnvoyTransaction> transactions = ref.watch(
       filteredTransactionsProvider(account.id),
@@ -184,6 +186,14 @@ class _AccountCardState extends ConsumerState<AccountCard>
 
     var scanInProgress = ref.watch(accountSync) is Scanning &&
         (ref.watch(accountSync) as Scanning).id == account.id;
+
+    // Single source of truth for "initial sync still ongoing", shared between
+    // the bottom-bar enable/disable logic and the transactions loader so the
+    // balance (rendered inside AccountListTile) and the transaction list
+    // appear at the same moment after adding an account.
+    final requiredScan = ref.watch(isAccountRequiredScan(account));
+    bool isAccountLoading =
+        account.dateSynced == null || requiredScan || scanInProgress;
 
     return MediaQuery.removePadding(
       context: context,
@@ -267,7 +277,7 @@ class _AccountCardState extends ConsumerState<AccountCard>
                           right: 20,
                           top: EnvoySpacing.small,
                         ),
-                        child: account.dateSynced == null
+                        child: isAccountLoading
                             ? ListView.builder(
                                 padding: EdgeInsets.zero,
                                 itemCount: 4,
@@ -275,7 +285,6 @@ class _AccountCardState extends ConsumerState<AccountCard>
                               )
                             : _getMainWidget(
                                 context,
-                                // TODO: fix transactions can be seen under EnvoyBar while scrolling
                                 transactions,
                                 txFiltersEnabled,
                               ),
@@ -307,6 +316,7 @@ class _AccountCardState extends ConsumerState<AccountCard>
                     icon: EnvoyIcons.transfer,
                     text: S().receive_tx_list_transfer,
                     enabled: !scanInProgress &&
+                        !isAccountLoading &&
                         ref.watch(accountsCountByNetworkProvider(
                                 account.network)) >=
                             2,
@@ -348,7 +358,7 @@ class _AccountCardState extends ConsumerState<AccountCard>
                   EnvoyBarItem(
                     icon: EnvoyIcons.arrow_up_right,
                     text: S().receive_tx_list_send,
-                    enabled: !scanInProgress,
+                    enabled: !scanInProgress && !isAccountLoading,
                     onTap: () async {
                       clearSpendState(ProviderScope.containerOf(context));
                       await Future.delayed(const Duration(milliseconds: 50));
@@ -363,7 +373,7 @@ class _AccountCardState extends ConsumerState<AccountCard>
                   EnvoyBarItem(
                     icon: EnvoyIcons.qr_scan,
                     text: S().receive_tx_list_scan,
-                    enabled: !scanInProgress,
+                    enabled: !scanInProgress && !isAccountLoading,
                     onTap: () {
                       final navigator =
                           Navigator.of(context, rootNavigator: true);
