@@ -245,6 +245,9 @@ class _QrScannerState extends State<QrScanner>
                 _lastRawBytesDetected = [];
               });
             },
+            onCancel: () {
+              if (mounted) widget.onBackPressed(context);
+            },
           );
         }
       } finally {
