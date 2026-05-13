@@ -178,7 +178,9 @@ class _WelcomeScreenState extends ConsumerState<WelcomeScreen> {
                             ref.read(devModeEnabledProvider.notifier).state =
                                 true;
                             ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(content: Text("Dev mode enabled")),
+                              SnackBar(
+                                  content: Text(
+                                      S().menu_toast_developerModeEnabled)),
                             );
                           },
                           child: Text(
