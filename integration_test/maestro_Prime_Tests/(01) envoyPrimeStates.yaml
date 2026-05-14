@@ -6,6 +6,13 @@
 appId: com.foundationdevices.envoy
 ---
 
+# TODO: please set the lock time to Never on the Prime for this test to work
+# Also this test is adjusted for MOTOROLA only
+
+# already starting clean
+#- launchApp:
+#    clearState: true
+
 # PRIME: go to settings (bottom left button in home)
 - runScript:
     file: prime_scripts/prime_tap.js
@@ -39,13 +46,13 @@ appId: com.foundationdevices.envoy
 - swipe:
     start: "50%, 5%"
     end: "50%, 5%"
-    duration: 15000
+    duration: 10000
 
 # wait until you can press Continue
 - swipe:
     start: "50%, 5%"
     end: "50%, 5%"
-    duration: 15000
+    duration: 10000
 
 - tapOn: "Continue"
 
@@ -85,7 +92,7 @@ appId: com.foundationdevices.envoy
 - swipe:
     start: "50%, 5%"
     end: "50%, 5%"
-    duration: 15000
+    duration: 5000
 
 # (1.) CHECK active
 - assertVisible: "QuantumLink\nActive"
@@ -110,7 +117,7 @@ appId: com.foundationdevices.envoy
 - swipe:
     start: "50%, 5%"
     end: "50%, 5%"
-    duration: 15000
+    duration: 5000
 
 # (2.) CHECK inactive
 - assertVisible: "QuantumLink\nInactive"
@@ -143,6 +150,11 @@ appId: com.foundationdevices.envoy
 - tapOn: "Forget"
 - tapOn: "Forget device"
 
+# wait for the state to change
+- swipe:
+    start: "50%, 5%"
+    end: "50%, 5%"
+    duration: 5000
 
 # (3.) CHECK if the Prime is forgotten
 - assertVisible: "Accessory removed, please reconnect Prime."
@@ -161,7 +173,7 @@ appId: com.foundationdevices.envoy
 - swipe:
     start: "50%, 5%"
     end: "50%, 5%"
-    duration: 15000
+    duration: 5000
 
 - assertVisible: "QuantumLink\nActive"
 
