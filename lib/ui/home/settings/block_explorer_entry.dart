@@ -4,6 +4,7 @@
 
 import 'dart:async';
 
+import 'package:envoy/business/settings.dart';
 import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/components/text_field.dart';
 import 'package:envoy/ui/theme/envoy_spacing.dart';
@@ -130,6 +131,12 @@ class _BlockExplorerEntryState extends ConsumerState<BlockExplorerEntry> {
 
   @override
   Widget build(BuildContext context) {
+    ref.listen<bool>(torEnabledProvider, (prev, next) {
+      if (prev != next && _controller.text.isNotEmpty) {
+        _checkExplorer(_controller.text);
+      }
+    });
+
     return Column(
       children: [
         Container(

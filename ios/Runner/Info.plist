@@ -29,6 +29,11 @@
 	<string>$(FLUTTER_BUILD_NAME)</string>
 	<key>CFBundleSignature</key>
 	<string>????</string>
+    <key>LSApplicationQueriesSchemes</key>
+    <array>
+        <string>onionhttp</string>
+        <string>onionhttps</string>
+    </array>
     <key>CFBundleURLTypes</key>
     <array>
         <dict>
