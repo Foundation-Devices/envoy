@@ -988,6 +988,18 @@ Future<void> openTxDetailsInExplorer(
   String txId,
   Network network,
 ) async {
+  // The pop-up warns about Foundation hosting the explorer, which is only
+  // accurate when the default Foundation explorer is in use. If the user
+  // configured a personal explorer, skip straight to opening it. Mirrors the
+  // override condition in getBaseUrlForNetwork below.
+  final usingPersonalExplorer = network == Network.bitcoin &&
+      !Settings().usingDefaultBlockExplorer &&
+      Settings().personalBlockExplorerAddress.isNotEmpty;
+  if (usingPersonalExplorer) {
+    openTxDetailPage(network, txId);
+    return;
+  }
+
   bool isDismissed = await EnvoyStorage().checkPromptDismissed(
     DismissiblePrompt.openTxDetailsInExplorer,
   );
