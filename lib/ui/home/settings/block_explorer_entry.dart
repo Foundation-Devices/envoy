@@ -86,8 +86,7 @@ class _BlockExplorerEntryState extends ConsumerState<BlockExplorerEntry> {
         setState(() {
           _state = BlockExplorerEntryState.invalid;
           _isError = true;
-          _textBelow =
-              "URL must start with http:// or https://."; // TODO: localazy
+          _textBelow = S().privacy_blockExplorer_urlError;
         });
       }
       return;
@@ -111,7 +110,7 @@ class _BlockExplorerEntryState extends ConsumerState<BlockExplorerEntry> {
           setState(() {
             _state = BlockExplorerEntryState.valid;
             _isError = false;
-            _textBelow = "Connected to block explorer."; // TODO: localazy
+            _textBelow = S().privacy_blockExplorer_success;
           });
         }
       } else {
@@ -123,7 +122,7 @@ class _BlockExplorerEntryState extends ConsumerState<BlockExplorerEntry> {
         setState(() {
           _state = BlockExplorerEntryState.invalid;
           _isError = true;
-          _textBelow = "Could not reach block explorer."; // TODO: localazy
+          _textBelow = S().privacy_blockExplorer_couldNotReachBlockExplorer;
         });
       }
     }
