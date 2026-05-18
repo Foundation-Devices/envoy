@@ -201,7 +201,9 @@ class BleAccountHandler extends PassportMessageHandler {
           await handler.setPreferredAddressType(
             addressType: desiredAddressType,
           );
-          if (acc.color.toLowerCase() != config.color.toLowerCase()) {
+          // Read the handler's live config (NgAccountManager snapshot is stale).
+          final currentColor = handler.config().color;
+          if (currentColor.toLowerCase() != config.color.toLowerCase()) {
             await handler.setColor(color: config.color);
           }
           kPrint("Account updated!");
