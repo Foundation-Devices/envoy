@@ -29,6 +29,22 @@ final accountSync = Provider<WalletProgress>(((ref) {
   return ref.watch(_accountSync).value ?? None();
 }));
 
+final _fullScanningAccountsStream = StreamProvider<Set<String>>(((ref) {
+  return SyncManager().fullScanningAccountsStream;
+}));
+
+/// True for the entire duration of `SyncManager.initiateAccountFullScan` for
+/// this account id — including across all descriptors. Unlike the global
+/// [accountSync] stream, this isn't clobbered by unrelated `Syncing` events
+/// from the periodic auto-sync, so the rescan loader stays visible until the
+/// scan really finishes.
+final accountFullScanInProgressProvider =
+    Provider.family<bool, String>((ref, accountId) {
+  final scanningSet = ref.watch(_fullScanningAccountsStream).value ??
+      SyncManager().fullScanningAccounts;
+  return scanningSet.contains(accountId);
+});
+
 final _accountSyncStatusStream =
     StreamProvider.family<bool, (String, AddressType)>(((ref, params) {
   return EnvoyStorage().getAccountScanStatusStream(params.$1, params.$2);
