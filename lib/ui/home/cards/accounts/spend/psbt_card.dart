@@ -3,9 +3,10 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 import 'dart:async';
-import 'dart:convert';
+import 'dart:io';
 
 import 'package:envoy/generated/l10n.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:envoy/ui/animated_qr_image.dart';
 import 'package:envoy/ui/components/envoy_scaffold.dart';
 import 'package:envoy/ui/components/step_indicator.dart';
@@ -157,17 +158,25 @@ class _PsbtCardState extends ConsumerState<PsbtCard> {
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   SizedBox(height: EnvoySpacing.medium1),
-                  Text(
-                    S().send_qr_code_card_heading,
-                    style: EnvoyTypography.heading,
-                    textAlign: TextAlign.center,
+                  Padding(
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: EnvoySpacing.medium1),
+                    child: Text(
+                      S().send_qr_code_card_heading,
+                      style: EnvoyTypography.heading,
+                      textAlign: TextAlign.center,
+                    ),
                   ),
                   SizedBox(height: EnvoySpacing.small),
-                  Text(
-                    S().send_qr_code_card_subheading,
-                    style: EnvoyTypography.body.copyWith(
-                        color: envoy_colors.EnvoyColors.textSecondary),
-                    textAlign: TextAlign.center,
+                  Padding(
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: EnvoySpacing.medium1),
+                    child: Text(
+                      S().send_qr_code_card_subheading,
+                      style: EnvoyTypography.body.copyWith(
+                          color: envoy_colors.EnvoyColors.textSecondary),
+                      textAlign: TextAlign.center,
+                    ),
                   ),
                   SizedBox(height: EnvoySpacing.medium2),
                   Flexible(
@@ -239,11 +248,24 @@ class _PsbtCardState extends ConsumerState<PsbtCard> {
                   children: [
                     EnvoyButton(
                       S().send_QrScan_saveToFile,
-                      onTap: () {
+                      onTap: () async {
                         final box = context.findRenderObject() as RenderBox?;
-                        SharePlus.instance.share(
+                        final tempDir = await getTemporaryDirectory();
+                        final txId = widget.transaction.transaction.txId;
+                        final shortId =
+                            txId.length >= 8 ? txId.substring(0, 8) : txId;
+                        final file =
+                            File('${tempDir.path}/envoy-$shortId.psbt');
+                        await file.writeAsBytes(widget.transaction.psbt,
+                            flush: true);
+                        await SharePlus.instance.share(
                           ShareParams(
-                            text: base64Encode(widget.transaction.psbt),
+                            files: [
+                              XFile(
+                                file.path,
+                                mimeType: 'application/octet-stream',
+                              ),
+                            ],
                             sharePositionOrigin: box == null
                                 ? null
                                 : box.localToGlobal(Offset.zero) & box.size,
