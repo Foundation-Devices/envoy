@@ -163,9 +163,8 @@ class BleAccountHandler extends PassportMessageHandler {
     final hasTaproot = config.descriptors.any(
       (d) => d.addressType == AddressType.p2Tr,
     );
-    final desiredAddressType = (taprootEnabled && hasTaproot)
-        ? AddressType.p2Tr
-        : AddressType.p2Wpkh;
+    final desiredAddressType =
+        (taprootEnabled && hasTaproot) ? AddressType.p2Tr : AddressType.p2Wpkh;
 
     final fingerprint = NgAccountManager.getFingerprint(
       config.descriptors.first.internal,
@@ -188,8 +187,8 @@ class BleAccountHandler extends PassportMessageHandler {
       );
 
       final acc = NgAccountManager().accounts.firstWhereOrNull(
-        (a) => a.id == config.id,
-      );
+            (a) => a.id == config.id,
+          );
       kPrint("Account already exists, updating handler $acc");
 
       if (acc != null) {
@@ -261,8 +260,7 @@ class BleAccountHandler extends PassportMessageHandler {
         return;
       }
 
-      final timestamp =
-          exchangeRate.usdRateTimestamp?.millisecondsSinceEpoch ??
+      final timestamp = exchangeRate.usdRateTimestamp?.millisecondsSinceEpoch ??
           DateTime.now().millisecondsSinceEpoch;
 
       final exchangeRateMessage = api.ExchangeRate(
