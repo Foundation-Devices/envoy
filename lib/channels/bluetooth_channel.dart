@@ -9,6 +9,7 @@ import 'package:envoy/channels/ble_device_info.dart';
 import 'package:envoy/channels/ble_status.dart';
 import 'package:envoy/channels/ql_connection.dart';
 import 'package:envoy/util/console.dart';
+import 'package:envoy/util/stream_replay_cache.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:path_provider/path_provider.dart';
@@ -50,7 +51,7 @@ class BluetoothChannel {
 
   /// Stream that emits the current list of device channels whenever it changes
   Stream<List<QLConnection>> get deviceChannelsStream =>
-      _deviceChannelsController.stream.asBroadcastStream();
+      _deviceChannelsController.stream.replayLatest(deviceChannels);
 
   /// Get the current list of device channels
   List<QLConnection> get deviceChannels => _deviceChannels.values.toList();
@@ -361,6 +362,7 @@ class BluetoothChannel {
       channel.dispose();
     }
     _deviceChannels.clear();
+    _notifyDeviceChannelsChanged();
   }
 
   Future<bool> removeAccessory(String deviceId) async {
@@ -398,5 +400,6 @@ class BluetoothChannel {
       channel.dispose();
     }
     _deviceChannels.clear();
+    _notifyDeviceChannelsChanged();
   }
 }

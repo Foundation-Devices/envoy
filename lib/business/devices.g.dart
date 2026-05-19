@@ -25,6 +25,7 @@ Device _$DeviceFromJson(Map<String, dynamic> json) => Device(
           ?.map((e) => e as String)
           .toList(),
       primeBackupEnabled: json['primeBackupEnabled'] as bool?,
+      primeFiatCurrency: json['primeFiatCurrency'] as String?,
       onboardingComplete: json['onboardingComplete'] as bool? ?? false,
     );
 
@@ -42,6 +43,7 @@ Map<String, dynamic> _$DeviceToJson(Device instance) => <String, dynamic>{
       'firmwareVersion': instance.firmwareVersion,
       'pairedAccountIds': instance.pairedAccountIds,
       'primeBackupEnabled': instance.primeBackupEnabled,
+      'primeFiatCurrency': instance.primeFiatCurrency,
       'color': colorToJson(instance.color),
     };
 
