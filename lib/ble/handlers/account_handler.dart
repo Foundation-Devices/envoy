@@ -13,6 +13,7 @@ import 'package:envoy/business/settings.dart';
 import 'package:envoy/ui/envoy_colors.dart';
 import 'package:envoy/util/bug_report_helper.dart';
 import 'package:envoy/util/console.dart';
+import 'package:envoy/util/stream_replay_cache.dart';
 import 'package:foundation_api/foundation_api.dart' as api;
 import 'package:ngwallet/ngwallet.dart';
 
@@ -29,9 +30,12 @@ String _colorForPrimeAccountIndex(int index) {
 class BleAccountHandler extends PassportMessageHandler {
   final _applyPassphraseStream =
       StreamController<api.ApplyPassphrase?>.broadcast();
+  api.ApplyPassphrase? _latestApplyPassphrase;
 
   Stream<api.ApplyPassphrase?> get applyPassphraseStream =>
-      _applyPassphraseStream.stream.asBroadcastStream();
+      _applyPassphraseStream.stream.replayLatest(_latestApplyPassphrase);
+
+  api.ApplyPassphrase? get latestApplyPassphrase => _latestApplyPassphrase;
 
   late final void Function() _onExchangeRateChanged;
   Timer? _rateRefreshTimer;
@@ -95,7 +99,8 @@ class BleAccountHandler extends PassportMessageHandler {
       await _handleAccountUpdate(accountUpdate.field0);
     } else if (message
         case api.QuantumLinkMessage_ApplyPassphrase applyPassphrase) {
-      _applyPassphraseStream.add(applyPassphrase.field0);
+      _latestApplyPassphrase = applyPassphrase.field0;
+      _applyPassphraseStream.add(_latestApplyPassphrase);
     } else if (message
         case api.QuantumLinkMessage_UnpairingRequest unpairingRequest) {
       //Acknowledge the unpairing request, then disconnect and trigger the unpairing flow in the UI
