@@ -50,9 +50,11 @@ class ShardsHandler extends PassportMessageHandler {
         case api.QuantumLinkMessage_PrimeMagicBackupStatusRequest request) {
       kPrint("Got shard health check request!");
       final fingerprint = request.field0.seedFingerprint;
+      final timestamp = request.field0.timestamp;
       try {
         final shard = await PrimeShard().getShard(
           fingerprint: Uint8List.fromList(fingerprint.field0),
+          timestamp: timestamp,
         );
         await qlConnection.writeMessage(
           api.QuantumLinkMessage.primeMagicBackupStatusResponse(
@@ -73,10 +75,12 @@ class ShardsHandler extends PassportMessageHandler {
     if (message case api.QuantumLinkMessage_RestoreShardRequest request) {
       kPrint("Got shard restore request!");
       final fingerprint = request.field0.seedFingerprint;
+      final timestamp = request.field0.timestamp;
 
       try {
         final shard = await PrimeShard().getShard(
           fingerprint: Uint8List.fromList(fingerprint.field0),
+          timestamp: timestamp,
         );
         if (shard == null) {
           await qlConnection.writeMessage(

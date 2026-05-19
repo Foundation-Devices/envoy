@@ -89,6 +89,13 @@ class _AccountListTileState extends ConsumerState<AccountListTile> {
     if (account == null) {
       return const SizedBox.shrink();
     }
+    // Keep the tile in the loading state until the initial sync sets
+    // `dateSynced` — that way the balance shown here and the transactions
+    // shown on the detail page appear at the same time. Ghost accounts have
+    // no real sync, so they're exempt.
+    if (widget.account.xfp != "ghost" && account.dateSynced == null) {
+      isScanning = true;
+    }
     int balance = widget.account.xfp == "ghost"
         ? 0
         : ref.watch(accountBalanceProvider(account.id));

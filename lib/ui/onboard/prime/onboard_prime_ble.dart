@@ -68,6 +68,7 @@ class _OnboardPrimeBluetoothState extends ConsumerState<OnboardPrimeBluetooth>
   bool onboardingCompleted = false;
   BleConnectState bleConnectState = BleConnectState.idle;
   int colorWay = 1;
+  String? bleDeviceName;
 
   Completer<QuantumLinkMessage_BroadcastTransaction>? _completer;
 
@@ -85,6 +86,8 @@ class _OnboardPrimeBluetoothState extends ConsumerState<OnboardPrimeBluetooth>
         final param = params["c"] ?? "1";
         onboardingCompleted = int.tryParse(params["o"] ?? "0") == 1;
         colorWay = int.tryParse(param) ?? 1;
+        final name = params["n"]?.trim();
+        bleDeviceName = (name == null || name.isEmpty) ? null : name;
       });
       if (GoRouter.of(context).state.extra is bool) {
         onboardingCompleted = GoRouter.of(context).state.extra as bool;
@@ -169,6 +172,7 @@ class _OnboardPrimeBluetoothState extends ConsumerState<OnboardPrimeBluetooth>
             _onboardingDevice = await BluetoothChannel().setupBle(
               bleId ?? "",
               colorWay,
+              deviceName: bleDeviceName,
             );
           } else if (matchedDevice.peripheralName
               .toLowerCase()
@@ -187,6 +191,7 @@ class _OnboardPrimeBluetoothState extends ConsumerState<OnboardPrimeBluetooth>
             _onboardingDevice = await BluetoothChannel().setupBle(
               bleId ?? "",
               colorWay,
+              deviceName: bleDeviceName,
             );
           }
         } else {
@@ -196,6 +201,7 @@ class _OnboardPrimeBluetoothState extends ConsumerState<OnboardPrimeBluetooth>
           _onboardingDevice = await BluetoothChannel().setupBle(
             bleId ?? "",
             colorWay,
+            deviceName: bleDeviceName,
           );
         }
         ref.read(onboardingDeviceProvider.notifier).state = _onboardingDevice;

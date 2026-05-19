@@ -9,6 +9,7 @@ import 'package:envoy/channels/ble_device_info.dart';
 import 'package:envoy/channels/ble_status.dart';
 import 'package:envoy/channels/ql_connection.dart';
 import 'package:envoy/util/console.dart';
+import 'package:envoy/util/stream_replay_cache.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:path_provider/path_provider.dart';
@@ -50,7 +51,7 @@ class BluetoothChannel {
 
   /// Stream that emits the current list of device channels whenever it changes
   Stream<List<QLConnection>> get deviceChannelsStream =>
-      _deviceChannelsController.stream.asBroadcastStream();
+      _deviceChannelsController.stream.replayLatest(deviceChannels);
 
   /// Get the current list of device channels
   List<QLConnection> get deviceChannels => _deviceChannels.values.toList();
@@ -194,16 +195,23 @@ class BluetoothChannel {
   /// Returns the QLConnection after pairing and connecting.
   /// On iOS this will show the accessory setup sheet.
   /// On Android this will initiate the android bonding dialog.
-  Future<QLConnection> setupBle(String deviceId, int colorWay) async {
+  Future<QLConnection> setupBle(
+    String deviceId,
+    int colorWay, {
+    String? deviceName,
+  }) async {
     kPrint(
-      "setupBle start: requestedDeviceId=$deviceId colorWay=$colorWay platform=${Platform.operatingSystem}",
+      "setupBle start: requestedDeviceId=$deviceId colorWay=$colorWay deviceName=$deviceName platform=${Platform.operatingSystem}",
     );
     var resolvedDeviceId = deviceId;
     if (Platform.isIOS) {
       kPrint("setupBle iOS: invoking showAccessorySetup");
       final iosDeviceId = await _methodChannel.invokeMethod<String?>(
         "showAccessorySetup",
-        {"c": colorWay},
+        {
+          "c": colorWay,
+          if (deviceName != null) "n": deviceName,
+        },
       );
       if (iosDeviceId == null || iosDeviceId.isEmpty) {
         throw BleSetupTimeoutException("Accessory setup cancelled");
@@ -215,7 +223,10 @@ class BluetoothChannel {
       // Android: Call native pair first to create QLConnection and register channels
       // This must happen before we create QLConnection on Dart side
       kPrint("setupBle android: invoking pair for deviceId=$deviceId");
-      await _methodChannel.invokeMethod("pair", {"deviceId": deviceId}).timeout(
+      await _methodChannel.invokeMethod("pair", {
+        "deviceId": deviceId,
+        if (deviceName != null) "deviceName": deviceName,
+      }).timeout(
         Duration(seconds: 10),
         onTimeout: () {
           throw BleSetupTimeoutException("Pairing timed out");
@@ -283,12 +294,19 @@ class BluetoothChannel {
   }
 
   /// Show the iOS accessory sheet for BLE pairing and return the device UUID
-  Future<String?> showAccessorySetup({int? colorWay}) async {
+  Future<String?> showAccessorySetup(
+      {int? colorWay, String? deviceName}) async {
     if (!Platform.isIOS) {
       throw Exception("showAccessorySetup is only supported on iOS");
     }
     try {
-      final args = colorWay == null ? null : {"c": colorWay};
+      final Map<String, dynamic>? args =
+          (colorWay == null && deviceName == null)
+              ? null
+              : {
+                  if (colorWay != null) "c": colorWay,
+                  if (deviceName != null) "n": deviceName,
+                };
       return await _methodChannel.invokeMethod<String?>(
         "showAccessorySetup",
         args,
@@ -344,6 +362,7 @@ class BluetoothChannel {
       channel.dispose();
     }
     _deviceChannels.clear();
+    _notifyDeviceChannelsChanged();
   }
 
   Future<bool> removeAccessory(String deviceId) async {
@@ -381,5 +400,6 @@ class BluetoothChannel {
       channel.dispose();
     }
     _deviceChannels.clear();
+    _notifyDeviceChannelsChanged();
   }
 }

@@ -34,6 +34,7 @@ class PairingResponse {
   final PassportSerial passportSerial;
   final PassportColor passportColor;
   final bool onboardingComplete;
+  final String? deviceName;
 
   const PairingResponse({
     required this.passportModel,
@@ -41,6 +42,7 @@ class PairingResponse {
     required this.passportSerial,
     required this.passportColor,
     required this.onboardingComplete,
+    this.deviceName,
   });
 
   @override
@@ -49,7 +51,8 @@ class PairingResponse {
       passportFirmwareVersion.hashCode ^
       passportSerial.hashCode ^
       passportColor.hashCode ^
-      onboardingComplete.hashCode;
+      onboardingComplete.hashCode ^
+      deviceName.hashCode;
 
   @override
   bool operator ==(Object other) =>
@@ -60,7 +63,8 @@ class PairingResponse {
           passportFirmwareVersion == other.passportFirmwareVersion &&
           passportSerial == other.passportSerial &&
           passportColor == other.passportColor &&
-          onboardingComplete == other.onboardingComplete;
+          onboardingComplete == other.onboardingComplete &&
+          deviceName == other.deviceName;
 }
 
 class UnpairingRequest {
