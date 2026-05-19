@@ -321,6 +321,16 @@ impl EnvoyAccountHandler {
         Ok(())
     }
 
+    pub fn set_color(&mut self, color: String) -> anyhow::Result<()> {
+        {
+            let account = self.ng_account.lock().unwrap();
+            account.config.write().unwrap().color = color;
+            account.persist()?;
+        }
+        self.send_update();
+        Ok(())
+    }
+
     #[frb(sync)]
     pub fn get_directory_path(&self) -> String {
         self.directory_path.clone()

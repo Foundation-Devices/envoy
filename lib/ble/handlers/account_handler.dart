@@ -10,10 +10,21 @@ import 'package:envoy/ble/quantum_link_router.dart';
 import 'package:envoy/business/devices.dart';
 import 'package:envoy/business/exchange_rate.dart';
 import 'package:envoy/business/settings.dart';
+import 'package:envoy/ui/envoy_colors.dart';
 import 'package:envoy/util/bug_report_helper.dart';
 import 'package:envoy/util/console.dart';
 import 'package:foundation_api/foundation_api.dart' as api;
 import 'package:ngwallet/ngwallet.dart';
+
+// Mirror Core's acct_num % 6 cycling for Prime-sourced single-sig accounts.
+// Prime's stored color is ignored; the index is the source of truth.
+String _colorForPrimeAccountIndex(int index) {
+  final palette = EnvoyColors.listAccountTileColors;
+  final c = palette[index % palette.length];
+  return '#${(c.r * 255).round().toRadixString(16).padLeft(2, '0')}'
+      '${(c.g * 255).round().toRadixString(16).padLeft(2, '0')}'
+      '${(c.b * 255).round().toRadixString(16).padLeft(2, '0')}';
+}
 
 class BleAccountHandler extends PassportMessageHandler {
   final _applyPassphraseStream =
@@ -90,9 +101,7 @@ class BleAccountHandler extends PassportMessageHandler {
       //Acknowledge the unpairing request, then disconnect and trigger the unpairing flow in the UI
       qlConnection.writeMessage(
         api.QuantumLinkMessage.unpairingResponse(
-          api.UnpairingResponse(
-            success: true,
-          ),
+          api.UnpairingResponse(success: true),
         ),
       );
       await Future.delayed(const Duration(seconds: 1));
@@ -162,9 +171,29 @@ class BleAccountHandler extends PassportMessageHandler {
       );
     }
 
+    // Single-sig: derive color from index regardless of what Prime sent.
+    if (config.multisig == null) {
+      config = NgAccountConfig(
+        name: config.name,
+        color: _colorForPrimeAccountIndex(config.index),
+        seedHasPassphrase: config.seedHasPassphrase,
+        deviceSerial: config.deviceSerial,
+        dateAdded: config.dateAdded,
+        preferredAddressType: config.preferredAddressType,
+        index: config.index,
+        descriptors: config.descriptors,
+        dateSynced: config.dateSynced,
+        network: config.network,
+        id: config.id,
+        multisig: config.multisig,
+        archived: config.archived,
+      );
+    }
+
     final taprootEnabled = Settings().taprootEnabled();
-    final hasTaproot =
-        config.descriptors.any((d) => d.addressType == AddressType.p2Tr);
+    final hasTaproot = config.descriptors.any(
+      (d) => d.addressType == AddressType.p2Tr,
+    );
     final desiredAddressType =
         (taprootEnabled && hasTaproot) ? AddressType.p2Tr : AddressType.p2Wpkh;
 
@@ -200,7 +229,13 @@ class BleAccountHandler extends PassportMessageHandler {
           await handler.renameAccount(name: config.name);
           await handler.setArchived(archived: config.archived);
           await handler.setPreferredAddressType(
-              addressType: desiredAddressType);
+            addressType: desiredAddressType,
+          );
+          // Read the handler's live config (NgAccountManager snapshot is stale).
+          final currentColor = handler.config().color;
+          if (currentColor.toLowerCase() != config.color.toLowerCase()) {
+            await handler.setColor(color: config.color);
+          }
           kPrint("Account updated!");
         }
       }
@@ -219,7 +254,8 @@ class BleAccountHandler extends PassportMessageHandler {
       accountHandler,
     );
     await accountHandler.setPreferredAddressType(
-        addressType: desiredAddressType);
+      addressType: desiredAddressType,
+    );
     kPrint("Account added!");
   }
 
@@ -251,7 +287,8 @@ class BleAccountHandler extends PassportMessageHandler {
     final device = qlConnection.getDevice();
     if (device?.onboardingComplete != true) {
       kPrint(
-          "Device not onboarded, skipping sending exchange rate history. ${qlConnection.deviceId}");
+        "Device not onboarded, skipping sending exchange rate history. ${qlConnection.deviceId}",
+      );
       return;
     }
     try {
