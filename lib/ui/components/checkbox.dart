@@ -4,6 +4,7 @@
 
 import 'package:envoy/ui/theme/envoy_colors.dart';
 import 'package:envoy/ui/theme/envoy_typography.dart';
+import 'package:envoy/ui/theme/new_envoy_color.dart';
 import 'package:flutter/material.dart';
 import 'package:envoy/ui/theme/envoy_spacing.dart';
 import 'package:envoy/ui/theme/envoy_icons.dart';
@@ -132,12 +133,12 @@ class DialogCheckBoxState extends State<DialogCheckBox> {
               border: Border.all(
                 color: widget.isChecked
                     ? EnvoyColors.accentPrimary
-                    : EnvoyColors.border1,
+                    : NewEnvoyColor.borderTertiary,
                 width: 1.0,
               ),
               color: widget.isChecked
                   ? EnvoyColors.accentPrimary
-                  : EnvoyColors.surface1,
+                  : NewEnvoyColor.backgroundPrimary,
             ),
             child: widget.isChecked
                 ? const EnvoyIcon(
