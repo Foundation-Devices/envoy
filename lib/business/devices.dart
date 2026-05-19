@@ -57,6 +57,7 @@ class Device {
   String firmwareVersion;
   List<String>? pairedAccountIds;
   bool? primeBackupEnabled;
+  String? primeFiatCurrency;
 
   @JsonKey(toJson: colorToJson, fromJson: colorFromJson)
   final Color color;
@@ -75,6 +76,7 @@ class Device {
     this.senderXid,
     this.pairedAccountIds,
     this.primeBackupEnabled,
+    this.primeFiatCurrency,
     this.onboardingComplete = false,
   });
 
@@ -263,7 +265,10 @@ class Devices extends ChangeNotifier {
     final existingIndex = devices.indexWhere((d) => d.serial == device.serial);
 
     if (existingIndex != -1) {
-      device.pairedAccountIds = devices[existingIndex].pairedAccountIds;
+      final existing = devices[existingIndex];
+      device.pairedAccountIds = existing.pairedAccountIds;
+      device.primeBackupEnabled ??= existing.primeBackupEnabled;
+      device.primeFiatCurrency ??= existing.primeFiatCurrency;
       devices[existingIndex] = device;
     } else {
       devices.add(device);
@@ -437,6 +442,19 @@ class Devices extends ChangeNotifier {
       if (device.serial == targetDevice.serial &&
           device.type == DeviceType.passportPrime) {
         device.primeBackupEnabled = isEnabled;
+        await storeDevices();
+        notifyListeners();
+        return;
+      }
+    }
+  }
+
+  Future updatePrimeFiatCurrency(
+      String currencyCode, Device targetDevice) async {
+    for (var device in devices) {
+      if (device.serial == targetDevice.serial &&
+          device.type == DeviceType.passportPrime) {
+        device.primeFiatCurrency = currencyCode;
         await storeDevices();
         notifyListeners();
         return;
