@@ -20,11 +20,12 @@ import 'package:envoy/ui/theme/envoy_icons.dart';
 import 'package:envoy/ui/theme/envoy_spacing.dart';
 import 'package:envoy/ui/theme/envoy_typography.dart';
 import 'package:envoy/ui/theme/new_envoy_color.dart';
+import 'package:file_saver/file_saver.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:ngwallet/ngwallet.dart';
-import 'package:share_plus/share_plus.dart';
 
 enum _QrDensity { low, medium, high }
 
@@ -249,28 +250,30 @@ class _PsbtCardState extends ConsumerState<PsbtCard> {
                     EnvoyButton(
                       S().send_QrScan_saveToFile,
                       onTap: () async {
-                        final box = context.findRenderObject() as RenderBox?;
-                        final tempDir = await getTemporaryDirectory();
                         final txId = widget.transaction.transaction.txId;
                         final shortId =
                             txId.length >= 8 ? txId.substring(0, 8) : txId;
-                        final file =
-                            File('${tempDir.path}/envoy-$shortId.psbt');
-                        await file.writeAsBytes(widget.transaction.psbt,
-                            flush: true);
-                        await SharePlus.instance.share(
-                          ShareParams(
-                            files: [
-                              XFile(
-                                file.path,
-                                mimeType: 'application/octet-stream',
-                              ),
-                            ],
-                            sharePositionOrigin: box == null
-                                ? null
-                                : box.localToGlobal(Offset.zero) & box.size,
-                          ),
-                        );
+                        final fileName = 'envoy-$shortId.psbt';
+                        if (Platform.isAndroid) {
+                          final tempDir = await getTemporaryDirectory();
+                          final tempFile = File('${tempDir.path}/$fileName');
+                          await tempFile.writeAsBytes(widget.transaction.psbt,
+                              flush: true);
+                          await const MethodChannel('envoy').invokeMethod(
+                            'save_document',
+                            {
+                              'from': tempFile.path,
+                              'mimeType': 'application/octet-stream',
+                            },
+                          );
+                        } else {
+                          await FileSaver.instance.saveAs(
+                            name: 'envoy-$shortId',
+                            bytes: widget.transaction.psbt,
+                            fileExtension: 'psbt',
+                            mimeType: MimeType.other,
+                          );
+                        }
                       },
                       type: EnvoyButtonTypes.tertiary,
                       leading: EnvoyIcon(
