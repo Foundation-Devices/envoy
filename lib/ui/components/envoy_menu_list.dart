@@ -136,6 +136,7 @@ class _MenuItemState extends State<MenuItem> {
         children: [
           GestureDetector(
             onTap: widget.onTap,
+            behavior: HitTestBehavior.opaque,
             onTapDown: (_) => _setPressed(true),
             onTapUp: (_) => _setPressed(false),
             onTapCancel: () => _setPressed(false),

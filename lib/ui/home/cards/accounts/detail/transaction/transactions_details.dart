@@ -6,10 +6,12 @@ import 'dart:ui';
 
 import 'package:envoy/account/accounts_manager.dart';
 import 'package:envoy/account/envoy_transaction.dart';
+import 'package:envoy/business/connectivity_manager.dart';
 import 'package:envoy/business/fee_rate.dart';
 import 'package:envoy/business/fees.dart';
 import 'package:envoy/business/locale.dart';
 import 'package:envoy/business/settings.dart';
+import 'package:envoy/ui/envoy_method_channel.dart';
 import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/components/address_widget.dart';
 import 'package:envoy/ui/components/amount_widget.dart';
@@ -614,7 +616,7 @@ class _TransactionsDetailsWidgetState
                             backgroundColor: Colors.lightBlue,
                             replaceExisting: true,
                             duration: const Duration(seconds: 1),
-                            message: "Payment ID copied to clipboard",
+                            message: S().accounts_toast_paymentCopied,
                             icon: const EnvoyIcon(
                               EnvoyIcons.info,
                               color: EnvoyColors.accentPrimary,
@@ -988,6 +990,18 @@ Future<void> openTxDetailsInExplorer(
   String txId,
   Network network,
 ) async {
+  // The pop-up warns about Foundation hosting the explorer, which is only
+  // accurate when the default Foundation explorer is in use. If the user
+  // configured a personal explorer, skip straight to opening it. Mirrors the
+  // override condition in getBaseUrlForNetwork below.
+  final usingPersonalExplorer = network == Network.bitcoin &&
+      !Settings().usingDefaultBlockExplorer &&
+      Settings().personalBlockExplorerAddress.isNotEmpty;
+  if (usingPersonalExplorer) {
+    openTxDetailPage(network, txId);
+    return;
+  }
+
   bool isDismissed = await EnvoyStorage().checkPromptDismissed(
     DismissiblePrompt.openTxDetailsInExplorer,
   );
@@ -1030,16 +1044,30 @@ Future<void> openTxDetailsInExplorer(
   }
 }
 
-void openTxDetailPage(Network network, String txId) {
+Future<void> openTxDetailPage(Network network, String txId) async {
   final baseUrl = getBaseUrlForNetwork(network);
-  if (baseUrl != null) {
-    launchUrlString("$baseUrl/tx/$txId");
-  } else {
+  if (baseUrl == null) {
     kPrint("Regtest not implemented");
+    return;
   }
+
+  final url = "$baseUrl/tx/$txId";
+  final isOnion = Uri.tryParse(url)?.host.endsWith('.onion') ?? false;
+  final torOn = ConnectivityManager().torEnabled;
+
+  // If Tor is on or the URL is .onion, try a Tor-capable browser first.
+  // If none is installed (or the launch fails), fall through to the system
+  // browser as a best-effort — .onion will simply fail to resolve there.
+  if (torOn || isOnion) {
+    if (await launchInTorBrowser(url)) {
+      return;
+    }
+  }
+
+  launchUrlString(url);
 }
 
-/// Returns the base URL for [network]; we don't launch URLs via Tor.
+/// Returns the base URL for [network].
 String? getBaseUrlForNetwork(Network network) {
   if (network == Network.bitcoin &&
       !Settings().usingDefaultBlockExplorer &&
@@ -1054,15 +1082,16 @@ String? getBaseUrlForNetwork(Network network) {
     return customUrl;
   }
 
+  final base = Fees.mempoolFoundationInstance;
   switch (network) {
     case Network.bitcoin:
-      return Fees.mempoolFoundationUrl;
+      return base;
     case Network.signet:
-      return "${Fees.mempoolFoundationUrl}/signet";
+      return "$base/signet";
     case Network.testnet4:
-      return "${Fees.mempoolFoundationUrl}/testnet4";
+      return "$base/testnet4";
     case Network.testnet:
-      return "${Fees.mempoolFoundationUrl}/testnet4";
+      return "$base/testnet4";
     case Network.regtest:
       return null;
   }

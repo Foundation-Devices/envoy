@@ -4408,6 +4408,10 @@ impl SseDecode for crate::api::errors::RBFBumpFeeError {
             11 => {
                 return crate::api::errors::RBFBumpFeeError::WalletNotAvailable;
             }
+            12 => {
+                let mut var_field0 = <Vec<String>>::sse_decode(deserializer);
+                return crate::api::errors::RBFBumpFeeError::LockedUtxoSelected(var_field0);
+            }
             _ => {
                 unimplemented!("");
             }
@@ -4567,6 +4571,10 @@ impl SseDecode for crate::api::errors::TxComposeError {
             4 => {
                 let mut var_field0 = <u64>::sse_decode(deserializer);
                 return crate::api::errors::TxComposeError::InsufficientFeeRate(var_field0);
+            }
+            5 => {
+                let mut var_field0 = <Vec<String>>::sse_decode(deserializer);
+                return crate::api::errors::TxComposeError::LockedUtxoSelected(var_field0);
             }
             _ => {
                 unimplemented!("");
@@ -5613,6 +5621,9 @@ impl flutter_rust_bridge::IntoDart for crate::api::errors::RBFBumpFeeError {
                 [10.into_dart(), field0.into_into_dart().into_dart()].into_dart()
             }
             crate::api::errors::RBFBumpFeeError::WalletNotAvailable => [11.into_dart()].into_dart(),
+            crate::api::errors::RBFBumpFeeError::LockedUtxoSelected(field0) => {
+                [12.into_dart(), field0.into_into_dart().into_dart()].into_dart()
+            }
             _ => {
                 unimplemented!("");
             }
@@ -5744,6 +5755,9 @@ impl flutter_rust_bridge::IntoDart for crate::api::errors::TxComposeError {
             }
             crate::api::errors::TxComposeError::InsufficientFeeRate(field0) => {
                 [4.into_dart(), field0.into_into_dart().into_dart()].into_dart()
+            }
+            crate::api::errors::TxComposeError::LockedUtxoSelected(field0) => {
+                [5.into_dart(), field0.into_into_dart().into_dart()].into_dart()
             }
             _ => {
                 unimplemented!("");
@@ -6543,6 +6557,10 @@ impl SseEncode for crate::api::errors::RBFBumpFeeError {
             crate::api::errors::RBFBumpFeeError::WalletNotAvailable => {
                 <i32>::sse_encode(11, serializer);
             }
+            crate::api::errors::RBFBumpFeeError::LockedUtxoSelected(field0) => {
+                <i32>::sse_encode(12, serializer);
+                <Vec<String>>::sse_encode(field0, serializer);
+            }
             _ => {
                 unimplemented!("");
             }
@@ -6666,6 +6684,10 @@ impl SseEncode for crate::api::errors::TxComposeError {
             crate::api::errors::TxComposeError::InsufficientFeeRate(field0) => {
                 <i32>::sse_encode(4, serializer);
                 <u64>::sse_encode(field0, serializer);
+            }
+            crate::api::errors::TxComposeError::LockedUtxoSelected(field0) => {
+                <i32>::sse_encode(5, serializer);
+                <Vec<String>>::sse_encode(field0, serializer);
             }
             _ => {
                 unimplemented!("");

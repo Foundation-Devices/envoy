@@ -36,6 +36,7 @@ class BalanceWidget extends ConsumerWidget {
   final int amount;
   final bool showLock;
   final bool locked;
+  final bool lockEnabled;
   final bool rbfChangeOutput;
   final String accountId;
   final GestureTapCallback? onLockTap;
@@ -50,6 +51,7 @@ class BalanceWidget extends ConsumerWidget {
     this.rbfChangeOutput = false,
     required this.onLockTap,
     this.switchWidget,
+    this.lockEnabled = true,
   });
 
   @override
@@ -61,9 +63,16 @@ class BalanceWidget extends ConsumerWidget {
     if (showLock) {
       rowItems.add(
         FittedBox(
-          child: CoinLockButton(
-            locked: locked,
-            gestureTapCallback: () => onLockTap?.call(),
+          child: AnimatedOpacity(
+            opacity: lockEnabled ? 1 : 0.4,
+            duration: const Duration(milliseconds: 250),
+            child: IgnorePointer(
+              ignoring: !lockEnabled,
+              child: CoinLockButton(
+                locked: locked,
+                gestureTapCallback: () => onLockTap?.call(),
+              ),
+            ),
           ),
         ),
       );
@@ -132,6 +141,7 @@ class CoinBalanceWidget extends ConsumerStatefulWidget {
   final bool showLock;
   final Tag coinTag;
   final Function? onEnable;
+  final bool lockEnabled;
 
   const CoinBalanceWidget({
     super.key,
@@ -139,6 +149,7 @@ class CoinBalanceWidget extends ConsumerStatefulWidget {
     this.showLock = true,
     required this.coinTag,
     this.onEnable,
+    this.lockEnabled = true,
   });
 
   @override
@@ -164,6 +175,7 @@ class _CoinBalanceWidgetState extends ConsumerState<CoinBalanceWidget> {
       accountId: accountId,
       rbfChangeOutput: isRbfChangeOutput,
       showLock: widget.showLock,
+      lockEnabled: widget.lockEnabled,
       onLockTap: () async {
         if (!output.doNotSpend) {
           bool dismissed = await EnvoyStorage().checkPromptDismissed(
@@ -279,8 +291,13 @@ class _CoinBalanceWidgetState extends ConsumerState<CoinBalanceWidget> {
 
 class CoinTagBalanceWidget extends ConsumerWidget {
   final Tag coinTag;
+  final bool lockEnabled;
 
-  const CoinTagBalanceWidget({super.key, required this.coinTag});
+  const CoinTagBalanceWidget({
+    super.key,
+    required this.coinTag,
+    this.lockEnabled = true,
+  });
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -312,6 +329,7 @@ class CoinTagBalanceWidget extends ConsumerWidget {
         accountId: accountId,
         rbfChangeOutput: isRbfChangeOutput,
         showLock: tag.totalAmount != 0,
+        lockEnabled: lockEnabled,
         onLockTap: () async {
           if (!isAllCoinsLocked) {
             bool dismissed = await EnvoyStorage().checkPromptDismissed(

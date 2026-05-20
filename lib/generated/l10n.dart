@@ -56,9 +56,14 @@ class S {
 
   // skipped getter for the ':' key
 
-  /// `6:15`
+  /// `https://blockstream.info/api/`
   String get _ {
-    return Intl.message('6:15', name: '_', desc: '', args: []);
+    return Intl.message(
+      'https://blockstream.info/api/',
+      name: '_',
+      desc: '',
+      args: [],
+    );
   }
 
   /// `App Version`
@@ -1703,6 +1708,16 @@ class S {
     return Intl.message(
       'Couldn’t decode UR.',
       name: 'camera_toast_couldntDecodeUr',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Invalid Pair Payload.`
+  String get camera_toast_invalidPairPayload {
+    return Intl.message(
+      'Invalid Pair Payload.',
+      name: 'camera_toast_invalidPairPayload',
       desc: '',
       args: [],
     );
@@ -7103,6 +7118,16 @@ class S {
     );
   }
 
+  /// `Developer Mode Enabled.`
+  String get menu_toast_developerModeEnabled {
+    return Intl.message(
+      'Developer Mode Enabled.',
+      name: 'menu_toast_developerModeEnabled',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Envoy seed deleted.`
   String get menu_toast_envoySeedDeleted {
     return Intl.message(
@@ -8078,6 +8103,36 @@ class S {
     return Intl.message(
       'Unlock with biometrics or PIN',
       name: 'privacy_applicationLock_unlock',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Could not reach Block Explorer`
+  String get privacy_blockExplorer_couldNotReachBlockExplorer {
+    return Intl.message(
+      'Could not reach Block Explorer',
+      name: 'privacy_blockExplorer_couldNotReachBlockExplorer',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Successfully connected to Block Explorer`
+  String get privacy_blockExplorer_success {
+    return Intl.message(
+      'Successfully connected to Block Explorer',
+      name: 'privacy_blockExplorer_success',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `URL missing http:// or https:// prefix`
+  String get privacy_blockExplorer_urlError {
+    return Intl.message(
+      'URL missing http:// or https:// prefix',
+      name: 'privacy_blockExplorer_urlError',
       desc: '',
       args: [],
     );

@@ -3412,6 +3412,10 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         );
       case 11:
         return RBFBumpFeeError_WalletNotAvailable();
+      case 12:
+        return RBFBumpFeeError_LockedUtxoSelected(
+          dco_decode_list_String(raw[1]),
+        );
       default:
         throw Exception("unreachable");
     }
@@ -3585,6 +3589,10 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       case 4:
         return TxComposeError_InsufficientFeeRate(
           dco_decode_u_64(raw[1]),
+        );
+      case 5:
+        return TxComposeError_LockedUtxoSelected(
+          dco_decode_list_String(raw[1]),
         );
       default:
         throw Exception("unreachable");
@@ -4569,6 +4577,9 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         return RBFBumpFeeError_UnableToAddForeignUtxo(var_field0);
       case 11:
         return RBFBumpFeeError_WalletNotAvailable();
+      case 12:
+        var var_field0 = sse_decode_list_String(deserializer);
+        return RBFBumpFeeError_LockedUtxoSelected(var_field0);
       default:
         throw UnimplementedError('');
     }
@@ -4718,6 +4729,9 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       case 4:
         var var_field0 = sse_decode_u_64(deserializer);
         return TxComposeError_InsufficientFeeRate(var_field0);
+      case 5:
+        var var_field0 = sse_decode_list_String(deserializer);
+        return TxComposeError_LockedUtxoSelected(var_field0);
       default:
         throw UnimplementedError('');
     }
@@ -5587,6 +5601,9 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         sse_encode_String(field0, serializer);
       case RBFBumpFeeError_WalletNotAvailable():
         sse_encode_i_32(11, serializer);
+      case RBFBumpFeeError_LockedUtxoSelected(field0: final field0):
+        sse_encode_i_32(12, serializer);
+        sse_encode_list_String(field0, serializer);
     }
   }
 
@@ -5704,6 +5721,9 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       case TxComposeError_InsufficientFeeRate(field0: final field0):
         sse_encode_i_32(4, serializer);
         sse_encode_u_64(field0, serializer);
+      case TxComposeError_LockedUtxoSelected(field0: final field0):
+        sse_encode_i_32(5, serializer);
+        sse_encode_list_String(field0, serializer);
     }
   }
 

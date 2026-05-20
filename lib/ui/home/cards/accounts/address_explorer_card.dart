@@ -56,6 +56,17 @@ enum AddressFilter { used, unused, zeroBalance }
 /// Sort options for the address explorer
 enum AddressSort { none, highestValue, lowestValue }
 
+final _addressFiltersProvider = StateProvider<Set<AddressFilter>>((ref) => {
+      AddressFilter.used,
+      AddressFilter.unused,
+      AddressFilter.zeroBalance,
+    });
+
+final _addressSortProvider =
+    StateProvider<AddressSort>((ref) => AddressSort.none);
+
+final _isReceiveAddressesProvider = StateProvider<bool>((ref) => true);
+
 class AddressExplorerCard extends ConsumerStatefulWidget {
   final EnvoyAccount account;
 
@@ -73,25 +84,24 @@ class _AddressExplorerCardState extends ConsumerState<AddressExplorerCard> {
   final TextEditingController _searchController = TextEditingController();
   String _searchQuery = '';
 
-  // Filter state - all filters selected by default (show all)
-  Set<AddressFilter> _activeFilters = {
-    AddressFilter.used,
-    AddressFilter.unused,
-    AddressFilter.zeroBalance,
-  };
-  AddressSort _sortOption = AddressSort.none;
-
-  // Address type toggle: true = Receive (external), false = Change (internal)
-  bool _isReceiveAddresses = true;
-
   // Pagination and search
   static const int _loadCount = 50;
+  static const int _maxAddresses = 10000;
   int _searchedAddressCount = _loadCount;
   bool _isContinueSearching = false;
+  bool _isLoadingMore = false;
+
+  final ScrollController _scrollController = ScrollController();
+
+  ProviderContainer? _container;
 
   @override
   void initState() {
     super.initState();
+
+    _container = ProviderScope.containerOf(context, listen: false);
+
+    _scrollController.addListener(_onScroll);
 
     Future.delayed(const Duration(milliseconds: 10)).then((value) {
       ref.read(homeShellOptionsProvider.notifier).state = null;
@@ -102,13 +112,51 @@ class _AddressExplorerCardState extends ConsumerState<AddressExplorerCard> {
 
   @override
   void dispose() {
+    _scrollController.removeListener(_onScroll);
+    _scrollController.dispose();
     _searchController.dispose();
     super.dispose();
   }
 
-  Future<void> _loadAddresses({bool resetSearchCount = true}) async {
+  void _onScroll() {
+    if (!_scrollController.hasClients) return;
+    final position = _scrollController.position;
+    if (position.pixels >= position.maxScrollExtent - 200 &&
+        !_isLoading &&
+        !_isLoadingMore &&
+        _addresses.length < _maxAddresses) {
+      _loadMoreAddresses();
+    }
+  }
+
+  Future<void> _loadMoreAddresses() async {
     setState(() {
-      _isLoading = true;
+      _isLoadingMore = true;
+      _searchedAddressCount += _loadCount;
+    });
+    await _loadAddresses(
+      resetSearchCount: false,
+      showLoadingIndicator: false,
+    );
+    if (mounted) {
+      setState(() {
+        _isLoadingMore = false;
+      });
+    }
+  }
+
+  void _resetPersistedFilters() {
+    _container?.invalidate(_addressFiltersProvider);
+    _container?.invalidate(_addressSortProvider);
+    _container?.invalidate(_isReceiveAddressesProvider);
+  }
+
+  Future<void> _loadAddresses({
+    bool resetSearchCount = true,
+    bool showLoadingIndicator = true,
+  }) async {
+    setState(() {
+      if (showLoadingIndicator) _isLoading = true;
       if (resetSearchCount) {
         _searchedAddressCount = _loadCount;
       }
@@ -137,12 +185,14 @@ class _AddressExplorerCardState extends ConsumerState<AddressExplorerCard> {
           )
           .$1;
 
+      final isReceiveAddresses = ref.read(_isReceiveAddressesProvider);
+
       // Peek addresses from wallet
       final peekedAddresses = await handler.peekAddresses(
         addressType: addressType,
         fromIndex: 0,
         toIndex: _searchedAddressCount,
-        isChange: !_isReceiveAddresses,
+        isChange: !isReceiveAddresses,
       );
 
       // Build address usage and balance map from transactions and UTXOs
@@ -166,7 +216,7 @@ class _AddressExplorerCardState extends ConsumerState<AddressExplorerCard> {
       }
 
       // Build AddressInfo list
-      final isChange = !_isReceiveAddresses;
+      final isChange = !isReceiveAddresses;
       final addresses = peekedAddresses.map((tuple) {
         final (index, address) = tuple;
         final balance = addressBalances[address] ?? 0;
@@ -209,6 +259,9 @@ class _AddressExplorerCardState extends ConsumerState<AddressExplorerCard> {
   }
 
   void _applyFilters() {
+    final activeFilters = ref.read(_addressFiltersProvider);
+    final sortOption = ref.read(_addressSortProvider);
+
     var filtered = List<AddressInfo>.from(_addresses);
 
     // Apply search filter
@@ -226,15 +279,15 @@ class _AddressExplorerCardState extends ConsumerState<AddressExplorerCard> {
     // Apply active filters (selected = show, unselected = hide)
     filtered = filtered.where((addr) {
       // If "used" is not selected, hide used addresses
-      if (!_activeFilters.contains(AddressFilter.used) && addr.isUsed) {
+      if (!activeFilters.contains(AddressFilter.used) && addr.isUsed) {
         return false;
       }
       // If "unused" is not selected, hide unused addresses
-      if (!_activeFilters.contains(AddressFilter.unused) && !addr.isUsed) {
+      if (!activeFilters.contains(AddressFilter.unused) && !addr.isUsed) {
         return false;
       }
       // If "zeroBalance" is not selected, hide zero balance addresses
-      if (!_activeFilters.contains(AddressFilter.zeroBalance) &&
+      if (!activeFilters.contains(AddressFilter.zeroBalance) &&
           addr.balanceSats == 0) {
         return false;
       }
@@ -242,7 +295,7 @@ class _AddressExplorerCardState extends ConsumerState<AddressExplorerCard> {
     }).toList();
 
     // Apply sorting
-    switch (_sortOption) {
+    switch (sortOption) {
       case AddressSort.highestValue:
         filtered.sort((a, b) => b.balanceSats.compareTo(a.balanceSats));
         break;
@@ -263,9 +316,9 @@ class _AddressExplorerCardState extends ConsumerState<AddressExplorerCard> {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: EnvoySpacing.large1),
       child: Text(
-        S().exploreAddresses_searchError_notFound(_searchedAddressCount),
+        S().learning_center_filterEmpty_subheading,
         style: EnvoyTypography.info.copyWith(
-          color: EnvoyColors.contentSecondary,
+          color: EnvoyColors.contentTertiary,
         ),
         textAlign: TextAlign.center,
       ),
@@ -282,13 +335,11 @@ class _AddressExplorerCardState extends ConsumerState<AddressExplorerCard> {
         borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
       ),
       builder: (context) => _FilterModal(
-        activeFilters: _activeFilters,
-        sortOption: _sortOption,
+        activeFilters: ref.read(_addressFiltersProvider),
+        sortOption: ref.read(_addressSortProvider),
         onApply: (filters, sort) {
-          setState(() {
-            _activeFilters = filters;
-            _sortOption = sort;
-          });
+          ref.read(_addressFiltersProvider.notifier).state = filters;
+          ref.read(_addressSortProvider.notifier).state = sort;
           _applyFilters();
           Navigator.pop(context);
         },
@@ -346,156 +397,172 @@ class _AddressExplorerCardState extends ConsumerState<AddressExplorerCard> {
           EnvoyStorage().addPromptState(DismissiblePrompt.usedAddressWarning);
         }
       },
-      onLearnMore: () {
-        // TODO: Open learn more link
-      },
     );
   }
 
   @override
   Widget build(BuildContext context) {
     final account = ref.watch(accountStateProvider(widget.account.id));
+    final isReceiveAddresses = ref.watch(_isReceiveAddressesProvider);
+    final activeFilters = ref.watch(_addressFiltersProvider);
+    final sortOption = ref.watch(_addressSortProvider);
+    final hasActiveFilter =
+        activeFilters.length < 3 || sortOption != AddressSort.none;
 
-    return Column(
-      children: [
-        // Search bar
-        Padding(
-          padding: const EdgeInsets.all(EnvoySpacing.medium1),
-          child: AddressSearchEntry(
-            icon: EnvoyIcons.search,
-            controller: _searchController,
-            onChanged: (value) {
-              final queryChanged = _searchQuery != value;
-              setState(() {
-                _searchQuery = value;
-                // Reset search count when query changes
-                if (queryChanged && _searchedAddressCount > _loadCount) {
-                  _searchedAddressCount = _loadCount;
-                }
-              });
-              // Reload addresses if we had expanded the search before
-              if (queryChanged && _addresses.length > _loadCount) {
-                _loadAddresses();
-              } else {
-                _applyFilters();
-              }
-            },
-          ),
-        ),
-
-        // Filter bar
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: EnvoySpacing.medium1),
-          child: Row(
-            children: [
-              // Receive/Change toggle
-              SlidingToggle(
-                value: _isReceiveAddresses ? "Receive" : "Change",
-                firstValue: "Receive",
-                secondValue: "Change",
-                firstLabel: S().receive_tx_list_receive,
-                secondLabel: S().receive_tx_list_change,
-                firstIcon: EnvoyIcons.receive,
-                secondIcon: EnvoyIcons.change,
-                backgroundColor: EnvoyColors.surface3,
-                onChange: (value) {
-                  setState(() {
-                    _isReceiveAddresses = value == "Receive";
-                  });
+    return PopScope(
+      onPopInvokedWithResult: (didPop, _) {
+        if (didPop) {
+          _resetPersistedFilters();
+        }
+      },
+      child: Column(
+        children: [
+          // Search bar
+          Padding(
+            padding: const EdgeInsets.all(EnvoySpacing.medium1),
+            child: AddressSearchEntry(
+              icon: EnvoyIcons.search,
+              controller: _searchController,
+              onChanged: (value) {
+                final queryChanged = _searchQuery != value;
+                setState(() {
+                  _searchQuery = value;
+                  // Reset search count when query changes
+                  if (queryChanged && _searchedAddressCount > _loadCount) {
+                    _searchedAddressCount = _loadCount;
+                  }
+                });
+                // Reload addresses if we had expanded the search before
+                if (queryChanged && _addresses.length > _loadCount) {
                   _loadAddresses();
-                },
-              ),
-              const Spacer(),
-              GestureDetector(
-                onTap: _showFilterModal,
-                child: Container(
-                  padding: const EdgeInsets.all(EnvoySpacing.small),
-                  decoration: BoxDecoration(
-                    color: _activeFilters.length < 3 ||
-                            _sortOption != AddressSort.none
-                        ? EnvoyColors.accentPrimary
-                        : EnvoyColors.surface3,
-                    borderRadius: BorderRadius.circular(EnvoySpacing.medium2),
-                  ),
-                  child: EnvoyIcon(
-                    EnvoyIcons.filter,
-                    color: _activeFilters.length < 3 ||
-                            _sortOption != AddressSort.none
-                        ? EnvoyColors.solidWhite
-                        : EnvoyColors.textSecondary,
-                    size: EnvoyIconSize.small,
+                } else {
+                  _applyFilters();
+                }
+              },
+            ),
+          ),
+
+          // Filter bar
+          Padding(
+            padding:
+                const EdgeInsets.symmetric(horizontal: EnvoySpacing.medium1),
+            child: Row(
+              children: [
+                // Receive/Change toggle
+                SlidingToggle(
+                  value: isReceiveAddresses ? "Receive" : "Change",
+                  firstValue: "Receive",
+                  secondValue: "Change",
+                  firstLabel: S().receive_tx_list_receive,
+                  secondLabel: S().receive_tx_list_change,
+                  firstIcon: EnvoyIcons.receive,
+                  secondIcon: EnvoyIcons.change,
+                  backgroundColor: EnvoyColors.surface3,
+                  onChange: (value) {
+                    ref.read(_isReceiveAddressesProvider.notifier).state =
+                        value == "Receive";
+                    _loadAddresses();
+                  },
+                ),
+                const Spacer(),
+                GestureDetector(
+                  onTap: _showFilterModal,
+                  child: Container(
+                    padding: const EdgeInsets.all(EnvoySpacing.small),
+                    decoration: BoxDecoration(
+                      color: hasActiveFilter
+                          ? EnvoyColors.accentPrimary
+                          : EnvoyColors.surface3,
+                      borderRadius: BorderRadius.circular(EnvoySpacing.medium2),
+                    ),
+                    child: EnvoyIcon(
+                      EnvoyIcons.filter,
+                      color: hasActiveFilter
+                          ? EnvoyColors.solidWhite
+                          : EnvoyColors.textSecondary,
+                      size: EnvoyIconSize.small,
+                    ),
                   ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
-        ),
 
-        const SizedBox(height: EnvoySpacing.medium1),
+          const SizedBox(height: EnvoySpacing.medium1),
 
-        // Address list
-        Expanded(
-          child: _isLoading
-              ? const Center(child: CircularProgressIndicator())
-              : _filteredAddresses.isEmpty
-                  ? _buildEmptyState()
-                  : ListView.builder(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: EnvoySpacing.medium1,
-                      ),
-                      itemCount: _filteredAddresses.length + 1,
-                      itemBuilder: (context, index) {
-                        if (index == _filteredAddresses.length) {
-                          return const Padding(
-                            padding: EdgeInsets.symmetric(
-                              vertical: EnvoySpacing.large2,
-                            ),
-                            child: Brandmark(
-                              logoSize: EnvoySpacing.medium3,
-                              style: BrandmarkStyle.endMark,
-                            ),
+          // Address list
+          Expanded(
+            child: _isLoading
+                ? const Center(child: EnvoyLoader())
+                : _filteredAddresses.isEmpty
+                    ? _buildEmptyState()
+                    : ListView.builder(
+                        controller: _scrollController,
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: EnvoySpacing.medium1,
+                        ),
+                        itemCount: _filteredAddresses.length + 1,
+                        itemBuilder: (context, index) {
+                          if (index == _filteredAddresses.length) {
+                            return Padding(
+                              padding: const EdgeInsets.symmetric(
+                                vertical: EnvoySpacing.large2,
+                              ),
+                              child: Center(
+                                child: _isLoadingMore
+                                    ? const SizedBox(
+                                        width: EnvoySpacing.medium3,
+                                        height: EnvoySpacing.medium3,
+                                        child: EnvoyLoader(),
+                                      )
+                                    : const Brandmark(
+                                        logoSize: EnvoySpacing.medium3,
+                                        style: BrandmarkStyle.endMark,
+                                      ),
+                              ),
+                            );
+                          }
+                          final addressInfo = _filteredAddresses[index];
+                          return _AddressListItem(
+                            addressInfo: addressInfo,
+                            account: account!,
+                            onTap: () => _onAddressTap(addressInfo),
+                            isLast: index == _filteredAddresses.length - 1,
                           );
-                        }
-                        final addressInfo = _filteredAddresses[index];
-                        return _AddressListItem(
-                          addressInfo: addressInfo,
-                          account: account!,
-                          onTap: () => _onAddressTap(addressInfo),
-                          isLast: index == _filteredAddresses.length - 1,
-                        );
-                      },
-                    ),
-        ),
-        // Continue Searching button (shown when search has no results)
-        if (_searchQuery.isNotEmpty &&
-            _filteredAddresses.isEmpty &&
-            !_isLoading)
-          Padding(
-            padding: const EdgeInsets.symmetric(
-              horizontal: EnvoySpacing.medium1,
-              vertical: EnvoySpacing.large2,
-            ),
-            child: SizedBox(
-              width: double.infinity,
-              child: EnvoyButton(
-                _isContinueSearching
-                    ? S().component_searching
-                    : S().exploreAddresses_searchError_continueSearching,
-                onTap: _isContinueSearching ? null : _continueSearching,
-                leading: _isContinueSearching
-                    ? EnvoyActivityIndicator(
-                        color: EnvoyColors.solidWhite,
-                        radius: EnvoySpacing.small,
-                      )
-                    : null,
+                        },
+                      ),
+          ),
+          // Continue Searching button (shown when search has no results)
+          if (_searchQuery.isNotEmpty &&
+              _filteredAddresses.isEmpty &&
+              !_isLoading)
+            Padding(
+              padding: const EdgeInsets.symmetric(
+                horizontal: EnvoySpacing.medium1,
+                vertical: EnvoySpacing.large2,
+              ),
+              child: SizedBox(
+                width: double.infinity,
+                child: EnvoyButton(
+                  _isContinueSearching
+                      ? S().component_searching
+                      : S().exploreAddresses_searchError_continueSearching,
+                  onTap: _isContinueSearching ? null : _continueSearching,
+                  leading: _isContinueSearching
+                      ? EnvoyActivityIndicator(
+                          color: EnvoyColors.solidWhite,
+                          radius: EnvoySpacing.small,
+                        )
+                      : null,
+                ),
               ),
             ),
-          ),
-        if (!(_searchQuery.isNotEmpty &&
-            _filteredAddresses.isEmpty &&
-            !_isLoading))
-          const SizedBox(height: EnvoySpacing.large1),
-      ],
+          if (!(_searchQuery.isNotEmpty &&
+              _filteredAddresses.isEmpty &&
+              !_isLoading))
+            const SizedBox(height: EnvoySpacing.large1),
+        ],
+      ),
     );
   }
 }

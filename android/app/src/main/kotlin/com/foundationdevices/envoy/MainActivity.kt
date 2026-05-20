@@ -3,7 +3,9 @@ package com.foundationdevices.envoy
 import android.app.backup.BackupManager
 import android.content.ComponentName
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.icu.util.TimeZone
+import android.net.Uri
 import android.os.Build
 import android.os.Environment
 import android.os.Handler
@@ -213,6 +215,40 @@ class MainActivity : FlutterFragmentActivity(), EventChannel.StreamHandler {
                         startActivity(Intent(Settings.ACTION_SETTINGS))
                     }
                     result.success(true)
+                }
+
+                "launch_in_tor_browser" -> {
+                    val url = call.argument<String>("url")
+                    if (url == null) {
+                        result.success(false)
+                    } else {
+                        val packages = listOf(
+                            "org.torproject.torbrowser",
+                            "org.torproject.torbrowser_alpha"
+                        )
+                        val targetPackage = packages.firstOrNull { pkg ->
+                            try {
+                                packageManager.getPackageInfo(pkg, 0)
+                                true
+                            } catch (e: PackageManager.NameNotFoundException) {
+                                false
+                            }
+                        }
+                        if (targetPackage == null) {
+                            result.success(false)
+                        } else {
+                            try {
+                                val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url)).apply {
+                                    setPackage(targetPackage)
+                                    addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                                }
+                                startActivity(intent)
+                                result.success(true)
+                            } catch (e: Exception) {
+                                result.success(false)
+                            }
+                        }
+                    }
                 }
 
                 "make_screen_secure" -> {
