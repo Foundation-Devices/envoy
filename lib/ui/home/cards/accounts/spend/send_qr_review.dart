@@ -91,11 +91,15 @@ class _SendQrReviewState extends ConsumerState<SendQrReview> {
                       textAlign: TextAlign.center,
                     ),
                     SizedBox(height: EnvoySpacing.small),
-                    Text(
-                      S().send_review_subheader,
-                      style: EnvoyTypography.body.copyWith(
-                          color: envoy_colors.EnvoyColors.textSecondary),
-                      textAlign: TextAlign.center,
+                    Padding(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: EnvoySpacing.medium1),
+                      child: Text(
+                        S().send_review_subheader,
+                        style: EnvoyTypography.body.copyWith(
+                            color: envoy_colors.EnvoyColors.textSecondary),
+                        textAlign: TextAlign.center,
+                      ),
                     ),
                     SizedBox(height: EnvoySpacing.medium2),
                     Flexible(

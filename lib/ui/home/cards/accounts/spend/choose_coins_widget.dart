@@ -27,6 +27,9 @@ import 'package:envoy/ui/components/draggable_overlay.dart';
 import 'package:envoy/ui/envoy_button.dart';
 import 'package:envoy/ui/home/cards/accounts/detail/coins/coin_balance_widget.dart';
 import 'package:envoy/ui/home/cards/accounts/detail/coins/coins_state.dart';
+import 'package:envoy/ui/loader_ghost.dart';
+import 'package:envoy/ui/state/accounts_state.dart';
+import 'package:envoy/ui/state/hide_balance_state.dart';
 import 'package:envoy/util/envoy_storage.dart';
 import 'package:envoy/ui/state/home_page_state.dart';
 
@@ -74,6 +77,9 @@ class _ChooseCoinsWidget extends ConsumerState<ChooseCoinsWidget> {
     if (account == null) {
       return Container();
     }
+
+    final hideBalance = ref.watch(balanceHideStateStatusProvider(account.id));
+    final liveAccountBalance = ref.watch(accountBalanceProvider(account.id));
 
     return DraggableOverlay(
       closeResult: true,
@@ -152,10 +158,20 @@ class _ChooseCoinsWidget extends ConsumerState<ChooseCoinsWidget> {
           Padding(
             padding: const EdgeInsets.only(
                 top: EnvoySpacing.small, bottom: EnvoySpacing.medium1),
-            child: EnvoyAmount(
-                amountSats: account.balance.toInt(),
-                amountWidgetStyle: AmountWidgetStyle.singleLine,
-                account: account),
+            child: hideBalance
+                ? Row(
+                    children: [
+                      LoaderGhost(
+                        animate: false,
+                        width: 150,
+                        height: 20,
+                      ),
+                    ],
+                  )
+                : EnvoyAmount(
+                    amountSats: liveAccountBalance,
+                    amountWidgetStyle: AmountWidgetStyle.singleLine,
+                    account: account),
           ),
         CoinsListSpendState(
           account: account,
@@ -411,7 +427,7 @@ class CoinItemSpendWidget extends ConsumerWidget {
           ],
         ),
         CoinSubTitleText(tag, textColor: EnvoyColors.textPrimary),
-        CoinTagBalanceWidget(coinTag: tag),
+        CoinTagBalanceWidget(coinTag: tag, lockEnabled: false),
       ],
     );
   }
@@ -469,7 +485,7 @@ class _ChooseCoinsFromTagWidget
           SizedBox(
             height: EnvoySpacing.xs,
           ),
-          CoinTagBalanceWidget(coinTag: widget.tag),
+          CoinTagBalanceWidget(coinTag: widget.tag, lockEnabled: false),
           SizedBox(
             height: EnvoySpacing.small,
           ),
@@ -490,6 +506,7 @@ class _ChooseCoinsFromTagWidget
                           CoinBalanceWidget(
                             output: coin,
                             coinTag: widget.tag,
+                            lockEnabled: false,
                           ),
                         ],
                       ),

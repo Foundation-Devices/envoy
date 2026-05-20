@@ -616,7 +616,7 @@ class _TransactionsDetailsWidgetState
                             backgroundColor: Colors.lightBlue,
                             replaceExisting: true,
                             duration: const Duration(seconds: 1),
-                            message: "Payment ID copied to clipboard",
+                            message: S().accounts_toast_paymentCopied,
                             icon: const EnvoyIcon(
                               EnvoyIcons.info,
                               color: EnvoyColors.accentPrimary,

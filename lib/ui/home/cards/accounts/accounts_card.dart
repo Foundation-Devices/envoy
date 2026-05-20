@@ -51,7 +51,6 @@ class _AccountsCardState extends ConsumerState<AccountsCard>
   Widget build(BuildContext context) {
     super.build(context);
 
-    // Watch passphrase event handler to enable auto-switching
     ref.watch(passphraseEventHandlerProvider);
 
     final mainNetAccounts = ref.watch(mainnetAccountsProvider(null));
@@ -59,16 +58,6 @@ class _AccountsCardState extends ConsumerState<AccountsCard>
     final showDefaultAccounts = ref.watch(showDefaultAccountProvider);
     final hasPassphraseAccounts =
         ref.watch(primePassphraseAccountsProvider).isNotEmpty;
-
-    // Auto-switch to default accounts when passphrase accounts become empty
-    ref.listen(primePassphraseAccountsProvider, (
-      List<EnvoyAccount>? previous,
-      List<EnvoyAccount> next,
-    ) {
-      if (next.isEmpty && !ref.read(showDefaultAccountProvider)) {
-        ref.read(showDefaultAccountProvider.notifier).state = true;
-      }
-    });
 
     return Stack(
       children: [
