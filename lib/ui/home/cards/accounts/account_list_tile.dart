@@ -2,7 +2,6 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-import 'package:envoy/account/sync_manager.dart';
 import 'package:envoy/business/devices.dart';
 import 'package:envoy/business/exchange_rate.dart';
 import 'package:envoy/business/settings.dart';
@@ -73,15 +72,10 @@ class _AccountListTileState extends ConsumerState<AccountListTile> {
   Widget build(BuildContext context) {
     ref.watch(settingsProvider);
     ref.watch(accountsProvider);
-    final currentProgress = ref.watch(accountSync);
+    final fullScanInProgress =
+        ref.watch(accountFullScanInProgressProvider(widget.account.id));
     final requiredScan = ref.watch(isAccountRequiredScan(widget.account));
-    bool isScanning = false;
-    if (currentProgress is Scanning) {
-      isScanning = currentProgress.id == widget.account.id;
-    }
-    if (requiredScan) {
-      isScanning = true;
-    }
+    bool isScanning = fullScanInProgress || requiredScan;
     EnvoyAccount? account = ref.watch(accountStateProvider(widget.account.id));
     if (widget.account.xfp == "ghost") {
       account = widget.account;

@@ -184,13 +184,9 @@ class _AccountCardState extends ConsumerState<AccountCard>
     bool txFiltersEnabled = ref.watch(isTransactionFiltersEnabled);
     bool isMenuOpen = ref.watch(homePageOptionsVisibilityProvider);
 
-    var scanInProgress = ref.watch(accountSync) is Scanning &&
-        (ref.watch(accountSync) as Scanning).id == account.id;
+    var scanInProgress =
+        ref.watch(accountFullScanInProgressProvider(account.id));
 
-    // Single source of truth for "initial sync still ongoing", shared between
-    // the bottom-bar enable/disable logic and the transactions loader so the
-    // balance (rendered inside AccountListTile) and the transaction list
-    // appear at the same moment after adding an account.
     final requiredScan = ref.watch(isAccountRequiredScan(account));
     bool isAccountLoading =
         account.dateSynced == null || requiredScan || scanInProgress;

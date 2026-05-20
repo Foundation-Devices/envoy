@@ -72,7 +72,7 @@ class MessageLookup extends MessageLookupByLibrary {
 
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
-        "_": MessageLookupByLibrary.simpleMessage("6:15"),
+        "_": MessageLookupByLibrary.simpleMessage("E2819ED"),
         "about_appVersion": MessageLookupByLibrary.simpleMessage("App Version"),
         "about_openSourceLicences": MessageLookupByLibrary.simpleMessage(
           "Open Source Licences",
@@ -558,6 +558,9 @@ class MessageLookup extends MessageLookupByLibrary {
         ),
         "camera_toast_couldntDecodeUr": MessageLookupByLibrary.simpleMessage(
           "Couldn’t decode UR.",
+        ),
+        "camera_toast_invalidPairPayload": MessageLookupByLibrary.simpleMessage(
+          "Invalid Pair Payload.",
         ),
         "camera_toast_notAValidAddress": MessageLookupByLibrary.simpleMessage(
           "Not a valid address.",
@@ -2126,6 +2129,9 @@ class MessageLookup extends MessageLookupByLibrary {
         "menu_toast_couldntDeleteEnvoySeed":
             MessageLookupByLibrary.simpleMessage(
           "Couldn’t delete Envoy seed.",
+        ),
+        "menu_toast_developerModeEnabled": MessageLookupByLibrary.simpleMessage(
+          "Developer Mode Enabled.",
         ),
         "menu_toast_envoySeedDeleted": MessageLookupByLibrary.simpleMessage(
           "Envoy seed deleted.",

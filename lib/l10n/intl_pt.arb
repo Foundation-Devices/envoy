@@ -1,6 +1,6 @@
 {
   ":": ":",
-  "_": "6:15",
+  "_": "E2819ED",
   "about_appVersion": "Versão da Aplicação",
   "about_openSourceLicences": "Licenças de Código Aberto",
   "about_privacyPolicy": "Política de Privacidade",
@@ -167,6 +167,7 @@
   "buy_bitcoin_purchaseError_purchaseID": "ID de Compra:",
   "buy_defineLocation_selectState": "Select State",
   "camera_toast_couldntDecodeUr": "Couldn’t decode UR.",
+  "camera_toast_invalidPairPayload": "Invalid Pair Payload.",
   "camera_toast_notAValidAddress": "Not a valid address.",
   "camera_toast_notAValidSeed": "Not a valid seed.",
   "card_coin_locked": "Moeda Bloqueada",
@@ -718,6 +719,7 @@
   "menu_support": "APOIO TÉCNICO",
   "menu_toast_accountAlreadyConnected": "Account already connected.",
   "menu_toast_couldntDeleteEnvoySeed": "Couldn’t delete Envoy seed.",
+  "menu_toast_developerModeEnabled": "Developer Mode Enabled.",
   "menu_toast_envoySeedDeleted": "Envoy seed deleted.",
   "menu_toast_logsCopied": "Logs copied to clipboard.",
   "menu_toast_securityCheckDisabled": "Security check disabled",
