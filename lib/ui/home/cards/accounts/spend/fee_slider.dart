@@ -443,19 +443,23 @@ class _FeeOptionRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-      CheckBoxFilterItem(
-        text: title,
-        checked: selected,
-        subtitle: subtitle,
-        onTap: () {
-          if (onTap != null) {
-            onTap!();
-          }
-        },
-      ),
-      if (trailing != null) trailing!,
-    ]);
+    return GestureDetector(
+      behavior: HitTestBehavior.opaque,
+      onTap: onTap,
+      child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+        CheckBoxFilterItem(
+          text: title,
+          checked: selected,
+          subtitle: subtitle,
+          onTap: () {
+            if (onTap != null) {
+              onTap!();
+            }
+          },
+        ),
+        if (trailing != null) trailing!,
+      ]),
+    );
   }
 }
 
