@@ -109,6 +109,7 @@ enum EnvoyIcons {
   coins,
   save,
   chain,
+  qr_with_check_mark,
 }
 
 class EnvoyIcon extends StatelessWidget {
