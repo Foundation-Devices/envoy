@@ -3,7 +3,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 import 'package:envoy/account/accounts_manager.dart';
-import 'package:envoy/ble/bluetooth_manager.dart';
 import 'package:envoy/business/devices.dart';
 import 'package:envoy/business/settings.dart';
 import 'package:envoy/generated/l10n.dart';
@@ -59,7 +58,6 @@ class _AddressCardState extends ConsumerState<AddressCard> {
     final Device? device =
         Devices().getDeviceBySerial(widget.account.deviceSerial ?? "");
     bool isPrime = device?.type == DeviceType.passportPrime;
-    final bool isPrimeConnected = ref.watch(isPrimeConnectedProvider(device));
 
     if (isTaprootEnabled && noTaprootXpub) {
       final segwitAddressRecord = account?.nextAddress.firstWhere(
