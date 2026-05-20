@@ -2,6 +2,7 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
+use backup_client::CryptoProvider;
 use bdk::bitcoin;
 use bdk::bitcoin::hashes::hex::FromHex;
 use bdk::bitcoin::hashes::Hash;
@@ -16,7 +17,6 @@ use libcrux_ml_dsa::ml_dsa_44;
 use mla::config::{ArchiveReaderConfig, ArchiveWriterConfig};
 use mla::{ArchiveReader, ArchiveWriter};
 use reqwest::Response;
-use backup_client::CryptoProvider;
 use serde::{Deserialize, Serialize};
 use sha2::{Digest, Sha256};
 use std::collections::HashMap;
@@ -786,4 +786,3 @@ impl Backup {
         Ok(res.status().as_u16())
     }
 }
-
