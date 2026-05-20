@@ -9,17 +9,12 @@ import 'package:qr_code_scanner_plus/qr_code_scanner_plus.dart';
 
 class InvalidPairPayloadException implements Exception {
   @override
-  toString() => "Invalid Pair Payload";
+  toString() => S().camera_toast_invalidPairPayload;
 }
 
 class AccountAlreadyPairedException implements Exception {
   @override
   toString() => S().menu_toast_accountAlreadyConnected;
-}
-
-class InvalidNetworkException implements Exception {
-  @override
-  toString() => "Please use Testnet";
 }
 
 class PairPayloadDecoder extends ScannerDecoder {
