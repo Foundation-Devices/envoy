@@ -1253,6 +1253,12 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "7360491ce676a36bf9bb3c56c1aa791658183a54d2744120f27285738d90465a"
 
 [[package]]
+name = "faster-hex"
+version = "0.9.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "a2a2b11eda1d40935b26cf18f6833c526845ae8c41e58d09af6adeb6f0269183"
+
+[[package]]
 name = "fastrand"
 version = "2.3.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1375,6 +1381,11 @@ dependencies = [
 ]
 
 [[package]]
+name = "foundation-arena"
+version = "0.1.0"
+source = "git+https://github.com/Foundation-Devices/foundation-rs.git?tag=0.6.0#99b00a3d62043391416b5ea438a50e598b1fb1dd"
+
+[[package]]
 name = "foundation-ur"
 version = "0.4.0"
 source = "git+https://github.com/Foundation-Devices/foundation-rs?tag=0.5.0#85984a453769c71b762bc0f2c5030450c4bc9166"
@@ -1386,6 +1397,18 @@ dependencies = [
  "minicbor 0.24.4",
  "phf",
  "rand_xoshiro",
+]
+
+[[package]]
+name = "foundation-urtypes"
+version = "0.5.0"
+source = "git+https://github.com/Foundation-Devices/foundation-rs.git?tag=0.6.0#99b00a3d62043391416b5ea438a50e598b1fb1dd"
+dependencies = [
+ "faster-hex",
+ "foundation-arena",
+ "heapless",
+ "minicbor 0.24.4",
+ "uuid",
 ]
 
 [[package]]
@@ -2505,7 +2528,7 @@ dependencies = [
 [[package]]
 name = "ngwallet"
 version = "1.1.1"
-source = "git+https://github.com/Foundation-Devices/ngwallet?tag=3.3.0#b50aa6f89873220ae145434b098874760c0055bd"
+source = "git+https://github.com/Foundation-Devices/ngwallet?tag=3.5.0#3677c7a39506b580b18f0edc359f3139519b3534"
 dependencies = [
  "anyhow",
  "bdk_core",
@@ -2514,6 +2537,7 @@ dependencies = [
  "bip39",
  "bip85",
  "bitcoin 0.32.7",
+ "foundation-urtypes",
  "log",
  "minicbor-serde",
  "redb",
