@@ -14,6 +14,7 @@ pub enum TxComposeError {
     InsufficientFunds(String),
     InsufficientFees(u64),
     InsufficientFeeRate(u64),
+    LockedUtxoSelected(Vec<String>),
 }
 
 impl TxComposeError {
@@ -80,6 +81,9 @@ impl TxComposeError {
                 TxComposeError::Error(format!("WalletError {}", e))
             }
             TransactionComposeError::Error(e) => TxComposeError::Error(format!("Error {}", e)),
+            TransactionComposeError::LockedUtxoSelected(ids) => {
+                TxComposeError::LockedUtxoSelected(ids)
+            }
         }
     }
 }
@@ -165,6 +169,7 @@ pub enum RBFBumpFeeError {
     UnableToAccessWallet,
     UnableToAddForeignUtxo(String),
     WalletNotAvailable,
+    LockedUtxoSelected(Vec<String>),
 }
 
 impl From<BumpFeeError> for RBFBumpFeeError {
@@ -191,6 +196,7 @@ impl From<BumpFeeError> for RBFBumpFeeError {
                 RBFBumpFeeError::UnableToAddForeignUtxo(e.to_string())
             }
             BumpFeeError::TransactionNotFound() => RBFBumpFeeError::TransactionNotFound,
+            BumpFeeError::LockedUtxoSelected(ids) => RBFBumpFeeError::LockedUtxoSelected(ids),
         }
     }
 }
