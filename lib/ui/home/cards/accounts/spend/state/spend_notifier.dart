@@ -551,10 +551,17 @@ class TransactionModeNotifier extends StateNotifier<TransactionModel> {
       ..note = draftTransaction.transaction.note ?? ""
       ..canProceed = true;
 
-    ref.read(stagingTxChangeOutPutTagProvider.notifier).state =
-        draftTransaction.changeOutPutTag;
-    ref.read(stagingTxNoteProvider.notifier).state =
-        draftTransaction.transaction.note;
+    // Preserve user-chosen values if the freshly-composed draft doesn't
+    // echo them back — otherwise re-composing a draft (e.g. after coin
+    // control apply) silently clears the user's change-tag and note.
+    final newChangeTag = draftTransaction.changeOutPutTag;
+    if (newChangeTag != null && newChangeTag.isNotEmpty) {
+      ref.read(stagingTxChangeOutPutTagProvider.notifier).state = newChangeTag;
+    }
+    final newNote = draftTransaction.transaction.note;
+    if (newNote != null && newNote.isNotEmpty) {
+      ref.read(stagingTxNoteProvider.notifier).state = newNote;
+    }
   }
 
   void _handleComposeError(Object error) {

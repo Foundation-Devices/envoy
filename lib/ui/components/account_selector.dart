@@ -324,30 +324,26 @@ class AccountChooserOverlayState extends State<AccountChooserOverlay>
     super.initState();
 
     SchedulerBinding.instance.addPostFrameCallback((timeStamp) {
+      if (!mounted) return;
       _calcStackCardRect();
       _calcListCardRect();
+      setState(() {
+        isReady = true;
+      });
+      widget.onOverlayChanges(true);
+      animationController.animateWith(_forwardSimulation);
 
+      // Stack text rect depends on the selected card's rect — which can be
+      // populated a frame late via _calcStackCardRect's retry path. Defer
+      // text rect measurement by one frame so that retry resolves first.
+      // The spring is already running by then; the per-frame listener picks
+      // up the new rects and the text hero joins the in-flight animation.
       if (widget.transferAccount != null) {
-        _calcStackTextRect(); // Calculate stack text positions based on account stack positions
-
-        // The list texts are being rendered, but we need to measure them
-        // Schedule another frame to ensure they're rendered and measurable
         SchedulerBinding.instance.addPostFrameCallback((_) {
-          if (mounted) {
-            _calcListTextRect(); // Now measure the actual list text positions
-            setState(() {
-              isReady = true;
-            });
-            widget.onOverlayChanges(true);
-            animationController.animateWith(_forwardSimulation);
-          }
+          if (!mounted) return;
+          _calcStackTextRect();
+          _calcListTextRect();
         });
-      } else {
-        setState(() {
-          isReady = true;
-        });
-        widget.onOverlayChanges(true);
-        animationController.animateWith(_forwardSimulation);
       }
     });
   }
