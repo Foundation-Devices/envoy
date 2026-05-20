@@ -220,18 +220,28 @@ class _FullScreenVideoPlayerState extends State<FullScreenVideoPlayer>
   }
 
   void showTimeline() {
-    if (!_visibleTimeline && mounted && !_playerExited) {
+    if (!mounted || _playerExited) {
+      return;
+    }
+
+    _showTimelineTimer?.cancel();
+
+    if (!_visibleTimeline) {
       setState(() {
         _visibleTimeline = true;
       });
-      _showTimelineTimer = Timer(const Duration(seconds: 5), () {
+    }
+
+    _showTimelineTimer = Timer(
+      Duration(seconds: _isMaestroTest ? 20 : 5),
+      () {
         if (mounted && !_playerExited) {
           setState(() {
             _visibleTimeline = false;
           });
         }
-      });
-    }
+      },
+    );
   }
 
   Future<void> restoreSystemUIOverlays() async {
@@ -244,9 +254,14 @@ class _FullScreenVideoPlayerState extends State<FullScreenVideoPlayer>
     // Keep the screen on
     WakelockPlus.enable();
 
-    SystemChrome.setEnabledSystemUIMode(
-      _isMaestroTest ? SystemUiMode.immersiveSticky : SystemUiMode.immersive,
-    );
+    if (_isMaestroTest) {
+      SystemChrome.setEnabledSystemUIMode(
+        SystemUiMode.manual,
+        overlays: const [SystemUiOverlay.top, SystemUiOverlay.bottom],
+      );
+    } else {
+      SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersive);
+    }
     SystemChrome.setPreferredOrientations([
       DeviceOrientation.landscapeRight,
       DeviceOrientation.landscapeLeft,

@@ -594,6 +594,7 @@ mixin _$RBFBumpFeeError {
     required TResult Function() unableToAccessWallet,
     required TResult Function(String field0) unableToAddForeignUtxo,
     required TResult Function() walletNotAvailable,
+    required TResult Function(List<String> field0) lockedUtxoSelected,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
@@ -610,6 +611,7 @@ mixin _$RBFBumpFeeError {
     TResult? Function()? unableToAccessWallet,
     TResult? Function(String field0)? unableToAddForeignUtxo,
     TResult? Function()? walletNotAvailable,
+    TResult? Function(List<String> field0)? lockedUtxoSelected,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
@@ -626,6 +628,7 @@ mixin _$RBFBumpFeeError {
     TResult Function()? unableToAccessWallet,
     TResult Function(String field0)? unableToAddForeignUtxo,
     TResult Function()? walletNotAvailable,
+    TResult Function(List<String> field0)? lockedUtxoSelected,
     required TResult orElse(),
   }) =>
       throw _privateConstructorUsedError;
@@ -654,6 +657,8 @@ mixin _$RBFBumpFeeError {
         unableToAddForeignUtxo,
     required TResult Function(RBFBumpFeeError_WalletNotAvailable value)
         walletNotAvailable,
+    required TResult Function(RBFBumpFeeError_LockedUtxoSelected value)
+        lockedUtxoSelected,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
@@ -680,6 +685,8 @@ mixin _$RBFBumpFeeError {
         unableToAddForeignUtxo,
     TResult? Function(RBFBumpFeeError_WalletNotAvailable value)?
         walletNotAvailable,
+    TResult? Function(RBFBumpFeeError_LockedUtxoSelected value)?
+        lockedUtxoSelected,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
@@ -706,6 +713,8 @@ mixin _$RBFBumpFeeError {
         unableToAddForeignUtxo,
     TResult Function(RBFBumpFeeError_WalletNotAvailable value)?
         walletNotAvailable,
+    TResult Function(RBFBumpFeeError_LockedUtxoSelected value)?
+        lockedUtxoSelected,
     required TResult orElse(),
   }) =>
       throw _privateConstructorUsedError;
@@ -790,6 +799,7 @@ class _$RBFBumpFeeError_InsufficientFundsImpl
     required TResult Function() unableToAccessWallet,
     required TResult Function(String field0) unableToAddForeignUtxo,
     required TResult Function() walletNotAvailable,
+    required TResult Function(List<String> field0) lockedUtxoSelected,
   }) {
     return insufficientFunds();
   }
@@ -809,6 +819,7 @@ class _$RBFBumpFeeError_InsufficientFundsImpl
     TResult? Function()? unableToAccessWallet,
     TResult? Function(String field0)? unableToAddForeignUtxo,
     TResult? Function()? walletNotAvailable,
+    TResult? Function(List<String> field0)? lockedUtxoSelected,
   }) {
     return insufficientFunds?.call();
   }
@@ -828,6 +839,7 @@ class _$RBFBumpFeeError_InsufficientFundsImpl
     TResult Function()? unableToAccessWallet,
     TResult Function(String field0)? unableToAddForeignUtxo,
     TResult Function()? walletNotAvailable,
+    TResult Function(List<String> field0)? lockedUtxoSelected,
     required TResult orElse(),
   }) {
     if (insufficientFunds != null) {
@@ -862,6 +874,8 @@ class _$RBFBumpFeeError_InsufficientFundsImpl
         unableToAddForeignUtxo,
     required TResult Function(RBFBumpFeeError_WalletNotAvailable value)
         walletNotAvailable,
+    required TResult Function(RBFBumpFeeError_LockedUtxoSelected value)
+        lockedUtxoSelected,
   }) {
     return insufficientFunds(this);
   }
@@ -891,6 +905,8 @@ class _$RBFBumpFeeError_InsufficientFundsImpl
         unableToAddForeignUtxo,
     TResult? Function(RBFBumpFeeError_WalletNotAvailable value)?
         walletNotAvailable,
+    TResult? Function(RBFBumpFeeError_LockedUtxoSelected value)?
+        lockedUtxoSelected,
   }) {
     return insufficientFunds?.call(this);
   }
@@ -920,6 +936,8 @@ class _$RBFBumpFeeError_InsufficientFundsImpl
         unableToAddForeignUtxo,
     TResult Function(RBFBumpFeeError_WalletNotAvailable value)?
         walletNotAvailable,
+    TResult Function(RBFBumpFeeError_LockedUtxoSelected value)?
+        lockedUtxoSelected,
     required TResult orElse(),
   }) {
     if (insufficientFunds != null) {
@@ -1021,6 +1039,7 @@ class _$RBFBumpFeeError_ComposeBumpTxErrorImpl
     required TResult Function() unableToAccessWallet,
     required TResult Function(String field0) unableToAddForeignUtxo,
     required TResult Function() walletNotAvailable,
+    required TResult Function(List<String> field0) lockedUtxoSelected,
   }) {
     return composeBumpTxError(field0);
   }
@@ -1040,6 +1059,7 @@ class _$RBFBumpFeeError_ComposeBumpTxErrorImpl
     TResult? Function()? unableToAccessWallet,
     TResult? Function(String field0)? unableToAddForeignUtxo,
     TResult? Function()? walletNotAvailable,
+    TResult? Function(List<String> field0)? lockedUtxoSelected,
   }) {
     return composeBumpTxError?.call(field0);
   }
@@ -1059,6 +1079,7 @@ class _$RBFBumpFeeError_ComposeBumpTxErrorImpl
     TResult Function()? unableToAccessWallet,
     TResult Function(String field0)? unableToAddForeignUtxo,
     TResult Function()? walletNotAvailable,
+    TResult Function(List<String> field0)? lockedUtxoSelected,
     required TResult orElse(),
   }) {
     if (composeBumpTxError != null) {
@@ -1093,6 +1114,8 @@ class _$RBFBumpFeeError_ComposeBumpTxErrorImpl
         unableToAddForeignUtxo,
     required TResult Function(RBFBumpFeeError_WalletNotAvailable value)
         walletNotAvailable,
+    required TResult Function(RBFBumpFeeError_LockedUtxoSelected value)
+        lockedUtxoSelected,
   }) {
     return composeBumpTxError(this);
   }
@@ -1122,6 +1145,8 @@ class _$RBFBumpFeeError_ComposeBumpTxErrorImpl
         unableToAddForeignUtxo,
     TResult? Function(RBFBumpFeeError_WalletNotAvailable value)?
         walletNotAvailable,
+    TResult? Function(RBFBumpFeeError_LockedUtxoSelected value)?
+        lockedUtxoSelected,
   }) {
     return composeBumpTxError?.call(this);
   }
@@ -1151,6 +1176,8 @@ class _$RBFBumpFeeError_ComposeBumpTxErrorImpl
         unableToAddForeignUtxo,
     TResult Function(RBFBumpFeeError_WalletNotAvailable value)?
         walletNotAvailable,
+    TResult Function(RBFBumpFeeError_LockedUtxoSelected value)?
+        lockedUtxoSelected,
     required TResult orElse(),
   }) {
     if (composeBumpTxError != null) {
@@ -1261,6 +1288,7 @@ class _$RBFBumpFeeError_ComposeTxErrorImpl
     required TResult Function() unableToAccessWallet,
     required TResult Function(String field0) unableToAddForeignUtxo,
     required TResult Function() walletNotAvailable,
+    required TResult Function(List<String> field0) lockedUtxoSelected,
   }) {
     return composeTxError(field0);
   }
@@ -1280,6 +1308,7 @@ class _$RBFBumpFeeError_ComposeTxErrorImpl
     TResult? Function()? unableToAccessWallet,
     TResult? Function(String field0)? unableToAddForeignUtxo,
     TResult? Function()? walletNotAvailable,
+    TResult? Function(List<String> field0)? lockedUtxoSelected,
   }) {
     return composeTxError?.call(field0);
   }
@@ -1299,6 +1328,7 @@ class _$RBFBumpFeeError_ComposeTxErrorImpl
     TResult Function()? unableToAccessWallet,
     TResult Function(String field0)? unableToAddForeignUtxo,
     TResult Function()? walletNotAvailable,
+    TResult Function(List<String> field0)? lockedUtxoSelected,
     required TResult orElse(),
   }) {
     if (composeTxError != null) {
@@ -1333,6 +1363,8 @@ class _$RBFBumpFeeError_ComposeTxErrorImpl
         unableToAddForeignUtxo,
     required TResult Function(RBFBumpFeeError_WalletNotAvailable value)
         walletNotAvailable,
+    required TResult Function(RBFBumpFeeError_LockedUtxoSelected value)
+        lockedUtxoSelected,
   }) {
     return composeTxError(this);
   }
@@ -1362,6 +1394,8 @@ class _$RBFBumpFeeError_ComposeTxErrorImpl
         unableToAddForeignUtxo,
     TResult? Function(RBFBumpFeeError_WalletNotAvailable value)?
         walletNotAvailable,
+    TResult? Function(RBFBumpFeeError_LockedUtxoSelected value)?
+        lockedUtxoSelected,
   }) {
     return composeTxError?.call(this);
   }
@@ -1391,6 +1425,8 @@ class _$RBFBumpFeeError_ComposeTxErrorImpl
         unableToAddForeignUtxo,
     TResult Function(RBFBumpFeeError_WalletNotAvailable value)?
         walletNotAvailable,
+    TResult Function(RBFBumpFeeError_LockedUtxoSelected value)?
+        lockedUtxoSelected,
     required TResult orElse(),
   }) {
     if (composeTxError != null) {
@@ -1473,6 +1509,7 @@ class _$RBFBumpFeeError_ChangeOutputLockedImpl
     required TResult Function() unableToAccessWallet,
     required TResult Function(String field0) unableToAddForeignUtxo,
     required TResult Function() walletNotAvailable,
+    required TResult Function(List<String> field0) lockedUtxoSelected,
   }) {
     return changeOutputLocked();
   }
@@ -1492,6 +1529,7 @@ class _$RBFBumpFeeError_ChangeOutputLockedImpl
     TResult? Function()? unableToAccessWallet,
     TResult? Function(String field0)? unableToAddForeignUtxo,
     TResult? Function()? walletNotAvailable,
+    TResult? Function(List<String> field0)? lockedUtxoSelected,
   }) {
     return changeOutputLocked?.call();
   }
@@ -1511,6 +1549,7 @@ class _$RBFBumpFeeError_ChangeOutputLockedImpl
     TResult Function()? unableToAccessWallet,
     TResult Function(String field0)? unableToAddForeignUtxo,
     TResult Function()? walletNotAvailable,
+    TResult Function(List<String> field0)? lockedUtxoSelected,
     required TResult orElse(),
   }) {
     if (changeOutputLocked != null) {
@@ -1545,6 +1584,8 @@ class _$RBFBumpFeeError_ChangeOutputLockedImpl
         unableToAddForeignUtxo,
     required TResult Function(RBFBumpFeeError_WalletNotAvailable value)
         walletNotAvailable,
+    required TResult Function(RBFBumpFeeError_LockedUtxoSelected value)
+        lockedUtxoSelected,
   }) {
     return changeOutputLocked(this);
   }
@@ -1574,6 +1615,8 @@ class _$RBFBumpFeeError_ChangeOutputLockedImpl
         unableToAddForeignUtxo,
     TResult? Function(RBFBumpFeeError_WalletNotAvailable value)?
         walletNotAvailable,
+    TResult? Function(RBFBumpFeeError_LockedUtxoSelected value)?
+        lockedUtxoSelected,
   }) {
     return changeOutputLocked?.call(this);
   }
@@ -1603,6 +1646,8 @@ class _$RBFBumpFeeError_ChangeOutputLockedImpl
         unableToAddForeignUtxo,
     TResult Function(RBFBumpFeeError_WalletNotAvailable value)?
         walletNotAvailable,
+    TResult Function(RBFBumpFeeError_LockedUtxoSelected value)?
+        lockedUtxoSelected,
     required TResult orElse(),
   }) {
     if (changeOutputLocked != null) {
@@ -1702,6 +1747,7 @@ class _$RBFBumpFeeError_UnknownUtxoImpl extends RBFBumpFeeError_UnknownUtxo {
     required TResult Function() unableToAccessWallet,
     required TResult Function(String field0) unableToAddForeignUtxo,
     required TResult Function() walletNotAvailable,
+    required TResult Function(List<String> field0) lockedUtxoSelected,
   }) {
     return unknownUtxo(field0);
   }
@@ -1721,6 +1767,7 @@ class _$RBFBumpFeeError_UnknownUtxoImpl extends RBFBumpFeeError_UnknownUtxo {
     TResult? Function()? unableToAccessWallet,
     TResult? Function(String field0)? unableToAddForeignUtxo,
     TResult? Function()? walletNotAvailable,
+    TResult? Function(List<String> field0)? lockedUtxoSelected,
   }) {
     return unknownUtxo?.call(field0);
   }
@@ -1740,6 +1787,7 @@ class _$RBFBumpFeeError_UnknownUtxoImpl extends RBFBumpFeeError_UnknownUtxo {
     TResult Function()? unableToAccessWallet,
     TResult Function(String field0)? unableToAddForeignUtxo,
     TResult Function()? walletNotAvailable,
+    TResult Function(List<String> field0)? lockedUtxoSelected,
     required TResult orElse(),
   }) {
     if (unknownUtxo != null) {
@@ -1774,6 +1822,8 @@ class _$RBFBumpFeeError_UnknownUtxoImpl extends RBFBumpFeeError_UnknownUtxo {
         unableToAddForeignUtxo,
     required TResult Function(RBFBumpFeeError_WalletNotAvailable value)
         walletNotAvailable,
+    required TResult Function(RBFBumpFeeError_LockedUtxoSelected value)
+        lockedUtxoSelected,
   }) {
     return unknownUtxo(this);
   }
@@ -1803,6 +1853,8 @@ class _$RBFBumpFeeError_UnknownUtxoImpl extends RBFBumpFeeError_UnknownUtxo {
         unableToAddForeignUtxo,
     TResult? Function(RBFBumpFeeError_WalletNotAvailable value)?
         walletNotAvailable,
+    TResult? Function(RBFBumpFeeError_LockedUtxoSelected value)?
+        lockedUtxoSelected,
   }) {
     return unknownUtxo?.call(this);
   }
@@ -1832,6 +1884,8 @@ class _$RBFBumpFeeError_UnknownUtxoImpl extends RBFBumpFeeError_UnknownUtxo {
         unableToAddForeignUtxo,
     TResult Function(RBFBumpFeeError_WalletNotAvailable value)?
         walletNotAvailable,
+    TResult Function(RBFBumpFeeError_LockedUtxoSelected value)?
+        lockedUtxoSelected,
     required TResult orElse(),
   }) {
     if (unknownUtxo != null) {
@@ -1913,6 +1967,7 @@ class _$RBFBumpFeeError_TransactionNotFoundImpl
     required TResult Function() unableToAccessWallet,
     required TResult Function(String field0) unableToAddForeignUtxo,
     required TResult Function() walletNotAvailable,
+    required TResult Function(List<String> field0) lockedUtxoSelected,
   }) {
     return transactionNotFound();
   }
@@ -1932,6 +1987,7 @@ class _$RBFBumpFeeError_TransactionNotFoundImpl
     TResult? Function()? unableToAccessWallet,
     TResult? Function(String field0)? unableToAddForeignUtxo,
     TResult? Function()? walletNotAvailable,
+    TResult? Function(List<String> field0)? lockedUtxoSelected,
   }) {
     return transactionNotFound?.call();
   }
@@ -1951,6 +2007,7 @@ class _$RBFBumpFeeError_TransactionNotFoundImpl
     TResult Function()? unableToAccessWallet,
     TResult Function(String field0)? unableToAddForeignUtxo,
     TResult Function()? walletNotAvailable,
+    TResult Function(List<String> field0)? lockedUtxoSelected,
     required TResult orElse(),
   }) {
     if (transactionNotFound != null) {
@@ -1985,6 +2042,8 @@ class _$RBFBumpFeeError_TransactionNotFoundImpl
         unableToAddForeignUtxo,
     required TResult Function(RBFBumpFeeError_WalletNotAvailable value)
         walletNotAvailable,
+    required TResult Function(RBFBumpFeeError_LockedUtxoSelected value)
+        lockedUtxoSelected,
   }) {
     return transactionNotFound(this);
   }
@@ -2014,6 +2073,8 @@ class _$RBFBumpFeeError_TransactionNotFoundImpl
         unableToAddForeignUtxo,
     TResult? Function(RBFBumpFeeError_WalletNotAvailable value)?
         walletNotAvailable,
+    TResult? Function(RBFBumpFeeError_LockedUtxoSelected value)?
+        lockedUtxoSelected,
   }) {
     return transactionNotFound?.call(this);
   }
@@ -2043,6 +2104,8 @@ class _$RBFBumpFeeError_TransactionNotFoundImpl
         unableToAddForeignUtxo,
     TResult Function(RBFBumpFeeError_WalletNotAvailable value)?
         walletNotAvailable,
+    TResult Function(RBFBumpFeeError_LockedUtxoSelected value)?
+        lockedUtxoSelected,
     required TResult orElse(),
   }) {
     if (transactionNotFound != null) {
@@ -2144,6 +2207,7 @@ class _$RBFBumpFeeError_TransactionConfirmedImpl
     required TResult Function() unableToAccessWallet,
     required TResult Function(String field0) unableToAddForeignUtxo,
     required TResult Function() walletNotAvailable,
+    required TResult Function(List<String> field0) lockedUtxoSelected,
   }) {
     return transactionConfirmed(field0);
   }
@@ -2163,6 +2227,7 @@ class _$RBFBumpFeeError_TransactionConfirmedImpl
     TResult? Function()? unableToAccessWallet,
     TResult? Function(String field0)? unableToAddForeignUtxo,
     TResult? Function()? walletNotAvailable,
+    TResult? Function(List<String> field0)? lockedUtxoSelected,
   }) {
     return transactionConfirmed?.call(field0);
   }
@@ -2182,6 +2247,7 @@ class _$RBFBumpFeeError_TransactionConfirmedImpl
     TResult Function()? unableToAccessWallet,
     TResult Function(String field0)? unableToAddForeignUtxo,
     TResult Function()? walletNotAvailable,
+    TResult Function(List<String> field0)? lockedUtxoSelected,
     required TResult orElse(),
   }) {
     if (transactionConfirmed != null) {
@@ -2216,6 +2282,8 @@ class _$RBFBumpFeeError_TransactionConfirmedImpl
         unableToAddForeignUtxo,
     required TResult Function(RBFBumpFeeError_WalletNotAvailable value)
         walletNotAvailable,
+    required TResult Function(RBFBumpFeeError_LockedUtxoSelected value)
+        lockedUtxoSelected,
   }) {
     return transactionConfirmed(this);
   }
@@ -2245,6 +2313,8 @@ class _$RBFBumpFeeError_TransactionConfirmedImpl
         unableToAddForeignUtxo,
     TResult? Function(RBFBumpFeeError_WalletNotAvailable value)?
         walletNotAvailable,
+    TResult? Function(RBFBumpFeeError_LockedUtxoSelected value)?
+        lockedUtxoSelected,
   }) {
     return transactionConfirmed?.call(this);
   }
@@ -2274,6 +2344,8 @@ class _$RBFBumpFeeError_TransactionConfirmedImpl
         unableToAddForeignUtxo,
     TResult Function(RBFBumpFeeError_WalletNotAvailable value)?
         walletNotAvailable,
+    TResult Function(RBFBumpFeeError_LockedUtxoSelected value)?
+        lockedUtxoSelected,
     required TResult orElse(),
   }) {
     if (transactionConfirmed != null) {
@@ -2385,6 +2457,7 @@ class _$RBFBumpFeeError_IrreplaceableTransactionImpl
     required TResult Function() unableToAccessWallet,
     required TResult Function(String field0) unableToAddForeignUtxo,
     required TResult Function() walletNotAvailable,
+    required TResult Function(List<String> field0) lockedUtxoSelected,
   }) {
     return irreplaceableTransaction(field0);
   }
@@ -2404,6 +2477,7 @@ class _$RBFBumpFeeError_IrreplaceableTransactionImpl
     TResult? Function()? unableToAccessWallet,
     TResult? Function(String field0)? unableToAddForeignUtxo,
     TResult? Function()? walletNotAvailable,
+    TResult? Function(List<String> field0)? lockedUtxoSelected,
   }) {
     return irreplaceableTransaction?.call(field0);
   }
@@ -2423,6 +2497,7 @@ class _$RBFBumpFeeError_IrreplaceableTransactionImpl
     TResult Function()? unableToAccessWallet,
     TResult Function(String field0)? unableToAddForeignUtxo,
     TResult Function()? walletNotAvailable,
+    TResult Function(List<String> field0)? lockedUtxoSelected,
     required TResult orElse(),
   }) {
     if (irreplaceableTransaction != null) {
@@ -2457,6 +2532,8 @@ class _$RBFBumpFeeError_IrreplaceableTransactionImpl
         unableToAddForeignUtxo,
     required TResult Function(RBFBumpFeeError_WalletNotAvailable value)
         walletNotAvailable,
+    required TResult Function(RBFBumpFeeError_LockedUtxoSelected value)
+        lockedUtxoSelected,
   }) {
     return irreplaceableTransaction(this);
   }
@@ -2486,6 +2563,8 @@ class _$RBFBumpFeeError_IrreplaceableTransactionImpl
         unableToAddForeignUtxo,
     TResult? Function(RBFBumpFeeError_WalletNotAvailable value)?
         walletNotAvailable,
+    TResult? Function(RBFBumpFeeError_LockedUtxoSelected value)?
+        lockedUtxoSelected,
   }) {
     return irreplaceableTransaction?.call(this);
   }
@@ -2515,6 +2594,8 @@ class _$RBFBumpFeeError_IrreplaceableTransactionImpl
         unableToAddForeignUtxo,
     TResult Function(RBFBumpFeeError_WalletNotAvailable value)?
         walletNotAvailable,
+    TResult Function(RBFBumpFeeError_LockedUtxoSelected value)?
+        lockedUtxoSelected,
     required TResult orElse(),
   }) {
     if (irreplaceableTransaction != null) {
@@ -2598,6 +2679,7 @@ class _$RBFBumpFeeError_FeeRateUnavailableImpl
     required TResult Function() unableToAccessWallet,
     required TResult Function(String field0) unableToAddForeignUtxo,
     required TResult Function() walletNotAvailable,
+    required TResult Function(List<String> field0) lockedUtxoSelected,
   }) {
     return feeRateUnavailable();
   }
@@ -2617,6 +2699,7 @@ class _$RBFBumpFeeError_FeeRateUnavailableImpl
     TResult? Function()? unableToAccessWallet,
     TResult? Function(String field0)? unableToAddForeignUtxo,
     TResult? Function()? walletNotAvailable,
+    TResult? Function(List<String> field0)? lockedUtxoSelected,
   }) {
     return feeRateUnavailable?.call();
   }
@@ -2636,6 +2719,7 @@ class _$RBFBumpFeeError_FeeRateUnavailableImpl
     TResult Function()? unableToAccessWallet,
     TResult Function(String field0)? unableToAddForeignUtxo,
     TResult Function()? walletNotAvailable,
+    TResult Function(List<String> field0)? lockedUtxoSelected,
     required TResult orElse(),
   }) {
     if (feeRateUnavailable != null) {
@@ -2670,6 +2754,8 @@ class _$RBFBumpFeeError_FeeRateUnavailableImpl
         unableToAddForeignUtxo,
     required TResult Function(RBFBumpFeeError_WalletNotAvailable value)
         walletNotAvailable,
+    required TResult Function(RBFBumpFeeError_LockedUtxoSelected value)
+        lockedUtxoSelected,
   }) {
     return feeRateUnavailable(this);
   }
@@ -2699,6 +2785,8 @@ class _$RBFBumpFeeError_FeeRateUnavailableImpl
         unableToAddForeignUtxo,
     TResult? Function(RBFBumpFeeError_WalletNotAvailable value)?
         walletNotAvailable,
+    TResult? Function(RBFBumpFeeError_LockedUtxoSelected value)?
+        lockedUtxoSelected,
   }) {
     return feeRateUnavailable?.call(this);
   }
@@ -2728,6 +2816,8 @@ class _$RBFBumpFeeError_FeeRateUnavailableImpl
         unableToAddForeignUtxo,
     TResult Function(RBFBumpFeeError_WalletNotAvailable value)?
         walletNotAvailable,
+    TResult Function(RBFBumpFeeError_LockedUtxoSelected value)?
+        lockedUtxoSelected,
     required TResult orElse(),
   }) {
     if (feeRateUnavailable != null) {
@@ -2801,6 +2891,7 @@ class _$RBFBumpFeeError_UnableToAccessWalletImpl
     required TResult Function() unableToAccessWallet,
     required TResult Function(String field0) unableToAddForeignUtxo,
     required TResult Function() walletNotAvailable,
+    required TResult Function(List<String> field0) lockedUtxoSelected,
   }) {
     return unableToAccessWallet();
   }
@@ -2820,6 +2911,7 @@ class _$RBFBumpFeeError_UnableToAccessWalletImpl
     TResult? Function()? unableToAccessWallet,
     TResult? Function(String field0)? unableToAddForeignUtxo,
     TResult? Function()? walletNotAvailable,
+    TResult? Function(List<String> field0)? lockedUtxoSelected,
   }) {
     return unableToAccessWallet?.call();
   }
@@ -2839,6 +2931,7 @@ class _$RBFBumpFeeError_UnableToAccessWalletImpl
     TResult Function()? unableToAccessWallet,
     TResult Function(String field0)? unableToAddForeignUtxo,
     TResult Function()? walletNotAvailable,
+    TResult Function(List<String> field0)? lockedUtxoSelected,
     required TResult orElse(),
   }) {
     if (unableToAccessWallet != null) {
@@ -2873,6 +2966,8 @@ class _$RBFBumpFeeError_UnableToAccessWalletImpl
         unableToAddForeignUtxo,
     required TResult Function(RBFBumpFeeError_WalletNotAvailable value)
         walletNotAvailable,
+    required TResult Function(RBFBumpFeeError_LockedUtxoSelected value)
+        lockedUtxoSelected,
   }) {
     return unableToAccessWallet(this);
   }
@@ -2902,6 +2997,8 @@ class _$RBFBumpFeeError_UnableToAccessWalletImpl
         unableToAddForeignUtxo,
     TResult? Function(RBFBumpFeeError_WalletNotAvailable value)?
         walletNotAvailable,
+    TResult? Function(RBFBumpFeeError_LockedUtxoSelected value)?
+        lockedUtxoSelected,
   }) {
     return unableToAccessWallet?.call(this);
   }
@@ -2931,6 +3028,8 @@ class _$RBFBumpFeeError_UnableToAccessWalletImpl
         unableToAddForeignUtxo,
     TResult Function(RBFBumpFeeError_WalletNotAvailable value)?
         walletNotAvailable,
+    TResult Function(RBFBumpFeeError_LockedUtxoSelected value)?
+        lockedUtxoSelected,
     required TResult orElse(),
   }) {
     if (unableToAccessWallet != null) {
@@ -3033,6 +3132,7 @@ class _$RBFBumpFeeError_UnableToAddForeignUtxoImpl
     required TResult Function() unableToAccessWallet,
     required TResult Function(String field0) unableToAddForeignUtxo,
     required TResult Function() walletNotAvailable,
+    required TResult Function(List<String> field0) lockedUtxoSelected,
   }) {
     return unableToAddForeignUtxo(field0);
   }
@@ -3052,6 +3152,7 @@ class _$RBFBumpFeeError_UnableToAddForeignUtxoImpl
     TResult? Function()? unableToAccessWallet,
     TResult? Function(String field0)? unableToAddForeignUtxo,
     TResult? Function()? walletNotAvailable,
+    TResult? Function(List<String> field0)? lockedUtxoSelected,
   }) {
     return unableToAddForeignUtxo?.call(field0);
   }
@@ -3071,6 +3172,7 @@ class _$RBFBumpFeeError_UnableToAddForeignUtxoImpl
     TResult Function()? unableToAccessWallet,
     TResult Function(String field0)? unableToAddForeignUtxo,
     TResult Function()? walletNotAvailable,
+    TResult Function(List<String> field0)? lockedUtxoSelected,
     required TResult orElse(),
   }) {
     if (unableToAddForeignUtxo != null) {
@@ -3105,6 +3207,8 @@ class _$RBFBumpFeeError_UnableToAddForeignUtxoImpl
         unableToAddForeignUtxo,
     required TResult Function(RBFBumpFeeError_WalletNotAvailable value)
         walletNotAvailable,
+    required TResult Function(RBFBumpFeeError_LockedUtxoSelected value)
+        lockedUtxoSelected,
   }) {
     return unableToAddForeignUtxo(this);
   }
@@ -3134,6 +3238,8 @@ class _$RBFBumpFeeError_UnableToAddForeignUtxoImpl
         unableToAddForeignUtxo,
     TResult? Function(RBFBumpFeeError_WalletNotAvailable value)?
         walletNotAvailable,
+    TResult? Function(RBFBumpFeeError_LockedUtxoSelected value)?
+        lockedUtxoSelected,
   }) {
     return unableToAddForeignUtxo?.call(this);
   }
@@ -3163,6 +3269,8 @@ class _$RBFBumpFeeError_UnableToAddForeignUtxoImpl
         unableToAddForeignUtxo,
     TResult Function(RBFBumpFeeError_WalletNotAvailable value)?
         walletNotAvailable,
+    TResult Function(RBFBumpFeeError_LockedUtxoSelected value)?
+        lockedUtxoSelected,
     required TResult orElse(),
   }) {
     if (unableToAddForeignUtxo != null) {
@@ -3245,6 +3353,7 @@ class _$RBFBumpFeeError_WalletNotAvailableImpl
     required TResult Function() unableToAccessWallet,
     required TResult Function(String field0) unableToAddForeignUtxo,
     required TResult Function() walletNotAvailable,
+    required TResult Function(List<String> field0) lockedUtxoSelected,
   }) {
     return walletNotAvailable();
   }
@@ -3264,6 +3373,7 @@ class _$RBFBumpFeeError_WalletNotAvailableImpl
     TResult? Function()? unableToAccessWallet,
     TResult? Function(String field0)? unableToAddForeignUtxo,
     TResult? Function()? walletNotAvailable,
+    TResult? Function(List<String> field0)? lockedUtxoSelected,
   }) {
     return walletNotAvailable?.call();
   }
@@ -3283,6 +3393,7 @@ class _$RBFBumpFeeError_WalletNotAvailableImpl
     TResult Function()? unableToAccessWallet,
     TResult Function(String field0)? unableToAddForeignUtxo,
     TResult Function()? walletNotAvailable,
+    TResult Function(List<String> field0)? lockedUtxoSelected,
     required TResult orElse(),
   }) {
     if (walletNotAvailable != null) {
@@ -3317,6 +3428,8 @@ class _$RBFBumpFeeError_WalletNotAvailableImpl
         unableToAddForeignUtxo,
     required TResult Function(RBFBumpFeeError_WalletNotAvailable value)
         walletNotAvailable,
+    required TResult Function(RBFBumpFeeError_LockedUtxoSelected value)
+        lockedUtxoSelected,
   }) {
     return walletNotAvailable(this);
   }
@@ -3346,6 +3459,8 @@ class _$RBFBumpFeeError_WalletNotAvailableImpl
         unableToAddForeignUtxo,
     TResult? Function(RBFBumpFeeError_WalletNotAvailable value)?
         walletNotAvailable,
+    TResult? Function(RBFBumpFeeError_LockedUtxoSelected value)?
+        lockedUtxoSelected,
   }) {
     return walletNotAvailable?.call(this);
   }
@@ -3375,6 +3490,8 @@ class _$RBFBumpFeeError_WalletNotAvailableImpl
         unableToAddForeignUtxo,
     TResult Function(RBFBumpFeeError_WalletNotAvailable value)?
         walletNotAvailable,
+    TResult Function(RBFBumpFeeError_LockedUtxoSelected value)?
+        lockedUtxoSelected,
     required TResult orElse(),
   }) {
     if (walletNotAvailable != null) {
@@ -3391,6 +3508,263 @@ abstract class RBFBumpFeeError_WalletNotAvailable extends RBFBumpFeeError {
 }
 
 /// @nodoc
+abstract class _$$RBFBumpFeeError_LockedUtxoSelectedImplCopyWith<$Res> {
+  factory _$$RBFBumpFeeError_LockedUtxoSelectedImplCopyWith(
+          _$RBFBumpFeeError_LockedUtxoSelectedImpl value,
+          $Res Function(_$RBFBumpFeeError_LockedUtxoSelectedImpl) then) =
+      __$$RBFBumpFeeError_LockedUtxoSelectedImplCopyWithImpl<$Res>;
+  @useResult
+  $Res call({List<String> field0});
+}
+
+/// @nodoc
+class __$$RBFBumpFeeError_LockedUtxoSelectedImplCopyWithImpl<$Res>
+    extends _$RBFBumpFeeErrorCopyWithImpl<$Res,
+        _$RBFBumpFeeError_LockedUtxoSelectedImpl>
+    implements _$$RBFBumpFeeError_LockedUtxoSelectedImplCopyWith<$Res> {
+  __$$RBFBumpFeeError_LockedUtxoSelectedImplCopyWithImpl(
+      _$RBFBumpFeeError_LockedUtxoSelectedImpl _value,
+      $Res Function(_$RBFBumpFeeError_LockedUtxoSelectedImpl) _then)
+      : super(_value, _then);
+
+  /// Create a copy of RBFBumpFeeError
+  /// with the given fields replaced by the non-null parameter values.
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({
+    Object? field0 = null,
+  }) {
+    return _then(_$RBFBumpFeeError_LockedUtxoSelectedImpl(
+      null == field0
+          ? _value._field0
+          : field0 // ignore: cast_nullable_to_non_nullable
+              as List<String>,
+    ));
+  }
+}
+
+/// @nodoc
+
+class _$RBFBumpFeeError_LockedUtxoSelectedImpl
+    extends RBFBumpFeeError_LockedUtxoSelected {
+  const _$RBFBumpFeeError_LockedUtxoSelectedImpl(final List<String> field0)
+      : _field0 = field0,
+        super._();
+
+  final List<String> _field0;
+  @override
+  List<String> get field0 {
+    if (_field0 is EqualUnmodifiableListView) return _field0;
+    // ignore: implicit_dynamic_type
+    return EqualUnmodifiableListView(_field0);
+  }
+
+  @override
+  String toString() {
+    return 'RBFBumpFeeError.lockedUtxoSelected(field0: $field0)';
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is _$RBFBumpFeeError_LockedUtxoSelectedImpl &&
+            const DeepCollectionEquality().equals(other._field0, _field0));
+  }
+
+  @override
+  int get hashCode =>
+      Object.hash(runtimeType, const DeepCollectionEquality().hash(_field0));
+
+  /// Create a copy of RBFBumpFeeError
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @override
+  @pragma('vm:prefer-inline')
+  _$$RBFBumpFeeError_LockedUtxoSelectedImplCopyWith<
+          _$RBFBumpFeeError_LockedUtxoSelectedImpl>
+      get copyWith => __$$RBFBumpFeeError_LockedUtxoSelectedImplCopyWithImpl<
+          _$RBFBumpFeeError_LockedUtxoSelectedImpl>(this, _$identity);
+
+  @override
+  @optionalTypeArgs
+  TResult when<TResult extends Object?>({
+    required TResult Function() insufficientFunds,
+    required TResult Function(String field0) composeBumpTxError,
+    required TResult Function(String field0) composeTxError,
+    required TResult Function() changeOutputLocked,
+    required TResult Function(String field0) unknownUtxo,
+    required TResult Function() transactionNotFound,
+    required TResult Function(String field0) transactionConfirmed,
+    required TResult Function(String field0) irreplaceableTransaction,
+    required TResult Function() feeRateUnavailable,
+    required TResult Function() unableToAccessWallet,
+    required TResult Function(String field0) unableToAddForeignUtxo,
+    required TResult Function() walletNotAvailable,
+    required TResult Function(List<String> field0) lockedUtxoSelected,
+  }) {
+    return lockedUtxoSelected(field0);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? whenOrNull<TResult extends Object?>({
+    TResult? Function()? insufficientFunds,
+    TResult? Function(String field0)? composeBumpTxError,
+    TResult? Function(String field0)? composeTxError,
+    TResult? Function()? changeOutputLocked,
+    TResult? Function(String field0)? unknownUtxo,
+    TResult? Function()? transactionNotFound,
+    TResult? Function(String field0)? transactionConfirmed,
+    TResult? Function(String field0)? irreplaceableTransaction,
+    TResult? Function()? feeRateUnavailable,
+    TResult? Function()? unableToAccessWallet,
+    TResult? Function(String field0)? unableToAddForeignUtxo,
+    TResult? Function()? walletNotAvailable,
+    TResult? Function(List<String> field0)? lockedUtxoSelected,
+  }) {
+    return lockedUtxoSelected?.call(field0);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeWhen<TResult extends Object?>({
+    TResult Function()? insufficientFunds,
+    TResult Function(String field0)? composeBumpTxError,
+    TResult Function(String field0)? composeTxError,
+    TResult Function()? changeOutputLocked,
+    TResult Function(String field0)? unknownUtxo,
+    TResult Function()? transactionNotFound,
+    TResult Function(String field0)? transactionConfirmed,
+    TResult Function(String field0)? irreplaceableTransaction,
+    TResult Function()? feeRateUnavailable,
+    TResult Function()? unableToAccessWallet,
+    TResult Function(String field0)? unableToAddForeignUtxo,
+    TResult Function()? walletNotAvailable,
+    TResult Function(List<String> field0)? lockedUtxoSelected,
+    required TResult orElse(),
+  }) {
+    if (lockedUtxoSelected != null) {
+      return lockedUtxoSelected(field0);
+    }
+    return orElse();
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult map<TResult extends Object?>({
+    required TResult Function(RBFBumpFeeError_InsufficientFunds value)
+        insufficientFunds,
+    required TResult Function(RBFBumpFeeError_ComposeBumpTxError value)
+        composeBumpTxError,
+    required TResult Function(RBFBumpFeeError_ComposeTxError value)
+        composeTxError,
+    required TResult Function(RBFBumpFeeError_ChangeOutputLocked value)
+        changeOutputLocked,
+    required TResult Function(RBFBumpFeeError_UnknownUtxo value) unknownUtxo,
+    required TResult Function(RBFBumpFeeError_TransactionNotFound value)
+        transactionNotFound,
+    required TResult Function(RBFBumpFeeError_TransactionConfirmed value)
+        transactionConfirmed,
+    required TResult Function(RBFBumpFeeError_IrreplaceableTransaction value)
+        irreplaceableTransaction,
+    required TResult Function(RBFBumpFeeError_FeeRateUnavailable value)
+        feeRateUnavailable,
+    required TResult Function(RBFBumpFeeError_UnableToAccessWallet value)
+        unableToAccessWallet,
+    required TResult Function(RBFBumpFeeError_UnableToAddForeignUtxo value)
+        unableToAddForeignUtxo,
+    required TResult Function(RBFBumpFeeError_WalletNotAvailable value)
+        walletNotAvailable,
+    required TResult Function(RBFBumpFeeError_LockedUtxoSelected value)
+        lockedUtxoSelected,
+  }) {
+    return lockedUtxoSelected(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? mapOrNull<TResult extends Object?>({
+    TResult? Function(RBFBumpFeeError_InsufficientFunds value)?
+        insufficientFunds,
+    TResult? Function(RBFBumpFeeError_ComposeBumpTxError value)?
+        composeBumpTxError,
+    TResult? Function(RBFBumpFeeError_ComposeTxError value)? composeTxError,
+    TResult? Function(RBFBumpFeeError_ChangeOutputLocked value)?
+        changeOutputLocked,
+    TResult? Function(RBFBumpFeeError_UnknownUtxo value)? unknownUtxo,
+    TResult? Function(RBFBumpFeeError_TransactionNotFound value)?
+        transactionNotFound,
+    TResult? Function(RBFBumpFeeError_TransactionConfirmed value)?
+        transactionConfirmed,
+    TResult? Function(RBFBumpFeeError_IrreplaceableTransaction value)?
+        irreplaceableTransaction,
+    TResult? Function(RBFBumpFeeError_FeeRateUnavailable value)?
+        feeRateUnavailable,
+    TResult? Function(RBFBumpFeeError_UnableToAccessWallet value)?
+        unableToAccessWallet,
+    TResult? Function(RBFBumpFeeError_UnableToAddForeignUtxo value)?
+        unableToAddForeignUtxo,
+    TResult? Function(RBFBumpFeeError_WalletNotAvailable value)?
+        walletNotAvailable,
+    TResult? Function(RBFBumpFeeError_LockedUtxoSelected value)?
+        lockedUtxoSelected,
+  }) {
+    return lockedUtxoSelected?.call(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeMap<TResult extends Object?>({
+    TResult Function(RBFBumpFeeError_InsufficientFunds value)?
+        insufficientFunds,
+    TResult Function(RBFBumpFeeError_ComposeBumpTxError value)?
+        composeBumpTxError,
+    TResult Function(RBFBumpFeeError_ComposeTxError value)? composeTxError,
+    TResult Function(RBFBumpFeeError_ChangeOutputLocked value)?
+        changeOutputLocked,
+    TResult Function(RBFBumpFeeError_UnknownUtxo value)? unknownUtxo,
+    TResult Function(RBFBumpFeeError_TransactionNotFound value)?
+        transactionNotFound,
+    TResult Function(RBFBumpFeeError_TransactionConfirmed value)?
+        transactionConfirmed,
+    TResult Function(RBFBumpFeeError_IrreplaceableTransaction value)?
+        irreplaceableTransaction,
+    TResult Function(RBFBumpFeeError_FeeRateUnavailable value)?
+        feeRateUnavailable,
+    TResult Function(RBFBumpFeeError_UnableToAccessWallet value)?
+        unableToAccessWallet,
+    TResult Function(RBFBumpFeeError_UnableToAddForeignUtxo value)?
+        unableToAddForeignUtxo,
+    TResult Function(RBFBumpFeeError_WalletNotAvailable value)?
+        walletNotAvailable,
+    TResult Function(RBFBumpFeeError_LockedUtxoSelected value)?
+        lockedUtxoSelected,
+    required TResult orElse(),
+  }) {
+    if (lockedUtxoSelected != null) {
+      return lockedUtxoSelected(this);
+    }
+    return orElse();
+  }
+}
+
+abstract class RBFBumpFeeError_LockedUtxoSelected extends RBFBumpFeeError {
+  const factory RBFBumpFeeError_LockedUtxoSelected(final List<String> field0) =
+      _$RBFBumpFeeError_LockedUtxoSelectedImpl;
+  const RBFBumpFeeError_LockedUtxoSelected._() : super._();
+
+  List<String> get field0;
+
+  /// Create a copy of RBFBumpFeeError
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  _$$RBFBumpFeeError_LockedUtxoSelectedImplCopyWith<
+          _$RBFBumpFeeError_LockedUtxoSelectedImpl>
+      get copyWith => throw _privateConstructorUsedError;
+}
+
+/// @nodoc
 mixin _$TxComposeError {
   Object get field0 => throw _privateConstructorUsedError;
   @optionalTypeArgs
@@ -3400,6 +3774,7 @@ mixin _$TxComposeError {
     required TResult Function(String field0) insufficientFunds,
     required TResult Function(BigInt field0) insufficientFees,
     required TResult Function(BigInt field0) insufficientFeeRate,
+    required TResult Function(List<String> field0) lockedUtxoSelected,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
@@ -3409,6 +3784,7 @@ mixin _$TxComposeError {
     TResult? Function(String field0)? insufficientFunds,
     TResult? Function(BigInt field0)? insufficientFees,
     TResult? Function(BigInt field0)? insufficientFeeRate,
+    TResult? Function(List<String> field0)? lockedUtxoSelected,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
@@ -3418,6 +3794,7 @@ mixin _$TxComposeError {
     TResult Function(String field0)? insufficientFunds,
     TResult Function(BigInt field0)? insufficientFees,
     TResult Function(BigInt field0)? insufficientFeeRate,
+    TResult Function(List<String> field0)? lockedUtxoSelected,
     required TResult orElse(),
   }) =>
       throw _privateConstructorUsedError;
@@ -3432,6 +3809,8 @@ mixin _$TxComposeError {
         insufficientFees,
     required TResult Function(TxComposeError_InsufficientFeeRate value)
         insufficientFeeRate,
+    required TResult Function(TxComposeError_LockedUtxoSelected value)
+        lockedUtxoSelected,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
@@ -3444,6 +3823,8 @@ mixin _$TxComposeError {
     TResult? Function(TxComposeError_InsufficientFees value)? insufficientFees,
     TResult? Function(TxComposeError_InsufficientFeeRate value)?
         insufficientFeeRate,
+    TResult? Function(TxComposeError_LockedUtxoSelected value)?
+        lockedUtxoSelected,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
@@ -3455,6 +3836,8 @@ mixin _$TxComposeError {
     TResult Function(TxComposeError_InsufficientFees value)? insufficientFees,
     TResult Function(TxComposeError_InsufficientFeeRate value)?
         insufficientFeeRate,
+    TResult Function(TxComposeError_LockedUtxoSelected value)?
+        lockedUtxoSelected,
     required TResult orElse(),
   }) =>
       throw _privateConstructorUsedError;
@@ -3560,6 +3943,7 @@ class _$TxComposeError_CoinSelectionErrorImpl
     required TResult Function(String field0) insufficientFunds,
     required TResult Function(BigInt field0) insufficientFees,
     required TResult Function(BigInt field0) insufficientFeeRate,
+    required TResult Function(List<String> field0) lockedUtxoSelected,
   }) {
     return coinSelectionError(field0);
   }
@@ -3572,6 +3956,7 @@ class _$TxComposeError_CoinSelectionErrorImpl
     TResult? Function(String field0)? insufficientFunds,
     TResult? Function(BigInt field0)? insufficientFees,
     TResult? Function(BigInt field0)? insufficientFeeRate,
+    TResult? Function(List<String> field0)? lockedUtxoSelected,
   }) {
     return coinSelectionError?.call(field0);
   }
@@ -3584,6 +3969,7 @@ class _$TxComposeError_CoinSelectionErrorImpl
     TResult Function(String field0)? insufficientFunds,
     TResult Function(BigInt field0)? insufficientFees,
     TResult Function(BigInt field0)? insufficientFeeRate,
+    TResult Function(List<String> field0)? lockedUtxoSelected,
     required TResult orElse(),
   }) {
     if (coinSelectionError != null) {
@@ -3604,6 +3990,8 @@ class _$TxComposeError_CoinSelectionErrorImpl
         insufficientFees,
     required TResult Function(TxComposeError_InsufficientFeeRate value)
         insufficientFeeRate,
+    required TResult Function(TxComposeError_LockedUtxoSelected value)
+        lockedUtxoSelected,
   }) {
     return coinSelectionError(this);
   }
@@ -3619,6 +4007,8 @@ class _$TxComposeError_CoinSelectionErrorImpl
     TResult? Function(TxComposeError_InsufficientFees value)? insufficientFees,
     TResult? Function(TxComposeError_InsufficientFeeRate value)?
         insufficientFeeRate,
+    TResult? Function(TxComposeError_LockedUtxoSelected value)?
+        lockedUtxoSelected,
   }) {
     return coinSelectionError?.call(this);
   }
@@ -3633,6 +4023,8 @@ class _$TxComposeError_CoinSelectionErrorImpl
     TResult Function(TxComposeError_InsufficientFees value)? insufficientFees,
     TResult Function(TxComposeError_InsufficientFeeRate value)?
         insufficientFeeRate,
+    TResult Function(TxComposeError_LockedUtxoSelected value)?
+        lockedUtxoSelected,
     required TResult orElse(),
   }) {
     if (coinSelectionError != null) {
@@ -3733,6 +4125,7 @@ class _$TxComposeError_ErrorImpl extends TxComposeError_Error {
     required TResult Function(String field0) insufficientFunds,
     required TResult Function(BigInt field0) insufficientFees,
     required TResult Function(BigInt field0) insufficientFeeRate,
+    required TResult Function(List<String> field0) lockedUtxoSelected,
   }) {
     return error(field0);
   }
@@ -3745,6 +4138,7 @@ class _$TxComposeError_ErrorImpl extends TxComposeError_Error {
     TResult? Function(String field0)? insufficientFunds,
     TResult? Function(BigInt field0)? insufficientFees,
     TResult? Function(BigInt field0)? insufficientFeeRate,
+    TResult? Function(List<String> field0)? lockedUtxoSelected,
   }) {
     return error?.call(field0);
   }
@@ -3757,6 +4151,7 @@ class _$TxComposeError_ErrorImpl extends TxComposeError_Error {
     TResult Function(String field0)? insufficientFunds,
     TResult Function(BigInt field0)? insufficientFees,
     TResult Function(BigInt field0)? insufficientFeeRate,
+    TResult Function(List<String> field0)? lockedUtxoSelected,
     required TResult orElse(),
   }) {
     if (error != null) {
@@ -3777,6 +4172,8 @@ class _$TxComposeError_ErrorImpl extends TxComposeError_Error {
         insufficientFees,
     required TResult Function(TxComposeError_InsufficientFeeRate value)
         insufficientFeeRate,
+    required TResult Function(TxComposeError_LockedUtxoSelected value)
+        lockedUtxoSelected,
   }) {
     return error(this);
   }
@@ -3792,6 +4189,8 @@ class _$TxComposeError_ErrorImpl extends TxComposeError_Error {
     TResult? Function(TxComposeError_InsufficientFees value)? insufficientFees,
     TResult? Function(TxComposeError_InsufficientFeeRate value)?
         insufficientFeeRate,
+    TResult? Function(TxComposeError_LockedUtxoSelected value)?
+        lockedUtxoSelected,
   }) {
     return error?.call(this);
   }
@@ -3806,6 +4205,8 @@ class _$TxComposeError_ErrorImpl extends TxComposeError_Error {
     TResult Function(TxComposeError_InsufficientFees value)? insufficientFees,
     TResult Function(TxComposeError_InsufficientFeeRate value)?
         insufficientFeeRate,
+    TResult Function(TxComposeError_LockedUtxoSelected value)?
+        lockedUtxoSelected,
     required TResult orElse(),
   }) {
     if (error != null) {
@@ -3909,6 +4310,7 @@ class _$TxComposeError_InsufficientFundsImpl
     required TResult Function(String field0) insufficientFunds,
     required TResult Function(BigInt field0) insufficientFees,
     required TResult Function(BigInt field0) insufficientFeeRate,
+    required TResult Function(List<String> field0) lockedUtxoSelected,
   }) {
     return insufficientFunds(field0);
   }
@@ -3921,6 +4323,7 @@ class _$TxComposeError_InsufficientFundsImpl
     TResult? Function(String field0)? insufficientFunds,
     TResult? Function(BigInt field0)? insufficientFees,
     TResult? Function(BigInt field0)? insufficientFeeRate,
+    TResult? Function(List<String> field0)? lockedUtxoSelected,
   }) {
     return insufficientFunds?.call(field0);
   }
@@ -3933,6 +4336,7 @@ class _$TxComposeError_InsufficientFundsImpl
     TResult Function(String field0)? insufficientFunds,
     TResult Function(BigInt field0)? insufficientFees,
     TResult Function(BigInt field0)? insufficientFeeRate,
+    TResult Function(List<String> field0)? lockedUtxoSelected,
     required TResult orElse(),
   }) {
     if (insufficientFunds != null) {
@@ -3953,6 +4357,8 @@ class _$TxComposeError_InsufficientFundsImpl
         insufficientFees,
     required TResult Function(TxComposeError_InsufficientFeeRate value)
         insufficientFeeRate,
+    required TResult Function(TxComposeError_LockedUtxoSelected value)
+        lockedUtxoSelected,
   }) {
     return insufficientFunds(this);
   }
@@ -3968,6 +4374,8 @@ class _$TxComposeError_InsufficientFundsImpl
     TResult? Function(TxComposeError_InsufficientFees value)? insufficientFees,
     TResult? Function(TxComposeError_InsufficientFeeRate value)?
         insufficientFeeRate,
+    TResult? Function(TxComposeError_LockedUtxoSelected value)?
+        lockedUtxoSelected,
   }) {
     return insufficientFunds?.call(this);
   }
@@ -3982,6 +4390,8 @@ class _$TxComposeError_InsufficientFundsImpl
     TResult Function(TxComposeError_InsufficientFees value)? insufficientFees,
     TResult Function(TxComposeError_InsufficientFeeRate value)?
         insufficientFeeRate,
+    TResult Function(TxComposeError_LockedUtxoSelected value)?
+        lockedUtxoSelected,
     required TResult orElse(),
   }) {
     if (insufficientFunds != null) {
@@ -4086,6 +4496,7 @@ class _$TxComposeError_InsufficientFeesImpl
     required TResult Function(String field0) insufficientFunds,
     required TResult Function(BigInt field0) insufficientFees,
     required TResult Function(BigInt field0) insufficientFeeRate,
+    required TResult Function(List<String> field0) lockedUtxoSelected,
   }) {
     return insufficientFees(field0);
   }
@@ -4098,6 +4509,7 @@ class _$TxComposeError_InsufficientFeesImpl
     TResult? Function(String field0)? insufficientFunds,
     TResult? Function(BigInt field0)? insufficientFees,
     TResult? Function(BigInt field0)? insufficientFeeRate,
+    TResult? Function(List<String> field0)? lockedUtxoSelected,
   }) {
     return insufficientFees?.call(field0);
   }
@@ -4110,6 +4522,7 @@ class _$TxComposeError_InsufficientFeesImpl
     TResult Function(String field0)? insufficientFunds,
     TResult Function(BigInt field0)? insufficientFees,
     TResult Function(BigInt field0)? insufficientFeeRate,
+    TResult Function(List<String> field0)? lockedUtxoSelected,
     required TResult orElse(),
   }) {
     if (insufficientFees != null) {
@@ -4130,6 +4543,8 @@ class _$TxComposeError_InsufficientFeesImpl
         insufficientFees,
     required TResult Function(TxComposeError_InsufficientFeeRate value)
         insufficientFeeRate,
+    required TResult Function(TxComposeError_LockedUtxoSelected value)
+        lockedUtxoSelected,
   }) {
     return insufficientFees(this);
   }
@@ -4145,6 +4560,8 @@ class _$TxComposeError_InsufficientFeesImpl
     TResult? Function(TxComposeError_InsufficientFees value)? insufficientFees,
     TResult? Function(TxComposeError_InsufficientFeeRate value)?
         insufficientFeeRate,
+    TResult? Function(TxComposeError_LockedUtxoSelected value)?
+        lockedUtxoSelected,
   }) {
     return insufficientFees?.call(this);
   }
@@ -4159,6 +4576,8 @@ class _$TxComposeError_InsufficientFeesImpl
     TResult Function(TxComposeError_InsufficientFees value)? insufficientFees,
     TResult Function(TxComposeError_InsufficientFeeRate value)?
         insufficientFeeRate,
+    TResult Function(TxComposeError_LockedUtxoSelected value)?
+        lockedUtxoSelected,
     required TResult orElse(),
   }) {
     if (insufficientFees != null) {
@@ -4263,6 +4682,7 @@ class _$TxComposeError_InsufficientFeeRateImpl
     required TResult Function(String field0) insufficientFunds,
     required TResult Function(BigInt field0) insufficientFees,
     required TResult Function(BigInt field0) insufficientFeeRate,
+    required TResult Function(List<String> field0) lockedUtxoSelected,
   }) {
     return insufficientFeeRate(field0);
   }
@@ -4275,6 +4695,7 @@ class _$TxComposeError_InsufficientFeeRateImpl
     TResult? Function(String field0)? insufficientFunds,
     TResult? Function(BigInt field0)? insufficientFees,
     TResult? Function(BigInt field0)? insufficientFeeRate,
+    TResult? Function(List<String> field0)? lockedUtxoSelected,
   }) {
     return insufficientFeeRate?.call(field0);
   }
@@ -4287,6 +4708,7 @@ class _$TxComposeError_InsufficientFeeRateImpl
     TResult Function(String field0)? insufficientFunds,
     TResult Function(BigInt field0)? insufficientFees,
     TResult Function(BigInt field0)? insufficientFeeRate,
+    TResult Function(List<String> field0)? lockedUtxoSelected,
     required TResult orElse(),
   }) {
     if (insufficientFeeRate != null) {
@@ -4307,6 +4729,8 @@ class _$TxComposeError_InsufficientFeeRateImpl
         insufficientFees,
     required TResult Function(TxComposeError_InsufficientFeeRate value)
         insufficientFeeRate,
+    required TResult Function(TxComposeError_LockedUtxoSelected value)
+        lockedUtxoSelected,
   }) {
     return insufficientFeeRate(this);
   }
@@ -4322,6 +4746,8 @@ class _$TxComposeError_InsufficientFeeRateImpl
     TResult? Function(TxComposeError_InsufficientFees value)? insufficientFees,
     TResult? Function(TxComposeError_InsufficientFeeRate value)?
         insufficientFeeRate,
+    TResult? Function(TxComposeError_LockedUtxoSelected value)?
+        lockedUtxoSelected,
   }) {
     return insufficientFeeRate?.call(this);
   }
@@ -4336,6 +4762,8 @@ class _$TxComposeError_InsufficientFeeRateImpl
     TResult Function(TxComposeError_InsufficientFees value)? insufficientFees,
     TResult Function(TxComposeError_InsufficientFeeRate value)?
         insufficientFeeRate,
+    TResult Function(TxComposeError_LockedUtxoSelected value)?
+        lockedUtxoSelected,
     required TResult orElse(),
   }) {
     if (insufficientFeeRate != null) {
@@ -4358,5 +4786,199 @@ abstract class TxComposeError_InsufficientFeeRate extends TxComposeError {
   @JsonKey(includeFromJson: false, includeToJson: false)
   _$$TxComposeError_InsufficientFeeRateImplCopyWith<
           _$TxComposeError_InsufficientFeeRateImpl>
+      get copyWith => throw _privateConstructorUsedError;
+}
+
+/// @nodoc
+abstract class _$$TxComposeError_LockedUtxoSelectedImplCopyWith<$Res> {
+  factory _$$TxComposeError_LockedUtxoSelectedImplCopyWith(
+          _$TxComposeError_LockedUtxoSelectedImpl value,
+          $Res Function(_$TxComposeError_LockedUtxoSelectedImpl) then) =
+      __$$TxComposeError_LockedUtxoSelectedImplCopyWithImpl<$Res>;
+  @useResult
+  $Res call({List<String> field0});
+}
+
+/// @nodoc
+class __$$TxComposeError_LockedUtxoSelectedImplCopyWithImpl<$Res>
+    extends _$TxComposeErrorCopyWithImpl<$Res,
+        _$TxComposeError_LockedUtxoSelectedImpl>
+    implements _$$TxComposeError_LockedUtxoSelectedImplCopyWith<$Res> {
+  __$$TxComposeError_LockedUtxoSelectedImplCopyWithImpl(
+      _$TxComposeError_LockedUtxoSelectedImpl _value,
+      $Res Function(_$TxComposeError_LockedUtxoSelectedImpl) _then)
+      : super(_value, _then);
+
+  /// Create a copy of TxComposeError
+  /// with the given fields replaced by the non-null parameter values.
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({
+    Object? field0 = null,
+  }) {
+    return _then(_$TxComposeError_LockedUtxoSelectedImpl(
+      null == field0
+          ? _value._field0
+          : field0 // ignore: cast_nullable_to_non_nullable
+              as List<String>,
+    ));
+  }
+}
+
+/// @nodoc
+
+class _$TxComposeError_LockedUtxoSelectedImpl
+    extends TxComposeError_LockedUtxoSelected {
+  const _$TxComposeError_LockedUtxoSelectedImpl(final List<String> field0)
+      : _field0 = field0,
+        super._();
+
+  final List<String> _field0;
+  @override
+  List<String> get field0 {
+    if (_field0 is EqualUnmodifiableListView) return _field0;
+    // ignore: implicit_dynamic_type
+    return EqualUnmodifiableListView(_field0);
+  }
+
+  @override
+  String toString() {
+    return 'TxComposeError.lockedUtxoSelected(field0: $field0)';
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is _$TxComposeError_LockedUtxoSelectedImpl &&
+            const DeepCollectionEquality().equals(other._field0, _field0));
+  }
+
+  @override
+  int get hashCode =>
+      Object.hash(runtimeType, const DeepCollectionEquality().hash(_field0));
+
+  /// Create a copy of TxComposeError
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @override
+  @pragma('vm:prefer-inline')
+  _$$TxComposeError_LockedUtxoSelectedImplCopyWith<
+          _$TxComposeError_LockedUtxoSelectedImpl>
+      get copyWith => __$$TxComposeError_LockedUtxoSelectedImplCopyWithImpl<
+          _$TxComposeError_LockedUtxoSelectedImpl>(this, _$identity);
+
+  @override
+  @optionalTypeArgs
+  TResult when<TResult extends Object?>({
+    required TResult Function(String field0) coinSelectionError,
+    required TResult Function(String field0) error,
+    required TResult Function(String field0) insufficientFunds,
+    required TResult Function(BigInt field0) insufficientFees,
+    required TResult Function(BigInt field0) insufficientFeeRate,
+    required TResult Function(List<String> field0) lockedUtxoSelected,
+  }) {
+    return lockedUtxoSelected(field0);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? whenOrNull<TResult extends Object?>({
+    TResult? Function(String field0)? coinSelectionError,
+    TResult? Function(String field0)? error,
+    TResult? Function(String field0)? insufficientFunds,
+    TResult? Function(BigInt field0)? insufficientFees,
+    TResult? Function(BigInt field0)? insufficientFeeRate,
+    TResult? Function(List<String> field0)? lockedUtxoSelected,
+  }) {
+    return lockedUtxoSelected?.call(field0);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeWhen<TResult extends Object?>({
+    TResult Function(String field0)? coinSelectionError,
+    TResult Function(String field0)? error,
+    TResult Function(String field0)? insufficientFunds,
+    TResult Function(BigInt field0)? insufficientFees,
+    TResult Function(BigInt field0)? insufficientFeeRate,
+    TResult Function(List<String> field0)? lockedUtxoSelected,
+    required TResult orElse(),
+  }) {
+    if (lockedUtxoSelected != null) {
+      return lockedUtxoSelected(field0);
+    }
+    return orElse();
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult map<TResult extends Object?>({
+    required TResult Function(TxComposeError_CoinSelectionError value)
+        coinSelectionError,
+    required TResult Function(TxComposeError_Error value) error,
+    required TResult Function(TxComposeError_InsufficientFunds value)
+        insufficientFunds,
+    required TResult Function(TxComposeError_InsufficientFees value)
+        insufficientFees,
+    required TResult Function(TxComposeError_InsufficientFeeRate value)
+        insufficientFeeRate,
+    required TResult Function(TxComposeError_LockedUtxoSelected value)
+        lockedUtxoSelected,
+  }) {
+    return lockedUtxoSelected(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? mapOrNull<TResult extends Object?>({
+    TResult? Function(TxComposeError_CoinSelectionError value)?
+        coinSelectionError,
+    TResult? Function(TxComposeError_Error value)? error,
+    TResult? Function(TxComposeError_InsufficientFunds value)?
+        insufficientFunds,
+    TResult? Function(TxComposeError_InsufficientFees value)? insufficientFees,
+    TResult? Function(TxComposeError_InsufficientFeeRate value)?
+        insufficientFeeRate,
+    TResult? Function(TxComposeError_LockedUtxoSelected value)?
+        lockedUtxoSelected,
+  }) {
+    return lockedUtxoSelected?.call(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeMap<TResult extends Object?>({
+    TResult Function(TxComposeError_CoinSelectionError value)?
+        coinSelectionError,
+    TResult Function(TxComposeError_Error value)? error,
+    TResult Function(TxComposeError_InsufficientFunds value)? insufficientFunds,
+    TResult Function(TxComposeError_InsufficientFees value)? insufficientFees,
+    TResult Function(TxComposeError_InsufficientFeeRate value)?
+        insufficientFeeRate,
+    TResult Function(TxComposeError_LockedUtxoSelected value)?
+        lockedUtxoSelected,
+    required TResult orElse(),
+  }) {
+    if (lockedUtxoSelected != null) {
+      return lockedUtxoSelected(this);
+    }
+    return orElse();
+  }
+}
+
+abstract class TxComposeError_LockedUtxoSelected extends TxComposeError {
+  const factory TxComposeError_LockedUtxoSelected(final List<String> field0) =
+      _$TxComposeError_LockedUtxoSelectedImpl;
+  const TxComposeError_LockedUtxoSelected._() : super._();
+
+  @override
+  List<String> get field0;
+
+  /// Create a copy of TxComposeError
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  _$$TxComposeError_LockedUtxoSelectedImplCopyWith<
+          _$TxComposeError_LockedUtxoSelectedImpl>
       get copyWith => throw _privateConstructorUsedError;
 }

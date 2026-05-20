@@ -44,10 +44,13 @@ class BitcoinParser {
           address: data,
           network: account.network,
         )) {
+      // Address-only paste (no amount in the data). Mirror amountSats: null
+      // — the caller will preserve the previously-entered amount instead of
+      // resetting fiat to 0.
       return ParseResult(
         address: data,
         amountSats: null,
-        displayFiat: 0,
+        displayFiat: null,
         unit: null,
       );
     }
@@ -99,10 +102,13 @@ class BitcoinParser {
     }
     bool isError = !isNumber(data);
     if (isError) {
+      // Invalid paste (random text). Return all-null so the caller can
+      // preserve the existing values — matches how amountSats / unit are
+      // already handled. Symmetric with the btc/sats path.
       return ParseResult(
         address: null,
         amountSats: null,
-        displayFiat: 0,
+        displayFiat: null,
         unit: null,
       );
     } else {

@@ -4,6 +4,7 @@
 
 import 'package:flutter/services.dart';
 import 'package:envoy/business/settings.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'dart:io';
 
 const _platformChannel = MethodChannel('envoy');
@@ -33,4 +34,41 @@ Future<String> getConnectedPeripheralID() async {
   } else {
     return "";
   }
+}
+
+// Launches [url] in the user's installed Tor Browser. Returns false if no
+// Tor browser is available or the launch failed — callers should decide
+// whether to fall back to the system browser.
+//
+// Android: targets Tor Browser (stable/alpha) via an explicit setPackage
+// intent through the `envoy` method channel.
+// iOS: rewrites the URL to Onion Browser's `onionhttp(s)://` scheme.
+Future<bool> launchInTorBrowser(String url) async {
+  if (Platform.isAndroid) {
+    try {
+      return await _platformChannel.invokeMethod<bool>(
+            "launch_in_tor_browser",
+            {"url": url},
+          ) ??
+          false;
+    } catch (_) {
+      return false;
+    }
+  }
+  if (Platform.isIOS) {
+    final uri = Uri.tryParse(url);
+    if (uri == null) return false;
+    final String rewrittenScheme;
+    if (uri.scheme == 'https') {
+      rewrittenScheme = 'onionhttps';
+    } else if (uri.scheme == 'http') {
+      rewrittenScheme = 'onionhttp';
+    } else {
+      return false;
+    }
+    final rewritten = uri.replace(scheme: rewrittenScheme);
+    if (!await canLaunchUrl(rewritten)) return false;
+    return await launchUrl(rewritten);
+  }
+  return false;
 }

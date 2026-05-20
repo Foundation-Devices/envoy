@@ -426,18 +426,21 @@ class _SeedScreenState extends State<SeedScreen> {
             horizontal: EnvoySpacing.xs,
             vertical: EnvoySpacing.medium2,
           ),
-          child: EnvoyButton(
-            S().component_continue,
-            borderRadius: BorderRadius.all(
-              Radius.circular(EnvoySpacing.medium1),
+          child: Semantics(
+            container: true,
+            child: EnvoyButton(
+              S().component_continue,
+              borderRadius: BorderRadius.all(
+                Radius.circular(EnvoySpacing.medium1),
+              ),
+              fontWeight: FontWeight.w600,
+              onTap: () {
+                _pageController.nextPage(
+                  duration: const Duration(milliseconds: 300),
+                  curve: Curves.ease,
+                );
+              },
             ),
-            fontWeight: FontWeight.w600,
-            onTap: () {
-              _pageController.nextPage(
-                duration: const Duration(milliseconds: 300),
-                curve: Curves.ease,
-              );
-            },
           ),
         ),
       ],

@@ -84,6 +84,7 @@ class AppBackgroundState extends State<AppBackground> {
                         painter: LinesPainter(
                           opacity: 0.5,
                           hideLineGap: true,
+                          hideTopEdgeDots: true,
                           color: Colors.white,
                         ),
                       ),
@@ -133,11 +134,13 @@ class LinesPainter extends CustomPainter {
   final double opacity;
   final double lineDistance;
   final bool hideLineGap;
+  final bool hideTopEdgeDots;
 
   LinesPainter({
     this.angle = -18,
     this.lineDistance = 2.5,
     this.hideLineGap = false,
+    this.hideTopEdgeDots = false,
     this.color = EnvoyColors.whitePrint,
     this.opacity = 0.05,
   });
@@ -147,7 +150,10 @@ class LinesPainter extends CustomPainter {
     double degToRad(double deg) => deg * (pi / 180.0);
     double offset = size.width * tan(degToRad(angle));
 
-    double currentY = 0;
+    // Lines whose far endpoint exits through the canvas top edge degenerate
+    // into a single rasterized pixel at y=0. Stacked across x, those pixels
+    // read as a horizontal dotted line at the canvas top.
+    double currentY = (hideTopEdgeDots && offset < 0) ? -offset : 0;
 
     while (currentY < size.height - offset) {
       final p1 = Offset(0, currentY);

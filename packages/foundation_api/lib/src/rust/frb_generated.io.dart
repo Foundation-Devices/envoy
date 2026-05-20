@@ -249,6 +249,17 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
       dynamic raw);
 
   @protected
+  CreateMagicBackupV2 dco_decode_box_autoadd_create_magic_backup_v_2(
+      dynamic raw);
+
+  @protected
+  DeleteMagicBackupV2 dco_decode_box_autoadd_delete_magic_backup_v_2(
+      dynamic raw);
+
+  @protected
+  DeviceNameUpdate dco_decode_box_autoadd_device_name_update(dynamic raw);
+
+  @protected
   DeviceStatus dco_decode_box_autoadd_device_status(dynamic raw);
 
   @protected
@@ -298,7 +309,18 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
       dco_decode_box_autoadd_firmware_update_check_response(dynamic raw);
 
   @protected
+  GetMagicBackupV2 dco_decode_box_autoadd_get_magic_backup_v_2(dynamic raw);
+
+  @protected
   Heartbeat dco_decode_box_autoadd_heartbeat(dynamic raw);
+
+  @protected
+  MagicBackupRequestV2 dco_decode_box_autoadd_magic_backup_request_v_2(
+      dynamic raw);
+
+  @protected
+  MagicBackupResponseV2 dco_decode_box_autoadd_magic_backup_response_v_2(
+      dynamic raw);
 
   @protected
   PairingRequest dco_decode_box_autoadd_pairing_request(dynamic raw);
@@ -308,6 +330,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   PassportMessage dco_decode_box_autoadd_passport_message(dynamic raw);
+
+  @protected
+  PrimeFiatPreference dco_decode_box_autoadd_prime_fiat_preference(dynamic raw);
 
   @protected
   PrimeMagicBackupEnabled dco_decode_box_autoadd_prime_magic_backup_enabled(
@@ -362,6 +387,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   TimezoneResponse dco_decode_box_autoadd_timezone_response(dynamic raw);
 
   @protected
+  int dco_decode_box_autoadd_u_32(dynamic raw);
+
+  @protected
   BigInt dco_decode_box_autoadd_u_64(dynamic raw);
 
   @protected
@@ -392,7 +420,16 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   CreateMagicBackupResult dco_decode_create_magic_backup_result(dynamic raw);
 
   @protected
+  CreateMagicBackupV2 dco_decode_create_magic_backup_v_2(dynamic raw);
+
+  @protected
   DecoderStatus dco_decode_decoder_status(dynamic raw);
+
+  @protected
+  DeleteMagicBackupV2 dco_decode_delete_magic_backup_v_2(dynamic raw);
+
+  @protected
+  DeviceNameUpdate dco_decode_device_name_update(dynamic raw);
 
   @protected
   DeviceStatus dco_decode_device_status(dynamic raw);
@@ -447,6 +484,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
       dynamic raw);
 
   @protected
+  GetMagicBackupV2 dco_decode_get_magic_backup_v_2(dynamic raw);
+
+  @protected
   Heartbeat dco_decode_heartbeat(dynamic raw);
 
   @protected
@@ -471,6 +511,12 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   List<QuantumLinkMessage> dco_decode_list_quantum_link_message(dynamic raw);
 
   @protected
+  MagicBackupRequestV2 dco_decode_magic_backup_request_v_2(dynamic raw);
+
+  @protected
+  MagicBackupResponseV2 dco_decode_magic_backup_response_v_2(dynamic raw);
+
+  @protected
   OnboardingState dco_decode_onboarding_state(dynamic raw);
 
   @protected
@@ -488,6 +534,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   PassportMessage? dco_decode_opt_box_autoadd_passport_message(dynamic raw);
+
+  @protected
+  int? dco_decode_opt_box_autoadd_u_32(dynamic raw);
 
   @protected
   BigInt? dco_decode_opt_box_autoadd_u_64(dynamic raw);
@@ -518,6 +567,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   PricePoint dco_decode_price_point(dynamic raw);
+
+  @protected
+  PrimeFiatPreference dco_decode_prime_fiat_preference(dynamic raw);
 
   @protected
   PrimeMagicBackupEnabled dco_decode_prime_magic_backup_enabled(dynamic raw);
@@ -801,6 +853,18 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
       SseDeserializer deserializer);
 
   @protected
+  CreateMagicBackupV2 sse_decode_box_autoadd_create_magic_backup_v_2(
+      SseDeserializer deserializer);
+
+  @protected
+  DeleteMagicBackupV2 sse_decode_box_autoadd_delete_magic_backup_v_2(
+      SseDeserializer deserializer);
+
+  @protected
+  DeviceNameUpdate sse_decode_box_autoadd_device_name_update(
+      SseDeserializer deserializer);
+
+  @protected
   DeviceStatus sse_decode_box_autoadd_device_status(
       SseDeserializer deserializer);
 
@@ -860,7 +924,19 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
           SseDeserializer deserializer);
 
   @protected
+  GetMagicBackupV2 sse_decode_box_autoadd_get_magic_backup_v_2(
+      SseDeserializer deserializer);
+
+  @protected
   Heartbeat sse_decode_box_autoadd_heartbeat(SseDeserializer deserializer);
+
+  @protected
+  MagicBackupRequestV2 sse_decode_box_autoadd_magic_backup_request_v_2(
+      SseDeserializer deserializer);
+
+  @protected
+  MagicBackupResponseV2 sse_decode_box_autoadd_magic_backup_response_v_2(
+      SseDeserializer deserializer);
 
   @protected
   PairingRequest sse_decode_box_autoadd_pairing_request(
@@ -872,6 +948,10 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   PassportMessage sse_decode_box_autoadd_passport_message(
+      SseDeserializer deserializer);
+
+  @protected
+  PrimeFiatPreference sse_decode_box_autoadd_prime_fiat_preference(
       SseDeserializer deserializer);
 
   @protected
@@ -935,6 +1015,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
       SseDeserializer deserializer);
 
   @protected
+  int sse_decode_box_autoadd_u_32(SseDeserializer deserializer);
+
+  @protected
   BigInt sse_decode_box_autoadd_u_64(SseDeserializer deserializer);
 
   @protected
@@ -972,7 +1055,18 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
       SseDeserializer deserializer);
 
   @protected
+  CreateMagicBackupV2 sse_decode_create_magic_backup_v_2(
+      SseDeserializer deserializer);
+
+  @protected
   DecoderStatus sse_decode_decoder_status(SseDeserializer deserializer);
+
+  @protected
+  DeleteMagicBackupV2 sse_decode_delete_magic_backup_v_2(
+      SseDeserializer deserializer);
+
+  @protected
+  DeviceNameUpdate sse_decode_device_name_update(SseDeserializer deserializer);
 
   @protected
   DeviceStatus sse_decode_device_status(SseDeserializer deserializer);
@@ -1033,6 +1127,10 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
       SseDeserializer deserializer);
 
   @protected
+  GetMagicBackupV2 sse_decode_get_magic_backup_v_2(
+      SseDeserializer deserializer);
+
+  @protected
   Heartbeat sse_decode_heartbeat(SseDeserializer deserializer);
 
   @protected
@@ -1060,6 +1158,14 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
       SseDeserializer deserializer);
 
   @protected
+  MagicBackupRequestV2 sse_decode_magic_backup_request_v_2(
+      SseDeserializer deserializer);
+
+  @protected
+  MagicBackupResponseV2 sse_decode_magic_backup_response_v_2(
+      SseDeserializer deserializer);
+
+  @protected
   OnboardingState sse_decode_onboarding_state(SseDeserializer deserializer);
 
   @protected
@@ -1078,6 +1184,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   @protected
   PassportMessage? sse_decode_opt_box_autoadd_passport_message(
       SseDeserializer deserializer);
+
+  @protected
+  int? sse_decode_opt_box_autoadd_u_32(SseDeserializer deserializer);
 
   @protected
   BigInt? sse_decode_opt_box_autoadd_u_64(SseDeserializer deserializer);
@@ -1109,6 +1218,10 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   PricePoint sse_decode_price_point(SseDeserializer deserializer);
+
+  @protected
+  PrimeFiatPreference sse_decode_prime_fiat_preference(
+      SseDeserializer deserializer);
 
   @protected
   PrimeMagicBackupEnabled sse_decode_prime_magic_backup_enabled(
@@ -1403,6 +1516,18 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
       CreateMagicBackupResult self, SseSerializer serializer);
 
   @protected
+  void sse_encode_box_autoadd_create_magic_backup_v_2(
+      CreateMagicBackupV2 self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_box_autoadd_delete_magic_backup_v_2(
+      DeleteMagicBackupV2 self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_box_autoadd_device_name_update(
+      DeviceNameUpdate self, SseSerializer serializer);
+
+  @protected
   void sse_encode_box_autoadd_device_status(
       DeviceStatus self, SseSerializer serializer);
 
@@ -1459,8 +1584,20 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
       FirmwareUpdateCheckResponse self, SseSerializer serializer);
 
   @protected
+  void sse_encode_box_autoadd_get_magic_backup_v_2(
+      GetMagicBackupV2 self, SseSerializer serializer);
+
+  @protected
   void sse_encode_box_autoadd_heartbeat(
       Heartbeat self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_box_autoadd_magic_backup_request_v_2(
+      MagicBackupRequestV2 self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_box_autoadd_magic_backup_response_v_2(
+      MagicBackupResponseV2 self, SseSerializer serializer);
 
   @protected
   void sse_encode_box_autoadd_pairing_request(
@@ -1473,6 +1610,10 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   @protected
   void sse_encode_box_autoadd_passport_message(
       PassportMessage self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_box_autoadd_prime_fiat_preference(
+      PrimeFiatPreference self, SseSerializer serializer);
 
   @protected
   void sse_encode_box_autoadd_prime_magic_backup_enabled(
@@ -1534,6 +1675,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
       TimezoneResponse self, SseSerializer serializer);
 
   @protected
+  void sse_encode_box_autoadd_u_32(int self, SseSerializer serializer);
+
+  @protected
   void sse_encode_box_autoadd_u_64(BigInt self, SseSerializer serializer);
 
   @protected
@@ -1572,7 +1716,19 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
       CreateMagicBackupResult self, SseSerializer serializer);
 
   @protected
+  void sse_encode_create_magic_backup_v_2(
+      CreateMagicBackupV2 self, SseSerializer serializer);
+
+  @protected
   void sse_encode_decoder_status(DecoderStatus self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_delete_magic_backup_v_2(
+      DeleteMagicBackupV2 self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_device_name_update(
+      DeviceNameUpdate self, SseSerializer serializer);
 
   @protected
   void sse_encode_device_status(DeviceStatus self, SseSerializer serializer);
@@ -1632,6 +1788,10 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
       FirmwareUpdateCheckResponse self, SseSerializer serializer);
 
   @protected
+  void sse_encode_get_magic_backup_v_2(
+      GetMagicBackupV2 self, SseSerializer serializer);
+
+  @protected
   void sse_encode_heartbeat(Heartbeat self, SseSerializer serializer);
 
   @protected
@@ -1661,6 +1821,14 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
       List<QuantumLinkMessage> self, SseSerializer serializer);
 
   @protected
+  void sse_encode_magic_backup_request_v_2(
+      MagicBackupRequestV2 self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_magic_backup_response_v_2(
+      MagicBackupResponseV2 self, SseSerializer serializer);
+
+  @protected
   void sse_encode_onboarding_state(
       OnboardingState self, SseSerializer serializer);
 
@@ -1680,6 +1848,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   @protected
   void sse_encode_opt_box_autoadd_passport_message(
       PassportMessage? self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_opt_box_autoadd_u_32(int? self, SseSerializer serializer);
 
   @protected
   void sse_encode_opt_box_autoadd_u_64(BigInt? self, SseSerializer serializer);
@@ -1715,6 +1886,10 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   void sse_encode_price_point(PricePoint self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_prime_fiat_preference(
+      PrimeFiatPreference self, SseSerializer serializer);
 
   @protected
   void sse_encode_prime_magic_backup_enabled(

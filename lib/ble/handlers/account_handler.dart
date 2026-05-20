@@ -7,31 +7,66 @@ import 'dart:async';
 import 'package:collection/collection.dart';
 import 'package:envoy/account/accounts_manager.dart';
 import 'package:envoy/ble/quantum_link_router.dart';
+import 'package:envoy/business/devices.dart';
 import 'package:envoy/business/exchange_rate.dart';
 import 'package:envoy/business/settings.dart';
+import 'package:envoy/ui/envoy_colors.dart';
 import 'package:envoy/util/bug_report_helper.dart';
 import 'package:envoy/util/console.dart';
+import 'package:envoy/util/stream_replay_cache.dart';
 import 'package:foundation_api/foundation_api.dart' as api;
 import 'package:ngwallet/ngwallet.dart';
+
+// Mirror Core's acct_num % 6 cycling for Prime-sourced single-sig accounts.
+// Prime's stored color is ignored; the index is the source of truth.
+String _colorForPrimeAccountIndex(int index) {
+  final palette = EnvoyColors.listAccountTileColors;
+  final c = palette[index % palette.length];
+  return '#${(c.r * 255).round().toRadixString(16).padLeft(2, '0')}'
+      '${(c.g * 255).round().toRadixString(16).padLeft(2, '0')}'
+      '${(c.b * 255).round().toRadixString(16).padLeft(2, '0')}';
+}
 
 class BleAccountHandler extends PassportMessageHandler {
   final _applyPassphraseStream =
       StreamController<api.ApplyPassphrase?>.broadcast();
+  api.ApplyPassphrase? _latestApplyPassphrase;
 
   Stream<api.ApplyPassphrase?> get applyPassphraseStream =>
-      _applyPassphraseStream.stream.asBroadcastStream();
+      _applyPassphraseStream.stream.replayLatest(_latestApplyPassphrase);
+
+  api.ApplyPassphrase? get latestApplyPassphrase => _latestApplyPassphrase;
 
   late final void Function() _onExchangeRateChanged;
+  Timer? _rateRefreshTimer;
+
+  final _unpairRequestStream =
+      StreamController<api.UnpairingRequest?>.broadcast();
+
+  Stream<api.UnpairingRequest?> get unpairRequestStream =>
+      _unpairRequestStream.stream.asBroadcastStream();
 
   BleAccountHandler(super.connection) {
     setupExchangeRateListener();
+    // Re-push the rate periodically so Prime's "Last Update" indicator
+    // stays fresh even when the BTC price hasn't moved.
+    _rateRefreshTimer = Timer.periodic(const Duration(seconds: 30), (_) {
+      if (!qlConnection.isQLActive()) return;
+      if (_sendingData) {
+        _resendRateOnReady = true;
+        return;
+      }
+      unawaited(sendExchangeRate());
+    });
   }
 
   @override
   bool canHandle(api.QuantumLinkMessage message) {
     return message is api.QuantumLinkMessage_AccountUpdate ||
         message is api.QuantumLinkMessage_CreateMagicBackupEvent ||
-        message is api.QuantumLinkMessage_ApplyPassphrase;
+        message is api.QuantumLinkMessage_UnpairingRequest ||
+        message is api.QuantumLinkMessage_ApplyPassphrase ||
+        message is api.QuantumLinkMessage_PrimeFiatPreference;
   }
 
   int lastExchangeRateHash = 0;
@@ -50,8 +85,10 @@ class BleAccountHandler extends PassportMessageHandler {
 
   @override
   void dispose() {
+    _rateRefreshTimer?.cancel();
     ExchangeRate().removeListener(_onExchangeRateChanged);
     _applyPassphraseStream.close();
+    _unpairRequestStream.close();
     super.dispose();
   }
 
@@ -62,8 +99,41 @@ class BleAccountHandler extends PassportMessageHandler {
       await _handleAccountUpdate(accountUpdate.field0);
     } else if (message
         case api.QuantumLinkMessage_ApplyPassphrase applyPassphrase) {
-      _applyPassphraseStream.add(applyPassphrase.field0);
+      _latestApplyPassphrase = applyPassphrase.field0;
+      _applyPassphraseStream.add(_latestApplyPassphrase);
+    } else if (message
+        case api.QuantumLinkMessage_UnpairingRequest unpairingRequest) {
+      //Acknowledge the unpairing request, then disconnect and trigger the unpairing flow in the UI
+      qlConnection.writeMessage(
+        api.QuantumLinkMessage.unpairingResponse(
+          api.UnpairingResponse(success: true),
+        ),
+      );
+      await Future.delayed(const Duration(seconds: 1));
+      _unpairRequestStream.add(unpairingRequest.field0);
+      if (qlConnection.getDevice() != null) {
+        await Devices().clearDeviceQLKeys(qlConnection.getDevice()!);
+      }
+      qlConnection.disconnect();
+    } else if (message
+        case api.QuantumLinkMessage_PrimeFiatPreference fiatPreference) {
+      await _handleFiatPreference(fiatPreference.field0);
     }
+  }
+
+  Future<void> _handleFiatPreference(api.PrimeFiatPreference pref) async {
+    final device = qlConnection.getDevice();
+    if (device == null) return;
+    if (device.primeFiatCurrency == pref.currencyCode) return;
+    await Devices().updatePrimeFiatCurrency(pref.currencyCode, device);
+    if (_sendingData) {
+      // A history or rate send is in flight; queue a resend for after it.
+      _resendRateOnReady = true;
+    } else {
+      unawaited(sendExchangeRate());
+    }
+    // Also push a fresh chart in the new currency; bails if a send is in flight.
+    unawaited(sendExchangeRateHistory());
   }
 
   Future<void> _handleAccountUpdate(api.AccountUpdate accountUpdate) async {
@@ -106,9 +176,29 @@ class BleAccountHandler extends PassportMessageHandler {
       );
     }
 
+    // Single-sig: derive color from index regardless of what Prime sent.
+    if (config.multisig == null) {
+      config = NgAccountConfig(
+        name: config.name,
+        color: _colorForPrimeAccountIndex(config.index),
+        seedHasPassphrase: config.seedHasPassphrase,
+        deviceSerial: config.deviceSerial,
+        dateAdded: config.dateAdded,
+        preferredAddressType: config.preferredAddressType,
+        index: config.index,
+        descriptors: config.descriptors,
+        dateSynced: config.dateSynced,
+        network: config.network,
+        id: config.id,
+        multisig: config.multisig,
+        archived: config.archived,
+      );
+    }
+
     final taprootEnabled = Settings().taprootEnabled();
-    final hasTaproot =
-        config.descriptors.any((d) => d.addressType == AddressType.p2Tr);
+    final hasTaproot = config.descriptors.any(
+      (d) => d.addressType == AddressType.p2Tr,
+    );
     final desiredAddressType =
         (taprootEnabled && hasTaproot) ? AddressType.p2Tr : AddressType.p2Wpkh;
 
@@ -144,7 +234,13 @@ class BleAccountHandler extends PassportMessageHandler {
           await handler.renameAccount(name: config.name);
           await handler.setArchived(archived: config.archived);
           await handler.setPreferredAddressType(
-              addressType: desiredAddressType);
+            addressType: desiredAddressType,
+          );
+          // Read the handler's live config (NgAccountManager snapshot is stale).
+          final currentColor = handler.config().color;
+          if (currentColor.toLowerCase() != config.color.toLowerCase()) {
+            await handler.setColor(color: config.color);
+          }
           kPrint("Account updated!");
         }
       }
@@ -163,7 +259,8 @@ class BleAccountHandler extends PassportMessageHandler {
       accountHandler,
     );
     await accountHandler.setPreferredAddressType(
-        addressType: desiredAddressType);
+      addressType: desiredAddressType,
+    );
     kPrint("Account added!");
   }
 
@@ -174,73 +271,116 @@ class BleAccountHandler extends PassportMessageHandler {
   }
 
   bool _sendingData = false;
-  double _lastSentBtcPrice = 0.0;
+  bool _resendRateOnReady = false;
 
   void resetSendingState() {
     _sendingData = false;
+    // Drop any queued periodic resend; the link is gone.
+    _resendRateOnReady = false;
+  }
+
+  void _scheduleResendIfPending() {
+    if (_resendRateOnReady) {
+      _resendRateOnReady = false;
+      unawaited(sendExchangeRate());
+    }
   }
 
   Future<void> sendExchangeRate() async {
     if (_sendingData) return;
 
-    if (qlConnection.getDevice()?.onboardingComplete != true) {
+    final device = qlConnection.getDevice();
+    if (device?.onboardingComplete != true) {
       kPrint(
-          "Device not onboarded, skipping sending exchange rate history. ${qlConnection.deviceId}");
+        "Device not onboarded, skipping sending exchange rate history. ${qlConnection.deviceId}",
+      );
       return;
     }
     try {
       _sendingData = true;
       final exchangeRate = ExchangeRate();
-      final currentExchange = exchangeRate.usdRate!;
 
-      // Only send if price actually changed
-      if (_lastSentBtcPrice == currentExchange) {
+      // Honour Prime's selected fiat. Empty string means "fiat disabled" — skip.
+      // Null (older Prime, never sent a preference) falls back to USD.
+      final primeCurrency = device?.primeFiatCurrency;
+      if (primeCurrency != null && primeCurrency.isEmpty) {
         return;
       }
+      final currencyCode = (primeCurrency == null || primeCurrency.isEmpty)
+          ? "USD"
+          : primeCurrency;
 
-      final timestamp = exchangeRate.usdRateTimestamp?.millisecondsSinceEpoch ??
-          DateTime.now().millisecondsSinceEpoch;
+      final double rate;
+      if (currencyCode == "USD") {
+        rate = exchangeRate.usdRate!;
+      } else {
+        rate = await exchangeRate.getRateForCode(currencyCode);
+      }
+
+      // Cached USD timestamp is meaningful for the USD branch; non-USD rates
+      // are fetched here so the timestamp is "now".
+      final timestampMs = currencyCode == "USD"
+          ? (exchangeRate.usdRateTimestamp?.millisecondsSinceEpoch ??
+              DateTime.now().millisecondsSinceEpoch)
+          : DateTime.now().millisecondsSinceEpoch;
 
       final exchangeRateMessage = api.ExchangeRate(
-        currencyCode: "USD",
-        rate: currentExchange,
-        timestamp: BigInt.from(timestamp / 1000),
+        currencyCode: currencyCode,
+        rate: rate,
+        timestamp: BigInt.from(timestampMs / 1000),
       );
 
-      kPrint("Sending exchange rate to Prime: ${qlConnection.deviceId}");
+      // Re-check liveness: a non-USD fetch above is async and the link
+      // could have dropped while we were awaiting it.
+      if (!qlConnection.isQLActive()) return;
+
+      kPrint(
+          "Sending exchange rate ($currencyCode) to Prime: ${qlConnection.deviceId}");
       qlConnection.writeMessage(
         api.QuantumLinkMessage.exchangeRate(exchangeRateMessage),
       );
-
-      _lastSentBtcPrice = currentExchange;
     } catch (e) {
       kPrint('Failed to send exchange rate to Prime: $e');
     } finally {
       _sendingData = false;
+      _scheduleResendIfPending();
     }
   }
 
   Future<bool> sendExchangeRateHistory() async {
     if (_sendingData) return false;
+
+    final device = qlConnection.getDevice();
+    if (device?.onboardingComplete != true) {
+      kPrint("Device not onboarded, skipping sending exchange rate history.");
+      return false;
+    }
+
+    // Empty = Prime fiat disabled (skip). Null = legacy Prime (use Envoy's cached history).
+    final primeCurrency = device?.primeFiatCurrency;
+    if (primeCurrency != null && primeCurrency.isEmpty) {
+      return false;
+    }
+
     try {
       _sendingData = true;
 
-      final historyPoints = ExchangeRate().history.points;
-      final currency = ExchangeRate().history.currency;
-
-      if (qlConnection.getDevice()?.onboardingComplete != true) {
-        _sendingData = false;
-        kPrint("Device not onboarded, skipping sending exchange rate history.");
-        return false;
+      final ExchangeRateHistory? source;
+      if (primeCurrency != null &&
+          primeCurrency.isNotEmpty &&
+          primeCurrency != ExchangeRate().history.currency) {
+        // Fetch a fresh series for Prime's currency without disturbing Envoy's UI.
+        source = await ExchangeRate().fetchHistoryForCode(primeCurrency);
+      } else {
+        source = ExchangeRate().history;
       }
-      if (historyPoints.isEmpty) {
-        _sendingData = false;
+      if (source == null || source.points.isEmpty) {
         kPrint("No exchange rate history to send.");
         return false;
       }
 
       // Convert Dart RatePoint -> API PricePoint
-      final apiPoints = historyPoints.map((p) {
+      final apiPoints = source.points.map((p) {
         return api.PricePoint(
           rate: p.price,
           timestamp: BigInt.from(p.timestamp),
@@ -249,14 +389,14 @@ class BleAccountHandler extends PassportMessageHandler {
 
       final historyMessage = api.ExchangeRateHistory(
         history: apiPoints,
-        currencyCode: currency,
+        currencyCode: source.currency,
       );
 
       final result = await qlConnection.writeMessage(
         api.QuantumLinkMessage.exchangeRateHistory(historyMessage),
       );
       kPrint(
-        "Sent ${apiPoints.length} exchange rate points for currency $currency",
+        "Sent ${apiPoints.length} exchange rate points for currency ${source.currency}",
       );
       return result;
     } catch (e) {
@@ -264,6 +404,7 @@ class BleAccountHandler extends PassportMessageHandler {
       return false;
     } finally {
       _sendingData = false;
+      _scheduleResendIfPending();
     }
   }
 }

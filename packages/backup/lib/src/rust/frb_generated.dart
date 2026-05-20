@@ -70,7 +70,7 @@ class RustLib extends BaseEntrypoint<RustLibApi, RustLibApiImpl, RustLibWire> {
   String get codegenVersion => '2.11.1';
 
   @override
-  int get rustContentHash => -2097346255;
+  int get rustContentHash => -1392544800;
 
   static const kDefaultExternalLibraryLoaderConfig =
       ExternalLibraryLoaderConfig(
@@ -94,6 +94,18 @@ abstract class RustLibApi extends BaseApi {
       required int proxyPort,
       required String hash});
 
+  Future<int> crateApiBackupBackupDeletePrimeBackupV2(
+      {required String v2ServerUrl,
+      required int proxyPort,
+      required List<int> key,
+      required BigInt timestamp,
+      required List<int> signature});
+
+  Future<int> crateApiBackupBackupDeleteV2(
+      {required String seedWords,
+      required String v2ServerUrl,
+      required int proxyPort});
+
   Future<Uint8List> crateApiBackupBackupEncryptBackup(
       {required List<(String, String)> files, required StaticSecret secret});
 
@@ -108,10 +120,22 @@ abstract class RustLibApi extends BaseApi {
   Future<List<(String, String)>> crateApiBackupBackupGetBackupOffline(
       {required String seedWords, required String filePath});
 
+  Future<List<(String, String)>> crateApiBackupBackupGetBackupV2(
+      {required String seedWords,
+      required String v2ServerUrl,
+      required int proxyPort});
+
   Future<Uint8List> crateApiBackupBackupGetPrimeBackup(
       {required List<int> hash,
       required String serverUrl,
       required int proxyPort});
+
+  Future<Uint8List> crateApiBackupBackupGetPrimeBackupV2(
+      {required String v2ServerUrl,
+      required int proxyPort,
+      required List<int> key,
+      required BigInt timestamp,
+      required List<int> signature});
 
   Future<Client> crateApiBackupBackupGetReqwestClient({required int proxyPort});
 
@@ -131,11 +155,28 @@ abstract class RustLibApi extends BaseApi {
       required String seedWords,
       required String path});
 
+  Future<bool> crateApiBackupBackupPerformBackupV2(
+      {required Map<String, String> payload,
+      required String seedWords,
+      required String v2ServerUrl,
+      required String localBackup,
+      required int proxyPort,
+      required bool performCloud});
+
   Future<bool> crateApiBackupBackupPerformPrimeBackup(
       {required String serverUrl,
       required int proxyPort,
       required List<int> seedHash,
       required List<int> payload});
+
+  Future<bool> crateApiBackupBackupPerformPrimeBackupV2(
+      {required String v2ServerUrl,
+      required int proxyPort,
+      required BigInt timestamp,
+      required List<int> hash,
+      required List<int> pubkey,
+      required List<int> data,
+      required List<int> clientSignature});
 
   Future<void> crateApiBackupInitApp();
 
@@ -259,6 +300,70 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       );
 
   @override
+  Future<int> crateApiBackupBackupDeletePrimeBackupV2(
+      {required String v2ServerUrl,
+      required int proxyPort,
+      required List<int> key,
+      required BigInt timestamp,
+      required List<int> signature}) {
+    return handler.executeNormal(NormalTask(
+      callFfi: (port_) {
+        final serializer = SseSerializer(generalizedFrbRustBinding);
+        sse_encode_String(v2ServerUrl, serializer);
+        sse_encode_i_32(proxyPort, serializer);
+        sse_encode_list_prim_u_8_loose(key, serializer);
+        sse_encode_u_64(timestamp, serializer);
+        sse_encode_list_prim_u_8_loose(signature, serializer);
+        pdeCallFfi(generalizedFrbRustBinding, serializer,
+            funcId: 4, port: port_);
+      },
+      codec: SseCodec(
+        decodeSuccessData: sse_decode_u_16,
+        decodeErrorData: sse_decode_AnyhowException,
+      ),
+      constMeta: kCrateApiBackupBackupDeletePrimeBackupV2ConstMeta,
+      argValues: [v2ServerUrl, proxyPort, key, timestamp, signature],
+      apiImpl: this,
+    ));
+  }
+
+  TaskConstMeta get kCrateApiBackupBackupDeletePrimeBackupV2ConstMeta =>
+      const TaskConstMeta(
+        debugName: "backup_delete_prime_backup_v2",
+        argNames: ["v2ServerUrl", "proxyPort", "key", "timestamp", "signature"],
+      );
+
+  @override
+  Future<int> crateApiBackupBackupDeleteV2(
+      {required String seedWords,
+      required String v2ServerUrl,
+      required int proxyPort}) {
+    return handler.executeNormal(NormalTask(
+      callFfi: (port_) {
+        final serializer = SseSerializer(generalizedFrbRustBinding);
+        sse_encode_String(seedWords, serializer);
+        sse_encode_String(v2ServerUrl, serializer);
+        sse_encode_i_32(proxyPort, serializer);
+        pdeCallFfi(generalizedFrbRustBinding, serializer,
+            funcId: 5, port: port_);
+      },
+      codec: SseCodec(
+        decodeSuccessData: sse_decode_u_16,
+        decodeErrorData: sse_decode_AnyhowException,
+      ),
+      constMeta: kCrateApiBackupBackupDeleteV2ConstMeta,
+      argValues: [seedWords, v2ServerUrl, proxyPort],
+      apiImpl: this,
+    ));
+  }
+
+  TaskConstMeta get kCrateApiBackupBackupDeleteV2ConstMeta =>
+      const TaskConstMeta(
+        debugName: "backup_delete_v2",
+        argNames: ["seedWords", "v2ServerUrl", "proxyPort"],
+      );
+
+  @override
   Future<Uint8List> crateApiBackupBackupEncryptBackup(
       {required List<(String, String)> files, required StaticSecret secret}) {
     return handler.executeNormal(NormalTask(
@@ -268,7 +373,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerStaticSecret(
             secret, serializer);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 4, port: port_);
+            funcId: 6, port: port_);
       },
       codec: SseCodec(
         decodeSuccessData: sse_decode_list_prim_u_8_strict,
@@ -294,7 +399,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         final serializer = SseSerializer(generalizedFrbRustBinding);
         sse_encode_box_autoadd_backup_payload(payload, serializer);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 5, port: port_);
+            funcId: 7, port: port_);
       },
       codec: SseCodec(
         decodeSuccessData: sse_decode_list_record_string_string,
@@ -324,7 +429,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         sse_encode_String(serverUrl, serializer);
         sse_encode_i_32(proxyPort, serializer);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 6, port: port_);
+            funcId: 8, port: port_);
       },
       codec: SseCodec(
         decodeSuccessData: sse_decode_list_record_string_string,
@@ -351,7 +456,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         sse_encode_String(seedWords, serializer);
         sse_encode_String(filePath, serializer);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 7, port: port_);
+            funcId: 9, port: port_);
       },
       codec: SseCodec(
         decodeSuccessData: sse_decode_list_record_string_string,
@@ -370,6 +475,36 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       );
 
   @override
+  Future<List<(String, String)>> crateApiBackupBackupGetBackupV2(
+      {required String seedWords,
+      required String v2ServerUrl,
+      required int proxyPort}) {
+    return handler.executeNormal(NormalTask(
+      callFfi: (port_) {
+        final serializer = SseSerializer(generalizedFrbRustBinding);
+        sse_encode_String(seedWords, serializer);
+        sse_encode_String(v2ServerUrl, serializer);
+        sse_encode_i_32(proxyPort, serializer);
+        pdeCallFfi(generalizedFrbRustBinding, serializer,
+            funcId: 10, port: port_);
+      },
+      codec: SseCodec(
+        decodeSuccessData: sse_decode_list_record_string_string,
+        decodeErrorData: sse_decode_get_backup_exception,
+      ),
+      constMeta: kCrateApiBackupBackupGetBackupV2ConstMeta,
+      argValues: [seedWords, v2ServerUrl, proxyPort],
+      apiImpl: this,
+    ));
+  }
+
+  TaskConstMeta get kCrateApiBackupBackupGetBackupV2ConstMeta =>
+      const TaskConstMeta(
+        debugName: "backup_get_backup_v2",
+        argNames: ["seedWords", "v2ServerUrl", "proxyPort"],
+      );
+
+  @override
   Future<Uint8List> crateApiBackupBackupGetPrimeBackup(
       {required List<int> hash,
       required String serverUrl,
@@ -381,7 +516,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         sse_encode_String(serverUrl, serializer);
         sse_encode_i_32(proxyPort, serializer);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 8, port: port_);
+            funcId: 11, port: port_);
       },
       codec: SseCodec(
         decodeSuccessData: sse_decode_list_prim_u_8_strict,
@@ -400,6 +535,40 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       );
 
   @override
+  Future<Uint8List> crateApiBackupBackupGetPrimeBackupV2(
+      {required String v2ServerUrl,
+      required int proxyPort,
+      required List<int> key,
+      required BigInt timestamp,
+      required List<int> signature}) {
+    return handler.executeNormal(NormalTask(
+      callFfi: (port_) {
+        final serializer = SseSerializer(generalizedFrbRustBinding);
+        sse_encode_String(v2ServerUrl, serializer);
+        sse_encode_i_32(proxyPort, serializer);
+        sse_encode_list_prim_u_8_loose(key, serializer);
+        sse_encode_u_64(timestamp, serializer);
+        sse_encode_list_prim_u_8_loose(signature, serializer);
+        pdeCallFfi(generalizedFrbRustBinding, serializer,
+            funcId: 12, port: port_);
+      },
+      codec: SseCodec(
+        decodeSuccessData: sse_decode_list_prim_u_8_strict,
+        decodeErrorData: sse_decode_get_backup_exception,
+      ),
+      constMeta: kCrateApiBackupBackupGetPrimeBackupV2ConstMeta,
+      argValues: [v2ServerUrl, proxyPort, key, timestamp, signature],
+      apiImpl: this,
+    ));
+  }
+
+  TaskConstMeta get kCrateApiBackupBackupGetPrimeBackupV2ConstMeta =>
+      const TaskConstMeta(
+        debugName: "backup_get_prime_backup_v2",
+        argNames: ["v2ServerUrl", "proxyPort", "key", "timestamp", "signature"],
+      );
+
+  @override
   Future<Client> crateApiBackupBackupGetReqwestClient(
       {required int proxyPort}) {
     return handler.executeNormal(NormalTask(
@@ -407,7 +576,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         final serializer = SseSerializer(generalizedFrbRustBinding);
         sse_encode_i_32(proxyPort, serializer);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 9, port: port_);
+            funcId: 13, port: port_);
       },
       codec: SseCodec(
         decodeSuccessData:
@@ -434,7 +603,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         final serializer = SseSerializer(generalizedFrbRustBinding);
         sse_encode_String(seedWords, serializer);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 10, port: port_);
+            funcId: 14, port: port_);
       },
       codec: SseCodec(
         decodeSuccessData:
@@ -471,7 +640,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         sse_encode_i_32(proxyPort, serializer);
         sse_encode_bool(performCloud, serializer);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 11, port: port_);
+            funcId: 15, port: port_);
       },
       codec: SseCodec(
         decodeSuccessData: sse_decode_bool,
@@ -515,7 +684,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         sse_encode_String(seedWords, serializer);
         sse_encode_String(path, serializer);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 12, port: port_);
+            funcId: 16, port: port_);
       },
       codec: SseCodec(
         decodeSuccessData: sse_decode_bool,
@@ -534,6 +703,56 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       );
 
   @override
+  Future<bool> crateApiBackupBackupPerformBackupV2(
+      {required Map<String, String> payload,
+      required String seedWords,
+      required String v2ServerUrl,
+      required String localBackup,
+      required int proxyPort,
+      required bool performCloud}) {
+    return handler.executeNormal(NormalTask(
+      callFfi: (port_) {
+        final serializer = SseSerializer(generalizedFrbRustBinding);
+        sse_encode_Map_String_String_None(payload, serializer);
+        sse_encode_String(seedWords, serializer);
+        sse_encode_String(v2ServerUrl, serializer);
+        sse_encode_String(localBackup, serializer);
+        sse_encode_i_32(proxyPort, serializer);
+        sse_encode_bool(performCloud, serializer);
+        pdeCallFfi(generalizedFrbRustBinding, serializer,
+            funcId: 17, port: port_);
+      },
+      codec: SseCodec(
+        decodeSuccessData: sse_decode_bool,
+        decodeErrorData: sse_decode_AnyhowException,
+      ),
+      constMeta: kCrateApiBackupBackupPerformBackupV2ConstMeta,
+      argValues: [
+        payload,
+        seedWords,
+        v2ServerUrl,
+        localBackup,
+        proxyPort,
+        performCloud
+      ],
+      apiImpl: this,
+    ));
+  }
+
+  TaskConstMeta get kCrateApiBackupBackupPerformBackupV2ConstMeta =>
+      const TaskConstMeta(
+        debugName: "backup_perform_backup_v2",
+        argNames: [
+          "payload",
+          "seedWords",
+          "v2ServerUrl",
+          "localBackup",
+          "proxyPort",
+          "performCloud"
+        ],
+      );
+
+  @override
   Future<bool> crateApiBackupBackupPerformPrimeBackup(
       {required String serverUrl,
       required int proxyPort,
@@ -547,7 +766,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         sse_encode_list_prim_u_8_loose(seedHash, serializer);
         sse_encode_list_prim_u_8_loose(payload, serializer);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 13, port: port_);
+            funcId: 18, port: port_);
       },
       codec: SseCodec(
         decodeSuccessData: sse_decode_bool,
@@ -566,12 +785,66 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       );
 
   @override
+  Future<bool> crateApiBackupBackupPerformPrimeBackupV2(
+      {required String v2ServerUrl,
+      required int proxyPort,
+      required BigInt timestamp,
+      required List<int> hash,
+      required List<int> pubkey,
+      required List<int> data,
+      required List<int> clientSignature}) {
+    return handler.executeNormal(NormalTask(
+      callFfi: (port_) {
+        final serializer = SseSerializer(generalizedFrbRustBinding);
+        sse_encode_String(v2ServerUrl, serializer);
+        sse_encode_i_32(proxyPort, serializer);
+        sse_encode_u_64(timestamp, serializer);
+        sse_encode_list_prim_u_8_loose(hash, serializer);
+        sse_encode_list_prim_u_8_loose(pubkey, serializer);
+        sse_encode_list_prim_u_8_loose(data, serializer);
+        sse_encode_list_prim_u_8_loose(clientSignature, serializer);
+        pdeCallFfi(generalizedFrbRustBinding, serializer,
+            funcId: 19, port: port_);
+      },
+      codec: SseCodec(
+        decodeSuccessData: sse_decode_bool,
+        decodeErrorData: sse_decode_AnyhowException,
+      ),
+      constMeta: kCrateApiBackupBackupPerformPrimeBackupV2ConstMeta,
+      argValues: [
+        v2ServerUrl,
+        proxyPort,
+        timestamp,
+        hash,
+        pubkey,
+        data,
+        clientSignature
+      ],
+      apiImpl: this,
+    ));
+  }
+
+  TaskConstMeta get kCrateApiBackupBackupPerformPrimeBackupV2ConstMeta =>
+      const TaskConstMeta(
+        debugName: "backup_perform_prime_backup_v2",
+        argNames: [
+          "v2ServerUrl",
+          "proxyPort",
+          "timestamp",
+          "hash",
+          "pubkey",
+          "data",
+          "clientSignature"
+        ],
+      );
+
+  @override
   Future<void> crateApiBackupInitApp() {
     return handler.executeNormal(NormalTask(
       callFfi: (port_) {
         final serializer = SseSerializer(generalizedFrbRustBinding);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 14, port: port_);
+            funcId: 20, port: port_);
       },
       codec: SseCodec(
         decodeSuccessData: sse_decode_unit,
@@ -776,6 +1049,12 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  BigInt dco_decode_u_64(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return dcoDecodeU64(raw);
+  }
+
+  @protected
   int dco_decode_u_8(dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
     return raw as int;
@@ -974,6 +1253,12 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  BigInt sse_decode_u_64(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    return deserializer.buffer.getBigUint64();
+  }
+
+  @protected
   int sse_decode_u_8(SseDeserializer deserializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     return deserializer.buffer.getUint8();
@@ -1163,6 +1448,12 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   void sse_encode_u_16(int self, SseSerializer serializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     serializer.buffer.putUint16(self);
+  }
+
+  @protected
+  void sse_encode_u_64(BigInt self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    serializer.buffer.putBigUint64(self);
   }
 
   @protected

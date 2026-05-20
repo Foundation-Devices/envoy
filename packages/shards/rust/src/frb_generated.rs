@@ -37,7 +37,7 @@ flutter_rust_bridge::frb_generated_boilerplate!(
     default_rust_auto_opaque = RustAutoOpaqueMoi,
 );
 pub(crate) const FLUTTER_RUST_BRIDGE_CODEGEN_VERSION: &str = "2.11.1";
-pub(crate) const FLUTTER_RUST_BRIDGE_CODEGEN_CONTENT_HASH: i32 = -934118791;
+pub(crate) const FLUTTER_RUST_BRIDGE_CODEGEN_CONTENT_HASH: i32 = 235995702;
 
 // Section: executor
 
@@ -151,7 +151,7 @@ fn wire__crate__api__shard__shard_backup_file_default_impl(
         },
     )
 }
-fn wire__crate__api__shard__shard_backup_file_get_shard_by_fingerprint_impl(
+fn wire__crate__api__shard__shard_backup_file_get_shard_impl(
     port_: flutter_rust_bridge::for_generated::MessagePort,
     ptr_: flutter_rust_bridge::for_generated::PlatformGeneralizedUint8ListPtr,
     rust_vec_len_: i32,
@@ -159,7 +159,7 @@ fn wire__crate__api__shard__shard_backup_file_get_shard_by_fingerprint_impl(
 ) {
     FLUTTER_RUST_BRIDGE_HANDLER.wrap_normal::<flutter_rust_bridge::for_generated::SseCodec, _, _>(
         flutter_rust_bridge::for_generated::TaskInfo {
-            debug_name: "shard_backup_file_get_shard_by_fingerprint",
+            debug_name: "shard_backup_file_get_shard",
             port: Some(port_),
             mode: flutter_rust_bridge::for_generated::FfiCallMode::Normal,
         },
@@ -174,16 +174,17 @@ fn wire__crate__api__shard__shard_backup_file_get_shard_by_fingerprint_impl(
             let mut deserializer =
                 flutter_rust_bridge::for_generated::SseDeserializer::new(message);
             let api_fingerprint = <[u8; 32]>::sse_decode(&mut deserializer);
+            let api_timestamp = <Option<u32>>::sse_decode(&mut deserializer);
             let api_file_path = <String>::sse_decode(&mut deserializer);
             deserializer.end();
             move |context| {
                 transform_result_sse::<_, ()>((move || {
-                    let output_ok = Result::<_, ()>::Ok(
-                        crate::api::shard::ShardBackupFile::get_shard_by_fingerprint(
+                    let output_ok =
+                        Result::<_, ()>::Ok(crate::api::shard::ShardBackupFile::get_shard(
                             api_fingerprint,
+                            api_timestamp,
                             api_file_path,
-                        ),
-                    )?;
+                        ))?;
                     Ok(output_ok)
                 })())
             }
@@ -233,6 +234,17 @@ impl SseDecode for Vec<crate::api::shard::ShardBackup> {
     }
 }
 
+impl SseDecode for Option<u32> {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        if (<bool>::sse_decode(deserializer)) {
+            return Some(<u32>::sse_decode(deserializer));
+        } else {
+            return None;
+        }
+    }
+}
+
 impl SseDecode for Option<Vec<u8>> {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
@@ -263,6 +275,13 @@ impl SseDecode for crate::api::shard::ShardBackupFile {
     fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
         let mut var_shards = <Vec<crate::api::shard::ShardBackup>>::sse_decode(deserializer);
         return crate::api::shard::ShardBackupFile { shards: var_shards };
+    }
+}
+
+impl SseDecode for u32 {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        deserializer.cursor.read_u32::<NativeEndian>().unwrap()
     }
 }
 
@@ -329,7 +348,7 @@ fn pde_ffi_dispatcher_primary_impl(
             rust_vec_len,
             data_len,
         ),
-        4 => wire__crate__api__shard__shard_backup_file_get_shard_by_fingerprint_impl(
+        4 => wire__crate__api__shard__shard_backup_file_get_shard_impl(
             port,
             ptr,
             rust_vec_len,
@@ -427,6 +446,16 @@ impl SseEncode for Vec<crate::api::shard::ShardBackup> {
     }
 }
 
+impl SseEncode for Option<u32> {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        <bool>::sse_encode(self.is_some(), serializer);
+        if let Some(value) = self {
+            <u32>::sse_encode(value, serializer);
+        }
+    }
+}
+
 impl SseEncode for Option<Vec<u8>> {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
@@ -450,6 +479,13 @@ impl SseEncode for crate::api::shard::ShardBackupFile {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
         <Vec<crate::api::shard::ShardBackup>>::sse_encode(self.shards, serializer);
+    }
+}
+
+impl SseEncode for u32 {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        serializer.cursor.write_u32::<NativeEndian>(self).unwrap();
     }
 }
 

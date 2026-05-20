@@ -8,6 +8,7 @@ import 'dart:ui';
 import 'package:envoy/account/accounts_manager.dart';
 import 'package:envoy/account/envoy_transaction.dart';
 import 'package:envoy/account/sync_manager.dart';
+import 'package:envoy/ui/home/prime_ql_unpair_dialog.dart';
 import 'package:envoy/business/connectivity_manager.dart';
 import 'package:envoy/business/devices.dart';
 import 'package:envoy/business/envoy_seed.dart';
@@ -574,6 +575,7 @@ class HomePageState extends ConsumerState<HomePage>
   @override
   Widget build(BuildContext context) {
     _checkUpdatesAndNotify();
+    listenForPrimeUnpair(context, ref);
 
     bool optionsShown = ref.watch(homePageOptionsVisibilityProvider);
 

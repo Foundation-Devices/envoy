@@ -108,8 +108,8 @@ appId: com.foundationdevices.envoy
     visible: envoy_backup.mla
     timeout: 180000 # wait for 3 min
 
-# Save the backup, tap continue
-- tapOn: SAVE
+# Back without saving
+- tapOn: Back
 
 # delete
 - tapOn: Delete Wallet

@@ -56,7 +56,7 @@
   {
     "title": "Afghan Afghani",
     "code": "AFN",
-    "symbol": "₮",
+    "symbol": "؋",
     "flag": "🇦🇫"
   },
   {
@@ -123,7 +123,7 @@
   {
     "title": "Bulgarian Lev",
     "code": "BGN",
-    "symbol": "лв",
+    "symbol": "лв.",
     "flag": "🇧🇬"
   },
   {
@@ -661,7 +661,7 @@
   {
     "title": "Panamanian Balboa",
     "code": "PAB",
-    "symbol": "B/. ",
+    "symbol": "B/.",
     "flag": "🇵🇦"
   },
   {
@@ -763,7 +763,7 @@
   {
     "title": "Singapore Dollar",
     "code": "SGD",
-    "symbol": "$",
+    "symbol": "S$",
     "flag": "🇸🇬"
   },
   {
@@ -889,7 +889,7 @@
   {
     "title": "Uruguayan Peso",
     "code": "UYU",
-    "symbol": "$",
+    "symbol": "$U",
     "flag": "🇺🇾"
   },
   {
@@ -901,7 +901,7 @@
   {
     "title": "Venezuelan Bolívar",
     "code": "VES",
-    "symbol": "Bs",
+    "symbol": "Bs.",
     "flag": "🇻🇪"
   },
   {

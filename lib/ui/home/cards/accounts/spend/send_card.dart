@@ -59,7 +59,12 @@ class _SendCardState extends ConsumerState<SendCard>
           unit = AmountDisplayUnit.btc;
           autoSwitched = true;
         }
-        setAmount(parsed.amountSats!, autoSwitchedToBtc: autoSwitched);
+        setAmount(
+          parsed.amountSats!,
+          displayFiat: parsed.displayFiat,
+          autoSwitchedToBtc: autoSwitched,
+        );
+
         if (unit != null) {
           ref.read(sendUnitProvider.notifier).state = unit;
         }
@@ -117,10 +122,14 @@ class _SendCardState extends ConsumerState<SendCard>
     });
   }
 
-  void setAmount(int amount, {bool autoSwitchedToBtc = false}) {
+  void setAmount(
+    int amount, {
+    double? displayFiat,
+    bool autoSwitchedToBtc = false,
+  }) {
     ref.read(spendAmountProvider.notifier).state = amount;
     ref.read(displayFiatSendAmountProvider.notifier).state =
-        ExchangeRate().convertSatsToFiat(amount);
+        displayFiat ?? ExchangeRate().convertSatsToFiat(amount);
     setState(() {
       _amountEntry = AmountEntry(
         onAmountChanged: _updateAmount,

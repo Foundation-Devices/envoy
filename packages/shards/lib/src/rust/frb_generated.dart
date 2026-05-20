@@ -71,7 +71,7 @@ class RustLib extends BaseEntrypoint<RustLibApi, RustLibApiImpl, RustLibWire> {
   String get codegenVersion => '2.11.1';
 
   @override
-  int get rustContentHash => -934118791;
+  int get rustContentHash => 235995702;
 
   static const kDefaultExternalLibraryLoaderConfig =
       ExternalLibraryLoaderConfig(
@@ -89,8 +89,10 @@ abstract class RustLibApi extends BaseApi {
 
   Future<ShardBackupFile> crateApiShardShardBackupFileDefault();
 
-  Future<Uint8List?> crateApiShardShardBackupFileGetShardByFingerprint(
-      {required U8Array32 fingerprint, required String filePath});
+  Future<Uint8List?> crateApiShardShardBackupFileGetShard(
+      {required U8Array32 fingerprint,
+      int? timestamp,
+      required String filePath});
 }
 
 class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
@@ -176,12 +178,15 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       );
 
   @override
-  Future<Uint8List?> crateApiShardShardBackupFileGetShardByFingerprint(
-      {required U8Array32 fingerprint, required String filePath}) {
+  Future<Uint8List?> crateApiShardShardBackupFileGetShard(
+      {required U8Array32 fingerprint,
+      int? timestamp,
+      required String filePath}) {
     return handler.executeNormal(NormalTask(
       callFfi: (port_) {
         final serializer = SseSerializer(generalizedFrbRustBinding);
         sse_encode_u_8_array_32(fingerprint, serializer);
+        sse_encode_opt_box_autoadd_u_32(timestamp, serializer);
         sse_encode_String(filePath, serializer);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
             funcId: 4, port: port_);
@@ -190,18 +195,17 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         decodeSuccessData: sse_decode_opt_list_prim_u_8_strict,
         decodeErrorData: null,
       ),
-      constMeta: kCrateApiShardShardBackupFileGetShardByFingerprintConstMeta,
-      argValues: [fingerprint, filePath],
+      constMeta: kCrateApiShardShardBackupFileGetShardConstMeta,
+      argValues: [fingerprint, timestamp, filePath],
       apiImpl: this,
     ));
   }
 
-  TaskConstMeta
-      get kCrateApiShardShardBackupFileGetShardByFingerprintConstMeta =>
-          const TaskConstMeta(
-            debugName: "shard_backup_file_get_shard_by_fingerprint",
-            argNames: ["fingerprint", "filePath"],
-          );
+  TaskConstMeta get kCrateApiShardShardBackupFileGetShardConstMeta =>
+      const TaskConstMeta(
+        debugName: "shard_backup_file_get_shard",
+        argNames: ["fingerprint", "timestamp", "filePath"],
+      );
 
   @protected
   AnyhowException dco_decode_AnyhowException(dynamic raw) {
@@ -213,6 +217,12 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   String dco_decode_String(dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
     return raw as String;
+  }
+
+  @protected
+  int dco_decode_box_autoadd_u_32(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return raw as int;
   }
 
   @protected
@@ -231,6 +241,12 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   List<ShardBackup> dco_decode_list_shard_backup(dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
     return (raw as List<dynamic>).map(dco_decode_shard_backup).toList();
+  }
+
+  @protected
+  int? dco_decode_opt_box_autoadd_u_32(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return raw == null ? null : dco_decode_box_autoadd_u_32(raw);
   }
 
   @protected
@@ -261,6 +277,12 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
     return ShardBackupFile(
       shards: dco_decode_list_shard_backup(arr[0]),
     );
+  }
+
+  @protected
+  int dco_decode_u_32(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return raw as int;
   }
 
   @protected
@@ -302,6 +324,12 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  int sse_decode_box_autoadd_u_32(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    return (sse_decode_u_32(deserializer));
+  }
+
+  @protected
   List<int> sse_decode_list_prim_u_8_loose(SseDeserializer deserializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     var len_ = sse_decode_i_32(deserializer);
@@ -325,6 +353,17 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       ans_.add(sse_decode_shard_backup(deserializer));
     }
     return ans_;
+  }
+
+  @protected
+  int? sse_decode_opt_box_autoadd_u_32(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+
+    if (sse_decode_bool(deserializer)) {
+      return (sse_decode_box_autoadd_u_32(deserializer));
+    } else {
+      return null;
+    }
   }
 
   @protected
@@ -355,6 +394,12 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
     // Codec=Sse (Serialization based), see doc to use other codecs
     var var_shards = sse_decode_list_shard_backup(deserializer);
     return ShardBackupFile(shards: var_shards);
+  }
+
+  @protected
+  int sse_decode_u_32(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    return deserializer.buffer.getUint32();
   }
 
   @protected
@@ -407,6 +452,12 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  void sse_encode_box_autoadd_u_32(int self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_u_32(self, serializer);
+  }
+
+  @protected
   void sse_encode_list_prim_u_8_loose(
       List<int> self, SseSerializer serializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
@@ -434,6 +485,16 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  void sse_encode_opt_box_autoadd_u_32(int? self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+
+    sse_encode_bool(self != null, serializer);
+    if (self != null) {
+      sse_encode_box_autoadd_u_32(self, serializer);
+    }
+  }
+
+  @protected
   void sse_encode_opt_list_prim_u_8_strict(
       Uint8List? self, SseSerializer serializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
@@ -457,6 +518,12 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       ShardBackupFile self, SseSerializer serializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     sse_encode_list_shard_backup(self.shards, serializer);
+  }
+
+  @protected
+  void sse_encode_u_32(int self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    serializer.buffer.putUint32(self);
   }
 
   @protected
