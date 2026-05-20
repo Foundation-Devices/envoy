@@ -26,6 +26,15 @@
     <uses-feature android:name="android.hardware.bluetooth_le"
         android:required="true" />
 
+    <!-- Tor-capable browsers we probe for, so we can launch personal block
+         explorer URLs through them when Tor is enabled or the URL is .onion.
+         Android 11+ requires explicit <queries> for getPackageInfo to see
+         other apps. -->
+    <queries>
+        <package android:name="org.torproject.torbrowser" />
+        <package android:name="org.torproject.torbrowser_alpha" />
+    </queries>
+
 
     <application
         android:allowBackup="true"
