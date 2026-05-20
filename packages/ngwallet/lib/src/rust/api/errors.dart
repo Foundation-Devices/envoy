@@ -70,6 +70,9 @@ sealed class RBFBumpFeeError with _$RBFBumpFeeError implements FrbException {
   ) = RBFBumpFeeError_UnableToAddForeignUtxo;
   const factory RBFBumpFeeError.walletNotAvailable() =
       RBFBumpFeeError_WalletNotAvailable;
+  const factory RBFBumpFeeError.lockedUtxoSelected(
+    List<String> field0,
+  ) = RBFBumpFeeError_LockedUtxoSelected;
 }
 
 @freezed
@@ -91,6 +94,9 @@ sealed class TxComposeError with _$TxComposeError implements FrbException {
   const factory TxComposeError.insufficientFeeRate(
     BigInt field0,
   ) = TxComposeError_InsufficientFeeRate;
+  const factory TxComposeError.lockedUtxoSelected(
+    List<String> field0,
+  ) = TxComposeError_LockedUtxoSelected;
 
   static Future<TxComposeError> mapErr(
           {required TransactionComposeError transactionComposeError}) =>
