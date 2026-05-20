@@ -111,25 +111,21 @@ class _AddressCardState extends ConsumerState<AddressCard> {
                     if (!widget.account.isHot)
                       GestureDetector(
                         onTap: () {
-                          if (isPrimeConnected) {
-                            // TODO: if prime is connected via ble, verify address via QL
-                          } else {
-                            if (mounted) {
-                              showEnvoyDialog(
-                                context: context,
-                                blurColor: Colors.black,
-                                useRootNavigator: true,
-                                linearGradient: true,
-                                dialog: SizedBox(
-                                  width:
-                                      MediaQuery.of(context).size.width * 0.9,
-                                  child: VerifyAddressDialog(
-                                    address: address,
-                                    accountName: widget.account.name,
-                                  ),
+                          if (mounted) {
+                            showEnvoyDialog(
+                              context: context,
+                              blurColor: Colors.black,
+                              useRootNavigator: true,
+                              linearGradient: true,
+                              dialog: SizedBox(
+                                width: MediaQuery.of(context).size.width * 0.9,
+                                child: VerifyAddressDialog(
+                                  address: address,
+                                  accountName: widget.account.name,
+                                  isPrime: isPrime,
                                 ),
-                              );
-                            }
+                              ),
+                            );
                           }
                         },
                         child: Row(
@@ -138,7 +134,7 @@ class _AddressCardState extends ConsumerState<AddressCard> {
                           crossAxisAlignment: CrossAxisAlignment.center,
                           children: [
                             EnvoyIcon(
-                              isPrime ? EnvoyIcons.quantum : EnvoyIcons.qr_scan,
+                              EnvoyIcons.qr_with_check_mark,
                               color: EnvoyColors.accentPrimary,
                             ),
                             const SizedBox(width: EnvoySpacing.small),
