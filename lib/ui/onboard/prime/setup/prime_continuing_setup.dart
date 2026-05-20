@@ -86,9 +86,9 @@ class _PrimeContinuingSetupState extends ConsumerState<PrimeContinuingSetup> {
         typeOfMessage: PopUpState.warning,
         showCloseButton: false,
         title: S().onboarding_connectionModalAbort_header,
-        content: S().onboarding_connectionModalAbort_content,
-        primaryButtonLabel: S().component_cancel,
-        secondaryButtonLabel: S().component_exit,
+        content: S().onboarding_connectionModalExitOnboarding_content,
+        primaryButtonLabel: S().component_back,
+        secondaryButtonLabel: S().firmware_updateModalConnectionLost_exit,
         onPrimaryButtonTap: (context) async {
           completer.complete(false);
           Navigator.pop(context);
