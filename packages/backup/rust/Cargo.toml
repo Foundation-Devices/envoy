@@ -27,7 +27,7 @@ allo-isolate = "0.1.12"
 hex = "0.4"
 libcrux-ml-dsa = "0.0.9"
 sha2 = "0.10"
-backup-client = { git = "https://github.com/Foundation-Devices/backup-client", branch = "main" }
+backup-client = { git = "https://github.com/Foundation-Devices/backup-client", tag = "0.1" }
 
 [lints.rust]
 unexpected_cfgs = { level = "warn", check-cfg = ['cfg(frb_expand)'] }
