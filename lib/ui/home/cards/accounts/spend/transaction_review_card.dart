@@ -147,34 +147,36 @@ class _TransactionReviewCardState extends ConsumerState<TransactionReviewCard> {
                       sideChunks: 2 + ((address.length / 4)).round(),
                     )),
                 _divider(),
-                infoState(
-                    EnvoyIcons.fee,
-                    "${S().coincontrol_tx_detail_fee} - ${selectedFeeLabel(ref)}",
-                    subtitle: spendTimeEstimationProvider,
-                    Row(
-                      mainAxisSize: MainAxisSize.min,
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      children: [
-                        EnvoyAmount(
-                            unit: formatUnit,
-                            account: widget.account,
-                            amountSats: transaction.fee.toInt(),
-                            displayFiatAmount: displayFiatFeeAmount,
-                            millionaireMode: false,
-                            amountWidgetStyle: AmountWidgetStyle.normal,
-                            semanticSuffix: "Fee-${transaction.fee.toInt()}"),
-                        if (widget.onFeeTap != null)
-                          GestureDetector(
-                            onTap: () {
-                              widget.onFeeTap!();
-                            },
-                            child: const Padding(
+                GestureDetector(
+                  behavior: HitTestBehavior.opaque,
+                  onTap: () {
+                    if (widget.onFeeTap == null) return;
+                    widget.onFeeTap!();
+                  },
+                  child: infoState(
+                      EnvoyIcons.fee,
+                      "${S().coincontrol_tx_detail_fee} - ${selectedFeeLabel(ref)}",
+                      subtitle: spendTimeEstimationProvider,
+                      Row(
+                        mainAxisSize: MainAxisSize.min,
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: [
+                          EnvoyAmount(
+                              unit: formatUnit,
+                              account: widget.account,
+                              amountSats: transaction.fee.toInt(),
+                              displayFiatAmount: displayFiatFeeAmount,
+                              millionaireMode: false,
+                              amountWidgetStyle: AmountWidgetStyle.normal,
+                              semanticSuffix: "Fee-${transaction.fee.toInt()}"),
+                          if (widget.onFeeTap != null)
+                            const Padding(
                               padding: EdgeInsets.only(left: EnvoySpacing.xs),
                               child: EnvoyIcon(EnvoyIcons.chevron_right),
                             ),
-                          ),
-                      ],
-                    )),
+                        ],
+                      )),
+                ),
               ],
             ),
           ),
