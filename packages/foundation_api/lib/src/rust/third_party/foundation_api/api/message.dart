@@ -189,4 +189,7 @@ sealed class QuantumLinkMessage with _$QuantumLinkMessage {
   const factory QuantumLinkMessage.magicBackupResponseV2(
     MagicBackupResponseV2 field0,
   ) = QuantumLinkMessage_MagicBackupResponseV2;
+  const factory QuantumLinkMessage.primeFiatPreference(
+    PrimeFiatPreference field0,
+  ) = QuantumLinkMessage_PrimeFiatPreference;
 }

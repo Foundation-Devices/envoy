@@ -226,7 +226,7 @@ dependencies = [
 [[package]]
 name = "backup-shard"
 version = "0.3.0"
-source = "git+https://github.com/Foundation-Devices/foundation-api?tag=5.6.0#1399a3584dfb9b9a36e3c67a2cbdbf9fdf1b82a9"
+source = "git+https://github.com/Foundation-Devices/foundation-api?tag=5.6.2#a67eb6d33b34dfa7fa3f25073d681a1ef41192ba"
 dependencies = [
  "dcbor",
  "zeroize",
@@ -689,7 +689,7 @@ dependencies = [
 [[package]]
 name = "btp"
 version = "0.1.0"
-source = "git+https://github.com/Foundation-Devices/foundation-api?tag=5.6.0#1399a3584dfb9b9a36e3c67a2cbdbf9fdf1b82a9"
+source = "git+https://github.com/Foundation-Devices/foundation-api?tag=5.6.2#a67eb6d33b34dfa7fa3f25073d681a1ef41192ba"
 dependencies = [
  "bytemuck",
  "consts",
@@ -1237,7 +1237,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "39cab71617ae0d63f51a36d69f866391735b51691dbda63cf6f96d042b63efeb"
 dependencies = [
  "libc",
- "windows-sys 0.52.0",
+ "windows-sys 0.61.2",
 ]
 
 [[package]]
@@ -1361,7 +1361,7 @@ dependencies = [
 [[package]]
 name = "foundation-api"
 version = "2.0.0"
-source = "git+https://github.com/Foundation-Devices/foundation-api?tag=5.6.0#1399a3584dfb9b9a36e3c67a2cbdbf9fdf1b82a9"
+source = "git+https://github.com/Foundation-Devices/foundation-api?tag=5.6.2#a67eb6d33b34dfa7fa3f25073d681a1ef41192ba"
 dependencies = [
  "bc-components",
  "bc-envelope",
@@ -2623,15 +2623,14 @@ checksum = "c08d65885ee38876c4f86fa503fb49d7b507c2b62552df7c70b2fce627e06381"
 
 [[package]]
 name = "openssl"
-version = "0.10.75"
+version = "0.10.79"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "08838db121398ad17ab8531ce9de97b244589089e290a384c900cb9ff7434328"
+checksum = "bf0b434746ee2832f4f0baf10137e1cabb18cbe6912c69e2e33263c45250f542"
 dependencies = [
  "bitflags 2.10.0",
  "cfg-if",
  "foreign-types",
  "libc",
- "once_cell",
  "openssl-macros",
  "openssl-sys",
 ]
@@ -2664,9 +2663,9 @@ dependencies = [
 
 [[package]]
 name = "openssl-sys"
-version = "0.9.111"
+version = "0.9.115"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "82cab2d520aa75e3c58898289429321eb788c3106963d0dc886ec7a5f4adc321"
+checksum = "158fe5b292746440aa6e7a7e690e55aeb72d41505e2804c23c6973ad0e9c9781"
 dependencies = [
  "cc",
  "libc",
@@ -3075,7 +3074,7 @@ dependencies = [
 [[package]]
 name = "quantum-link-macros"
 version = "0.1.0"
-source = "git+https://github.com/Foundation-Devices/foundation-api?tag=5.6.0#1399a3584dfb9b9a36e3c67a2cbdbf9fdf1b82a9"
+source = "git+https://github.com/Foundation-Devices/foundation-api?tag=5.6.2#a67eb6d33b34dfa7fa3f25073d681a1ef41192ba"
 dependencies = [
  "proc-macro2",
  "quote",
@@ -3457,7 +3456,7 @@ dependencies = [
  "errno",
  "libc",
  "linux-raw-sys",
- "windows-sys 0.52.0",
+ "windows-sys 0.61.2",
 ]
 
 [[package]]
@@ -3574,7 +3573,7 @@ version = "0.29.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "9465315bc9d4566e1724f0fffcbcc446268cb522e60f9a27bcded6b19c108113"
 dependencies = [
- "bitcoin_hashes 0.13.0",
+ "bitcoin_hashes 0.14.0",
  "rand 0.8.5",
  "secp256k1-sys 0.10.1",
  "serde",
@@ -3963,7 +3962,7 @@ dependencies = [
  "getrandom 0.3.4",
  "once_cell",
  "rustix",
- "windows-sys 0.52.0",
+ "windows-sys 0.61.2",
 ]
 
 [[package]]

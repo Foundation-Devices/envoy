@@ -25,6 +25,7 @@ import 'package:envoy/ui/widgets/envoy_qr_widget.dart';
 import 'package:envoy/ui/state/accounts_state.dart';
 import 'package:go_router/go_router.dart';
 import 'package:ngwallet/ngwallet.dart';
+import 'package:envoy/business/devices.dart';
 
 class SelectAccountTransfer extends ConsumerStatefulWidget {
   final EnvoyAccount transferAccount;
@@ -237,6 +238,10 @@ class _SelectAccountTransferState extends ConsumerState<SelectAccountTransfer> {
                       state: ButtonState.defaultState,
                       onTap: () {
                         if (mounted) {
+                          final device = Devices().getDeviceBySerial(
+                              selectedAccount!.deviceSerial ?? "");
+                          final isPrime =
+                              device?.type == DeviceType.passportPrime;
                           showEnvoyDialog(
                             context: context,
                             blurColor: Colors.black,
@@ -247,6 +252,7 @@ class _SelectAccountTransferState extends ConsumerState<SelectAccountTransfer> {
                               child: VerifyAddressDialog(
                                 address: selectedAccAddress!,
                                 accountName: selectedAccount!.name,
+                                isPrime: isPrime,
                               ),
                             ),
                           );
@@ -482,10 +488,12 @@ class VerifyAddressDialog extends StatelessWidget {
     super.key,
     required this.address,
     required this.accountName,
+    required this.isPrime,
   });
 
   final String address;
   final String accountName;
+  final bool isPrime;
 
   @override
   Widget build(BuildContext context) {
@@ -498,7 +506,7 @@ class VerifyAddressDialog extends StatelessWidget {
             const Padding(
               padding: EdgeInsets.only(bottom: EnvoySpacing.medium2),
               child: EnvoyIcon(
-                EnvoyIcons.verifyAddress,
+                EnvoyIcons.qr_with_check_mark,
                 size: EnvoyIconSize.big,
               ),
             ),
@@ -513,8 +521,10 @@ class VerifyAddressDialog extends StatelessWidget {
             Padding(
               padding: const EdgeInsets.only(bottom: EnvoySpacing.medium1),
               child: Text(
-                S().buy_bitcoin_accountSelection_verify_modal_heading(
-                    accountName),
+                isPrime
+                    ? S().receive_verifyModalPrime_content(accountName)
+                    : S().buy_bitcoin_accountSelection_verify_modal_heading(
+                        accountName),
                 style: EnvoyTypography.info,
                 textAlign: TextAlign.center,
               ),

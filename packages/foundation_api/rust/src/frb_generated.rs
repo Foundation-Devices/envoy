@@ -2028,6 +2028,7 @@ const _: fn() = || {
         let _: foundation_api::api::passport::PassportSerial = PairingResponse.passport_serial;
         let _: foundation_api::api::passport::PassportColor = PairingResponse.passport_color;
         let _: bool = PairingResponse.onboarding_complete;
+        let _: Option<String> = PairingResponse.device_name;
     }
     {
         let PassportFirmwareVersion_ =
@@ -2048,6 +2049,10 @@ const _: fn() = || {
         let PricePoint = None::<foundation_api::api::fx::PricePoint>.unwrap();
         let _: f32 = PricePoint.rate;
         let _: u64 = PricePoint.timestamp;
+    }
+    {
+        let PrimeFiatPreference = None::<foundation_api::api::fx::PrimeFiatPreference>.unwrap();
+        let _: String = PrimeFiatPreference.currency_code;
     }
     {
         let PrimeMagicBackupEnabled =
@@ -2191,6 +2196,9 @@ const _: fn() = || {
         }
         foundation_api::api::message::QuantumLinkMessage::MagicBackupResponseV2(field0) => {
             let _: foundation_api::api::backup::MagicBackupResponseV2 = field0;
+        }
+        foundation_api::api::message::QuantumLinkMessage::PrimeFiatPreference(field0) => {
+            let _: foundation_api::api::fx::PrimeFiatPreference = field0;
         }
     }
     match None::<foundation_api::api::backup::RestoreMagicBackupEvent>.unwrap() {
@@ -3218,12 +3226,14 @@ impl SseDecode for foundation_api::api::pairing::PairingResponse {
         let mut var_passportColor =
             <foundation_api::api::passport::PassportColor>::sse_decode(deserializer);
         let mut var_onboardingComplete = <bool>::sse_decode(deserializer);
+        let mut var_deviceName = <Option<String>>::sse_decode(deserializer);
         return foundation_api::api::pairing::PairingResponse {
             passport_model: var_passportModel,
             passport_firmware_version: var_passportFirmwareVersion,
             passport_serial: var_passportSerial,
             passport_color: var_passportColor,
             onboarding_complete: var_onboardingComplete,
+            device_name: var_deviceName,
         };
     }
 }
@@ -3292,6 +3302,16 @@ impl SseDecode for foundation_api::api::fx::PricePoint {
         return foundation_api::api::fx::PricePoint {
             rate: var_rate,
             timestamp: var_timestamp,
+        };
+    }
+}
+
+impl SseDecode for foundation_api::api::fx::PrimeFiatPreference {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        let mut var_currencyCode = <String>::sse_decode(deserializer);
+        return foundation_api::api::fx::PrimeFiatPreference {
+            currency_code: var_currencyCode,
         };
     }
 }
@@ -3615,6 +3635,13 @@ impl SseDecode for foundation_api::api::message::QuantumLinkMessage {
                 let mut var_field0 =
                     <foundation_api::api::backup::MagicBackupResponseV2>::sse_decode(deserializer);
                 return foundation_api::api::message::QuantumLinkMessage::MagicBackupResponseV2(
+                    var_field0,
+                );
+            }
+            39 => {
+                let mut var_field0 =
+                    <foundation_api::api::fx::PrimeFiatPreference>::sse_decode(deserializer);
+                return foundation_api::api::message::QuantumLinkMessage::PrimeFiatPreference(
                     var_field0,
                 );
             }
@@ -5063,6 +5090,7 @@ impl flutter_rust_bridge::IntoDart for FrbWrapper<foundation_api::api::pairing::
             self.0.passport_serial.into_into_dart().into_dart(),
             self.0.passport_color.into_into_dart().into_dart(),
             self.0.onboarding_complete.into_into_dart().into_dart(),
+            self.0.device_name.into_into_dart().into_dart(),
         ]
         .into_dart()
     }
@@ -5199,6 +5227,23 @@ impl flutter_rust_bridge::IntoIntoDart<FrbWrapper<foundation_api::api::fx::Price
     for foundation_api::api::fx::PricePoint
 {
     fn into_into_dart(self) -> FrbWrapper<foundation_api::api::fx::PricePoint> {
+        self.into()
+    }
+}
+// Codec=Dco (DartCObject based), see doc to use other codecs
+impl flutter_rust_bridge::IntoDart for FrbWrapper<foundation_api::api::fx::PrimeFiatPreference> {
+    fn into_dart(self) -> flutter_rust_bridge::for_generated::DartAbi {
+        [self.0.currency_code.into_into_dart().into_dart()].into_dart()
+    }
+}
+impl flutter_rust_bridge::for_generated::IntoDartExceptPrimitive
+    for FrbWrapper<foundation_api::api::fx::PrimeFiatPreference>
+{
+}
+impl flutter_rust_bridge::IntoIntoDart<FrbWrapper<foundation_api::api::fx::PrimeFiatPreference>>
+    for foundation_api::api::fx::PrimeFiatPreference
+{
+    fn into_into_dart(self) -> FrbWrapper<foundation_api::api::fx::PrimeFiatPreference> {
         self.into()
     }
 }
@@ -5420,6 +5465,9 @@ impl flutter_rust_bridge::IntoDart
             }
             foundation_api::api::message::QuantumLinkMessage::MagicBackupResponseV2(field0) => {
                 [38.into_dart(), field0.into_into_dart().into_dart()].into_dart()
+            }
+            foundation_api::api::message::QuantumLinkMessage::PrimeFiatPreference(field0) => {
+                [39.into_dart(), field0.into_into_dart().into_dart()].into_dart()
             }
             _ => {
                 unimplemented!("");
@@ -6543,6 +6591,7 @@ impl SseEncode for foundation_api::api::pairing::PairingResponse {
         );
         <foundation_api::api::passport::PassportColor>::sse_encode(self.passport_color, serializer);
         <bool>::sse_encode(self.onboarding_complete, serializer);
+        <Option<String>>::sse_encode(self.device_name, serializer);
     }
 }
 
@@ -6607,6 +6656,13 @@ impl SseEncode for foundation_api::api::fx::PricePoint {
     fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
         <f32>::sse_encode(self.rate, serializer);
         <u64>::sse_encode(self.timestamp, serializer);
+    }
+}
+
+impl SseEncode for foundation_api::api::fx::PrimeFiatPreference {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        <String>::sse_encode(self.currency_code, serializer);
     }
 }
 
@@ -6850,6 +6906,10 @@ impl SseEncode for foundation_api::api::message::QuantumLinkMessage {
                 <foundation_api::api::backup::MagicBackupResponseV2>::sse_encode(
                     field0, serializer,
                 );
+            }
+            foundation_api::api::message::QuantumLinkMessage::PrimeFiatPreference(field0) => {
+                <i32>::sse_encode(39, serializer);
+                <foundation_api::api::fx::PrimeFiatPreference>::sse_encode(field0, serializer);
             }
             _ => {
                 unimplemented!("");

@@ -6,10 +6,11 @@ import 'package:envoy/business/seed_qr_extract.dart';
 import 'package:envoy/ui/widgets/scanner/scanner_decoder.dart';
 import 'package:ngwallet/ngwallet.dart';
 import 'package:qr_code_scanner_plus/qr_code_scanner_plus.dart';
+import 'package:envoy/generated/l10n.dart';
 
 class InvalidSeedQRException implements Exception {
   @override
-  toString() => "Not a valid seed";
+  toString() => S().camera_toast_notAValidSeed;
 }
 
 class SeedQrDecoder extends ScannerDecoder {

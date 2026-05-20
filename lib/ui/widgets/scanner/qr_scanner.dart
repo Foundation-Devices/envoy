@@ -238,12 +238,17 @@ class _QrScannerState extends State<QrScanner>
             context,
             e is Exception ? e : Exception(e.toString()),
             onRetry: () {
+              // Wipe the decoder's internal UR state on Retry
+              widget.decoder.reset();
               setState(() {
                 _lastScan = "";
                 _progress = 0.0;
                 _lastCodeDetected = "";
                 _lastRawBytesDetected = [];
               });
+            },
+            onCancel: () {
+              if (mounted) widget.onBackPressed(context);
             },
           );
         }
