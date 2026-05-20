@@ -258,8 +258,7 @@ class _BackupPageState extends ConsumerState<BackupPage>
                             ),
                           ),
                         ),
-                      if (s.syncToCloud && primeDevices.isNotEmpty)
-                        const SizedBox(height: EnvoySpacing.medium2),
+                      const SizedBox(height: EnvoySpacing.medium2),
                       ...primeDevices.map((device) {
                         return primeBackupSection(
                           device,

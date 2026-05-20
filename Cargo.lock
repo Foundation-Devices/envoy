@@ -1237,7 +1237,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "39cab71617ae0d63f51a36d69f866391735b51691dbda63cf6f96d042b63efeb"
 dependencies = [
  "libc",
- "windows-sys 0.52.0",
+ "windows-sys 0.61.2",
 ]
 
 [[package]]
@@ -1251,6 +1251,12 @@ name = "fallible-streaming-iterator"
 version = "0.1.9"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "7360491ce676a36bf9bb3c56c1aa791658183a54d2744120f27285738d90465a"
+
+[[package]]
+name = "faster-hex"
+version = "0.9.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "a2a2b11eda1d40935b26cf18f6833c526845ae8c41e58d09af6adeb6f0269183"
 
 [[package]]
 name = "fastrand"
@@ -1375,6 +1381,11 @@ dependencies = [
 ]
 
 [[package]]
+name = "foundation-arena"
+version = "0.1.0"
+source = "git+https://github.com/Foundation-Devices/foundation-rs.git?tag=0.6.0#99b00a3d62043391416b5ea438a50e598b1fb1dd"
+
+[[package]]
 name = "foundation-ur"
 version = "0.4.0"
 source = "git+https://github.com/Foundation-Devices/foundation-rs?tag=0.5.0#85984a453769c71b762bc0f2c5030450c4bc9166"
@@ -1386,6 +1397,18 @@ dependencies = [
  "minicbor 0.24.4",
  "phf",
  "rand_xoshiro",
+]
+
+[[package]]
+name = "foundation-urtypes"
+version = "0.5.0"
+source = "git+https://github.com/Foundation-Devices/foundation-rs.git?tag=0.6.0#99b00a3d62043391416b5ea438a50e598b1fb1dd"
+dependencies = [
+ "faster-hex",
+ "foundation-arena",
+ "heapless",
+ "minicbor 0.24.4",
+ "uuid",
 ]
 
 [[package]]
@@ -2505,7 +2528,7 @@ dependencies = [
 [[package]]
 name = "ngwallet"
 version = "1.1.1"
-source = "git+https://github.com/Foundation-Devices/ngwallet?tag=3.3.0#b50aa6f89873220ae145434b098874760c0055bd"
+source = "git+https://github.com/Foundation-Devices/ngwallet?tag=3.5.0#3677c7a39506b580b18f0edc359f3139519b3534"
 dependencies = [
  "anyhow",
  "bdk_core",
@@ -2514,6 +2537,7 @@ dependencies = [
  "bip39",
  "bip85",
  "bitcoin 0.32.7",
+ "foundation-urtypes",
  "log",
  "minicbor-serde",
  "redb",
@@ -2623,15 +2647,14 @@ checksum = "c08d65885ee38876c4f86fa503fb49d7b507c2b62552df7c70b2fce627e06381"
 
 [[package]]
 name = "openssl"
-version = "0.10.75"
+version = "0.10.79"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "08838db121398ad17ab8531ce9de97b244589089e290a384c900cb9ff7434328"
+checksum = "bf0b434746ee2832f4f0baf10137e1cabb18cbe6912c69e2e33263c45250f542"
 dependencies = [
  "bitflags 2.10.0",
  "cfg-if",
  "foreign-types",
  "libc",
- "once_cell",
  "openssl-macros",
  "openssl-sys",
 ]
@@ -2664,9 +2687,9 @@ dependencies = [
 
 [[package]]
 name = "openssl-sys"
-version = "0.9.111"
+version = "0.9.115"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "82cab2d520aa75e3c58898289429321eb788c3106963d0dc886ec7a5f4adc321"
+checksum = "158fe5b292746440aa6e7a7e690e55aeb72d41505e2804c23c6973ad0e9c9781"
 dependencies = [
  "cc",
  "libc",
@@ -3457,7 +3480,7 @@ dependencies = [
  "errno",
  "libc",
  "linux-raw-sys",
- "windows-sys 0.52.0",
+ "windows-sys 0.61.2",
 ]
 
 [[package]]
@@ -3574,7 +3597,7 @@ version = "0.29.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "9465315bc9d4566e1724f0fffcbcc446268cb522e60f9a27bcded6b19c108113"
 dependencies = [
- "bitcoin_hashes 0.13.0",
+ "bitcoin_hashes 0.14.0",
  "rand 0.8.5",
  "secp256k1-sys 0.10.1",
  "serde",
@@ -3963,7 +3986,7 @@ dependencies = [
  "getrandom 0.3.4",
  "once_cell",
  "rustix",
- "windows-sys 0.52.0",
+ "windows-sys 0.61.2",
 ]
 
 [[package]]
