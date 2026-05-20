@@ -56,9 +56,9 @@ class S {
 
   // skipped getter for the ':' key
 
-  /// `6:15`
+  /// `E2819ED`
   String get _ {
-    return Intl.message('6:15', name: '_', desc: '', args: []);
+    return Intl.message('E2819ED', name: '_', desc: '', args: []);
   }
 
   /// `App Version`
@@ -1703,6 +1703,16 @@ class S {
     return Intl.message(
       'Couldn’t decode UR.',
       name: 'camera_toast_couldntDecodeUr',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Invalid Pair Payload.`
+  String get camera_toast_invalidPairPayload {
+    return Intl.message(
+      'Invalid Pair Payload.',
+      name: 'camera_toast_invalidPairPayload',
       desc: '',
       args: [],
     );
@@ -7098,6 +7108,16 @@ class S {
     return Intl.message(
       'Couldn’t delete Envoy seed.',
       name: 'menu_toast_couldntDeleteEnvoySeed',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Developer Mode Enabled.`
+  String get menu_toast_developerModeEnabled {
+    return Intl.message(
+      'Developer Mode Enabled.',
+      name: 'menu_toast_developerModeEnabled',
       desc: '',
       args: [],
     );
