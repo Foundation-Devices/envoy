@@ -11,7 +11,6 @@ import 'package:envoy/ui/theme/envoy_spacing.dart';
 import 'package:envoy/ui/widgets/color_util.dart';
 import 'package:envoy/util/envoy_storage.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/scheduler.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
@@ -25,6 +24,12 @@ final shouldUpdateProvider = FutureProvider.family<bool, Device>((
   ref,
   device,
 ) async {
+  // Re-run when the device's firmware version changes (markDeviceUpdated /
+  // markPrimeUpdated notify devicesProvider) or when the stored latest
+  // firmware info changes (new firmware downloaded to storage).
+  ref.watch(devicesProvider);
+  ref.watch(firmwareStreamProvider(device.type.index));
+
   final version = Devices().getDeviceFirmwareVersion(device.serial);
   if (version == null) {
     return false;
@@ -49,14 +54,6 @@ class DeviceListTile extends ConsumerStatefulWidget {
 }
 
 class _DeviceListTileState extends ConsumerState<DeviceListTile> {
-  @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    SchedulerBinding.instance.addPostFrameCallback((_) {
-      ref.invalidate(shouldUpdateProvider(widget.device));
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
     var fwShouldUpdate = ref.watch(shouldUpdateProvider(widget.device));
