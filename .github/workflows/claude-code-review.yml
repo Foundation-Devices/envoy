@@ -36,9 +36,62 @@ jobs:
         uses: anthropics/claude-code-action@v1
         with:
           claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
-          plugin_marketplaces: 'https://github.com/anthropics/claude-code.git'
-          plugins: 'code-review@claude-code-plugins'
-          prompt: '/code-review:code-review ${{ github.repository }}/pull/${{ github.event.pull_request.number }}'
+          prompt: |
+            You are reviewing a PR in Envoy, Foundation Devices' Bitcoin wallet
+            mobile app (Flutter/Dart UI, Rust core via FFI, iOS + Android,
+            companion to the Passport hardware wallet).
+
+            Review the diff at ${{ github.repository }} PR #${{ github.event.pull_request.number }}.
+
+            Prioritise findings by severity. Only post comments at P0 or P1.
+
+            P0 — block merge. Look hard for:
+              - Anything that could leak, log, or weaken handling of seeds,
+                xprivs, descriptors, PSBTs, BIP39 words, or session secrets.
+                Includes logging, crash reports, analytics, screenshots,
+                clipboard, deep links, or accidental serialisation.
+              - Incorrect Bitcoin maths: fee calculation, sat/byte vs sat/vB,
+                dust thresholds, change derivation, address-type assumptions,
+                signature/PSBT round-trips.
+              - FFI boundary bugs across the Dart <-> Rust seam: lifetime/ownership,
+                nullability, blocking the UI isolate, missing `dispose`, leaks of
+                pointers or `Box`-ed values, or panics not converted to errors.
+              - Concurrency bugs around BLE (connect/disconnect/reconnect, GATT
+                writes, queue ordering) and around wallet sync.
+              - Android permissions regressions, especially BLE on Android 11+
+                (BLUETOOTH_CONNECT/SCAN, location prompt skips, foreground service
+                requirements) and iOS Bluetooth state restoration / background
+                modes.
+
+            P1 — should fix before merge:
+              - Missing or incorrect error handling on network, BLE, or FFI calls
+                that could land the user in a stuck UI state.
+              - State management mistakes (Riverpod/Provider): rebuild loops,
+                stale references after hot reload, accidental `watch` in `build`
+                that triggers infinite rebuilds.
+              - i18n strings hard-coded in English in user-facing widgets that
+                should go through the localisation pipeline.
+              - Tests that mock the Rust layer when an integration test against
+                the real FFI would have caught the bug being fixed.
+              - Obvious perf cliffs on lower-end Android (heavy work on the UI
+                isolate, large `setState` blasts, missing `const`).
+
+            Do NOT comment on:
+              - Formatting / style — `dart format` and the linter cover it.
+              - Renames, comment wording, doc typos.
+              - Speculative refactors ("you could extract this...") unless the
+                code as written is wrong.
+              - Things the PR author explicitly called out in the description.
+
+            Output:
+              - Use inline review comments anchored to the changed lines.
+              - One short paragraph per finding. State the problem, then the fix.
+                No restating what the code does.
+              - End with a single top-level summary comment: one sentence verdict
+                (approve / request changes / comment), then a bulleted list of
+                P0s, then P1s. If nothing material, post a one-line "no blocking
+                issues found" and stop.
+
+            Skip the preamble. Skip "great work!". Skip emoji.
           # See https://github.com/anthropics/claude-code-action/blob/main/docs/usage.md
           # or https://code.claude.com/docs/en/cli-reference for available options
-
