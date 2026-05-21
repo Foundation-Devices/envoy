@@ -8,7 +8,7 @@
 // How to use
 //   From Maestro YAML:
 //     - runScript:
-//         file: prime_scripts/prime_tap_screenshot.js
+//         file: prime_scripts/interactions/prime_tap_screenshot.js
 //         env:
 //           X: "240"
 //           Y: "400"

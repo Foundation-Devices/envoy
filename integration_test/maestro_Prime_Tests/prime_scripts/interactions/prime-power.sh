@@ -12,7 +12,7 @@
 #     ./prime-power.sh
 #
 #   From Maestro YAML (via prime_power.js):
-#     - runScript: prime_scripts/prime_power.js
+#     - runScript: prime_scripts/interactions/prime_power.js
 
 set -euo pipefail
 

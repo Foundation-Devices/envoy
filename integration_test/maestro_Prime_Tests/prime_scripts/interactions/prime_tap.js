@@ -11,12 +11,12 @@
 // How to use
 //   From Maestro YAML:
 //     - runScript:
-//         file: prime_scripts/prime_tap.js
+//         file: prime_scripts/interactions/prime_tap.js
 //         env:
 //           X: "240"
 //           Y: "400"
 //     - runScript:
-//         file: prime_scripts/prime_tap.js
+//         file: prime_scripts/interactions/prime_tap.js
 //         env:
 //           X: "home"
 //

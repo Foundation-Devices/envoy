@@ -12,7 +12,7 @@
 #
 #   From Maestro YAML (via prime_input_text.js):
 #     - runScript:
-#         file: prime_scripts/prime_input_text.js
+#         file: prime_scripts/interactions/prime_input_text.js
 #         env:
 #           TEXT: "hello world"
 

@@ -19,6 +19,11 @@
 #   POST /prime/swipe-screenshot  — body: { sx, sy, ex, ey, wait_ms?, path? }
 #   POST /prime/input-text        — body: { text }
 #   POST /prime/close-app         — body: { pid }
+#   POST /prime/seeds             — OCR the Seed Words screen; returns { words: [...] }
+#   POST /prime/verify-step       — one round of the Verify Seed Words quiz
+#                                   (taps the correct word + the bottom button)
+#   POST /prime/assert-visible    — screenshot + OCR; assert a given text appears
+#                                   body: { text, regex?: bool, timeout_s?: int }
 #
 # Run before maestro starts, kill on exit (run_maestro.sh does both).
 
@@ -46,8 +51,16 @@ def run(cmd):
 
 
 def script(name):
-    """Resolve a helper shell script under prime_scripts/."""
-    return os.path.join(TAP_SCRIPTS_DIR, name)
+    """Resolve a helper shell script under prime_scripts/.
+
+    Scripts are split between two subfolders:
+      interactions/  -- low-level taps, swipes, screenshots, etc.
+      helpers/       -- higher-level test helpers (seed OCR, verify-step).
+    """
+    base = os.path.basename(name)
+    if base in {"prime-seeds.sh", "prime-verify-step.sh", "prime-assert-visible.sh"}:
+        return os.path.join(TAP_SCRIPTS_DIR, "helpers", base)
+    return os.path.join(TAP_SCRIPTS_DIR, "interactions", base)
 
 
 class Handler(http.server.BaseHTTPRequestHandler):
@@ -122,6 +135,23 @@ class Handler(http.server.BaseHTTPRequestHandler):
 
         elif path == "/prime/close-app" and method == "POST":
             self._exec([script("prime-close-app.sh"), str(body["pid"])])
+
+        elif path == "/prime/seeds" and method == "POST":
+            rc, out, err = run([script("prime-seeds.sh")])
+            words = [w.strip() for w in out.splitlines() if w.strip()]
+            self._reply(200 if rc == 0 else 500,
+                        {"rc": rc, "words": words, "stderr": err})
+
+        elif path == "/prime/verify-step" and method == "POST":
+            self._exec([script("prime-verify-step.sh")])
+
+        elif path == "/prime/assert-visible" and method == "POST":
+            argv = [script("prime-assert-visible.sh"), str(body["text"])]
+            if body.get("regex"):
+                argv.append("--regex")
+            if body.get("timeout_s"):
+                argv += ["--timeout", str(body["timeout_s"])]
+            self._exec(argv)
 
         else:
             self._reply(404, {"error": "not found", "path": path, "method": method})

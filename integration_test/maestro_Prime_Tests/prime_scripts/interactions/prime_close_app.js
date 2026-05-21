@@ -7,7 +7,7 @@
 // How to use
 //   From Maestro YAML:
 //     - runScript:
-//         file: prime_scripts/prime_close_app.js
+//         file: prime_scripts/interactions/prime_close_app.js
 //         env:
 //           PID: "40"
 //

@@ -7,7 +7,7 @@
 // How to use
 //   From Maestro YAML:
 //     - runScript:
-//         file: prime_scripts/prime_input_text.js
+//         file: prime_scripts/interactions/prime_input_text.js
 //         env:
 //           TEXT: "hello world"
 //

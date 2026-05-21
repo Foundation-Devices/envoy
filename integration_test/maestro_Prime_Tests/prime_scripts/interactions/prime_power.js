@@ -6,7 +6,7 @@
 //
 // How to use
 //   From Maestro YAML:
-//     - runScript: prime_scripts/prime_power.js
+//     - runScript: prime_scripts/interactions/prime_power.js
 //
 //   From shell (via prime-power.sh):
 //     ./prime-power.sh

@@ -12,7 +12,7 @@
 #
 #   From Maestro YAML (via prime_screenshot.js):
 #     - runScript:
-#         file: prime_scripts/prime_screenshot.js
+#         file: prime_scripts/interactions/prime_screenshot.js
 #         env:
 #           PATH: "/tmp/foo.png"   # optional
 

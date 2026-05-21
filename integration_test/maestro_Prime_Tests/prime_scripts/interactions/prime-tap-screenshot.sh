@@ -14,7 +14,7 @@
 #
 #   From Maestro YAML (via prime_tap_screenshot.js):
 #     - runScript:
-#         file: prime_scripts/prime_tap_screenshot.js
+#         file: prime_scripts/interactions/prime_tap_screenshot.js
 #         env:
 #           X: "240"
 #           Y: "400"

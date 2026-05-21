@@ -13,7 +13,7 @@
 #
 #   From Maestro YAML (via prime_close_app.js):
 #     - runScript:
-#         file: prime_scripts/prime_close_app.js
+#         file: prime_scripts/interactions/prime_close_app.js
 #         env:
 #           PID: "40"
 

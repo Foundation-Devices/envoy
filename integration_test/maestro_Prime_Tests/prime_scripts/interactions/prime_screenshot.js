@@ -7,7 +7,7 @@
 // How to use
 //   From Maestro YAML:
 //     - runScript:
-//         file: prime_scripts/prime_screenshot.js
+//         file: prime_scripts/interactions/prime_screenshot.js
 //         env:
 //           PATH: "/tmp/prime.png"   // optional
 //

@@ -105,13 +105,46 @@ print_test_failure() {
     echo -e "${RED}✗ FAILED:${NC} ${BOLD}$test_name${NC}"
     echo -e "${RED}  Group:${NC}  $group_name"
 
-    # Extract the failed command from maestro output
+    # Always dump the full captured output to a log file so the user can
+    # see exactly what Maestro said when the pattern-extractors below miss.
+    local log_path="$FAIL_VIDEOS_DIR/${test_name%.yaml}.log"
+    mkdir -p "$FAIL_VIDEOS_DIR"
+    printf '%s\n' "$output" > "$log_path"
+
+    # Snapshot the most recent Prime screenshot from the FIRST-attempt run
+    # into fail-videos/ so it ships with the GitHub artifact bundle. The
+    # retry that follows will overwrite /tmp/prime-*-shot.png — we copy
+    # here, before that happens, so the saved image reflects what the
+    # Prime actually looked like at the moment the original assertion or
+    # OCR step failed.
+    local screenshot_path="$FAIL_VIDEOS_DIR/${test_name%.yaml}.png"
+    local last_shot
+    last_shot=$(ls -t /tmp/prime-*-shot.png 2>/dev/null | head -1)
+    if [ -n "$last_shot" ] && [ -f "$last_shot" ]; then
+        cp "$last_shot" "$screenshot_path"
+    fi
+
+    # Extract the failed command from maestro output. Maestro reports an
+    # action failure on a line ending in "... FAILED" and follows up with
+    # one of several reason patterns ("Assertion is false", "Element not
+    # found", etc.). We grep them all and take the first hit; if the
+    # failed-action line itself wraps across lines (multi-line text in
+    # selector), the context dump below picks up the rest.
     local failed_cmd=""
-    failed_cmd=$(echo "$output" | grep -iE "element not visible|not visible|unable to find|not found|timed out|assertion.*failed|could not|couldn't" | head -1)
+    failed_cmd=$(echo "$output" \
+        | grep -iE "\\.\\.\\. FAILED$|element not visible|not visible|unable to find|not found|timed out|assertion is false|assertion.*failed|could not|couldn't|\[prime_|throw|exception" \
+        | head -1)
 
     if [ -z "$failed_cmd" ]; then
         failed_cmd=$(echo "$output" | sed -n '/Failed at/,+3p' | head -4)
     fi
+
+    # Pull the failed-action block (the line ending in "... FAILED" plus a
+    # few preceding lines) for cases where the selector spans multi-line
+    # text, e.g. `Assert that "Passport Prime\nPassport Prime" is
+    # visible... FAILED`. grep -B grabs the context window.
+    local failed_block=""
+    failed_block=$(echo "$output" | grep -B 3 -m 1 -E '\.\.\. FAILED$' || true)
 
     # Try to find the line number in the YAML file
     if [ -n "$failed_cmd" ] && [ -f "$test_file" ]; then
@@ -150,11 +183,22 @@ print_test_failure() {
     # Print the reason from maestro
     if [ -n "$failed_cmd" ]; then
         echo -e "${RED}  Reason:${NC} $failed_cmd"
+        # If we caught a "... FAILED" line, show the surrounding action
+        # block too — that's how multi-line selectors (e.g. assertions on
+        # text that spans two lines) become readable instead of being
+        # truncated mid-quote.
+        if [ -n "$failed_block" ]; then
+            echo -e "${RED}  Failed action:${NC}"
+            echo "$failed_block" | sed 's/^/    /'
+        fi
     else
-        # Fallback: last meaningful lines
-        echo -e "${RED}  Output:${NC}"
-        echo "$output" | grep -v '^$' | tail -5 | sed 's/^/    /'
+        # Fallback: last meaningful lines (more context than before, since
+        # Maestro's trailing promo banner takes ~5 lines and would otherwise
+        # crowd out the real error).
+        echo -e "${RED}  Output (last 40 lines):${NC}"
+        echo "$output" | grep -v '^$' | tail -40 | sed 's/^/    /'
     fi
+    echo -e "${YELLOW}  Full log:${NC} $log_path"
     echo ""
 }
 
@@ -245,6 +289,32 @@ fi
 echo -e "${GREEN}✓${NC} adb found: $ADB_CMD"
 echo -e "${GREEN}✓${NC} ANDROID_HOME: $ANDROID_HOME"
 
+# ------------------------------------------------------------
+# Tesseract (Linux only — macOS uses Vision via prime_ocr.swift)
+# ------------------------------------------------------------
+# Prime helpers (prime-seeds.sh, prime-verify-step.sh, prime-assert-visible.sh)
+# OCR the Prime screen. On Linux that's tesseract; if it's missing we try to
+# install it best-effort with apt-get. Non-Debian distros are left to the
+# user with a clear message.
+if [ "$PLATFORM" = "linux" ] && ! command -v tesseract >/dev/null 2>&1; then
+    echo -e "${YELLOW}Tesseract not installed — Prime OCR helpers need it.${NC}"
+    if command -v apt-get >/dev/null 2>&1; then
+        echo -e "${YELLOW}Installing tesseract-ocr (sudo)...${NC}"
+        if sudo apt-get update -qq && sudo apt-get install -y tesseract-ocr; then
+            echo -e "${GREEN}✓${NC} tesseract installed"
+        else
+            echo -e "${RED}✗ apt-get install tesseract-ocr failed${NC}"
+            exit 1
+        fi
+    else
+        echo -e "${RED}✗ tesseract not found and apt-get is unavailable.${NC}"
+        echo -e "  Install it manually for your distro, e.g.:"
+        echo -e "    Fedora:  ${CYAN}sudo dnf install tesseract${NC}"
+        echo -e "    Arch:    ${CYAN}sudo pacman -S tesseract${NC}"
+        echo -e "    Alpine:  ${CYAN}sudo apk add tesseract-ocr${NC}"
+        exit 1
+    fi
+fi
 
 echo -e "${GREEN}✓${NC} Maestro found: $(command -v maestro)"
 echo -e "${GREEN}✓${NC} Platform: $PLATFORM"
@@ -500,11 +570,36 @@ start_kebab_bridge() {
     for i in $(seq 1 10); do
         if curl -s http://localhost:7555/home >/dev/null 2>&1; then
             echo -e "${GREEN}✓${NC} Kebab bridge started (PID: $KEBAB_PID)"
+            check_kebab_subscribed
             return
         fi
         sleep 1
     done
     echo -e "${YELLOW}⚠ Kebab bridge may not be ready — kebab commands might fail${NC}"
+}
+
+# The HTTP bridge happily ACKs every command (it just publishes to MQTT),
+# so /home returning 200 only proves the broker is reachable — not that the
+# physical kebab is listening. This walks the broker's $SYS topics to count
+# real subscribers; if zero, every command will be a no-op even though the
+# test logs say "OK". Best-effort: skipped silently if mosquitto_sub isn't
+# installed.
+check_kebab_subscribed() {
+    if ! command -v mosquitto_sub >/dev/null 2>&1; then
+        echo -e "${YELLOW}⚠ mosquitto_sub not installed — skipping subscriber check${NC}"
+        return
+    fi
+    local subs
+    subs=$(mosquitto_sub -h 127.0.0.1 -p 1235 \
+                -t '$SYS/broker/subscriptions/count' -C 1 -W 2 2>/dev/null || echo "")
+    if [ -z "$subs" ]; then
+        echo -e "${YELLOW}⚠ Could not query MQTT broker — kebab subscription status unknown${NC}"
+    elif [ "$subs" -ge 1 ] 2>/dev/null; then
+        echo -e "${GREEN}✓${NC} Kebab is subscribed to MQTT (${subs} active subscriptions)"
+    else
+        echo -e "${RED}⚠ Kebab is NOT subscribed to MQTT — commands will be silently dropped${NC}"
+        echo -e "${YELLOW}  power-cycle the kebab or check its network/USB tether${NC}"
+    fi
 }
 
 stop_kebab_bridge() {
@@ -580,13 +675,34 @@ sleep_kebab_motors() {
     KEBAB_WAKE_ACTIVE=0
 }
 
+cleanup_prime_tmp() {
+    # Sweep stable-path artifacts from the previous run so they don't
+    # linger or get confused with the current run's output. The helper
+    # screenshots are stable-path (prime-{seeds,verify,assert}-shot.png)
+    # rather than mktemp so users can inspect them after a failure — they
+    # survive their own script's exit, but get wiped here on the next run.
+    rm -f /tmp/prime-bridge-shot.png \
+          /tmp/prime-seeds.txt \
+          /tmp/prime-seeds-shot.png \
+          /tmp/prime-verify-shot.png \
+          /tmp/prime-assert-shot.png
+}
+
 cleanup() {
     # Order matters: send the sleep command before killing the HTTP bridge.
+    # NOTE: Prime tmp screenshots are intentionally NOT deleted here — they
+    # survive the run so a failure can be inspected after the fact. The
+    # next run wipes them before it starts (see call below).
     sleep_kebab_motors
     stop_prime_bridge
     stop_kebab_bridge
 }
 trap cleanup EXIT INT TERM
+
+# Wipe stable-path artifacts from the *previous* run before anything new
+# happens this run. Screenshots etc. survive their own run for inspection;
+# the cleanup is here rather than in the exit trap.
+cleanup_prime_tmp
 
 start_kebab_bridge
 start_prime_bridge
@@ -607,6 +723,12 @@ run_single_test() {
     test_name="$(basename "$test_file")"
 
     print_test_start "$test_name"
+
+    # Wipe any stale .log / .png from a previous run so the files in
+    # fail-videos/ always reflect *this* run (present only if this run
+    # failed).
+    rm -f "$FAIL_VIDEOS_DIR/${test_name%.yaml}.log" \
+          "$FAIL_VIDEOS_DIR/${test_name%.yaml}.png"
 
     OUTPUT=$(maestro --device "$DEVICE_ID" test "$test_file" 2>&1)
     EXIT_CODE=$?

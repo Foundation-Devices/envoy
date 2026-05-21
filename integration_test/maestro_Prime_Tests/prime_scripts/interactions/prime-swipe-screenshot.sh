@@ -13,7 +13,7 @@
 #
 #   From Maestro YAML (via prime_swipe_screenshot.js):
 #     - runScript:
-#         file: prime_scripts/prime_swipe_screenshot.js
+#         file: prime_scripts/interactions/prime_swipe_screenshot.js
 #         env:
 #           SX: "240"
 #           SY: "600"

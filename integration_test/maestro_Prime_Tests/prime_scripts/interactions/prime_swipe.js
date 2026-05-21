@@ -8,7 +8,7 @@
 // How to use
 //   From Maestro YAML:
 //     - runScript:
-//         file: prime_scripts/prime_swipe.js
+//         file: prime_scripts/interactions/prime_swipe.js
 //         env:
 //           SX: "240"
 //           SY: "600"
