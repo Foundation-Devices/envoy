@@ -182,6 +182,7 @@ class BleMagicBackupHandler extends PassportMessageHandler {
               ),
             );
           case backup_lib.GetBackupException.backupNotFound:
+          case backup_lib.GetBackupException.unauthorized:
             qlConnection.writeMessage(
               api.QuantumLinkMessage_RestoreMagicBackupEvent(
                 api.RestoreMagicBackupEvent.notFound(),
