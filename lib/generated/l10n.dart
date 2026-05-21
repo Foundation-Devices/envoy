@@ -56,9 +56,14 @@ class S {
 
   // skipped getter for the ':' key
 
-  /// `E2819ED`
+  /// `https://blockstream.info/api/`
   String get _ {
-    return Intl.message('E2819ED', name: '_', desc: '', args: []);
+    return Intl.message(
+      'https://blockstream.info/api/',
+      name: '_',
+      desc: '',
+      args: [],
+    );
   }
 
   /// `App Version`
@@ -8098,6 +8103,36 @@ class S {
     return Intl.message(
       'Unlock with biometrics or PIN',
       name: 'privacy_applicationLock_unlock',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Could not reach Block Explorer`
+  String get privacy_blockExplorer_couldNotReachBlockExplorer {
+    return Intl.message(
+      'Could not reach Block Explorer',
+      name: 'privacy_blockExplorer_couldNotReachBlockExplorer',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Successfully connected to Block Explorer`
+  String get privacy_blockExplorer_success {
+    return Intl.message(
+      'Successfully connected to Block Explorer',
+      name: 'privacy_blockExplorer_success',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `URL missing http:// or https:// prefix`
+  String get privacy_blockExplorer_urlError {
+    return Intl.message(
+      'URL missing http:// or https:// prefix',
+      name: 'privacy_blockExplorer_urlError',
       desc: '',
       args: [],
     );

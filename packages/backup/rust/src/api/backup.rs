@@ -2,6 +2,7 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
+use backup_client::CryptoProvider;
 use bdk::bitcoin;
 use bdk::bitcoin::hashes::hex::FromHex;
 use bdk::bitcoin::hashes::Hash;
@@ -47,11 +48,6 @@ pub struct BackupRequest {
     pub(crate) signature: String,
     pub(crate) hash: String,
     pub(crate) backup: String,
-}
-
-#[derive(Deserialize)]
-pub struct GetBackupResponse {
-    pub backup: String,
 }
 
 #[flutter_rust_bridge::frb(init)]
@@ -245,7 +241,7 @@ impl Backup {
             return Err(GetBackupException::ServerUnreachable);
         }
         // Parse response JSON
-        let response: GetBackupResponse = match res.json().await {
+        let response: backup_client::BackupResponse = match res.json().await {
             Ok(r) => r,
             Err(_) => return Err(GetBackupException::ServerUnreachable),
         };
@@ -398,7 +394,7 @@ impl Backup {
             return Err(GetBackupException::ServerUnreachable);
         }
         // Parse response JSON
-        let response: GetBackupResponse = match res.json().await {
+        let response: backup_client::BackupResponse = match res.json().await {
             Ok(r) => r,
             Err(_) => return Err(GetBackupException::ServerUnreachable),
         };
@@ -512,15 +508,6 @@ impl Backup {
         hex::encode(digest)
     }
 
-    /// Sign an arbitrary message with the ML-DSA-44 signing key.
-    /// Uses all-zero randomness for deterministic signatures.
-    #[frb(ignore)]
-    fn sign_message(sk: &ml_dsa_44::MLDSA44SigningKey, message: &[u8]) -> anyhow::Result<Vec<u8>> {
-        let sig = ml_dsa_44::sign(sk, message, b"", [0u8; 32])
-            .map_err(|e| anyhow!("ML-DSA signing failed: {e:?}"))?;
-        Ok(sig.as_ref().to_vec())
-    }
-
     // ── Prime relay v2 (Envoy is a dumb proxy) ─────────────────────────
 
     /// Upload a pre-signed Prime backup to the v2 server.
@@ -537,7 +524,7 @@ impl Backup {
             anyhow::bail!("Server URL cannot be empty");
         }
 
-        let body = BackupRequestV2 {
+        let body = backup_client::BackupRequest {
             timestamp,
             hash: hex::encode(&hash),
             pubkey: hex::encode(&pubkey),
@@ -594,7 +581,7 @@ impl Backup {
             return Err(GetBackupException::ServerUnreachable);
         }
 
-        let response: GetBackupResponse = match res.json().await {
+        let response: backup_client::BackupResponse = match res.json().await {
             Ok(r) => r,
             Err(_) => return Err(GetBackupException::ServerUnreachable),
         };
@@ -669,20 +656,17 @@ impl Backup {
 
         let kp = Self::derive_mldsa_keypair(seed_words)?;
         let backup_hash = Self::compute_backup_hash(&kp.verification_key);
-        let timestamp = std::time::SystemTime::now()
-            .duration_since(std::time::UNIX_EPOCH)
-            .unwrap()
-            .as_secs();
-        let msg = format!("post:{backup_hash}:{timestamp}");
-        let sig = Self::sign_message(&kp.signing_key, msg.as_bytes())?;
-
-        let body = BackupRequestV2 {
-            timestamp,
-            hash: backup_hash,
-            pubkey: hex::encode(kp.verification_key.as_ref()),
-            backup: hex::encode(&encrypted),
-            client_signature: hex::encode(&sig),
-        };
+        let provider = backup_client::LibcruxProvider;
+        let keys = provider
+            .keypair_from_bytes(kp.signing_key.as_ref(), kp.verification_key.as_ref())
+            .map_err(|e| anyhow!("keypair conversion failed: {e}"))?;
+        let body = backup_client::prepare_post_backup(
+            &provider,
+            &keys,
+            &backup_hash,
+            &hex::encode(&encrypted),
+        )
+        .map_err(|e| anyhow!("failed to prepare backup request: {e}"))?;
 
         let client = Self::get_reqwest_client(proxy_port);
         let res = client
@@ -715,20 +699,16 @@ impl Backup {
         let kp =
             Self::derive_mldsa_keypair(seed_words).map_err(|_| GetBackupException::InvalidSeed)?;
         let backup_hash = Self::compute_backup_hash(&kp.verification_key);
-        let timestamp = std::time::SystemTime::now()
-            .duration_since(std::time::UNIX_EPOCH)
-            .unwrap()
-            .as_secs();
-        let msg = format!("get:{backup_hash}:{timestamp}");
-        let sig = Self::sign_message(&kp.signing_key, msg.as_bytes())
+        let provider = backup_client::LibcruxProvider;
+        let keys = provider
+            .keypair_from_bytes(kp.signing_key.as_ref(), kp.verification_key.as_ref())
+            .map_err(|_| GetBackupException::InvalidSeed)?;
+        let req = backup_client::prepare_get_backup(&provider, &keys, &backup_hash)
             .map_err(|_| GetBackupException::InvalidSeed)?;
 
         let url = format!(
             "{}/backup?key={}&ts={}&sig={}",
-            v2_server_url,
-            backup_hash,
-            timestamp,
-            hex::encode(&sig),
+            v2_server_url, req.key, req.ts, req.sig,
         );
 
         let client = Self::get_reqwest_client(proxy_port);
@@ -748,7 +728,7 @@ impl Backup {
             return Err(GetBackupException::ServerUnreachable);
         }
 
-        let response: GetBackupResponse = match res.json().await {
+        let response: backup_client::BackupResponse = match res.json().await {
             Ok(r) => r,
             Err(_) => return Err(GetBackupException::ServerUnreachable),
         };
@@ -784,19 +764,16 @@ impl Backup {
 
         let kp = Self::derive_mldsa_keypair(seed_words)?;
         let backup_hash = Self::compute_backup_hash(&kp.verification_key);
-        let timestamp = std::time::SystemTime::now()
-            .duration_since(std::time::UNIX_EPOCH)
-            .unwrap()
-            .as_secs();
-        let msg = format!("delete:{backup_hash}:{timestamp}");
-        let sig = Self::sign_message(&kp.signing_key, msg.as_bytes())?;
+        let provider = backup_client::LibcruxProvider;
+        let keys = provider
+            .keypair_from_bytes(kp.signing_key.as_ref(), kp.verification_key.as_ref())
+            .map_err(|e| anyhow!("keypair conversion failed: {e}"))?;
+        let req = backup_client::prepare_delete_backup(&provider, &keys, &backup_hash)
+            .map_err(|e| anyhow!("failed to prepare delete request: {e}"))?;
 
         let url = format!(
             "{}/backup?key={}&ts={}&sig={}",
-            v2_server_url,
-            backup_hash,
-            timestamp,
-            hex::encode(&sig),
+            v2_server_url, req.key, req.ts, req.sig,
         );
 
         let client = Self::get_reqwest_client(proxy_port);
@@ -808,14 +785,4 @@ impl Backup {
 
         Ok(res.status().as_u16())
     }
-}
-
-#[derive(Serialize)]
-#[frb(ignore)]
-struct BackupRequestV2 {
-    timestamp: u64,
-    hash: String,
-    pubkey: String,
-    backup: String,
-    client_signature: String,
 }

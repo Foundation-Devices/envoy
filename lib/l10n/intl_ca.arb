@@ -1,6 +1,6 @@
 {
   ":": ":",
-  "_": "E2819ED",
+  "_": "https://blockstream.info/api/",
   "about_appVersion": "Versió de l'aplicació",
   "about_openSourceLicences": "Llicències de Codi Obert",
   "about_privacyPolicy": "Política de Privacitat",
@@ -818,6 +818,9 @@
   "privacySetting_nodeConnected": "Node Connectat",
   "privacy_applicationLock_title": "Bloqueig de l'aplicació",
   "privacy_applicationLock_unlock": "Desbloqueja amb biometria o PIN",
+  "privacy_blockExplorer_couldNotReachBlockExplorer": "Could not reach Block Explorer",
+  "privacy_blockExplorer_success": "Successfully connected to Block Explorer",
+  "privacy_blockExplorer_urlError": "URL missing http:// or https:// prefix",
   "privacy_explorer_configure": "Improve your privacy by connecting to your own block explorer. Tap learn more above.",
   "privacy_explorer_explorerAddress": "Enter explorer address",
   "privacy_explorer_explorerType_personal": "Personal Block Explorer",

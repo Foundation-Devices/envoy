@@ -1,6 +1,6 @@
 {
   ":": ":",
-  "_": "E2819ED",
+  "_": "https://blockstream.info/api/",
   "about_appVersion": "App Version",
   "about_openSourceLicences": "Open Source Licences",
   "about_privacyPolicy": "Privacy Policy",
@@ -818,6 +818,9 @@
   "privacySetting_nodeConnected": "Node Connected",
   "privacy_applicationLock_title": "Application lock",
   "privacy_applicationLock_unlock": "Unlock with biometrics or PIN",
+  "privacy_blockExplorer_couldNotReachBlockExplorer": "Could not reach Block Explorer",
+  "privacy_blockExplorer_success": "Successfully connected to Block Explorer",
+  "privacy_blockExplorer_urlError": "URL missing http:// or https:// prefix",
   "privacy_explorer_configure": "Improve your privacy by connecting to your own block explorer. Tap learn more above.",
   "privacy_explorer_explorerAddress": "Enter explorer address",
   "privacy_explorer_explorerType_personal": "Personal Block Explorer",

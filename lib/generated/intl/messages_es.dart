@@ -2519,6 +2519,15 @@ class MessageLookup extends MessageLookupByLibrary {
         "privacy_applicationLock_unlock": MessageLookupByLibrary.simpleMessage(
           "Desbloqueo con Huella o PIN",
         ),
+        "privacy_blockExplorer_couldNotReachBlockExplorer":
+            MessageLookupByLibrary.simpleMessage(
+                "Could not reach Block Explorer"),
+        "privacy_blockExplorer_success": MessageLookupByLibrary.simpleMessage(
+          "Successfully connected to Block Explorer",
+        ),
+        "privacy_blockExplorer_urlError": MessageLookupByLibrary.simpleMessage(
+          "URL missing http:// or https:// prefix",
+        ),
         "privacy_explorer_configure": MessageLookupByLibrary.simpleMessage(
           "Mejora tu privacidad con tu propio explorador de bloques. Pulsa Más información arriba.",
         ),

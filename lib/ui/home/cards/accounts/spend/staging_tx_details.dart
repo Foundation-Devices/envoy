@@ -141,6 +141,8 @@ class _SpendTxDetailsState extends ConsumerState<StagingTxDetails>
               },
               opaque: false,
               fullscreenDialog: true));
+      ref.read(spendEditModeProvider.notifier).state =
+          SpendOverlayContext.hidden;
       if (!context.mounted) return;
       if (applied == true) {
         Navigator.of(context).pop();

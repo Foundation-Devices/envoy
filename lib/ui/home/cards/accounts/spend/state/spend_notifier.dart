@@ -602,6 +602,10 @@ class TransactionModeNotifier extends StateNotifier<TransactionModel> {
           debugPrint("Insufficient fee rate: $field0");
           errorMessage = S().send_keyboard_amount_too_low_info;
         },
+        lockedUtxoSelected: (ids) {
+          debugPrint("Locked UTXO selected: ${ids.join(", ")}");
+          errorMessage = "Selected coin is locked. Unlock it or pick another.";
+        },
       );
     } else {
       errorMessage = S().send_keyboard_amount_insufficient_funds_info;

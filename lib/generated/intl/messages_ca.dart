@@ -72,7 +72,8 @@ class MessageLookup extends MessageLookupByLibrary {
 
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
-        "_": MessageLookupByLibrary.simpleMessage("E2819ED"),
+        "_": MessageLookupByLibrary.simpleMessage(
+            "https://blockstream.info/api/"),
         "about_appVersion": MessageLookupByLibrary.simpleMessage(
           "Versió de l\'aplicació",
         ),
@@ -2505,6 +2506,15 @@ class MessageLookup extends MessageLookupByLibrary {
         ),
         "privacy_applicationLock_unlock": MessageLookupByLibrary.simpleMessage(
           "Desbloqueja amb biometria o PIN",
+        ),
+        "privacy_blockExplorer_couldNotReachBlockExplorer":
+            MessageLookupByLibrary.simpleMessage(
+                "Could not reach Block Explorer"),
+        "privacy_blockExplorer_success": MessageLookupByLibrary.simpleMessage(
+          "Successfully connected to Block Explorer",
+        ),
+        "privacy_blockExplorer_urlError": MessageLookupByLibrary.simpleMessage(
+          "URL missing http:// or https:// prefix",
         ),
         "privacy_explorer_configure": MessageLookupByLibrary.simpleMessage(
           "Improve your privacy by connecting to your own block explorer. Tap learn more above.",
