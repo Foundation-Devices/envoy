@@ -4,10 +4,14 @@
 
 import 'package:envoy/business/bitcoin_parser.dart';
 import 'package:envoy/business/exchange_rate.dart';
+import 'package:envoy/business/fee_rate.dart';
+import 'package:envoy/business/fees.dart';
 import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/address_entry.dart';
 import 'package:envoy/ui/amount_entry.dart';
 import 'package:envoy/ui/home/cards/accounts/accounts_state.dart';
+import 'package:envoy/ui/home/cards/accounts/spend/fee_slider.dart';
+import 'package:envoy/ui/home/cards/accounts/spend/spend_fee_state.dart';
 import 'package:envoy/ui/home/cards/accounts/spend/state/spend_notifier.dart';
 import 'package:envoy/ui/home/cards/accounts/spend/state/spend_state.dart';
 import 'package:envoy/ui/home/cards/envoy_text_button.dart';
@@ -297,6 +301,21 @@ class _SendCardState extends ConsumerState<SendCard>
                         if (formValidation) {
                           try {
                             ref.read(spendTransactionProvider.notifier).reset();
+
+                            final network =
+                                ref.read(selectedAccountProvider)?.network;
+                            if (network != null) {
+                              ref.read(spendFeeRateProvider.notifier).state =
+                                  FeeRate.fromSatPerVb(
+                                Fees().slowRate(network),
+                              );
+                            }
+                            ref.read(selectedFeeOptionProvider.notifier).state =
+                                FeeOption.standard;
+                            ref
+                                .read(userHasChangedFeesProvider.notifier)
+                                .state = false;
+
                             bool valid = await ref
                                 .read(spendTransactionProvider.notifier)
                                 .validate(ProviderScope.containerOf(context));
