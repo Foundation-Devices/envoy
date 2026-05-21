@@ -7,1027 +7,1529 @@ import 'api/backup.dart';
 import 'dart:async';
 import 'dart:convert';
 import 'frb_generated.dart';
-import 'frb_generated.io.dart' if (dart.library.js_interop) 'frb_generated.web.dart';
+import 'frb_generated.io.dart'
+    if (dart.library.js_interop) 'frb_generated.web.dart';
 import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated.dart';
 
-
-                /// Main entrypoint of the Rust API
-                class RustLib extends BaseEntrypoint<RustLibApi, RustLibApiImpl, RustLibWire> {
-                  @internal
-                  static final instance = RustLib._();
-
-                  RustLib._();
-
-                  /// Initialize flutter_rust_bridge
-                  static Future<void> init({
-                    RustLibApi? api,
-                    BaseHandler? handler,
-                    ExternalLibrary? externalLibrary,
-                    bool forceSameCodegenVersion = true,
-                  }) async {
-                    await instance.initImpl(
-                      api: api,
-                      handler: handler,
-                      externalLibrary: externalLibrary,
-                      forceSameCodegenVersion: forceSameCodegenVersion,
-                    );
-                  }
-
-                  /// Initialize flutter_rust_bridge in mock mode.
-                  /// No libraries for FFI are loaded.
-                  static void initMock({
-                    required RustLibApi api,
-                  }) {
-                    instance.initMockImpl(
-                      api: api,
-                    );
-                  }
-
-                  /// Dispose flutter_rust_bridge
-                  ///
-                  /// The call to this function is optional, since flutter_rust_bridge (and everything else)
-                  /// is automatically disposed when the app stops.
-                  static void dispose() => instance.disposeImpl();
-
-                  @override
-                  ApiImplConstructor<RustLibApiImpl, RustLibWire> get apiImplConstructor => RustLibApiImpl.new;
-
-                  @override
-                  WireConstructor<RustLibWire> get wireConstructor => RustLibWire.fromExternalLibrary;
-
-                  @override
-                  Future<void> executeRustInitializers() async {
-                    await api.crateApiBackupInitApp();
-
-                  }
-
-                  @override
-                  ExternalLibraryLoaderConfig get defaultExternalLibraryLoaderConfig => kDefaultExternalLibraryLoaderConfig;
-
-                  @override
-                  String get codegenVersion => '2.11.1';
-
-                  @override
-                  int get rustContentHash => -1392544800;
-
-                  static const kDefaultExternalLibraryLoaderConfig = ExternalLibraryLoaderConfig(
-                    stem: 'rust_lib_backup',
-                    ioDirectory: 'rust/target/release/',
-                    webPrefix: 'pkg/',
-                  );
-                }
-                
-
-                abstract class RustLibApi extends BaseApi {
-                  Future<List<(String,String)>> crateApiBackupBackupDecryptBackup({required List<int> data , required StaticSecret secret });
-
-Future<int> crateApiBackupBackupDelete({required String seedWords , required String serverUrl , required int proxyPort });
-
-Future<Response> crateApiBackupBackupDeleteBackupAsync({required String serverUrl , required int proxyPort , required String hash });
-
-Future<int> crateApiBackupBackupDeletePrimeBackupV2({required String v2ServerUrl , required int proxyPort , required List<int> key , required BigInt timestamp , required List<int> signature });
-
-Future<int> crateApiBackupBackupDeleteV2({required String seedWords , required String v2ServerUrl , required int proxyPort });
-
-Future<Uint8List> crateApiBackupBackupEncryptBackup({required List<(String,String)> files , required StaticSecret secret });
-
-Future<List<(String,String)>> crateApiBackupBackupExtractBackupData({required BackupPayload payload });
-
-Future<List<(String,String)>> crateApiBackupBackupGetBackup({required String seedWords , required String serverUrl , required int proxyPort });
-
-Future<List<(String,String)>> crateApiBackupBackupGetBackupOffline({required String seedWords , required String filePath });
-
-Future<List<(String,String)>> crateApiBackupBackupGetBackupV2({required String seedWords , required String v2ServerUrl , required int proxyPort });
-
-Future<Uint8List> crateApiBackupBackupGetPrimeBackup({required List<int> hash , required String serverUrl , required int proxyPort });
-
-Future<Uint8List> crateApiBackupBackupGetPrimeBackupV2({required String v2ServerUrl , required int proxyPort , required List<int> key , required BigInt timestamp , required List<int> signature });
-
-Future<Client> crateApiBackupBackupGetReqwestClient({required int proxyPort });
-
-Future<StaticSecret> crateApiBackupBackupGetStaticSecret({required String seedWords });
-
-Future<bool> crateApiBackupBackupPerformBackup({required Map<String, String> payload , required String seedWords , required String serverUrl , required String localBackup , required int proxyPort , required bool performCloud });
-
-Future<bool> crateApiBackupBackupPerformBackupOffline({required BackupPayload payload , required String seedWords , required String path });
-
-Future<bool> crateApiBackupBackupPerformBackupV2({required Map<String, String> payload , required String seedWords , required String v2ServerUrl , required String localBackup , required int proxyPort , required bool performCloud });
-
-Future<bool> crateApiBackupBackupPerformPrimeBackup({required String serverUrl , required int proxyPort , required List<int> seedHash , required List<int> payload });
-
-Future<bool> crateApiBackupBackupPerformPrimeBackupV2({required String v2ServerUrl , required int proxyPort , required BigInt timestamp , required List<int> hash , required List<int> pubkey , required List<int> data , required List<int> clientSignature });
-
-Future<void> crateApiBackupInitApp();
-
-RustArcIncrementStrongCountFnType get rust_arc_increment_strong_count_Client;
-
-RustArcDecrementStrongCountFnType get rust_arc_decrement_strong_count_Client;
-
-CrossPlatformFinalizerArg get rust_arc_decrement_strong_count_ClientPtr;
-
-RustArcIncrementStrongCountFnType get rust_arc_increment_strong_count_Response;
-
-RustArcDecrementStrongCountFnType get rust_arc_decrement_strong_count_Response;
-
-CrossPlatformFinalizerArg get rust_arc_decrement_strong_count_ResponsePtr;
-
-RustArcIncrementStrongCountFnType get rust_arc_increment_strong_count_StaticSecret;
-
-RustArcDecrementStrongCountFnType get rust_arc_decrement_strong_count_StaticSecret;
-
-CrossPlatformFinalizerArg get rust_arc_decrement_strong_count_StaticSecretPtr;
-
-
-                }
-                
-
-                class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
-                  RustLibApiImpl({
-                    required super.handler,
-                    required super.wire,
-                    required super.generalizedFrbRustBinding,
-                    required super.portManager,
-                  });
-
-                  @override Future<List<(String,String)>> crateApiBackupBackupDecryptBackup({required List<int> data , required StaticSecret secret })  { return handler.executeNormal(NormalTask(
-            callFfi: (port_) {
-              
-            final serializer = SseSerializer(generalizedFrbRustBinding);sse_encode_list_prim_u_8_loose(data, serializer);
-sse_encode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerStaticSecret(secret, serializer);
-            pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 1, port: port_);
-            
-            },
-            codec: 
-        SseCodec(
-          decodeSuccessData: sse_decode_list_record_string_string,
-          decodeErrorData: sse_decode_AnyhowException,
-        )
-        ,
-            constMeta: kCrateApiBackupBackupDecryptBackupConstMeta,
-            argValues: [data, secret],
-            apiImpl: this,
-        )); }
-
-
-        TaskConstMeta get kCrateApiBackupBackupDecryptBackupConstMeta => const TaskConstMeta(
-            debugName: "backup_decrypt_backup",
-            argNames: ["data", "secret"],
-        );
-        
-
-@override Future<int> crateApiBackupBackupDelete({required String seedWords , required String serverUrl , required int proxyPort })  { return handler.executeNormal(NormalTask(
-            callFfi: (port_) {
-              
-            final serializer = SseSerializer(generalizedFrbRustBinding);sse_encode_String(seedWords, serializer);
-sse_encode_String(serverUrl, serializer);
-sse_encode_i_32(proxyPort, serializer);
-            pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 2, port: port_);
-            
-            },
-            codec: 
-        SseCodec(
-          decodeSuccessData: sse_decode_u_16,
-          decodeErrorData: sse_decode_AnyhowException,
-        )
-        ,
-            constMeta: kCrateApiBackupBackupDeleteConstMeta,
-            argValues: [seedWords, serverUrl, proxyPort],
-            apiImpl: this,
-        )); }
-
-
-        TaskConstMeta get kCrateApiBackupBackupDeleteConstMeta => const TaskConstMeta(
-            debugName: "backup_delete",
-            argNames: ["seedWords", "serverUrl", "proxyPort"],
-        );
-        
-
-@override Future<Response> crateApiBackupBackupDeleteBackupAsync({required String serverUrl , required int proxyPort , required String hash })  { return handler.executeNormal(NormalTask(
-            callFfi: (port_) {
-              
-            final serializer = SseSerializer(generalizedFrbRustBinding);sse_encode_String(serverUrl, serializer);
-sse_encode_i_32(proxyPort, serializer);
-sse_encode_String(hash, serializer);
-            pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 3, port: port_);
-            
-            },
-            codec: 
-        SseCodec(
-          decodeSuccessData: sse_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerResponse,
-          decodeErrorData: sse_decode_AnyhowException,
-        )
-        ,
-            constMeta: kCrateApiBackupBackupDeleteBackupAsyncConstMeta,
-            argValues: [serverUrl, proxyPort, hash],
-            apiImpl: this,
-        )); }
-
-
-        TaskConstMeta get kCrateApiBackupBackupDeleteBackupAsyncConstMeta => const TaskConstMeta(
-            debugName: "backup_delete_backup_async",
-            argNames: ["serverUrl", "proxyPort", "hash"],
-        );
-        
-
-@override Future<int> crateApiBackupBackupDeletePrimeBackupV2({required String v2ServerUrl , required int proxyPort , required List<int> key , required BigInt timestamp , required List<int> signature })  { return handler.executeNormal(NormalTask(
-            callFfi: (port_) {
-              
-            final serializer = SseSerializer(generalizedFrbRustBinding);sse_encode_String(v2ServerUrl, serializer);
-sse_encode_i_32(proxyPort, serializer);
-sse_encode_list_prim_u_8_loose(key, serializer);
-sse_encode_u_64(timestamp, serializer);
-sse_encode_list_prim_u_8_loose(signature, serializer);
-            pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 4, port: port_);
-            
-            },
-            codec: 
-        SseCodec(
-          decodeSuccessData: sse_decode_u_16,
-          decodeErrorData: sse_decode_AnyhowException,
-        )
-        ,
-            constMeta: kCrateApiBackupBackupDeletePrimeBackupV2ConstMeta,
-            argValues: [v2ServerUrl, proxyPort, key, timestamp, signature],
-            apiImpl: this,
-        )); }
-
-
-        TaskConstMeta get kCrateApiBackupBackupDeletePrimeBackupV2ConstMeta => const TaskConstMeta(
-            debugName: "backup_delete_prime_backup_v2",
-            argNames: ["v2ServerUrl", "proxyPort", "key", "timestamp", "signature"],
-        );
-        
-
-@override Future<int> crateApiBackupBackupDeleteV2({required String seedWords , required String v2ServerUrl , required int proxyPort })  { return handler.executeNormal(NormalTask(
-            callFfi: (port_) {
-              
-            final serializer = SseSerializer(generalizedFrbRustBinding);sse_encode_String(seedWords, serializer);
-sse_encode_String(v2ServerUrl, serializer);
-sse_encode_i_32(proxyPort, serializer);
-            pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 5, port: port_);
-            
-            },
-            codec: 
-        SseCodec(
-          decodeSuccessData: sse_decode_u_16,
-          decodeErrorData: sse_decode_AnyhowException,
-        )
-        ,
-            constMeta: kCrateApiBackupBackupDeleteV2ConstMeta,
-            argValues: [seedWords, v2ServerUrl, proxyPort],
-            apiImpl: this,
-        )); }
-
-
-        TaskConstMeta get kCrateApiBackupBackupDeleteV2ConstMeta => const TaskConstMeta(
-            debugName: "backup_delete_v2",
-            argNames: ["seedWords", "v2ServerUrl", "proxyPort"],
-        );
-        
-
-@override Future<Uint8List> crateApiBackupBackupEncryptBackup({required List<(String,String)> files , required StaticSecret secret })  { return handler.executeNormal(NormalTask(
-            callFfi: (port_) {
-              
-            final serializer = SseSerializer(generalizedFrbRustBinding);sse_encode_list_record_string_string(files, serializer);
-sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerStaticSecret(secret, serializer);
-            pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 6, port: port_);
-            
-            },
-            codec: 
-        SseCodec(
-          decodeSuccessData: sse_decode_list_prim_u_8_strict,
-          decodeErrorData: null,
-        )
-        ,
-            constMeta: kCrateApiBackupBackupEncryptBackupConstMeta,
-            argValues: [files, secret],
-            apiImpl: this,
-        )); }
-
-
-        TaskConstMeta get kCrateApiBackupBackupEncryptBackupConstMeta => const TaskConstMeta(
-            debugName: "backup_encrypt_backup",
-            argNames: ["files", "secret"],
-        );
-        
-
-@override Future<List<(String,String)>> crateApiBackupBackupExtractBackupData({required BackupPayload payload })  { return handler.executeNormal(NormalTask(
-            callFfi: (port_) {
-              
-            final serializer = SseSerializer(generalizedFrbRustBinding);sse_encode_box_autoadd_backup_payload(payload, serializer);
-            pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 7, port: port_);
-            
-            },
-            codec: 
-        SseCodec(
-          decodeSuccessData: sse_decode_list_record_string_string,
-          decodeErrorData: sse_decode_AnyhowException,
-        )
-        ,
-            constMeta: kCrateApiBackupBackupExtractBackupDataConstMeta,
-            argValues: [payload],
-            apiImpl: this,
-        )); }
-
-
-        TaskConstMeta get kCrateApiBackupBackupExtractBackupDataConstMeta => const TaskConstMeta(
-            debugName: "backup_extract_backup_data",
-            argNames: ["payload"],
-        );
-        
-
-@override Future<List<(String,String)>> crateApiBackupBackupGetBackup({required String seedWords , required String serverUrl , required int proxyPort })  { return handler.executeNormal(NormalTask(
-            callFfi: (port_) {
-              
-            final serializer = SseSerializer(generalizedFrbRustBinding);sse_encode_String(seedWords, serializer);
-sse_encode_String(serverUrl, serializer);
-sse_encode_i_32(proxyPort, serializer);
-            pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 8, port: port_);
-            
-            },
-            codec: 
-        SseCodec(
-          decodeSuccessData: sse_decode_list_record_string_string,
-          decodeErrorData: sse_decode_get_backup_exception,
-        )
-        ,
-            constMeta: kCrateApiBackupBackupGetBackupConstMeta,
-            argValues: [seedWords, serverUrl, proxyPort],
-            apiImpl: this,
-        )); }
-
-
-        TaskConstMeta get kCrateApiBackupBackupGetBackupConstMeta => const TaskConstMeta(
-            debugName: "backup_get_backup",
-            argNames: ["seedWords", "serverUrl", "proxyPort"],
-        );
-        
-
-@override Future<List<(String,String)>> crateApiBackupBackupGetBackupOffline({required String seedWords , required String filePath })  { return handler.executeNormal(NormalTask(
-            callFfi: (port_) {
-              
-            final serializer = SseSerializer(generalizedFrbRustBinding);sse_encode_String(seedWords, serializer);
-sse_encode_String(filePath, serializer);
-            pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 9, port: port_);
-            
-            },
-            codec: 
-        SseCodec(
-          decodeSuccessData: sse_decode_list_record_string_string,
-          decodeErrorData: sse_decode_get_backup_exception,
-        )
-        ,
-            constMeta: kCrateApiBackupBackupGetBackupOfflineConstMeta,
-            argValues: [seedWords, filePath],
-            apiImpl: this,
-        )); }
-
-
-        TaskConstMeta get kCrateApiBackupBackupGetBackupOfflineConstMeta => const TaskConstMeta(
-            debugName: "backup_get_backup_offline",
-            argNames: ["seedWords", "filePath"],
-        );
-        
-
-@override Future<List<(String,String)>> crateApiBackupBackupGetBackupV2({required String seedWords , required String v2ServerUrl , required int proxyPort })  { return handler.executeNormal(NormalTask(
-            callFfi: (port_) {
-              
-            final serializer = SseSerializer(generalizedFrbRustBinding);sse_encode_String(seedWords, serializer);
-sse_encode_String(v2ServerUrl, serializer);
-sse_encode_i_32(proxyPort, serializer);
-            pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 10, port: port_);
-            
-            },
-            codec: 
-        SseCodec(
-          decodeSuccessData: sse_decode_list_record_string_string,
-          decodeErrorData: sse_decode_get_backup_exception,
-        )
-        ,
-            constMeta: kCrateApiBackupBackupGetBackupV2ConstMeta,
-            argValues: [seedWords, v2ServerUrl, proxyPort],
-            apiImpl: this,
-        )); }
-
-
-        TaskConstMeta get kCrateApiBackupBackupGetBackupV2ConstMeta => const TaskConstMeta(
-            debugName: "backup_get_backup_v2",
-            argNames: ["seedWords", "v2ServerUrl", "proxyPort"],
-        );
-        
-
-@override Future<Uint8List> crateApiBackupBackupGetPrimeBackup({required List<int> hash , required String serverUrl , required int proxyPort })  { return handler.executeNormal(NormalTask(
-            callFfi: (port_) {
-              
-            final serializer = SseSerializer(generalizedFrbRustBinding);sse_encode_list_prim_u_8_loose(hash, serializer);
-sse_encode_String(serverUrl, serializer);
-sse_encode_i_32(proxyPort, serializer);
-            pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 11, port: port_);
-            
-            },
-            codec: 
-        SseCodec(
-          decodeSuccessData: sse_decode_list_prim_u_8_strict,
-          decodeErrorData: sse_decode_get_backup_exception,
-        )
-        ,
-            constMeta: kCrateApiBackupBackupGetPrimeBackupConstMeta,
-            argValues: [hash, serverUrl, proxyPort],
-            apiImpl: this,
-        )); }
-
-
-        TaskConstMeta get kCrateApiBackupBackupGetPrimeBackupConstMeta => const TaskConstMeta(
-            debugName: "backup_get_prime_backup",
-            argNames: ["hash", "serverUrl", "proxyPort"],
-        );
-        
-
-@override Future<Uint8List> crateApiBackupBackupGetPrimeBackupV2({required String v2ServerUrl , required int proxyPort , required List<int> key , required BigInt timestamp , required List<int> signature })  { return handler.executeNormal(NormalTask(
-            callFfi: (port_) {
-              
-            final serializer = SseSerializer(generalizedFrbRustBinding);sse_encode_String(v2ServerUrl, serializer);
-sse_encode_i_32(proxyPort, serializer);
-sse_encode_list_prim_u_8_loose(key, serializer);
-sse_encode_u_64(timestamp, serializer);
-sse_encode_list_prim_u_8_loose(signature, serializer);
-            pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 12, port: port_);
-            
-            },
-            codec: 
-        SseCodec(
-          decodeSuccessData: sse_decode_list_prim_u_8_strict,
-          decodeErrorData: sse_decode_get_backup_exception,
-        )
-        ,
-            constMeta: kCrateApiBackupBackupGetPrimeBackupV2ConstMeta,
-            argValues: [v2ServerUrl, proxyPort, key, timestamp, signature],
-            apiImpl: this,
-        )); }
-
-
-        TaskConstMeta get kCrateApiBackupBackupGetPrimeBackupV2ConstMeta => const TaskConstMeta(
-            debugName: "backup_get_prime_backup_v2",
-            argNames: ["v2ServerUrl", "proxyPort", "key", "timestamp", "signature"],
-        );
-        
-
-@override Future<Client> crateApiBackupBackupGetReqwestClient({required int proxyPort })  { return handler.executeNormal(NormalTask(
-            callFfi: (port_) {
-              
-            final serializer = SseSerializer(generalizedFrbRustBinding);sse_encode_i_32(proxyPort, serializer);
-            pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 13, port: port_);
-            
-            },
-            codec: 
-        SseCodec(
-          decodeSuccessData: sse_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerClient,
-          decodeErrorData: null,
-        )
-        ,
-            constMeta: kCrateApiBackupBackupGetReqwestClientConstMeta,
-            argValues: [proxyPort],
-            apiImpl: this,
-        )); }
-
-
-        TaskConstMeta get kCrateApiBackupBackupGetReqwestClientConstMeta => const TaskConstMeta(
-            debugName: "backup_get_reqwest_client",
-            argNames: ["proxyPort"],
-        );
-        
-
-@override Future<StaticSecret> crateApiBackupBackupGetStaticSecret({required String seedWords })  { return handler.executeNormal(NormalTask(
-            callFfi: (port_) {
-              
-            final serializer = SseSerializer(generalizedFrbRustBinding);sse_encode_String(seedWords, serializer);
-            pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 14, port: port_);
-            
-            },
-            codec: 
-        SseCodec(
-          decodeSuccessData: sse_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerStaticSecret,
-          decodeErrorData: sse_decode_AnyhowException,
-        )
-        ,
-            constMeta: kCrateApiBackupBackupGetStaticSecretConstMeta,
-            argValues: [seedWords],
-            apiImpl: this,
-        )); }
-
-
-        TaskConstMeta get kCrateApiBackupBackupGetStaticSecretConstMeta => const TaskConstMeta(
-            debugName: "backup_get_static_secret",
-            argNames: ["seedWords"],
-        );
-        
-
-@override Future<bool> crateApiBackupBackupPerformBackup({required Map<String, String> payload , required String seedWords , required String serverUrl , required String localBackup , required int proxyPort , required bool performCloud })  { return handler.executeNormal(NormalTask(
-            callFfi: (port_) {
-              
-            final serializer = SseSerializer(generalizedFrbRustBinding);sse_encode_Map_String_String_None(payload, serializer);
-sse_encode_String(seedWords, serializer);
-sse_encode_String(serverUrl, serializer);
-sse_encode_String(localBackup, serializer);
-sse_encode_i_32(proxyPort, serializer);
-sse_encode_bool(performCloud, serializer);
-            pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 15, port: port_);
-            
-            },
-            codec: 
-        SseCodec(
-          decodeSuccessData: sse_decode_bool,
-          decodeErrorData: sse_decode_AnyhowException,
-        )
-        ,
-            constMeta: kCrateApiBackupBackupPerformBackupConstMeta,
-            argValues: [payload, seedWords, serverUrl, localBackup, proxyPort, performCloud],
-            apiImpl: this,
-        )); }
-
-
-        TaskConstMeta get kCrateApiBackupBackupPerformBackupConstMeta => const TaskConstMeta(
-            debugName: "backup_perform_backup",
-            argNames: ["payload", "seedWords", "serverUrl", "localBackup", "proxyPort", "performCloud"],
-        );
-        
-
-@override Future<bool> crateApiBackupBackupPerformBackupOffline({required BackupPayload payload , required String seedWords , required String path })  { return handler.executeNormal(NormalTask(
-            callFfi: (port_) {
-              
-            final serializer = SseSerializer(generalizedFrbRustBinding);sse_encode_box_autoadd_backup_payload(payload, serializer);
-sse_encode_String(seedWords, serializer);
-sse_encode_String(path, serializer);
-            pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 16, port: port_);
-            
-            },
-            codec: 
-        SseCodec(
-          decodeSuccessData: sse_decode_bool,
-          decodeErrorData: sse_decode_AnyhowException,
-        )
-        ,
-            constMeta: kCrateApiBackupBackupPerformBackupOfflineConstMeta,
-            argValues: [payload, seedWords, path],
-            apiImpl: this,
-        )); }
-
-
-        TaskConstMeta get kCrateApiBackupBackupPerformBackupOfflineConstMeta => const TaskConstMeta(
-            debugName: "backup_perform_backup_offline",
-            argNames: ["payload", "seedWords", "path"],
-        );
-        
-
-@override Future<bool> crateApiBackupBackupPerformBackupV2({required Map<String, String> payload , required String seedWords , required String v2ServerUrl , required String localBackup , required int proxyPort , required bool performCloud })  { return handler.executeNormal(NormalTask(
-            callFfi: (port_) {
-              
-            final serializer = SseSerializer(generalizedFrbRustBinding);sse_encode_Map_String_String_None(payload, serializer);
-sse_encode_String(seedWords, serializer);
-sse_encode_String(v2ServerUrl, serializer);
-sse_encode_String(localBackup, serializer);
-sse_encode_i_32(proxyPort, serializer);
-sse_encode_bool(performCloud, serializer);
-            pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 17, port: port_);
-            
-            },
-            codec: 
-        SseCodec(
-          decodeSuccessData: sse_decode_bool,
-          decodeErrorData: sse_decode_AnyhowException,
-        )
-        ,
-            constMeta: kCrateApiBackupBackupPerformBackupV2ConstMeta,
-            argValues: [payload, seedWords, v2ServerUrl, localBackup, proxyPort, performCloud],
-            apiImpl: this,
-        )); }
-
-
-        TaskConstMeta get kCrateApiBackupBackupPerformBackupV2ConstMeta => const TaskConstMeta(
-            debugName: "backup_perform_backup_v2",
-            argNames: ["payload", "seedWords", "v2ServerUrl", "localBackup", "proxyPort", "performCloud"],
-        );
-        
-
-@override Future<bool> crateApiBackupBackupPerformPrimeBackup({required String serverUrl , required int proxyPort , required List<int> seedHash , required List<int> payload })  { return handler.executeNormal(NormalTask(
-            callFfi: (port_) {
-              
-            final serializer = SseSerializer(generalizedFrbRustBinding);sse_encode_String(serverUrl, serializer);
-sse_encode_i_32(proxyPort, serializer);
-sse_encode_list_prim_u_8_loose(seedHash, serializer);
-sse_encode_list_prim_u_8_loose(payload, serializer);
-            pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 18, port: port_);
-            
-            },
-            codec: 
-        SseCodec(
-          decodeSuccessData: sse_decode_bool,
-          decodeErrorData: sse_decode_AnyhowException,
-        )
-        ,
-            constMeta: kCrateApiBackupBackupPerformPrimeBackupConstMeta,
-            argValues: [serverUrl, proxyPort, seedHash, payload],
-            apiImpl: this,
-        )); }
-
-
-        TaskConstMeta get kCrateApiBackupBackupPerformPrimeBackupConstMeta => const TaskConstMeta(
-            debugName: "backup_perform_prime_backup",
-            argNames: ["serverUrl", "proxyPort", "seedHash", "payload"],
-        );
-        
-
-@override Future<bool> crateApiBackupBackupPerformPrimeBackupV2({required String v2ServerUrl , required int proxyPort , required BigInt timestamp , required List<int> hash , required List<int> pubkey , required List<int> data , required List<int> clientSignature })  { return handler.executeNormal(NormalTask(
-            callFfi: (port_) {
-              
-            final serializer = SseSerializer(generalizedFrbRustBinding);sse_encode_String(v2ServerUrl, serializer);
-sse_encode_i_32(proxyPort, serializer);
-sse_encode_u_64(timestamp, serializer);
-sse_encode_list_prim_u_8_loose(hash, serializer);
-sse_encode_list_prim_u_8_loose(pubkey, serializer);
-sse_encode_list_prim_u_8_loose(data, serializer);
-sse_encode_list_prim_u_8_loose(clientSignature, serializer);
-            pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 19, port: port_);
-            
-            },
-            codec: 
-        SseCodec(
-          decodeSuccessData: sse_decode_bool,
-          decodeErrorData: sse_decode_AnyhowException,
-        )
-        ,
-            constMeta: kCrateApiBackupBackupPerformPrimeBackupV2ConstMeta,
-            argValues: [v2ServerUrl, proxyPort, timestamp, hash, pubkey, data, clientSignature],
-            apiImpl: this,
-        )); }
-
-
-        TaskConstMeta get kCrateApiBackupBackupPerformPrimeBackupV2ConstMeta => const TaskConstMeta(
-            debugName: "backup_perform_prime_backup_v2",
-            argNames: ["v2ServerUrl", "proxyPort", "timestamp", "hash", "pubkey", "data", "clientSignature"],
-        );
-        
-
-@override Future<void> crateApiBackupInitApp()  { return handler.executeNormal(NormalTask(
-            callFfi: (port_) {
-              
-            final serializer = SseSerializer(generalizedFrbRustBinding);
-            pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 20, port: port_);
-            
-            },
-            codec: 
-        SseCodec(
-          decodeSuccessData: sse_decode_unit,
-          decodeErrorData: null,
-        )
-        ,
-            constMeta: kCrateApiBackupInitAppConstMeta,
-            argValues: [],
-            apiImpl: this,
-        )); }
-
-
-        TaskConstMeta get kCrateApiBackupInitAppConstMeta => const TaskConstMeta(
-            debugName: "init_app",
-            argNames: [],
-        );
-        
-
-RustArcIncrementStrongCountFnType get rust_arc_increment_strong_count_Client => wire.rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerClient;
-
-RustArcDecrementStrongCountFnType get rust_arc_decrement_strong_count_Client => wire.rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerClient;
-
-RustArcIncrementStrongCountFnType get rust_arc_increment_strong_count_Response => wire.rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerResponse;
-
-RustArcDecrementStrongCountFnType get rust_arc_decrement_strong_count_Response => wire.rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerResponse;
-
-RustArcIncrementStrongCountFnType get rust_arc_increment_strong_count_StaticSecret => wire.rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerStaticSecret;
-
-RustArcDecrementStrongCountFnType get rust_arc_decrement_strong_count_StaticSecret => wire.rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerStaticSecret;
-
-
-
-                  @protected AnyhowException dco_decode_AnyhowException(dynamic raw){ // Codec=Dco (DartCObject based), see doc to use other codecs
-return AnyhowException(raw as String); }
-
-@protected Client dco_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerClient(dynamic raw){ // Codec=Dco (DartCObject based), see doc to use other codecs
-return ClientImpl.frbInternalDcoDecode(raw as List<dynamic>); }
-
-@protected Response dco_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerResponse(dynamic raw){ // Codec=Dco (DartCObject based), see doc to use other codecs
-return ResponseImpl.frbInternalDcoDecode(raw as List<dynamic>); }
-
-@protected StaticSecret dco_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerStaticSecret(dynamic raw){ // Codec=Dco (DartCObject based), see doc to use other codecs
-return StaticSecretImpl.frbInternalDcoDecode(raw as List<dynamic>); }
-
-@protected StaticSecret dco_decode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerStaticSecret(dynamic raw){ // Codec=Dco (DartCObject based), see doc to use other codecs
-return StaticSecretImpl.frbInternalDcoDecode(raw as List<dynamic>); }
-
-@protected Map<String, String> dco_decode_Map_String_String_None(dynamic raw){ // Codec=Dco (DartCObject based), see doc to use other codecs
-return Map.fromEntries(dco_decode_list_record_string_string(raw).map((e) => MapEntry(e.$1, e.$2))); }
-
-@protected Client dco_decode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerClient(dynamic raw){ // Codec=Dco (DartCObject based), see doc to use other codecs
-return ClientImpl.frbInternalDcoDecode(raw as List<dynamic>); }
-
-@protected Response dco_decode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerResponse(dynamic raw){ // Codec=Dco (DartCObject based), see doc to use other codecs
-return ResponseImpl.frbInternalDcoDecode(raw as List<dynamic>); }
-
-@protected StaticSecret dco_decode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerStaticSecret(dynamic raw){ // Codec=Dco (DartCObject based), see doc to use other codecs
-return StaticSecretImpl.frbInternalDcoDecode(raw as List<dynamic>); }
-
-@protected String dco_decode_String(dynamic raw){ // Codec=Dco (DartCObject based), see doc to use other codecs
-return raw as String; }
-
-@protected Backup dco_decode_backup(dynamic raw){ // Codec=Dco (DartCObject based), see doc to use other codecs
-final arr = raw as List<dynamic>;
-                if (arr.length != 0) throw Exception('unexpected arr length: expect 0 but see ${arr.length}');
-                return Backup(); }
-
-@protected BackupPayload dco_decode_backup_payload(dynamic raw){ // Codec=Dco (DartCObject based), see doc to use other codecs
-final arr = raw as List<dynamic>;
-                if (arr.length != 2) throw Exception('unexpected arr length: expect 2 but see ${arr.length}');
-                return BackupPayload(keysNr: dco_decode_u_8(arr[0]),
-data: dco_decode_list_String(arr[1]),); }
-
-@protected bool dco_decode_bool(dynamic raw){ // Codec=Dco (DartCObject based), see doc to use other codecs
-return raw as bool; }
-
-@protected BackupPayload dco_decode_box_autoadd_backup_payload(dynamic raw){ // Codec=Dco (DartCObject based), see doc to use other codecs
-return dco_decode_backup_payload(raw); }
-
-@protected GetBackupException dco_decode_get_backup_exception(dynamic raw){ // Codec=Dco (DartCObject based), see doc to use other codecs
-return GetBackupException.values[raw as int]; }
-
-@protected int dco_decode_i_32(dynamic raw){ // Codec=Dco (DartCObject based), see doc to use other codecs
-return raw as int; }
-
-@protected List<String> dco_decode_list_String(dynamic raw){ // Codec=Dco (DartCObject based), see doc to use other codecs
-return (raw as List<dynamic>).map(dco_decode_String).toList(); }
-
-@protected List<int> dco_decode_list_prim_u_8_loose(dynamic raw){ // Codec=Dco (DartCObject based), see doc to use other codecs
-return raw as List<int>; }
-
-@protected Uint8List dco_decode_list_prim_u_8_strict(dynamic raw){ // Codec=Dco (DartCObject based), see doc to use other codecs
-return raw as Uint8List; }
-
-@protected List<(String,String)> dco_decode_list_record_string_string(dynamic raw){ // Codec=Dco (DartCObject based), see doc to use other codecs
-return (raw as List<dynamic>).map(dco_decode_record_string_string).toList(); }
-
-@protected (String,String) dco_decode_record_string_string(dynamic raw){ // Codec=Dco (DartCObject based), see doc to use other codecs
-final arr = raw as List<dynamic>;
-            if (arr.length != 2) {
-                throw Exception('Expected 2 elements, got ${arr.length}');
-            }
-            return (dco_decode_String(arr[0]),dco_decode_String(arr[1]),); }
-
-@protected int dco_decode_u_16(dynamic raw){ // Codec=Dco (DartCObject based), see doc to use other codecs
-return raw as int; }
-
-@protected BigInt dco_decode_u_64(dynamic raw){ // Codec=Dco (DartCObject based), see doc to use other codecs
-return dcoDecodeU64(raw); }
-
-@protected int dco_decode_u_8(dynamic raw){ // Codec=Dco (DartCObject based), see doc to use other codecs
-return raw as int; }
-
-@protected void dco_decode_unit(dynamic raw){ // Codec=Dco (DartCObject based), see doc to use other codecs
-return; }
-
-@protected BigInt dco_decode_usize(dynamic raw){ // Codec=Dco (DartCObject based), see doc to use other codecs
-return dcoDecodeU64(raw); }
-
-@protected AnyhowException sse_decode_AnyhowException(SseDeserializer deserializer){ // Codec=Sse (Serialization based), see doc to use other codecs
-var inner = sse_decode_String(deserializer);
-        return AnyhowException(inner); }
-
-@protected Client sse_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerClient(SseDeserializer deserializer){ // Codec=Sse (Serialization based), see doc to use other codecs
-return ClientImpl.frbInternalSseDecode(sse_decode_usize(deserializer), sse_decode_i_32(deserializer)); }
-
-@protected Response sse_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerResponse(SseDeserializer deserializer){ // Codec=Sse (Serialization based), see doc to use other codecs
-return ResponseImpl.frbInternalSseDecode(sse_decode_usize(deserializer), sse_decode_i_32(deserializer)); }
-
-@protected StaticSecret sse_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerStaticSecret(SseDeserializer deserializer){ // Codec=Sse (Serialization based), see doc to use other codecs
-return StaticSecretImpl.frbInternalSseDecode(sse_decode_usize(deserializer), sse_decode_i_32(deserializer)); }
-
-@protected StaticSecret sse_decode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerStaticSecret(SseDeserializer deserializer){ // Codec=Sse (Serialization based), see doc to use other codecs
-return StaticSecretImpl.frbInternalSseDecode(sse_decode_usize(deserializer), sse_decode_i_32(deserializer)); }
-
-@protected Map<String, String> sse_decode_Map_String_String_None(SseDeserializer deserializer){ // Codec=Sse (Serialization based), see doc to use other codecs
-var inner = sse_decode_list_record_string_string(deserializer);
-        return Map.fromEntries(inner.map((e) => MapEntry(e.$1, e.$2))); }
-
-@protected Client sse_decode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerClient(SseDeserializer deserializer){ // Codec=Sse (Serialization based), see doc to use other codecs
-return ClientImpl.frbInternalSseDecode(sse_decode_usize(deserializer), sse_decode_i_32(deserializer)); }
-
-@protected Response sse_decode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerResponse(SseDeserializer deserializer){ // Codec=Sse (Serialization based), see doc to use other codecs
-return ResponseImpl.frbInternalSseDecode(sse_decode_usize(deserializer), sse_decode_i_32(deserializer)); }
-
-@protected StaticSecret sse_decode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerStaticSecret(SseDeserializer deserializer){ // Codec=Sse (Serialization based), see doc to use other codecs
-return StaticSecretImpl.frbInternalSseDecode(sse_decode_usize(deserializer), sse_decode_i_32(deserializer)); }
-
-@protected String sse_decode_String(SseDeserializer deserializer){ // Codec=Sse (Serialization based), see doc to use other codecs
-var inner = sse_decode_list_prim_u_8_strict(deserializer);
-        return utf8.decoder.convert(inner); }
-
-@protected Backup sse_decode_backup(SseDeserializer deserializer){ // Codec=Sse (Serialization based), see doc to use other codecs
-return Backup(); }
-
-@protected BackupPayload sse_decode_backup_payload(SseDeserializer deserializer){ // Codec=Sse (Serialization based), see doc to use other codecs
-var var_keysNr = sse_decode_u_8(deserializer);
-var var_data = sse_decode_list_String(deserializer);
-return BackupPayload(keysNr: var_keysNr, data: var_data); }
-
-@protected bool sse_decode_bool(SseDeserializer deserializer){ // Codec=Sse (Serialization based), see doc to use other codecs
-return deserializer.buffer.getUint8() != 0; }
-
-@protected BackupPayload sse_decode_box_autoadd_backup_payload(SseDeserializer deserializer){ // Codec=Sse (Serialization based), see doc to use other codecs
-return (sse_decode_backup_payload(deserializer)); }
-
-@protected GetBackupException sse_decode_get_backup_exception(SseDeserializer deserializer){ // Codec=Sse (Serialization based), see doc to use other codecs
-var inner = sse_decode_i_32(deserializer);
-        return GetBackupException.values[inner]; }
-
-@protected int sse_decode_i_32(SseDeserializer deserializer){ // Codec=Sse (Serialization based), see doc to use other codecs
-return deserializer.buffer.getInt32(); }
-
-@protected List<String> sse_decode_list_String(SseDeserializer deserializer){ // Codec=Sse (Serialization based), see doc to use other codecs
-
-        var len_ = sse_decode_i_32(deserializer);
-        var ans_ = <String>[];
-        for (var idx_ = 0; idx_ < len_; ++idx_) { ans_.add(sse_decode_String(deserializer)); }
-        return ans_;
-         }
-
-@protected List<int> sse_decode_list_prim_u_8_loose(SseDeserializer deserializer){ // Codec=Sse (Serialization based), see doc to use other codecs
-var len_ = sse_decode_i_32(deserializer);
-                return deserializer.buffer.getUint8List(len_); }
-
-@protected Uint8List sse_decode_list_prim_u_8_strict(SseDeserializer deserializer){ // Codec=Sse (Serialization based), see doc to use other codecs
-var len_ = sse_decode_i_32(deserializer);
-                return deserializer.buffer.getUint8List(len_); }
-
-@protected List<(String,String)> sse_decode_list_record_string_string(SseDeserializer deserializer){ // Codec=Sse (Serialization based), see doc to use other codecs
-
-        var len_ = sse_decode_i_32(deserializer);
-        var ans_ = <(String,String)>[];
-        for (var idx_ = 0; idx_ < len_; ++idx_) { ans_.add(sse_decode_record_string_string(deserializer)); }
-        return ans_;
-         }
-
-@protected (String,String) sse_decode_record_string_string(SseDeserializer deserializer){ // Codec=Sse (Serialization based), see doc to use other codecs
-var var_field0 = sse_decode_String(deserializer);
-var var_field1 = sse_decode_String(deserializer);
-return (var_field0, var_field1); }
-
-@protected int sse_decode_u_16(SseDeserializer deserializer){ // Codec=Sse (Serialization based), see doc to use other codecs
-return deserializer.buffer.getUint16(); }
-
-@protected BigInt sse_decode_u_64(SseDeserializer deserializer){ // Codec=Sse (Serialization based), see doc to use other codecs
-return deserializer.buffer.getBigUint64(); }
-
-@protected int sse_decode_u_8(SseDeserializer deserializer){ // Codec=Sse (Serialization based), see doc to use other codecs
-return deserializer.buffer.getUint8(); }
-
-@protected void sse_decode_unit(SseDeserializer deserializer){ // Codec=Sse (Serialization based), see doc to use other codecs
- }
-
-@protected BigInt sse_decode_usize(SseDeserializer deserializer){ // Codec=Sse (Serialization based), see doc to use other codecs
-return deserializer.buffer.getBigUint64(); }
-
-@protected void sse_encode_AnyhowException(AnyhowException self, SseSerializer serializer){ // Codec=Sse (Serialization based), see doc to use other codecs
-sse_encode_String(self.message, serializer); }
-
-@protected void sse_encode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerClient(Client self, SseSerializer serializer){ // Codec=Sse (Serialization based), see doc to use other codecs
-sse_encode_usize((self as ClientImpl).frbInternalSseEncode(move: true), serializer); }
-
-@protected void sse_encode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerResponse(Response self, SseSerializer serializer){ // Codec=Sse (Serialization based), see doc to use other codecs
-sse_encode_usize((self as ResponseImpl).frbInternalSseEncode(move: true), serializer); }
-
-@protected void sse_encode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerStaticSecret(StaticSecret self, SseSerializer serializer){ // Codec=Sse (Serialization based), see doc to use other codecs
-sse_encode_usize((self as StaticSecretImpl).frbInternalSseEncode(move: true), serializer); }
-
-@protected void sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerStaticSecret(StaticSecret self, SseSerializer serializer){ // Codec=Sse (Serialization based), see doc to use other codecs
-sse_encode_usize((self as StaticSecretImpl).frbInternalSseEncode(move: false), serializer); }
-
-@protected void sse_encode_Map_String_String_None(Map<String, String> self, SseSerializer serializer){ // Codec=Sse (Serialization based), see doc to use other codecs
-sse_encode_list_record_string_string(self.entries.map((e) => (e.key, e.value)).toList(), serializer); }
-
-@protected void sse_encode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerClient(Client self, SseSerializer serializer){ // Codec=Sse (Serialization based), see doc to use other codecs
-sse_encode_usize((self as ClientImpl).frbInternalSseEncode(move: null), serializer); }
-
-@protected void sse_encode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerResponse(Response self, SseSerializer serializer){ // Codec=Sse (Serialization based), see doc to use other codecs
-sse_encode_usize((self as ResponseImpl).frbInternalSseEncode(move: null), serializer); }
-
-@protected void sse_encode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerStaticSecret(StaticSecret self, SseSerializer serializer){ // Codec=Sse (Serialization based), see doc to use other codecs
-sse_encode_usize((self as StaticSecretImpl).frbInternalSseEncode(move: null), serializer); }
-
-@protected void sse_encode_String(String self, SseSerializer serializer){ // Codec=Sse (Serialization based), see doc to use other codecs
-sse_encode_list_prim_u_8_strict(utf8.encoder.convert(self), serializer); }
-
-@protected void sse_encode_backup(Backup self, SseSerializer serializer){ // Codec=Sse (Serialization based), see doc to use other codecs
- }
-
-@protected void sse_encode_backup_payload(BackupPayload self, SseSerializer serializer){ // Codec=Sse (Serialization based), see doc to use other codecs
-sse_encode_u_8(self.keysNr, serializer);
-sse_encode_list_String(self.data, serializer);
- }
-
-@protected void sse_encode_bool(bool self, SseSerializer serializer){ // Codec=Sse (Serialization based), see doc to use other codecs
-serializer.buffer.putUint8(self ? 1 : 0); }
-
-@protected void sse_encode_box_autoadd_backup_payload(BackupPayload self, SseSerializer serializer){ // Codec=Sse (Serialization based), see doc to use other codecs
-sse_encode_backup_payload(self, serializer); }
-
-@protected void sse_encode_get_backup_exception(GetBackupException self, SseSerializer serializer){ // Codec=Sse (Serialization based), see doc to use other codecs
-sse_encode_i_32(self.index, serializer); }
-
-@protected void sse_encode_i_32(int self, SseSerializer serializer){ // Codec=Sse (Serialization based), see doc to use other codecs
-serializer.buffer.putInt32(self); }
-
-@protected void sse_encode_list_String(List<String> self, SseSerializer serializer){ // Codec=Sse (Serialization based), see doc to use other codecs
-sse_encode_i_32(self.length, serializer);
-        for (final item in self) { sse_encode_String(item, serializer); } }
-
-@protected void sse_encode_list_prim_u_8_loose(List<int> self, SseSerializer serializer){ // Codec=Sse (Serialization based), see doc to use other codecs
-sse_encode_i_32(self.length, serializer);
-                    serializer.buffer.putUint8List(self is Uint8List ? self : Uint8List.fromList(self)); }
-
-@protected void sse_encode_list_prim_u_8_strict(Uint8List self, SseSerializer serializer){ // Codec=Sse (Serialization based), see doc to use other codecs
-sse_encode_i_32(self.length, serializer);
-                    serializer.buffer.putUint8List(self); }
-
-@protected void sse_encode_list_record_string_string(List<(String,String)> self, SseSerializer serializer){ // Codec=Sse (Serialization based), see doc to use other codecs
-sse_encode_i_32(self.length, serializer);
-        for (final item in self) { sse_encode_record_string_string(item, serializer); } }
-
-@protected void sse_encode_record_string_string((String,String) self, SseSerializer serializer){ // Codec=Sse (Serialization based), see doc to use other codecs
-sse_encode_String(self.$1, serializer);
-sse_encode_String(self.$2, serializer);
- }
-
-@protected void sse_encode_u_16(int self, SseSerializer serializer){ // Codec=Sse (Serialization based), see doc to use other codecs
-serializer.buffer.putUint16(self); }
-
-@protected void sse_encode_u_64(BigInt self, SseSerializer serializer){ // Codec=Sse (Serialization based), see doc to use other codecs
-serializer.buffer.putBigUint64(self); }
-
-@protected void sse_encode_u_8(int self, SseSerializer serializer){ // Codec=Sse (Serialization based), see doc to use other codecs
-serializer.buffer.putUint8(self); }
-
-@protected void sse_encode_unit(void self, SseSerializer serializer){ // Codec=Sse (Serialization based), see doc to use other codecs
- }
-
-@protected void sse_encode_usize(BigInt self, SseSerializer serializer){ // Codec=Sse (Serialization based), see doc to use other codecs
-serializer.buffer.putBigUint64(self); }
-                }
-                
-
-            @sealed class ClientImpl extends RustOpaque implements Client {
-                // Not to be used by end users
-                ClientImpl.frbInternalDcoDecode(List<dynamic> wire):
-                    super.frbInternalDcoDecode(wire, _kStaticData);
-
-                // Not to be used by end users
-                ClientImpl.frbInternalSseDecode(BigInt ptr, int externalSizeOnNative):
-                    super.frbInternalSseDecode(ptr, externalSizeOnNative, _kStaticData);
-
-                static final _kStaticData = RustArcStaticData(
-                    rustArcIncrementStrongCount: RustLib.instance.api.rust_arc_increment_strong_count_Client,
-                    rustArcDecrementStrongCount: RustLib.instance.api.rust_arc_decrement_strong_count_Client,
-                    rustArcDecrementStrongCountPtr: RustLib.instance.api.rust_arc_decrement_strong_count_ClientPtr,
-                );
-
-                
-            }
-            @sealed class ResponseImpl extends RustOpaque implements Response {
-                // Not to be used by end users
-                ResponseImpl.frbInternalDcoDecode(List<dynamic> wire):
-                    super.frbInternalDcoDecode(wire, _kStaticData);
-
-                // Not to be used by end users
-                ResponseImpl.frbInternalSseDecode(BigInt ptr, int externalSizeOnNative):
-                    super.frbInternalSseDecode(ptr, externalSizeOnNative, _kStaticData);
-
-                static final _kStaticData = RustArcStaticData(
-                    rustArcIncrementStrongCount: RustLib.instance.api.rust_arc_increment_strong_count_Response,
-                    rustArcDecrementStrongCount: RustLib.instance.api.rust_arc_decrement_strong_count_Response,
-                    rustArcDecrementStrongCountPtr: RustLib.instance.api.rust_arc_decrement_strong_count_ResponsePtr,
-                );
-
-                
-            }
-            @sealed class StaticSecretImpl extends RustOpaque implements StaticSecret {
-                // Not to be used by end users
-                StaticSecretImpl.frbInternalDcoDecode(List<dynamic> wire):
-                    super.frbInternalDcoDecode(wire, _kStaticData);
-
-                // Not to be used by end users
-                StaticSecretImpl.frbInternalSseDecode(BigInt ptr, int externalSizeOnNative):
-                    super.frbInternalSseDecode(ptr, externalSizeOnNative, _kStaticData);
-
-                static final _kStaticData = RustArcStaticData(
-                    rustArcIncrementStrongCount: RustLib.instance.api.rust_arc_increment_strong_count_StaticSecret,
-                    rustArcDecrementStrongCount: RustLib.instance.api.rust_arc_decrement_strong_count_StaticSecret,
-                    rustArcDecrementStrongCountPtr: RustLib.instance.api.rust_arc_decrement_strong_count_StaticSecretPtr,
-                );
-
-                
-            }
+/// Main entrypoint of the Rust API
+class RustLib extends BaseEntrypoint<RustLibApi, RustLibApiImpl, RustLibWire> {
+  @internal
+  static final instance = RustLib._();
+
+  RustLib._();
+
+  /// Initialize flutter_rust_bridge
+  static Future<void> init({
+    RustLibApi? api,
+    BaseHandler? handler,
+    ExternalLibrary? externalLibrary,
+    bool forceSameCodegenVersion = true,
+  }) async {
+    await instance.initImpl(
+      api: api,
+      handler: handler,
+      externalLibrary: externalLibrary,
+      forceSameCodegenVersion: forceSameCodegenVersion,
+    );
+  }
+
+  /// Initialize flutter_rust_bridge in mock mode.
+  /// No libraries for FFI are loaded.
+  static void initMock({
+    required RustLibApi api,
+  }) {
+    instance.initMockImpl(
+      api: api,
+    );
+  }
+
+  /// Dispose flutter_rust_bridge
+  ///
+  /// The call to this function is optional, since flutter_rust_bridge (and everything else)
+  /// is automatically disposed when the app stops.
+  static void dispose() => instance.disposeImpl();
+
+  @override
+  ApiImplConstructor<RustLibApiImpl, RustLibWire> get apiImplConstructor =>
+      RustLibApiImpl.new;
+
+  @override
+  WireConstructor<RustLibWire> get wireConstructor =>
+      RustLibWire.fromExternalLibrary;
+
+  @override
+  Future<void> executeRustInitializers() async {
+    await api.crateApiBackupInitApp();
+  }
+
+  @override
+  ExternalLibraryLoaderConfig get defaultExternalLibraryLoaderConfig =>
+      kDefaultExternalLibraryLoaderConfig;
+
+  @override
+  String get codegenVersion => '2.11.1';
+
+  @override
+  int get rustContentHash => -1392544800;
+
+  static const kDefaultExternalLibraryLoaderConfig =
+      ExternalLibraryLoaderConfig(
+    stem: 'rust_lib_backup',
+    ioDirectory: 'rust/target/release/',
+    webPrefix: 'pkg/',
+  );
+}
+
+abstract class RustLibApi extends BaseApi {
+  Future<List<(String, String)>> crateApiBackupBackupDecryptBackup(
+      {required List<int> data, required StaticSecret secret});
+
+  Future<int> crateApiBackupBackupDelete(
+      {required String seedWords,
+      required String serverUrl,
+      required int proxyPort});
+
+  Future<Response> crateApiBackupBackupDeleteBackupAsync(
+      {required String serverUrl,
+      required int proxyPort,
+      required String hash});
+
+  Future<int> crateApiBackupBackupDeletePrimeBackupV2(
+      {required String v2ServerUrl,
+      required int proxyPort,
+      required List<int> key,
+      required BigInt timestamp,
+      required List<int> signature});
+
+  Future<int> crateApiBackupBackupDeleteV2(
+      {required String seedWords,
+      required String v2ServerUrl,
+      required int proxyPort});
+
+  Future<Uint8List> crateApiBackupBackupEncryptBackup(
+      {required List<(String, String)> files, required StaticSecret secret});
+
+  Future<List<(String, String)>> crateApiBackupBackupExtractBackupData(
+      {required BackupPayload payload});
+
+  Future<List<(String, String)>> crateApiBackupBackupGetBackup(
+      {required String seedWords,
+      required String serverUrl,
+      required int proxyPort});
+
+  Future<List<(String, String)>> crateApiBackupBackupGetBackupOffline(
+      {required String seedWords, required String filePath});
+
+  Future<List<(String, String)>> crateApiBackupBackupGetBackupV2(
+      {required String seedWords,
+      required String v2ServerUrl,
+      required int proxyPort});
+
+  Future<Uint8List> crateApiBackupBackupGetPrimeBackup(
+      {required List<int> hash,
+      required String serverUrl,
+      required int proxyPort});
+
+  Future<Uint8List> crateApiBackupBackupGetPrimeBackupV2(
+      {required String v2ServerUrl,
+      required int proxyPort,
+      required List<int> key,
+      required BigInt timestamp,
+      required List<int> signature});
+
+  Future<Client> crateApiBackupBackupGetReqwestClient({required int proxyPort});
+
+  Future<StaticSecret> crateApiBackupBackupGetStaticSecret(
+      {required String seedWords});
+
+  Future<bool> crateApiBackupBackupPerformBackup(
+      {required Map<String, String> payload,
+      required String seedWords,
+      required String serverUrl,
+      required String localBackup,
+      required int proxyPort,
+      required bool performCloud});
+
+  Future<bool> crateApiBackupBackupPerformBackupOffline(
+      {required BackupPayload payload,
+      required String seedWords,
+      required String path});
+
+  Future<bool> crateApiBackupBackupPerformBackupV2(
+      {required Map<String, String> payload,
+      required String seedWords,
+      required String v2ServerUrl,
+      required String localBackup,
+      required int proxyPort,
+      required bool performCloud});
+
+  Future<bool> crateApiBackupBackupPerformPrimeBackup(
+      {required String serverUrl,
+      required int proxyPort,
+      required List<int> seedHash,
+      required List<int> payload});
+
+  Future<bool> crateApiBackupBackupPerformPrimeBackupV2(
+      {required String v2ServerUrl,
+      required int proxyPort,
+      required BigInt timestamp,
+      required List<int> hash,
+      required List<int> pubkey,
+      required List<int> data,
+      required List<int> clientSignature});
+
+  Future<void> crateApiBackupInitApp();
+
+  RustArcIncrementStrongCountFnType get rust_arc_increment_strong_count_Client;
+
+  RustArcDecrementStrongCountFnType get rust_arc_decrement_strong_count_Client;
+
+  CrossPlatformFinalizerArg get rust_arc_decrement_strong_count_ClientPtr;
+
+  RustArcIncrementStrongCountFnType
+      get rust_arc_increment_strong_count_Response;
+
+  RustArcDecrementStrongCountFnType
+      get rust_arc_decrement_strong_count_Response;
+
+  CrossPlatformFinalizerArg get rust_arc_decrement_strong_count_ResponsePtr;
+
+  RustArcIncrementStrongCountFnType
+      get rust_arc_increment_strong_count_StaticSecret;
+
+  RustArcDecrementStrongCountFnType
+      get rust_arc_decrement_strong_count_StaticSecret;
+
+  CrossPlatformFinalizerArg get rust_arc_decrement_strong_count_StaticSecretPtr;
+}
+
+class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
+  RustLibApiImpl({
+    required super.handler,
+    required super.wire,
+    required super.generalizedFrbRustBinding,
+    required super.portManager,
+  });
+
+  @override
+  Future<List<(String, String)>> crateApiBackupBackupDecryptBackup(
+      {required List<int> data, required StaticSecret secret}) {
+    return handler.executeNormal(NormalTask(
+      callFfi: (port_) {
+        final serializer = SseSerializer(generalizedFrbRustBinding);
+        sse_encode_list_prim_u_8_loose(data, serializer);
+        sse_encode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerStaticSecret(
+            secret, serializer);
+        pdeCallFfi(generalizedFrbRustBinding, serializer,
+            funcId: 1, port: port_);
+      },
+      codec: SseCodec(
+        decodeSuccessData: sse_decode_list_record_string_string,
+        decodeErrorData: sse_decode_AnyhowException,
+      ),
+      constMeta: kCrateApiBackupBackupDecryptBackupConstMeta,
+      argValues: [data, secret],
+      apiImpl: this,
+    ));
+  }
+
+  TaskConstMeta get kCrateApiBackupBackupDecryptBackupConstMeta =>
+      const TaskConstMeta(
+        debugName: "backup_decrypt_backup",
+        argNames: ["data", "secret"],
+      );
+
+  @override
+  Future<int> crateApiBackupBackupDelete(
+      {required String seedWords,
+      required String serverUrl,
+      required int proxyPort}) {
+    return handler.executeNormal(NormalTask(
+      callFfi: (port_) {
+        final serializer = SseSerializer(generalizedFrbRustBinding);
+        sse_encode_String(seedWords, serializer);
+        sse_encode_String(serverUrl, serializer);
+        sse_encode_i_32(proxyPort, serializer);
+        pdeCallFfi(generalizedFrbRustBinding, serializer,
+            funcId: 2, port: port_);
+      },
+      codec: SseCodec(
+        decodeSuccessData: sse_decode_u_16,
+        decodeErrorData: sse_decode_AnyhowException,
+      ),
+      constMeta: kCrateApiBackupBackupDeleteConstMeta,
+      argValues: [seedWords, serverUrl, proxyPort],
+      apiImpl: this,
+    ));
+  }
+
+  TaskConstMeta get kCrateApiBackupBackupDeleteConstMeta => const TaskConstMeta(
+        debugName: "backup_delete",
+        argNames: ["seedWords", "serverUrl", "proxyPort"],
+      );
+
+  @override
+  Future<Response> crateApiBackupBackupDeleteBackupAsync(
+      {required String serverUrl,
+      required int proxyPort,
+      required String hash}) {
+    return handler.executeNormal(NormalTask(
+      callFfi: (port_) {
+        final serializer = SseSerializer(generalizedFrbRustBinding);
+        sse_encode_String(serverUrl, serializer);
+        sse_encode_i_32(proxyPort, serializer);
+        sse_encode_String(hash, serializer);
+        pdeCallFfi(generalizedFrbRustBinding, serializer,
+            funcId: 3, port: port_);
+      },
+      codec: SseCodec(
+        decodeSuccessData:
+            sse_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerResponse,
+        decodeErrorData: sse_decode_AnyhowException,
+      ),
+      constMeta: kCrateApiBackupBackupDeleteBackupAsyncConstMeta,
+      argValues: [serverUrl, proxyPort, hash],
+      apiImpl: this,
+    ));
+  }
+
+  TaskConstMeta get kCrateApiBackupBackupDeleteBackupAsyncConstMeta =>
+      const TaskConstMeta(
+        debugName: "backup_delete_backup_async",
+        argNames: ["serverUrl", "proxyPort", "hash"],
+      );
+
+  @override
+  Future<int> crateApiBackupBackupDeletePrimeBackupV2(
+      {required String v2ServerUrl,
+      required int proxyPort,
+      required List<int> key,
+      required BigInt timestamp,
+      required List<int> signature}) {
+    return handler.executeNormal(NormalTask(
+      callFfi: (port_) {
+        final serializer = SseSerializer(generalizedFrbRustBinding);
+        sse_encode_String(v2ServerUrl, serializer);
+        sse_encode_i_32(proxyPort, serializer);
+        sse_encode_list_prim_u_8_loose(key, serializer);
+        sse_encode_u_64(timestamp, serializer);
+        sse_encode_list_prim_u_8_loose(signature, serializer);
+        pdeCallFfi(generalizedFrbRustBinding, serializer,
+            funcId: 4, port: port_);
+      },
+      codec: SseCodec(
+        decodeSuccessData: sse_decode_u_16,
+        decodeErrorData: sse_decode_AnyhowException,
+      ),
+      constMeta: kCrateApiBackupBackupDeletePrimeBackupV2ConstMeta,
+      argValues: [v2ServerUrl, proxyPort, key, timestamp, signature],
+      apiImpl: this,
+    ));
+  }
+
+  TaskConstMeta get kCrateApiBackupBackupDeletePrimeBackupV2ConstMeta =>
+      const TaskConstMeta(
+        debugName: "backup_delete_prime_backup_v2",
+        argNames: ["v2ServerUrl", "proxyPort", "key", "timestamp", "signature"],
+      );
+
+  @override
+  Future<int> crateApiBackupBackupDeleteV2(
+      {required String seedWords,
+      required String v2ServerUrl,
+      required int proxyPort}) {
+    return handler.executeNormal(NormalTask(
+      callFfi: (port_) {
+        final serializer = SseSerializer(generalizedFrbRustBinding);
+        sse_encode_String(seedWords, serializer);
+        sse_encode_String(v2ServerUrl, serializer);
+        sse_encode_i_32(proxyPort, serializer);
+        pdeCallFfi(generalizedFrbRustBinding, serializer,
+            funcId: 5, port: port_);
+      },
+      codec: SseCodec(
+        decodeSuccessData: sse_decode_u_16,
+        decodeErrorData: sse_decode_AnyhowException,
+      ),
+      constMeta: kCrateApiBackupBackupDeleteV2ConstMeta,
+      argValues: [seedWords, v2ServerUrl, proxyPort],
+      apiImpl: this,
+    ));
+  }
+
+  TaskConstMeta get kCrateApiBackupBackupDeleteV2ConstMeta =>
+      const TaskConstMeta(
+        debugName: "backup_delete_v2",
+        argNames: ["seedWords", "v2ServerUrl", "proxyPort"],
+      );
+
+  @override
+  Future<Uint8List> crateApiBackupBackupEncryptBackup(
+      {required List<(String, String)> files, required StaticSecret secret}) {
+    return handler.executeNormal(NormalTask(
+      callFfi: (port_) {
+        final serializer = SseSerializer(generalizedFrbRustBinding);
+        sse_encode_list_record_string_string(files, serializer);
+        sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerStaticSecret(
+            secret, serializer);
+        pdeCallFfi(generalizedFrbRustBinding, serializer,
+            funcId: 6, port: port_);
+      },
+      codec: SseCodec(
+        decodeSuccessData: sse_decode_list_prim_u_8_strict,
+        decodeErrorData: null,
+      ),
+      constMeta: kCrateApiBackupBackupEncryptBackupConstMeta,
+      argValues: [files, secret],
+      apiImpl: this,
+    ));
+  }
+
+  TaskConstMeta get kCrateApiBackupBackupEncryptBackupConstMeta =>
+      const TaskConstMeta(
+        debugName: "backup_encrypt_backup",
+        argNames: ["files", "secret"],
+      );
+
+  @override
+  Future<List<(String, String)>> crateApiBackupBackupExtractBackupData(
+      {required BackupPayload payload}) {
+    return handler.executeNormal(NormalTask(
+      callFfi: (port_) {
+        final serializer = SseSerializer(generalizedFrbRustBinding);
+        sse_encode_box_autoadd_backup_payload(payload, serializer);
+        pdeCallFfi(generalizedFrbRustBinding, serializer,
+            funcId: 7, port: port_);
+      },
+      codec: SseCodec(
+        decodeSuccessData: sse_decode_list_record_string_string,
+        decodeErrorData: sse_decode_AnyhowException,
+      ),
+      constMeta: kCrateApiBackupBackupExtractBackupDataConstMeta,
+      argValues: [payload],
+      apiImpl: this,
+    ));
+  }
+
+  TaskConstMeta get kCrateApiBackupBackupExtractBackupDataConstMeta =>
+      const TaskConstMeta(
+        debugName: "backup_extract_backup_data",
+        argNames: ["payload"],
+      );
+
+  @override
+  Future<List<(String, String)>> crateApiBackupBackupGetBackup(
+      {required String seedWords,
+      required String serverUrl,
+      required int proxyPort}) {
+    return handler.executeNormal(NormalTask(
+      callFfi: (port_) {
+        final serializer = SseSerializer(generalizedFrbRustBinding);
+        sse_encode_String(seedWords, serializer);
+        sse_encode_String(serverUrl, serializer);
+        sse_encode_i_32(proxyPort, serializer);
+        pdeCallFfi(generalizedFrbRustBinding, serializer,
+            funcId: 8, port: port_);
+      },
+      codec: SseCodec(
+        decodeSuccessData: sse_decode_list_record_string_string,
+        decodeErrorData: sse_decode_get_backup_exception,
+      ),
+      constMeta: kCrateApiBackupBackupGetBackupConstMeta,
+      argValues: [seedWords, serverUrl, proxyPort],
+      apiImpl: this,
+    ));
+  }
+
+  TaskConstMeta get kCrateApiBackupBackupGetBackupConstMeta =>
+      const TaskConstMeta(
+        debugName: "backup_get_backup",
+        argNames: ["seedWords", "serverUrl", "proxyPort"],
+      );
+
+  @override
+  Future<List<(String, String)>> crateApiBackupBackupGetBackupOffline(
+      {required String seedWords, required String filePath}) {
+    return handler.executeNormal(NormalTask(
+      callFfi: (port_) {
+        final serializer = SseSerializer(generalizedFrbRustBinding);
+        sse_encode_String(seedWords, serializer);
+        sse_encode_String(filePath, serializer);
+        pdeCallFfi(generalizedFrbRustBinding, serializer,
+            funcId: 9, port: port_);
+      },
+      codec: SseCodec(
+        decodeSuccessData: sse_decode_list_record_string_string,
+        decodeErrorData: sse_decode_get_backup_exception,
+      ),
+      constMeta: kCrateApiBackupBackupGetBackupOfflineConstMeta,
+      argValues: [seedWords, filePath],
+      apiImpl: this,
+    ));
+  }
+
+  TaskConstMeta get kCrateApiBackupBackupGetBackupOfflineConstMeta =>
+      const TaskConstMeta(
+        debugName: "backup_get_backup_offline",
+        argNames: ["seedWords", "filePath"],
+      );
+
+  @override
+  Future<List<(String, String)>> crateApiBackupBackupGetBackupV2(
+      {required String seedWords,
+      required String v2ServerUrl,
+      required int proxyPort}) {
+    return handler.executeNormal(NormalTask(
+      callFfi: (port_) {
+        final serializer = SseSerializer(generalizedFrbRustBinding);
+        sse_encode_String(seedWords, serializer);
+        sse_encode_String(v2ServerUrl, serializer);
+        sse_encode_i_32(proxyPort, serializer);
+        pdeCallFfi(generalizedFrbRustBinding, serializer,
+            funcId: 10, port: port_);
+      },
+      codec: SseCodec(
+        decodeSuccessData: sse_decode_list_record_string_string,
+        decodeErrorData: sse_decode_get_backup_exception,
+      ),
+      constMeta: kCrateApiBackupBackupGetBackupV2ConstMeta,
+      argValues: [seedWords, v2ServerUrl, proxyPort],
+      apiImpl: this,
+    ));
+  }
+
+  TaskConstMeta get kCrateApiBackupBackupGetBackupV2ConstMeta =>
+      const TaskConstMeta(
+        debugName: "backup_get_backup_v2",
+        argNames: ["seedWords", "v2ServerUrl", "proxyPort"],
+      );
+
+  @override
+  Future<Uint8List> crateApiBackupBackupGetPrimeBackup(
+      {required List<int> hash,
+      required String serverUrl,
+      required int proxyPort}) {
+    return handler.executeNormal(NormalTask(
+      callFfi: (port_) {
+        final serializer = SseSerializer(generalizedFrbRustBinding);
+        sse_encode_list_prim_u_8_loose(hash, serializer);
+        sse_encode_String(serverUrl, serializer);
+        sse_encode_i_32(proxyPort, serializer);
+        pdeCallFfi(generalizedFrbRustBinding, serializer,
+            funcId: 11, port: port_);
+      },
+      codec: SseCodec(
+        decodeSuccessData: sse_decode_list_prim_u_8_strict,
+        decodeErrorData: sse_decode_get_backup_exception,
+      ),
+      constMeta: kCrateApiBackupBackupGetPrimeBackupConstMeta,
+      argValues: [hash, serverUrl, proxyPort],
+      apiImpl: this,
+    ));
+  }
+
+  TaskConstMeta get kCrateApiBackupBackupGetPrimeBackupConstMeta =>
+      const TaskConstMeta(
+        debugName: "backup_get_prime_backup",
+        argNames: ["hash", "serverUrl", "proxyPort"],
+      );
+
+  @override
+  Future<Uint8List> crateApiBackupBackupGetPrimeBackupV2(
+      {required String v2ServerUrl,
+      required int proxyPort,
+      required List<int> key,
+      required BigInt timestamp,
+      required List<int> signature}) {
+    return handler.executeNormal(NormalTask(
+      callFfi: (port_) {
+        final serializer = SseSerializer(generalizedFrbRustBinding);
+        sse_encode_String(v2ServerUrl, serializer);
+        sse_encode_i_32(proxyPort, serializer);
+        sse_encode_list_prim_u_8_loose(key, serializer);
+        sse_encode_u_64(timestamp, serializer);
+        sse_encode_list_prim_u_8_loose(signature, serializer);
+        pdeCallFfi(generalizedFrbRustBinding, serializer,
+            funcId: 12, port: port_);
+      },
+      codec: SseCodec(
+        decodeSuccessData: sse_decode_list_prim_u_8_strict,
+        decodeErrorData: sse_decode_get_backup_exception,
+      ),
+      constMeta: kCrateApiBackupBackupGetPrimeBackupV2ConstMeta,
+      argValues: [v2ServerUrl, proxyPort, key, timestamp, signature],
+      apiImpl: this,
+    ));
+  }
+
+  TaskConstMeta get kCrateApiBackupBackupGetPrimeBackupV2ConstMeta =>
+      const TaskConstMeta(
+        debugName: "backup_get_prime_backup_v2",
+        argNames: ["v2ServerUrl", "proxyPort", "key", "timestamp", "signature"],
+      );
+
+  @override
+  Future<Client> crateApiBackupBackupGetReqwestClient(
+      {required int proxyPort}) {
+    return handler.executeNormal(NormalTask(
+      callFfi: (port_) {
+        final serializer = SseSerializer(generalizedFrbRustBinding);
+        sse_encode_i_32(proxyPort, serializer);
+        pdeCallFfi(generalizedFrbRustBinding, serializer,
+            funcId: 13, port: port_);
+      },
+      codec: SseCodec(
+        decodeSuccessData:
+            sse_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerClient,
+        decodeErrorData: null,
+      ),
+      constMeta: kCrateApiBackupBackupGetReqwestClientConstMeta,
+      argValues: [proxyPort],
+      apiImpl: this,
+    ));
+  }
+
+  TaskConstMeta get kCrateApiBackupBackupGetReqwestClientConstMeta =>
+      const TaskConstMeta(
+        debugName: "backup_get_reqwest_client",
+        argNames: ["proxyPort"],
+      );
+
+  @override
+  Future<StaticSecret> crateApiBackupBackupGetStaticSecret(
+      {required String seedWords}) {
+    return handler.executeNormal(NormalTask(
+      callFfi: (port_) {
+        final serializer = SseSerializer(generalizedFrbRustBinding);
+        sse_encode_String(seedWords, serializer);
+        pdeCallFfi(generalizedFrbRustBinding, serializer,
+            funcId: 14, port: port_);
+      },
+      codec: SseCodec(
+        decodeSuccessData:
+            sse_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerStaticSecret,
+        decodeErrorData: sse_decode_AnyhowException,
+      ),
+      constMeta: kCrateApiBackupBackupGetStaticSecretConstMeta,
+      argValues: [seedWords],
+      apiImpl: this,
+    ));
+  }
+
+  TaskConstMeta get kCrateApiBackupBackupGetStaticSecretConstMeta =>
+      const TaskConstMeta(
+        debugName: "backup_get_static_secret",
+        argNames: ["seedWords"],
+      );
+
+  @override
+  Future<bool> crateApiBackupBackupPerformBackup(
+      {required Map<String, String> payload,
+      required String seedWords,
+      required String serverUrl,
+      required String localBackup,
+      required int proxyPort,
+      required bool performCloud}) {
+    return handler.executeNormal(NormalTask(
+      callFfi: (port_) {
+        final serializer = SseSerializer(generalizedFrbRustBinding);
+        sse_encode_Map_String_String_None(payload, serializer);
+        sse_encode_String(seedWords, serializer);
+        sse_encode_String(serverUrl, serializer);
+        sse_encode_String(localBackup, serializer);
+        sse_encode_i_32(proxyPort, serializer);
+        sse_encode_bool(performCloud, serializer);
+        pdeCallFfi(generalizedFrbRustBinding, serializer,
+            funcId: 15, port: port_);
+      },
+      codec: SseCodec(
+        decodeSuccessData: sse_decode_bool,
+        decodeErrorData: sse_decode_AnyhowException,
+      ),
+      constMeta: kCrateApiBackupBackupPerformBackupConstMeta,
+      argValues: [
+        payload,
+        seedWords,
+        serverUrl,
+        localBackup,
+        proxyPort,
+        performCloud
+      ],
+      apiImpl: this,
+    ));
+  }
+
+  TaskConstMeta get kCrateApiBackupBackupPerformBackupConstMeta =>
+      const TaskConstMeta(
+        debugName: "backup_perform_backup",
+        argNames: [
+          "payload",
+          "seedWords",
+          "serverUrl",
+          "localBackup",
+          "proxyPort",
+          "performCloud"
+        ],
+      );
+
+  @override
+  Future<bool> crateApiBackupBackupPerformBackupOffline(
+      {required BackupPayload payload,
+      required String seedWords,
+      required String path}) {
+    return handler.executeNormal(NormalTask(
+      callFfi: (port_) {
+        final serializer = SseSerializer(generalizedFrbRustBinding);
+        sse_encode_box_autoadd_backup_payload(payload, serializer);
+        sse_encode_String(seedWords, serializer);
+        sse_encode_String(path, serializer);
+        pdeCallFfi(generalizedFrbRustBinding, serializer,
+            funcId: 16, port: port_);
+      },
+      codec: SseCodec(
+        decodeSuccessData: sse_decode_bool,
+        decodeErrorData: sse_decode_AnyhowException,
+      ),
+      constMeta: kCrateApiBackupBackupPerformBackupOfflineConstMeta,
+      argValues: [payload, seedWords, path],
+      apiImpl: this,
+    ));
+  }
+
+  TaskConstMeta get kCrateApiBackupBackupPerformBackupOfflineConstMeta =>
+      const TaskConstMeta(
+        debugName: "backup_perform_backup_offline",
+        argNames: ["payload", "seedWords", "path"],
+      );
+
+  @override
+  Future<bool> crateApiBackupBackupPerformBackupV2(
+      {required Map<String, String> payload,
+      required String seedWords,
+      required String v2ServerUrl,
+      required String localBackup,
+      required int proxyPort,
+      required bool performCloud}) {
+    return handler.executeNormal(NormalTask(
+      callFfi: (port_) {
+        final serializer = SseSerializer(generalizedFrbRustBinding);
+        sse_encode_Map_String_String_None(payload, serializer);
+        sse_encode_String(seedWords, serializer);
+        sse_encode_String(v2ServerUrl, serializer);
+        sse_encode_String(localBackup, serializer);
+        sse_encode_i_32(proxyPort, serializer);
+        sse_encode_bool(performCloud, serializer);
+        pdeCallFfi(generalizedFrbRustBinding, serializer,
+            funcId: 17, port: port_);
+      },
+      codec: SseCodec(
+        decodeSuccessData: sse_decode_bool,
+        decodeErrorData: sse_decode_AnyhowException,
+      ),
+      constMeta: kCrateApiBackupBackupPerformBackupV2ConstMeta,
+      argValues: [
+        payload,
+        seedWords,
+        v2ServerUrl,
+        localBackup,
+        proxyPort,
+        performCloud
+      ],
+      apiImpl: this,
+    ));
+  }
+
+  TaskConstMeta get kCrateApiBackupBackupPerformBackupV2ConstMeta =>
+      const TaskConstMeta(
+        debugName: "backup_perform_backup_v2",
+        argNames: [
+          "payload",
+          "seedWords",
+          "v2ServerUrl",
+          "localBackup",
+          "proxyPort",
+          "performCloud"
+        ],
+      );
+
+  @override
+  Future<bool> crateApiBackupBackupPerformPrimeBackup(
+      {required String serverUrl,
+      required int proxyPort,
+      required List<int> seedHash,
+      required List<int> payload}) {
+    return handler.executeNormal(NormalTask(
+      callFfi: (port_) {
+        final serializer = SseSerializer(generalizedFrbRustBinding);
+        sse_encode_String(serverUrl, serializer);
+        sse_encode_i_32(proxyPort, serializer);
+        sse_encode_list_prim_u_8_loose(seedHash, serializer);
+        sse_encode_list_prim_u_8_loose(payload, serializer);
+        pdeCallFfi(generalizedFrbRustBinding, serializer,
+            funcId: 18, port: port_);
+      },
+      codec: SseCodec(
+        decodeSuccessData: sse_decode_bool,
+        decodeErrorData: sse_decode_AnyhowException,
+      ),
+      constMeta: kCrateApiBackupBackupPerformPrimeBackupConstMeta,
+      argValues: [serverUrl, proxyPort, seedHash, payload],
+      apiImpl: this,
+    ));
+  }
+
+  TaskConstMeta get kCrateApiBackupBackupPerformPrimeBackupConstMeta =>
+      const TaskConstMeta(
+        debugName: "backup_perform_prime_backup",
+        argNames: ["serverUrl", "proxyPort", "seedHash", "payload"],
+      );
+
+  @override
+  Future<bool> crateApiBackupBackupPerformPrimeBackupV2(
+      {required String v2ServerUrl,
+      required int proxyPort,
+      required BigInt timestamp,
+      required List<int> hash,
+      required List<int> pubkey,
+      required List<int> data,
+      required List<int> clientSignature}) {
+    return handler.executeNormal(NormalTask(
+      callFfi: (port_) {
+        final serializer = SseSerializer(generalizedFrbRustBinding);
+        sse_encode_String(v2ServerUrl, serializer);
+        sse_encode_i_32(proxyPort, serializer);
+        sse_encode_u_64(timestamp, serializer);
+        sse_encode_list_prim_u_8_loose(hash, serializer);
+        sse_encode_list_prim_u_8_loose(pubkey, serializer);
+        sse_encode_list_prim_u_8_loose(data, serializer);
+        sse_encode_list_prim_u_8_loose(clientSignature, serializer);
+        pdeCallFfi(generalizedFrbRustBinding, serializer,
+            funcId: 19, port: port_);
+      },
+      codec: SseCodec(
+        decodeSuccessData: sse_decode_bool,
+        decodeErrorData: sse_decode_AnyhowException,
+      ),
+      constMeta: kCrateApiBackupBackupPerformPrimeBackupV2ConstMeta,
+      argValues: [
+        v2ServerUrl,
+        proxyPort,
+        timestamp,
+        hash,
+        pubkey,
+        data,
+        clientSignature
+      ],
+      apiImpl: this,
+    ));
+  }
+
+  TaskConstMeta get kCrateApiBackupBackupPerformPrimeBackupV2ConstMeta =>
+      const TaskConstMeta(
+        debugName: "backup_perform_prime_backup_v2",
+        argNames: [
+          "v2ServerUrl",
+          "proxyPort",
+          "timestamp",
+          "hash",
+          "pubkey",
+          "data",
+          "clientSignature"
+        ],
+      );
+
+  @override
+  Future<void> crateApiBackupInitApp() {
+    return handler.executeNormal(NormalTask(
+      callFfi: (port_) {
+        final serializer = SseSerializer(generalizedFrbRustBinding);
+        pdeCallFfi(generalizedFrbRustBinding, serializer,
+            funcId: 20, port: port_);
+      },
+      codec: SseCodec(
+        decodeSuccessData: sse_decode_unit,
+        decodeErrorData: null,
+      ),
+      constMeta: kCrateApiBackupInitAppConstMeta,
+      argValues: [],
+      apiImpl: this,
+    ));
+  }
+
+  TaskConstMeta get kCrateApiBackupInitAppConstMeta => const TaskConstMeta(
+        debugName: "init_app",
+        argNames: [],
+      );
+
+  RustArcIncrementStrongCountFnType
+      get rust_arc_increment_strong_count_Client => wire
+          .rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerClient;
+
+  RustArcDecrementStrongCountFnType
+      get rust_arc_decrement_strong_count_Client => wire
+          .rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerClient;
+
+  RustArcIncrementStrongCountFnType
+      get rust_arc_increment_strong_count_Response => wire
+          .rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerResponse;
+
+  RustArcDecrementStrongCountFnType
+      get rust_arc_decrement_strong_count_Response => wire
+          .rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerResponse;
+
+  RustArcIncrementStrongCountFnType
+      get rust_arc_increment_strong_count_StaticSecret => wire
+          .rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerStaticSecret;
+
+  RustArcDecrementStrongCountFnType
+      get rust_arc_decrement_strong_count_StaticSecret => wire
+          .rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerStaticSecret;
+
+  @protected
+  AnyhowException dco_decode_AnyhowException(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return AnyhowException(raw as String);
+  }
+
+  @protected
+  Client
+      dco_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerClient(
+          dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return ClientImpl.frbInternalDcoDecode(raw as List<dynamic>);
+  }
+
+  @protected
+  Response
+      dco_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerResponse(
+          dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return ResponseImpl.frbInternalDcoDecode(raw as List<dynamic>);
+  }
+
+  @protected
+  StaticSecret
+      dco_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerStaticSecret(
+          dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return StaticSecretImpl.frbInternalDcoDecode(raw as List<dynamic>);
+  }
+
+  @protected
+  StaticSecret
+      dco_decode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerStaticSecret(
+          dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return StaticSecretImpl.frbInternalDcoDecode(raw as List<dynamic>);
+  }
+
+  @protected
+  Map<String, String> dco_decode_Map_String_String_None(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return Map.fromEntries(dco_decode_list_record_string_string(raw)
+        .map((e) => MapEntry(e.$1, e.$2)));
+  }
+
+  @protected
+  Client
+      dco_decode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerClient(
+          dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return ClientImpl.frbInternalDcoDecode(raw as List<dynamic>);
+  }
+
+  @protected
+  Response
+      dco_decode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerResponse(
+          dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return ResponseImpl.frbInternalDcoDecode(raw as List<dynamic>);
+  }
+
+  @protected
+  StaticSecret
+      dco_decode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerStaticSecret(
+          dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return StaticSecretImpl.frbInternalDcoDecode(raw as List<dynamic>);
+  }
+
+  @protected
+  String dco_decode_String(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return raw as String;
+  }
+
+  @protected
+  Backup dco_decode_backup(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    final arr = raw as List<dynamic>;
+    if (arr.length != 0)
+      throw Exception('unexpected arr length: expect 0 but see ${arr.length}');
+    return Backup();
+  }
+
+  @protected
+  BackupPayload dco_decode_backup_payload(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    final arr = raw as List<dynamic>;
+    if (arr.length != 2)
+      throw Exception('unexpected arr length: expect 2 but see ${arr.length}');
+    return BackupPayload(
+      keysNr: dco_decode_u_8(arr[0]),
+      data: dco_decode_list_String(arr[1]),
+    );
+  }
+
+  @protected
+  bool dco_decode_bool(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return raw as bool;
+  }
+
+  @protected
+  BackupPayload dco_decode_box_autoadd_backup_payload(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return dco_decode_backup_payload(raw);
+  }
+
+  @protected
+  GetBackupException dco_decode_get_backup_exception(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return GetBackupException.values[raw as int];
+  }
+
+  @protected
+  int dco_decode_i_32(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return raw as int;
+  }
+
+  @protected
+  List<String> dco_decode_list_String(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return (raw as List<dynamic>).map(dco_decode_String).toList();
+  }
+
+  @protected
+  List<int> dco_decode_list_prim_u_8_loose(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return raw as List<int>;
+  }
+
+  @protected
+  Uint8List dco_decode_list_prim_u_8_strict(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return raw as Uint8List;
+  }
+
+  @protected
+  List<(String, String)> dco_decode_list_record_string_string(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return (raw as List<dynamic>).map(dco_decode_record_string_string).toList();
+  }
+
+  @protected
+  (String, String) dco_decode_record_string_string(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    final arr = raw as List<dynamic>;
+    if (arr.length != 2) {
+      throw Exception('Expected 2 elements, got ${arr.length}');
+    }
+    return (
+      dco_decode_String(arr[0]),
+      dco_decode_String(arr[1]),
+    );
+  }
+
+  @protected
+  int dco_decode_u_16(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return raw as int;
+  }
+
+  @protected
+  BigInt dco_decode_u_64(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return dcoDecodeU64(raw);
+  }
+
+  @protected
+  int dco_decode_u_8(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return raw as int;
+  }
+
+  @protected
+  void dco_decode_unit(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return;
+  }
+
+  @protected
+  BigInt dco_decode_usize(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return dcoDecodeU64(raw);
+  }
+
+  @protected
+  AnyhowException sse_decode_AnyhowException(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    var inner = sse_decode_String(deserializer);
+    return AnyhowException(inner);
+  }
+
+  @protected
+  Client
+      sse_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerClient(
+          SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    return ClientImpl.frbInternalSseDecode(
+        sse_decode_usize(deserializer), sse_decode_i_32(deserializer));
+  }
+
+  @protected
+  Response
+      sse_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerResponse(
+          SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    return ResponseImpl.frbInternalSseDecode(
+        sse_decode_usize(deserializer), sse_decode_i_32(deserializer));
+  }
+
+  @protected
+  StaticSecret
+      sse_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerStaticSecret(
+          SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    return StaticSecretImpl.frbInternalSseDecode(
+        sse_decode_usize(deserializer), sse_decode_i_32(deserializer));
+  }
+
+  @protected
+  StaticSecret
+      sse_decode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerStaticSecret(
+          SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    return StaticSecretImpl.frbInternalSseDecode(
+        sse_decode_usize(deserializer), sse_decode_i_32(deserializer));
+  }
+
+  @protected
+  Map<String, String> sse_decode_Map_String_String_None(
+      SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    var inner = sse_decode_list_record_string_string(deserializer);
+    return Map.fromEntries(inner.map((e) => MapEntry(e.$1, e.$2)));
+  }
+
+  @protected
+  Client
+      sse_decode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerClient(
+          SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    return ClientImpl.frbInternalSseDecode(
+        sse_decode_usize(deserializer), sse_decode_i_32(deserializer));
+  }
+
+  @protected
+  Response
+      sse_decode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerResponse(
+          SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    return ResponseImpl.frbInternalSseDecode(
+        sse_decode_usize(deserializer), sse_decode_i_32(deserializer));
+  }
+
+  @protected
+  StaticSecret
+      sse_decode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerStaticSecret(
+          SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    return StaticSecretImpl.frbInternalSseDecode(
+        sse_decode_usize(deserializer), sse_decode_i_32(deserializer));
+  }
+
+  @protected
+  String sse_decode_String(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    var inner = sse_decode_list_prim_u_8_strict(deserializer);
+    return utf8.decoder.convert(inner);
+  }
+
+  @protected
+  Backup sse_decode_backup(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    return Backup();
+  }
+
+  @protected
+  BackupPayload sse_decode_backup_payload(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    var var_keysNr = sse_decode_u_8(deserializer);
+    var var_data = sse_decode_list_String(deserializer);
+    return BackupPayload(keysNr: var_keysNr, data: var_data);
+  }
+
+  @protected
+  bool sse_decode_bool(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    return deserializer.buffer.getUint8() != 0;
+  }
+
+  @protected
+  BackupPayload sse_decode_box_autoadd_backup_payload(
+      SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    return (sse_decode_backup_payload(deserializer));
+  }
+
+  @protected
+  GetBackupException sse_decode_get_backup_exception(
+      SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    var inner = sse_decode_i_32(deserializer);
+    return GetBackupException.values[inner];
+  }
+
+  @protected
+  int sse_decode_i_32(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    return deserializer.buffer.getInt32();
+  }
+
+  @protected
+  List<String> sse_decode_list_String(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+
+    var len_ = sse_decode_i_32(deserializer);
+    var ans_ = <String>[];
+    for (var idx_ = 0; idx_ < len_; ++idx_) {
+      ans_.add(sse_decode_String(deserializer));
+    }
+    return ans_;
+  }
+
+  @protected
+  List<int> sse_decode_list_prim_u_8_loose(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    var len_ = sse_decode_i_32(deserializer);
+    return deserializer.buffer.getUint8List(len_);
+  }
+
+  @protected
+  Uint8List sse_decode_list_prim_u_8_strict(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    var len_ = sse_decode_i_32(deserializer);
+    return deserializer.buffer.getUint8List(len_);
+  }
+
+  @protected
+  List<(String, String)> sse_decode_list_record_string_string(
+      SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+
+    var len_ = sse_decode_i_32(deserializer);
+    var ans_ = <(String, String)>[];
+    for (var idx_ = 0; idx_ < len_; ++idx_) {
+      ans_.add(sse_decode_record_string_string(deserializer));
+    }
+    return ans_;
+  }
+
+  @protected
+  (String, String) sse_decode_record_string_string(
+      SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    var var_field0 = sse_decode_String(deserializer);
+    var var_field1 = sse_decode_String(deserializer);
+    return (var_field0, var_field1);
+  }
+
+  @protected
+  int sse_decode_u_16(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    return deserializer.buffer.getUint16();
+  }
+
+  @protected
+  BigInt sse_decode_u_64(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    return deserializer.buffer.getBigUint64();
+  }
+
+  @protected
+  int sse_decode_u_8(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    return deserializer.buffer.getUint8();
+  }
+
+  @protected
+  void sse_decode_unit(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+  }
+
+  @protected
+  BigInt sse_decode_usize(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    return deserializer.buffer.getBigUint64();
+  }
+
+  @protected
+  void sse_encode_AnyhowException(
+      AnyhowException self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_String(self.message, serializer);
+  }
+
+  @protected
+  void
+      sse_encode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerClient(
+          Client self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_usize(
+        (self as ClientImpl).frbInternalSseEncode(move: true), serializer);
+  }
+
+  @protected
+  void
+      sse_encode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerResponse(
+          Response self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_usize(
+        (self as ResponseImpl).frbInternalSseEncode(move: true), serializer);
+  }
+
+  @protected
+  void
+      sse_encode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerStaticSecret(
+          StaticSecret self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_usize(
+        (self as StaticSecretImpl).frbInternalSseEncode(move: true),
+        serializer);
+  }
+
+  @protected
+  void
+      sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerStaticSecret(
+          StaticSecret self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_usize(
+        (self as StaticSecretImpl).frbInternalSseEncode(move: false),
+        serializer);
+  }
+
+  @protected
+  void sse_encode_Map_String_String_None(
+      Map<String, String> self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_list_record_string_string(
+        self.entries.map((e) => (e.key, e.value)).toList(), serializer);
+  }
+
+  @protected
+  void
+      sse_encode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerClient(
+          Client self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_usize(
+        (self as ClientImpl).frbInternalSseEncode(move: null), serializer);
+  }
+
+  @protected
+  void
+      sse_encode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerResponse(
+          Response self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_usize(
+        (self as ResponseImpl).frbInternalSseEncode(move: null), serializer);
+  }
+
+  @protected
+  void
+      sse_encode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerStaticSecret(
+          StaticSecret self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_usize(
+        (self as StaticSecretImpl).frbInternalSseEncode(move: null),
+        serializer);
+  }
+
+  @protected
+  void sse_encode_String(String self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_list_prim_u_8_strict(utf8.encoder.convert(self), serializer);
+  }
+
+  @protected
+  void sse_encode_backup(Backup self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+  }
+
+  @protected
+  void sse_encode_backup_payload(BackupPayload self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_u_8(self.keysNr, serializer);
+    sse_encode_list_String(self.data, serializer);
+  }
+
+  @protected
+  void sse_encode_bool(bool self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    serializer.buffer.putUint8(self ? 1 : 0);
+  }
+
+  @protected
+  void sse_encode_box_autoadd_backup_payload(
+      BackupPayload self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_backup_payload(self, serializer);
+  }
+
+  @protected
+  void sse_encode_get_backup_exception(
+      GetBackupException self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_i_32(self.index, serializer);
+  }
+
+  @protected
+  void sse_encode_i_32(int self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    serializer.buffer.putInt32(self);
+  }
+
+  @protected
+  void sse_encode_list_String(List<String> self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_i_32(self.length, serializer);
+    for (final item in self) {
+      sse_encode_String(item, serializer);
+    }
+  }
+
+  @protected
+  void sse_encode_list_prim_u_8_loose(
+      List<int> self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_i_32(self.length, serializer);
+    serializer.buffer
+        .putUint8List(self is Uint8List ? self : Uint8List.fromList(self));
+  }
+
+  @protected
+  void sse_encode_list_prim_u_8_strict(
+      Uint8List self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_i_32(self.length, serializer);
+    serializer.buffer.putUint8List(self);
+  }
+
+  @protected
+  void sse_encode_list_record_string_string(
+      List<(String, String)> self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_i_32(self.length, serializer);
+    for (final item in self) {
+      sse_encode_record_string_string(item, serializer);
+    }
+  }
+
+  @protected
+  void sse_encode_record_string_string(
+      (String, String) self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_String(self.$1, serializer);
+    sse_encode_String(self.$2, serializer);
+  }
+
+  @protected
+  void sse_encode_u_16(int self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    serializer.buffer.putUint16(self);
+  }
+
+  @protected
+  void sse_encode_u_64(BigInt self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    serializer.buffer.putBigUint64(self);
+  }
+
+  @protected
+  void sse_encode_u_8(int self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    serializer.buffer.putUint8(self);
+  }
+
+  @protected
+  void sse_encode_unit(void self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+  }
+
+  @protected
+  void sse_encode_usize(BigInt self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    serializer.buffer.putBigUint64(self);
+  }
+}
+
+@sealed
+class ClientImpl extends RustOpaque implements Client {
+  // Not to be used by end users
+  ClientImpl.frbInternalDcoDecode(List<dynamic> wire)
+      : super.frbInternalDcoDecode(wire, _kStaticData);
+
+  // Not to be used by end users
+  ClientImpl.frbInternalSseDecode(BigInt ptr, int externalSizeOnNative)
+      : super.frbInternalSseDecode(ptr, externalSizeOnNative, _kStaticData);
+
+  static final _kStaticData = RustArcStaticData(
+    rustArcIncrementStrongCount:
+        RustLib.instance.api.rust_arc_increment_strong_count_Client,
+    rustArcDecrementStrongCount:
+        RustLib.instance.api.rust_arc_decrement_strong_count_Client,
+    rustArcDecrementStrongCountPtr:
+        RustLib.instance.api.rust_arc_decrement_strong_count_ClientPtr,
+  );
+}
+
+@sealed
+class ResponseImpl extends RustOpaque implements Response {
+  // Not to be used by end users
+  ResponseImpl.frbInternalDcoDecode(List<dynamic> wire)
+      : super.frbInternalDcoDecode(wire, _kStaticData);
+
+  // Not to be used by end users
+  ResponseImpl.frbInternalSseDecode(BigInt ptr, int externalSizeOnNative)
+      : super.frbInternalSseDecode(ptr, externalSizeOnNative, _kStaticData);
+
+  static final _kStaticData = RustArcStaticData(
+    rustArcIncrementStrongCount:
+        RustLib.instance.api.rust_arc_increment_strong_count_Response,
+    rustArcDecrementStrongCount:
+        RustLib.instance.api.rust_arc_decrement_strong_count_Response,
+    rustArcDecrementStrongCountPtr:
+        RustLib.instance.api.rust_arc_decrement_strong_count_ResponsePtr,
+  );
+}
+
+@sealed
+class StaticSecretImpl extends RustOpaque implements StaticSecret {
+  // Not to be used by end users
+  StaticSecretImpl.frbInternalDcoDecode(List<dynamic> wire)
+      : super.frbInternalDcoDecode(wire, _kStaticData);
+
+  // Not to be used by end users
+  StaticSecretImpl.frbInternalSseDecode(BigInt ptr, int externalSizeOnNative)
+      : super.frbInternalSseDecode(ptr, externalSizeOnNative, _kStaticData);
+
+  static final _kStaticData = RustArcStaticData(
+    rustArcIncrementStrongCount:
+        RustLib.instance.api.rust_arc_increment_strong_count_StaticSecret,
+    rustArcDecrementStrongCount:
+        RustLib.instance.api.rust_arc_decrement_strong_count_StaticSecret,
+    rustArcDecrementStrongCountPtr:
+        RustLib.instance.api.rust_arc_decrement_strong_count_StaticSecretPtr,
+  );
+}
