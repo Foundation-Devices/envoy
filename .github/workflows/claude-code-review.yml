@@ -12,11 +12,16 @@ on:
 
 jobs:
   claude-review:
-    # Optional: Filter by PR author
-    # if: |
-    #   github.event.pull_request.user.login == 'external-contributor' ||
-    #   github.event.pull_request.user.login == 'new-developer' ||
-    #   github.event.pull_request.author_association == 'FIRST_TIME_CONTRIBUTOR'
+    # On review_requested: always run.
+    # On synchronize: only run if a reviewer (user or team) is currently pending review.
+    # Note: once a reviewer submits their review they're removed from requested_reviewers,
+    # so re-reviews on subsequent pushes pause until someone re-requests review.
+    if: |
+      github.event.action == 'review_requested' ||
+      (github.event.action == 'synchronize' && (
+        github.event.pull_request.requested_reviewers[0] != null ||
+        github.event.pull_request.requested_teams[0] != null
+      ))
 
     runs-on: ubuntu-latest
     permissions:
