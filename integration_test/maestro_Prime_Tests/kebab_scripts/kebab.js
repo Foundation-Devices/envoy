@@ -12,10 +12,10 @@
 //   face_tester_2      - Face devices toward tester position 2 (right)
 //   disable_motors     - Disable all stepper motors (allows manual movement)
 //
-// Usage in a Maestro flow:
+// Usage in a Maestro flow (path is relative to the calling YAML):
 //
 //   - runScript:
-//       file: scripts/kebab.js
+//       file: ../maestro_Prime_Tests/kebab_scripts/kebab.js
 //       env:
 //         KEBAB_COMMAND: "home"
 
@@ -24,7 +24,7 @@ if (!command) {
     throw 'KEBAB_COMMAND env var is required';
 }
 
-var response = http.get('http://localhost:5555/' + command);
+var response = http.get('http://localhost:7555/' + command);
 
 if (response.status !== 200) {
     throw 'Kebab command "' + command + '" failed: ' + response.body;
