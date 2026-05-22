@@ -1046,6 +1046,7 @@ impl SseDecode for crate::api::backup::GetBackupException {
             3 => crate::api::backup::GetBackupException::InvalidSeed,
             4 => crate::api::backup::GetBackupException::InvalidServer,
             5 => crate::api::backup::GetBackupException::InvalidBackupFile,
+            6 => crate::api::backup::GetBackupException::Unauthorized,
             _ => unreachable!("Invalid variant for GetBackupException: {}", inner),
         };
     }
@@ -1339,6 +1340,7 @@ impl flutter_rust_bridge::IntoDart for crate::api::backup::GetBackupException {
             Self::InvalidSeed => 3.into_dart(),
             Self::InvalidServer => 4.into_dart(),
             Self::InvalidBackupFile => 5.into_dart(),
+            Self::Unauthorized => 6.into_dart(),
             _ => unreachable!(),
         }
     }
@@ -1459,6 +1461,7 @@ impl SseEncode for crate::api::backup::GetBackupException {
                 crate::api::backup::GetBackupException::InvalidSeed => 3,
                 crate::api::backup::GetBackupException::InvalidServer => 4,
                 crate::api::backup::GetBackupException::InvalidBackupFile => 5,
+                crate::api::backup::GetBackupException::Unauthorized => 6,
                 _ => {
                     unimplemented!("");
                 }

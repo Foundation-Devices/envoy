@@ -66,6 +66,10 @@ pub enum GetBackupException {
     InvalidSeed,
     InvalidServer,
     InvalidBackupFile,
+    /// Server returned 401 — backup exists but is missing its sibling pubkey
+    /// and the client could not heal it. Caller should consider falling back
+    /// to the v1 server.
+    Unauthorized,
 }
 
 pub struct Backup {}
@@ -706,31 +710,52 @@ impl Backup {
         let req = backup_client::prepare_get_backup(&provider, &keys, &backup_hash)
             .map_err(|_| GetBackupException::InvalidSeed)?;
 
+        // Include our pubkey as a query param so the server can heal legacy
+        // backups that were stored before sibling `<hash>.pubkey` files were
+        // required. The server only uses this when no pubkey is currently
+        // stored, and verifies SHA256(pubkey) == key.
+        let pubkey_hex = hex::encode(kp.verification_key.as_ref());
         let url = format!(
-            "{}/backup?key={}&ts={}&sig={}",
-            v2_server_url, req.key, req.ts, req.sig,
+            "{}/backup?key={}&ts={}&sig={}&pubkey={}",
+            v2_server_url, req.key, req.ts, req.sig, pubkey_hex,
         );
 
         let client = Self::get_reqwest_client(proxy_port);
         let res = match client.get(&url).send().await {
             Ok(r) => r,
-            Err(_) => return Err(GetBackupException::ServerUnreachable),
+            Err(e) => {
+                log::warn!("get_backup_v2 transport error: {e}");
+                return Err(GetBackupException::ServerUnreachable);
+            }
         };
 
         let status = res.status();
         if status.as_u16() == 400 {
             return Err(GetBackupException::SeedNotFound);
         }
+        if status.as_u16() == 401 {
+            log::warn!("get_backup_v2: v2 server returned 401 (missing/invalid pubkey)");
+            return Err(GetBackupException::Unauthorized);
+        }
         if status.as_u16() == 404 {
             return Err(GetBackupException::BackupNotFound);
         }
         if !status.is_success() {
+            let body = res.text().await.unwrap_or_default();
+            log::warn!(
+                "get_backup_v2: unexpected status {} body={}",
+                status.as_u16(),
+                body
+            );
             return Err(GetBackupException::ServerUnreachable);
         }
 
         let response: backup_client::BackupResponse = match res.json().await {
             Ok(r) => r,
-            Err(_) => return Err(GetBackupException::ServerUnreachable),
+            Err(e) => {
+                log::warn!("get_backup_v2: json parse failed: {e}");
+                return Err(GetBackupException::ServerUnreachable);
+            }
         };
 
         let parsed = match FromHex::from_hex(&response.backup) {
@@ -771,9 +796,12 @@ impl Backup {
         let req = backup_client::prepare_delete_backup(&provider, &keys, &backup_hash)
             .map_err(|e| anyhow!("failed to prepare delete request: {e}"))?;
 
+        // Include our pubkey so the server can heal legacy backups during
+        // delete (same flow as get_backup_v2).
+        let pubkey_hex = hex::encode(kp.verification_key.as_ref());
         let url = format!(
-            "{}/backup?key={}&ts={}&sig={}",
-            v2_server_url, req.key, req.ts, req.sig,
+            "{}/backup?key={}&ts={}&sig={}&pubkey={}",
+            v2_server_url, req.key, req.ts, req.sig, pubkey_hex,
         );
 
         let client = Self::get_reqwest_client(proxy_port);
