@@ -78,7 +78,9 @@ class _MagicSetupGenerateState extends ConsumerState<MagicSetupGenerate> {
     final preloadedFile = ref.read(magicSetupRiveFileProvider).valueOrNull;
     if (preloadedFile != null) {
       _setupController(preloadedFile);
-      _initiateWalletCreate();
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (mounted) _initiateWalletCreate();
+      });
     } else {
       _initRiveAsync();
     }
