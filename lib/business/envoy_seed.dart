@@ -567,8 +567,12 @@ class EnvoySeed {
             proxyPort: Tor.instance.port,
           );
         } on GetBackupException catch (e) {
-          if (e == GetBackupException.backupNotFound) {
-            // Fall back to v1 server for legacy backups
+          // Unauthorized means the v2 server has a backup blob but no sibling
+          // pubkey and the client-supplied pubkey didn't match (or healing was
+          // refused). Treat it like backupNotFound and fall back to v1 — that
+          // way we still try the legacy server for the data.
+          if (e == GetBackupException.backupNotFound ||
+              e == GetBackupException.unauthorized) {
             backupPayload = await Backup.getBackup(
               seedWords: seed,
               serverUrl: Settings().envoyServerAddress,

@@ -6,8 +6,8 @@
 import '../frb_generated.dart';
 import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated.dart';
 
-// These functions are ignored because they are not marked as `pub`: `compute_backup_hash`, `derive_mldsa_keypair`, `sign_message`
-// These types are ignored because they are neither used by any `pub` functions nor (for structs and enums) marked `#[frb(unignore)]`: `BackupRequestV2`, `BackupRequest`, `ChallengeResponse`, `GetBackupResponse`, `RUNTIME`
+// These functions are ignored because they are not marked as `pub`: `compute_backup_hash`, `derive_mldsa_keypair`
+// These types are ignored because they are neither used by any `pub` functions nor (for structs and enums) marked `#[frb(unignore)]`: `BackupRequest`, `ChallengeResponse`, `RUNTIME`
 // These function are ignored because they are on traits that is not defined in current crate (put an empty `#[frb]` on it to unignore): `deref`, `initialize`
 // These functions are ignored (category: IgnoreBecauseExplicitAttribute): `get_challenge_async`, `post_backup_async`
 
@@ -228,5 +228,10 @@ enum GetBackupException {
   invalidSeed,
   invalidServer,
   invalidBackupFile,
+
+  /// Server returned 401 — backup exists but is missing its sibling pubkey
+  /// and the client could not heal it. Caller should consider falling back
+  /// to the v1 server.
+  unauthorized,
   ;
 }

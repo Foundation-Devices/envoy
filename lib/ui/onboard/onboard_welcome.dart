@@ -147,9 +147,13 @@ class _WelcomeScreenState extends ConsumerState<WelcomeScreen> {
               );
             }
           },
-          child: SizedBox(
-            height: MediaQuery.of(context).size.height * 0.25,
-            child: Image.asset("assets/envoy_logo_with_title.png"),
+          child: Semantics(
+            label: "ENVOY",
+            container: true,
+            child: SizedBox(
+              height: MediaQuery.of(context).size.height * 0.25,
+              child: Image.asset("assets/envoy_logo_with_title.png"),
+            ),
           ),
         ),
         shield: Padding(

@@ -179,3 +179,46 @@ Make sure the package's Rust crate is listed in the root `Cargo.toml` workspace 
 ### Analyzer errors in generated files
 
 Generated files are excluded from analysis. If you see errors in `src/rust/` or `*.freezed.dart`, they're likely stale. Regenerate with `./scripts/generate_frb.sh` or `just generate`.
+
+## Review guidelines
+
+You are reviewing a PR in Envoy, Foundation Devices' Bitcoin wallet mobile app (Flutter/Dart UI, Rust core via FFI, iOS + Android, companion to the Passport hardware wallet).
+
+### Related repositories
+
+Other Foundation Devices repos Envoy depends on or talks to. Consult them when a diff touches the integration surface; assume the contract on the other side is fixed unless the PR description says otherwise.
+
+- [`foundation-api`](https://github.com/Foundation-Devices/foundation-api) — Rust monorepo for the device-to-device API built on Blockchain Commons' GSTP. Defines Quantum Link (QL) messages, the Beefcake Transfer Protocol (BTP) for MTU-sized chunking, and BLE/SE abstractions. Envoy wraps it as the `foundation_api` FRB package and uses it to talk to Passport over BLE.
+- [`ngwallet`](https://github.com/Foundation-Devices/ngwallet) — Foundation's next-gen Bitcoin wallet core, built on a Foundation-forked BDK. Owns the wallet logic: account/key derivation, PSBT construction and signing, fee handling, RBF, UTXO selection, `sign_message`. Envoy wraps it as the `ngwallet` FRB package; every transaction Envoy builds or signs flows through it.
+- [`envoy-server`](https://github.com/Foundation-Devices/envoy-server) — Private Rust + Axum backend Envoy calls into. Two responsibilities: (1) serve Passport firmware release metadata (verified via GitHub webhook HMAC), and (2) act as the encrypted backup gateway against S3 or local storage.
+- [`backup-server`](https://github.com/Foundation-Devices/backup-server) — Private Rust + Axum service for encrypted backup storage using post-quantum signatures (`libcrux-ml-dsa` / ML-DSA). Sits alongside or augments `envoy-server`'s backup path.
+
+Prioritise findings by severity. Only post comments at P0, P1, or P2.
+
+### P0 — block merge
+
+- Anything that could leak, log, or weaken handling of seeds, xprivs, descriptors, PSBTs, BIP39 words, or session secrets. Includes logging, crash reports, analytics, screenshots, clipboard, deep links, and accidental serialisation.
+- Incorrect Bitcoin maths: fee calculation, sat/byte vs sat/vB, dust thresholds, change derivation, address-type assumptions, signature/PSBT round-trips.
+- FFI boundary bugs across the Dart ↔ Rust seam: lifetime/ownership, nullability, blocking the UI isolate, missing `dispose`, leaks of pointers or `Box`-ed values, panics not converted to errors.
+- Concurrency bugs around BLE (connect/disconnect/reconnect, GATT writes, queue ordering) and around wallet sync.
+- Android permissions regressions, especially BLE on Android 11+ (`BLUETOOTH_CONNECT`/`SCAN`, location prompt skips, foreground service requirements) and iOS Bluetooth state restoration / background modes.
+
+### P1 — should fix before merge
+
+- Missing or incorrect error handling on network, BLE, or FFI calls that could land the user in a stuck UI state.
+- State management mistakes (Riverpod/Provider): rebuild loops, stale references after hot reload, accidental `watch` in `build` that triggers infinite rebuilds.
+- i18n strings hard-coded in English in user-facing widgets that should go through the localisation pipeline (`just copy`).
+- Obvious perf cliffs on lower-end Android (heavy work on the UI isolate, large `setState` blasts, missing `const`).
+
+### P2 — nit, not a blocker
+
+- Typos in user-facing strings, dartdoc/rustdoc, or code comments.
+
+### Do not comment on
+
+- Formatting / style — `dart format` and the linter cover it.
+- Renames or comment rewording (typos themselves are P2 above).
+- Speculative refactors ("you could extract this...") unless the code as written is wrong.
+- Things the PR author explicitly called out in the description.
+
+Skip preamble. Skip "great work!". Skip emoji. Output: one short paragraph per finding stating the problem then the fix, anchored inline. End with a one-sentence verdict and a bulleted list of P0s, then P1s, then P2s. If nothing material, post "no blocking issues found" and stop.

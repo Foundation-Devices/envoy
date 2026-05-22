@@ -122,17 +122,22 @@ class PrimeQLUnpairDialog extends StatelessWidget {
               ),
             ),
             const SizedBox(height: EnvoySpacing.medium3),
-            EnvoyButton(
-              S().component_confirm,
-              borderRadius: BorderRadius.circular(EnvoySpacing.small),
-              type: EnvoyButtonTypes.primary,
-              onTap: () {
-                onDismiss?.call().then((_) {
-                  if (context.mounted) {
-                    Navigator.pop(context);
-                  }
-                });
-              },
+            Semantics(
+              container: true,
+              identifier: 'prime_ql_unpair_confirm',
+              button: true,
+              child: EnvoyButton(
+                S().component_confirm,
+                borderRadius: BorderRadius.circular(EnvoySpacing.small),
+                type: EnvoyButtonTypes.primary,
+                onTap: () {
+                  onDismiss?.call().then((_) {
+                    if (context.mounted) {
+                      Navigator.pop(context);
+                    }
+                  });
+                },
+              ),
             ),
           ],
         ),
