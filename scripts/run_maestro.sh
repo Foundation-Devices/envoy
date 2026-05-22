@@ -36,6 +36,7 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 PROJECT_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
 HOT_WALLET_TESTS_DIR="$PROJECT_ROOT/integration_test/maestro_Hot_Wallet_Tests"
 PASSPORT_WALLET_TESTS_DIR="$PROJECT_ROOT/integration_test/maestro_Passport_Wallet_Tests"
+PRIME_TESTS_DIR="$PROJECT_ROOT/integration_test/maestro_Prime_Tests"
 
 FAIL_VIDEOS_DIR="$PROJECT_ROOT/fail-videos"
 mkdir -p "$FAIL_VIDEOS_DIR"
@@ -45,6 +46,15 @@ DEVICE_ID=""
 TEST_ARG=""
 BUILD_APP=false
 KEBAB_PID=""
+PRIME_PID=""
+
+# On macOS workstations the KeyOS-dev checkout often lives on an external
+# drive rather than under $HOME. If KEYOS_DEV_DIR isn't already set and the
+# external location exists, prefer it so the spawned prime_bridge inherits
+# the correct path. No-op on Linux/CI and when $HOME/KeyOS-dev is used.
+if [ "$PLATFORM" = "mac" ] && [ -z "${KEYOS_DEV_DIR:-}" ] && [ -d /Volumes/External2TB/KeyOS-dev ]; then
+    export KEYOS_DEV_DIR=/Volumes/External2TB/KeyOS-dev
+fi
 
 # ------------------------------------------------------------
 # Commands (override here if needed later)
@@ -95,13 +105,46 @@ print_test_failure() {
     echo -e "${RED}✗ FAILED:${NC} ${BOLD}$test_name${NC}"
     echo -e "${RED}  Group:${NC}  $group_name"
 
-    # Extract the failed command from maestro output
+    # Always dump the full captured output to a log file so the user can
+    # see exactly what Maestro said when the pattern-extractors below miss.
+    local log_path="$FAIL_VIDEOS_DIR/${test_name%.yaml}.log"
+    mkdir -p "$FAIL_VIDEOS_DIR"
+    printf '%s\n' "$output" > "$log_path"
+
+    # Snapshot the most recent Prime screenshot from the FIRST-attempt run
+    # into fail-videos/ so it ships with the GitHub artifact bundle. The
+    # retry that follows will overwrite /tmp/prime-*-shot.png — we copy
+    # here, before that happens, so the saved image reflects what the
+    # Prime actually looked like at the moment the original assertion or
+    # OCR step failed.
+    local screenshot_path="$FAIL_VIDEOS_DIR/${test_name%.yaml}.png"
+    local last_shot
+    last_shot=$(ls -t /tmp/prime-*-shot.png 2>/dev/null | head -1)
+    if [ -n "$last_shot" ] && [ -f "$last_shot" ]; then
+        cp "$last_shot" "$screenshot_path"
+    fi
+
+    # Extract the failed command from maestro output. Maestro reports an
+    # action failure on a line ending in "... FAILED" and follows up with
+    # one of several reason patterns ("Assertion is false", "Element not
+    # found", etc.). We grep them all and take the first hit; if the
+    # failed-action line itself wraps across lines (multi-line text in
+    # selector), the context dump below picks up the rest.
     local failed_cmd=""
-    failed_cmd=$(echo "$output" | grep -iE "element not visible|not visible|unable to find|not found|timed out|assertion.*failed|could not|couldn't" | head -1)
+    failed_cmd=$(echo "$output" \
+        | grep -iE "\\.\\.\\. FAILED$|element not visible|not visible|unable to find|not found|timed out|assertion is false|assertion.*failed|could not|couldn't|\[prime_|throw|exception" \
+        | head -1)
 
     if [ -z "$failed_cmd" ]; then
         failed_cmd=$(echo "$output" | sed -n '/Failed at/,+3p' | head -4)
     fi
+
+    # Pull the failed-action block (the line ending in "... FAILED" plus a
+    # few preceding lines) for cases where the selector spans multi-line
+    # text, e.g. `Assert that "Passport Prime\nPassport Prime" is
+    # visible... FAILED`. grep -B grabs the context window.
+    local failed_block=""
+    failed_block=$(echo "$output" | grep -B 3 -m 1 -E '\.\.\. FAILED$' || true)
 
     # Try to find the line number in the YAML file
     if [ -n "$failed_cmd" ] && [ -f "$test_file" ]; then
@@ -140,11 +183,22 @@ print_test_failure() {
     # Print the reason from maestro
     if [ -n "$failed_cmd" ]; then
         echo -e "${RED}  Reason:${NC} $failed_cmd"
+        # If we caught a "... FAILED" line, show the surrounding action
+        # block too — that's how multi-line selectors (e.g. assertions on
+        # text that spans two lines) become readable instead of being
+        # truncated mid-quote.
+        if [ -n "$failed_block" ]; then
+            echo -e "${RED}  Failed action:${NC}"
+            echo "$failed_block" | sed 's/^/    /'
+        fi
     else
-        # Fallback: last meaningful lines
-        echo -e "${RED}  Output:${NC}"
-        echo "$output" | grep -v '^$' | tail -5 | sed 's/^/    /'
+        # Fallback: last meaningful lines (more context than before, since
+        # Maestro's trailing promo banner takes ~5 lines and would otherwise
+        # crowd out the real error).
+        echo -e "${RED}  Output (last 40 lines):${NC}"
+        echo "$output" | grep -v '^$' | tail -40 | sed 's/^/    /'
     fi
+    echo -e "${YELLOW}  Full log:${NC} $log_path"
     echo ""
 }
 
@@ -235,11 +289,38 @@ fi
 echo -e "${GREEN}✓${NC} adb found: $ADB_CMD"
 echo -e "${GREEN}✓${NC} ANDROID_HOME: $ANDROID_HOME"
 
+# ------------------------------------------------------------
+# Tesseract (Linux only — macOS uses Vision via prime_ocr.swift)
+# ------------------------------------------------------------
+# Prime helpers (prime-seeds.sh, prime-verify-step.sh, prime-assert-visible.sh)
+# OCR the Prime screen. On Linux that's tesseract; if it's missing we try to
+# install it best-effort with apt-get. Non-Debian distros are left to the
+# user with a clear message.
+if [ "$PLATFORM" = "linux" ] && ! command -v tesseract >/dev/null 2>&1; then
+    echo -e "${YELLOW}Tesseract not installed — Prime OCR helpers need it.${NC}"
+    if command -v apt-get >/dev/null 2>&1; then
+        echo -e "${YELLOW}Installing tesseract-ocr (sudo)...${NC}"
+        if sudo apt-get update -qq && sudo apt-get install -y tesseract-ocr; then
+            echo -e "${GREEN}✓${NC} tesseract installed"
+        else
+            echo -e "${RED}✗ apt-get install tesseract-ocr failed${NC}"
+            exit 1
+        fi
+    else
+        echo -e "${RED}✗ tesseract not found and apt-get is unavailable.${NC}"
+        echo -e "  Install it manually for your distro, e.g.:"
+        echo -e "    Fedora:  ${CYAN}sudo dnf install tesseract${NC}"
+        echo -e "    Arch:    ${CYAN}sudo pacman -S tesseract${NC}"
+        echo -e "    Alpine:  ${CYAN}sudo apk add tesseract-ocr${NC}"
+        exit 1
+    fi
+fi
 
 echo -e "${GREEN}✓${NC} Maestro found: $(command -v maestro)"
 echo -e "${GREEN}✓${NC} Platform: $PLATFORM"
 echo -e "${GREEN}✓${NC} Hot Wallet tests: $HOT_WALLET_TESTS_DIR"
 echo -e "${GREEN}✓${NC} Passport Wallet tests: $PASSPORT_WALLET_TESTS_DIR"
+echo -e "${GREEN}✓${NC} Prime tests: $PRIME_TESTS_DIR"
 
 # ------------------------------------------------------------
 # Kill ALL Maestro processes
@@ -310,6 +391,21 @@ if [ "$BUILD_APP" = true ]; then
     }
 
     echo -e "${GREEN}✓${NC} APK installed"
+
+    # Android can persist runtime permission grants across uninstall/reinstall
+    # for the same signature. Revoke explicitly so the runtime dialogs that
+    # the Maestro flows interact with always appear on a fresh install.
+    echo -e "${YELLOW}Revoking runtime permissions for clean dialog state...${NC}"
+    for perm in \
+        android.permission.CAMERA \
+        android.permission.ACCESS_FINE_LOCATION \
+        android.permission.ACCESS_COARSE_LOCATION \
+        android.permission.BLUETOOTH_SCAN \
+        android.permission.BLUETOOTH_CONNECT \
+        android.permission.POST_NOTIFICATIONS; do
+        $ADB_CMD -s "$DEVICE_ID" shell pm revoke "$APP_ID" "$perm" 2>/dev/null || true
+    done
+    echo -e "${GREEN}✓${NC} Runtime permissions revoked"
 
     # Launch app after clean install and wait for cold start to finish
     echo -e "${YELLOW}Launching app (cold start after clean install)...${NC}"
@@ -474,11 +570,36 @@ start_kebab_bridge() {
     for i in $(seq 1 10); do
         if curl -s http://localhost:7555/home >/dev/null 2>&1; then
             echo -e "${GREEN}✓${NC} Kebab bridge started (PID: $KEBAB_PID)"
+            check_kebab_subscribed
             return
         fi
         sleep 1
     done
     echo -e "${YELLOW}⚠ Kebab bridge may not be ready — kebab commands might fail${NC}"
+}
+
+# The HTTP bridge happily ACKs every command (it just publishes to MQTT),
+# so /home returning 200 only proves the broker is reachable — not that the
+# physical kebab is listening. This walks the broker's $SYS topics to count
+# real subscribers; if zero, every command will be a no-op even though the
+# test logs say "OK". Best-effort: skipped silently if mosquitto_sub isn't
+# installed.
+check_kebab_subscribed() {
+    if ! command -v mosquitto_sub >/dev/null 2>&1; then
+        echo -e "${YELLOW}⚠ mosquitto_sub not installed — skipping subscriber check${NC}"
+        return
+    fi
+    local subs
+    subs=$(mosquitto_sub -h 127.0.0.1 -p 1235 \
+                -t '$SYS/broker/subscriptions/count' -C 1 -W 2 2>/dev/null || echo "")
+    if [ -z "$subs" ]; then
+        echo -e "${YELLOW}⚠ Could not query MQTT broker — kebab subscription status unknown${NC}"
+    elif [ "$subs" -ge 1 ] 2>/dev/null; then
+        echo -e "${GREEN}✓${NC} Kebab is subscribed to MQTT (${subs} active subscriptions)"
+    else
+        echo -e "${RED}⚠ Kebab is NOT subscribed to MQTT — commands will be silently dropped${NC}"
+        echo -e "${YELLOW}  power-cycle the kebab or check its network/USB tether${NC}"
+    fi
 }
 
 stop_kebab_bridge() {
@@ -489,7 +610,102 @@ stop_kebab_bridge() {
     fi
 }
 
+# ------------------------------------------------------------
+# Prime HTTP Bridge (passport-drive)
+# ------------------------------------------------------------
+# Lets Maestro flows drive Prime via runScript JS by hitting the bridge.
+# Starts best-effort: if Prime isn't connected or USB setup fails, warn
+# and continue — tests that don't touch Prime still work.
+start_prime_bridge() {
+    if [ -x "$SCRIPT_DIR/prime_driver_setup.sh" ]; then
+        echo -e "${YELLOW}Preparing Prime USB interface...${NC}"
+        if ! "$SCRIPT_DIR/prime_driver_setup.sh"; then
+            echo -e "${YELLOW}⚠ prime-driver-setup failed — Prime tests will not work${NC}"
+            return
+        fi
+    fi
+
+    # If port 7556 is already bound, free it (stale bridge from previous run)
+    if lsof -i :7556 >/dev/null 2>&1; then
+        local stale
+        stale=$(lsof -tiTCP:7556 2>/dev/null)
+        if [ -n "$stale" ]; then
+            echo -e "${YELLOW}Killing stale Prime bridge on port 7556 (PIDs: $stale)${NC}"
+            kill $stale 2>/dev/null || true
+            sleep 0.5
+        fi
+    fi
+
+    echo -e "${YELLOW}Starting Prime HTTP bridge...${NC}"
+    "$SCRIPT_DIR/prime_bridge.sh" &
+    PRIME_PID=$!
+
+    for i in $(seq 1 10); do
+        if curl -s http://localhost:7556/prime/screenshot >/dev/null 2>&1; then
+            echo -e "${GREEN}✓${NC} Prime bridge started (PID: $PRIME_PID)"
+            return
+        fi
+        sleep 1
+    done
+    echo -e "${YELLOW}⚠ Prime bridge may not be ready — Prime commands might fail${NC}"
+}
+
+stop_prime_bridge() {
+    if [ -n "$PRIME_PID" ]; then
+        kill "$PRIME_PID" 2>/dev/null
+        wait "$PRIME_PID" 2>/dev/null
+        echo -e "${GREEN}✓${NC} Prime bridge stopped"
+    fi
+}
+
+# ------------------------------------------------------------
+# Cleanup trap — fires on normal exit and on SIGINT/SIGTERM, so the
+# Kebab motors don't stay energized if a Prime test run is interrupted.
+# ------------------------------------------------------------
+KEBAB_WAKE_ACTIVE=0
+
+sleep_kebab_motors() {
+    [ "$KEBAB_WAKE_ACTIVE" = "1" ] || return 0
+    echo -e "${YELLOW}Sleeping Kebab motors...${NC}"
+    if curl -s -o /dev/null --max-time 3 http://localhost:7555/disable_motors; then
+        echo -e "${GREEN}✓${NC} Kebab motors sleeping"
+    else
+        echo -e "${YELLOW}⚠ Kebab sleep request failed${NC}"
+    fi
+    KEBAB_WAKE_ACTIVE=0
+}
+
+cleanup_prime_tmp() {
+    # Sweep stable-path artifacts from the previous run so they don't
+    # linger or get confused with the current run's output. The helper
+    # screenshots are stable-path (prime-{seeds,verify,assert}-shot.png)
+    # rather than mktemp so users can inspect them after a failure — they
+    # survive their own script's exit, but get wiped here on the next run.
+    rm -f /tmp/prime-bridge-shot.png \
+          /tmp/prime-seeds.txt \
+          /tmp/prime-seeds-shot.png \
+          /tmp/prime-verify-shot.png \
+          /tmp/prime-assert-shot.png
+}
+
+cleanup() {
+    # Order matters: send the sleep command before killing the HTTP bridge.
+    # NOTE: Prime tmp screenshots are intentionally NOT deleted here — they
+    # survive the run so a failure can be inspected after the fact. The
+    # next run wipes them before it starts (see call below).
+    sleep_kebab_motors
+    stop_prime_bridge
+    stop_kebab_bridge
+}
+trap cleanup EXIT INT TERM
+
+# Wipe stable-path artifacts from the *previous* run before anything new
+# happens this run. Screenshots etc. survive their own run for inspection;
+# the cleanup is here rather than in the exit trap.
+cleanup_prime_tmp
+
 start_kebab_bridge
+start_prime_bridge
 
 # ------------------------------------------------------------
 # Test Runner
@@ -507,6 +723,12 @@ run_single_test() {
     test_name="$(basename "$test_file")"
 
     print_test_start "$test_name"
+
+    # Wipe any stale .log / .png from a previous run so the files in
+    # fail-videos/ always reflect *this* run (present only if this run
+    # failed).
+    rm -f "$FAIL_VIDEOS_DIR/${test_name%.yaml}.log" \
+          "$FAIL_VIDEOS_DIR/${test_name%.yaml}.png"
 
     OUTPUT=$(maestro --device "$DEVICE_ID" test "$test_file" 2>&1)
     EXIT_CODE=$?
@@ -571,6 +793,23 @@ run_test_group "Hot Wallet Tests" "$HOT_WALLET_TESTS_DIR"
 # --- Group 2: Passport Wallet Tests ---
 run_test_group "Passport Wallet Tests" "$PASSPORT_WALLET_TESTS_DIR"
 
+# --- Group 3: Prime Tests (cross-device, Android + Prime via passport-drive) ---
+# Wake the Kebab motors (enable → home → park at FaceTesterPos2) before the
+# group, and sleep them again after, so the steppers aren't energized while
+# idle between runs. The cleanup trap above guarantees the sleep command
+# is sent even if the script is interrupted mid-group.
+echo -e "${YELLOW}Waking Kebab motors for Prime tests...${NC}"
+if curl -s -o /dev/null --max-time 5 http://localhost:7555/wake; then
+    KEBAB_WAKE_ACTIVE=1
+    echo -e "${GREEN}✓${NC} Kebab motors awake"
+else
+    echo -e "${YELLOW}⚠ Kebab wake request failed — continuing${NC}"
+fi
+
+run_test_group "Prime Tests" "$PRIME_TESTS_DIR"
+
+sleep_kebab_motors
+
 # ------------------------------------------------------------
 # Summary
 # ------------------------------------------------------------
@@ -593,9 +832,8 @@ if [ ${#FAILED_TESTS[@]} -gt 0 ]; then
 fi
 
 # ------------------------------------------------------------
-# Cleanup
+# Cleanup — bridges + Kebab sleep are handled by the EXIT trap above.
 # ------------------------------------------------------------
-stop_kebab_bridge
 
 echo -e "${YELLOW}Uninstalling app...${NC}"
 $ADB_CMD -s "$DEVICE_ID" uninstall com.foundationdevices.envoy >/dev/null 2>&1 || true

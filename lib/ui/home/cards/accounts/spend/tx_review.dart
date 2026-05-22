@@ -1227,6 +1227,8 @@ class _TransactionReviewScreenState
               setFee(fee, context, customFee);
               ref.read(userHasChangedFeesProvider.notifier).state = true;
             },
+            onFeeProbe: (fee) =>
+                ref.read(spendTransactionProvider.notifier).previewFee(fee),
           );
         },
         transitionDuration: const Duration(milliseconds: 100),
