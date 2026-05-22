@@ -203,7 +203,6 @@ class BlogPostCardState extends State<BlogPostCard> {
                           } else {
                             imgTag.attributes['src'] = srcsetUrls.first;
                           }
-                          imgTag.attributes['style'] = 'border-radius: 16px;';
                         }
                       }
                     }
@@ -221,6 +220,10 @@ class BlogPostCardState extends State<BlogPostCard> {
                               style: {
                                 "p": Style(fontSize: FontSize.medium),
                                 "a": Style(color: EnvoyColors.accentPrimary),
+                                "img": Style(
+                                  borderRadius: BorderRadius.circular(
+                                      EnvoySpacing.medium1),
+                                ),
                               },
                               onLinkTap: (linkUrl, _, __) {
                                 launchUrlString(linkUrl!);

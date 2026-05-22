@@ -158,15 +158,16 @@ pub fn request(
         header_map.append(header_name, header_value);
     }
 
-    let request = match verb {
+    let mut request = match verb {
         Verb::Get => client.get(&url),
         Verb::Post => client.post(&url),
     };
 
-    let response = request
-        .body(body.unwrap_or_default())
-        .headers(header_map)
-        .send()?;
+    if let Some(body) = body {
+        request = request.body(body);
+    }
+
+    let response = request.headers(header_map).send()?;
     let status_code = response.status().as_u16();
     let body_bytes = response.bytes()?.to_vec();
     let body = String::from_utf8_lossy(&body_bytes).to_string();
