@@ -98,5 +98,8 @@ jobs:
                 issues found" and stop.
 
             Skip the preamble. Skip "great work!". Skip emoji.
+          claude_args: |
+            --model claude-opus-4-7
+            --effort max
           # See https://github.com/anthropics/claude-code-action/blob/main/docs/usage.md
           # or https://code.claude.com/docs/en/cli-reference for available options
