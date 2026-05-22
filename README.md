@@ -184,6 +184,15 @@ Generated files are excluded from analysis. If you see errors in `src/rust/` or 
 
 You are reviewing a PR in Envoy, Foundation Devices' Bitcoin wallet mobile app (Flutter/Dart UI, Rust core via FFI, iOS + Android, companion to the Passport hardware wallet).
 
+### Related repositories
+
+Other Foundation Devices repos Envoy depends on or talks to. Consult them when a diff touches the integration surface; assume the contract on the other side is fixed unless the PR description says otherwise.
+
+- [`foundation-api`](https://github.com/Foundation-Devices/foundation-api) — Rust monorepo for the device-to-device API built on Blockchain Commons' GSTP. Defines Quantum Link (QL) messages, the Beefcake Transfer Protocol (BTP) for MTU-sized chunking, and BLE/SE abstractions. Envoy wraps it as the `foundation_api` FRB package and uses it to talk to Passport over BLE.
+- [`ngwallet`](https://github.com/Foundation-Devices/ngwallet) — Foundation's next-gen Bitcoin wallet core, built on a Foundation-forked BDK. Owns the wallet logic: account/key derivation, PSBT construction and signing, fee handling, RBF, UTXO selection, `sign_message`. Envoy wraps it as the `ngwallet` FRB package; every transaction Envoy builds or signs flows through it.
+- [`envoy-server`](https://github.com/Foundation-Devices/envoy-server) — Private Rust + Axum backend Envoy calls into. Two responsibilities: (1) serve Passport firmware release metadata (verified via GitHub webhook HMAC), and (2) act as the encrypted backup gateway against S3 or local storage.
+- [`backup-server`](https://github.com/Foundation-Devices/backup-server) — Private Rust + Axum service for encrypted backup storage using post-quantum signatures (`libcrux-ml-dsa` / ML-DSA). Sits alongside or augments `envoy-server`'s backup path.
+
 Prioritise findings by severity. Only post comments at P0 or P1.
 
 ### P0 — block merge
