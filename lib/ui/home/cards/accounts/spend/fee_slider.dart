@@ -2,6 +2,7 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
+import 'dart:async';
 import 'package:envoy/business/settings.dart';
 import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/components/amount_widget.dart';
@@ -62,11 +63,19 @@ class FeeChooser extends ConsumerStatefulWidget {
   /// Should be false for RBF, where the minimum is always ≥1 sat/vB.
   final bool allowSubOneInCustom;
 
+  /// Optional callback that composes a draft transaction at [fee] without
+  /// committing state, so the chooser can show the real fee and detect
+  /// unfeasible custom rates while the user is still scrolling.
+  final Future<({BitcoinTransaction? transaction, String? error})> Function(
+    FeeRate fee,
+  )? onFeeProbe;
+
   const FeeChooser(
     this.transaction, {
     super.key,
     required this.onFeeSelect,
     this.allowSubOneInCustom = true,
+    this.onFeeProbe,
   });
 
   @override
@@ -88,6 +97,11 @@ class _FeeChooserState extends ConsumerState<FeeChooser>
   bool _showCustom = false;
   EnvoyAccount? account;
 
+  BitcoinTransaction? _previewTx;
+  String? _previewError;
+  bool _previewing = false;
+  FeeRate? _previewedRate;
+
   @override
   void initState() {
     super.initState();
@@ -106,6 +120,51 @@ class _FeeChooserState extends ConsumerState<FeeChooser>
     });
   }
 
+  Future<void> _probeFee(FeeRate fee) async {
+    final probe = widget.onFeeProbe;
+    if (probe == null) return;
+    if (!mounted) return;
+    setState(() {
+      _previewing = true;
+      _previewedRate = fee;
+    });
+    final result = await probe(fee);
+    if (!mounted) return;
+    // Drop stale results — a newer scroll may have superseded this probe.
+    if (_previewedRate != fee) return;
+    setState(() {
+      _previewing = false;
+      _previewTx = result.transaction;
+      _previewError = result.error;
+    });
+  }
+
+  void _clearPreview() {
+    if (_previewTx == null && _previewError == null && !_previewing) return;
+    setState(() {
+      _previewTx = null;
+      _previewError = null;
+      _previewing = false;
+      _previewedRate = null;
+    });
+  }
+
+  /// Sats to show on the custom row's trailing — prefer the real fee from the
+  /// most recent successful preview at the current slider rate; otherwise fall
+  /// back to a linear `rate × vsize` approximation.
+  int _customFeeDisplaySats(FeeRate selectedFee) {
+    if (_previewTx != null && _previewedRate == selectedFee) {
+      return _previewTx!.fee.toInt();
+    }
+    return getApproxFeeInSats(
+      feeRate: selectedFee,
+      txVSizeVb: _safeTxVSizeVb(
+        widget.transaction.fee.toDouble(),
+        FeeRate.fromBigInt(widget.transaction.feeRate.field0).satPerVb,
+      ),
+    );
+  }
+
   void setFees(FeeChooserState feeChooserState) {
     standardFee = feeChooserState.standardFeeRate;
     fasterFee = feeChooserState.fasterFeeRate;
@@ -121,6 +180,9 @@ class _FeeChooserState extends ConsumerState<FeeChooser>
       _selectedOption = option;
       _showCustom = option == FeeOption.custom;
     });
+    if (option != FeeOption.custom) {
+      _clearPreview();
+    }
   }
 
   /// Returns the vsize derived from the current transaction, falling back to
@@ -313,14 +375,9 @@ class _FeeChooserState extends ConsumerState<FeeChooser>
                                     .copyWith(color: EnvoyColors.textTertiary)),
                           ),
                           EnvoyAmount(
-                              amountSats: getApproxFeeInSats(
-                                  feeRate: ref.watch(_selectedFeeStateProvider),
-                                  txVSizeVb: _safeTxVSizeVb(
-                                    widget.transaction.fee.toDouble(),
-                                    FeeRate.fromBigInt(
-                                            widget.transaction.feeRate.field0)
-                                        .satPerVb,
-                                  )),
+                              amountSats: _customFeeDisplaySats(
+                                ref.watch(_selectedFeeStateProvider),
+                              ),
                               amountWidgetStyle: AmountWidgetStyle.normal,
                               account: account!),
                         ],
@@ -346,6 +403,7 @@ class _FeeChooserState extends ConsumerState<FeeChooser>
                         ref.read(_selectedFeeStateProvider.notifier).state =
                             fee;
                       },
+                      onProbe: widget.onFeeProbe != null ? _probeFee : null,
                       allowSubOne: widget.allowSubOneInCustom &&
                           (Settings().usingDefaultElectrumServer ||
                               Settings().subSatFeeEnabled),
@@ -356,6 +414,8 @@ class _FeeChooserState extends ConsumerState<FeeChooser>
           SizedBox(height: EnvoySpacing.medium1),
           EnvoyButton(
             S().component_apply,
+            enabled: !(_selectedOption == FeeOption.custom &&
+                (_previewError != null || _previewing)),
             onTap: () async {
               ref.read(selectedFeeOptionProvider.notifier).state =
                   _selectedOption;
@@ -472,6 +532,10 @@ class FeeSlider extends ConsumerStatefulWidget {
   /// This feature will be implemented in future release
   final bool allowSubOne;
 
+  /// Called (debounced) when the user settles on a new rate so the parent
+  /// can probe the wallet for the actual fee/feasibility at that rate.
+  final Future<void> Function(FeeRate fee)? onProbe;
+
   const FeeSlider({
     super.key,
     this.selectedItem = 1,
@@ -479,6 +543,7 @@ class FeeSlider extends ConsumerStatefulWidget {
     required this.fees,
     required this.transaction,
     required this.allowSubOne,
+    this.onProbe,
   });
 
   @override
@@ -511,6 +576,8 @@ class _FeeSliderState extends ConsumerState<FeeSlider> {
   double _selectedDecimalValue = 0.0;
   FeeRate? _injectedDecimalFee;
 
+  Timer? _probeDebounce;
+
   @override
   void initState() {
     super.initState();
@@ -519,6 +586,21 @@ class _FeeSliderState extends ConsumerState<FeeSlider> {
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
       initializeSelectedRate();
+    });
+  }
+
+  @override
+  void dispose() {
+    _probeDebounce?.cancel();
+    super.dispose();
+  }
+
+  void _scheduleProbe(FeeRate fee) {
+    final probe = widget.onProbe;
+    if (probe == null) return;
+    _probeDebounce?.cancel();
+    _probeDebounce = Timer(const Duration(milliseconds: 250), () {
+      probe(fee);
     });
   }
 
@@ -1004,6 +1086,7 @@ class _FeeSliderState extends ConsumerState<FeeSlider> {
     ref.read(_selectedFeeStateProvider.notifier).state = selectedFee;
     ref.read(spendFeeRateProvider.notifier).state = selectedFee;
     widget.onFeeSelect(selectedFee);
+    _scheduleProbe(selectedFee);
     HapticFeedback.selectionClick();
   }
 
@@ -1093,5 +1176,9 @@ class _FeeSliderState extends ConsumerState<FeeSlider> {
     if (_initializationFinished) {
       ref.read(spendFeeRateProvider.notifier).state = fee;
     }
+
+    // Debounced probe — the parent uses this to compose the tx at [fee] and
+    // surface the real fee / unfeasible-rate error in the chooser.
+    _scheduleProbe(fee);
   }
 }
