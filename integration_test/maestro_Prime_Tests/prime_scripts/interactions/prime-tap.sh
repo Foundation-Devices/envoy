@@ -32,7 +32,7 @@ KEYOS_DEV_DIR="${KEYOS_DEV_DIR:-$HOME/KeyOS-dev}"
 
 # Tiny settle delay before every tap so the previous UI transition has time
 # to finish — Maestro flows can dispatch taps faster than the Prime renders.
-sleep 0.4
+sleep 0.8
 
 if [ "$#" -eq 1 ] && [ "$1" = "home" ]; then
     exec "$KEYOS_DEV_DIR/target/release/passport-drive" tap 100 910
