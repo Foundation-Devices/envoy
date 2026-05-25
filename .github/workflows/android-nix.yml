@@ -45,7 +45,7 @@ jobs:
           KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
           ALIAS_PASSWORD: ${{ secrets.ALIAS_PASSWORD }}
 
-      - run: echo -n $KEY_JKS | base64 -di > android/key.jks && nix develop --command flutter build aab --release --target-platform android-arm64
+      - run: echo -n $KEY_JKS | base64 -di > android/key.jks && nix develop --command flutter build aab --release
         name: Build Envoy AAB
         env:
           KEY_JKS: ${{ secrets.KEY_JKS }}
