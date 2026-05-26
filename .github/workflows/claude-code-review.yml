@@ -53,9 +53,28 @@ jobs:
             - [`envoy-server`](https://github.com/Foundation-Devices/envoy-server) — Private Rust + Axum backend Envoy calls into. Two responsibilities: (1) serve Passport firmware release metadata (verified via GitHub webhook HMAC), and (2) act as the encrypted backup gateway against S3 or local storage.
             - [`backup-server`](https://github.com/Foundation-Devices/backup-server) — Private Rust + Axum service for encrypted backup storage using post-quantum signatures (`libcrux-ml-dsa` / ML-DSA). Sits alongside or augments `envoy-server`'s backup path.
 
-            Prioritise findings by severity. Only post comments at P0, P1, or P2.
+            ### How to comment
 
-            ### P0 — block merge
+            Give every finding a priority — the reviewer triages from it, and any finding promoted to a Linear ticket inherits it:
+
+            - **Urgent** — must fix before merge: a correctness, security, or data-loss bug.
+            - **High** — should fix before merge: likely to bite, but not catastrophic.
+            - **Medium** — worth fixing; can be deferred to a follow-up ticket.
+            - **Low** — minor; nice-to-have.
+
+            Lead every inline comment with the priority in brackets, then a prefix that signals the action expected:
+
+            - *(no prefix)* — change this, or justify why not.
+            - `Optional:` — an improvement; can be dismissed without justification.
+            - `Note:` — FYI only, no action required.
+
+            For example: `[Urgent] <problem>. <fix>.` or `[Low] Optional: <suggestion>.` or `[Medium] Note: <observation>.`
+
+            Do not resolve your own comments — leave that to the human reviewer or the PR author.
+
+            ### What to look for
+
+            Urgent:
 
             - Anything that could leak, log, or weaken handling of seeds, xprivs, descriptors, PSBTs, BIP39 words, or session secrets. Includes logging, crash reports, analytics, screenshots, clipboard, deep links, and accidental serialisation.
             - Incorrect Bitcoin maths: fee calculation, sat/byte vs sat/vB, dust thresholds, change derivation, address-type assumptions, signature/PSBT round-trips.
@@ -63,25 +82,31 @@ jobs:
             - Concurrency bugs around BLE (connect/disconnect/reconnect, GATT writes, queue ordering) and around wallet sync.
             - Android permissions regressions, especially BLE on Android 11+ (`BLUETOOTH_CONNECT`/`SCAN`, location prompt skips, foreground service requirements) and iOS Bluetooth state restoration / background modes.
 
-            ### P1 — should fix before merge
+            High:
 
             - Missing or incorrect error handling on network, BLE, or FFI calls that could land the user in a stuck UI state.
             - State management mistakes (Riverpod/Provider): rebuild loops, stale references after hot reload, accidental `watch` in `build` that triggers infinite rebuilds.
             - i18n strings hard-coded in English in user-facing widgets that should go through the localisation pipeline (`just copy`).
             - Obvious perf cliffs on lower-end Android (heavy work on the UI isolate, large `setState` blasts, missing `const`).
 
-            ### P2 — nit, not a blocker
+            Medium:
+
+            - Latent bugs that only trigger under uncommon conditions, or error paths that leave the user without a way to recover.
+            - Missing test coverage on a non-critical path the PR changes.
+            - New TODOs or technical debt added without a tracking ticket.
+
+            Low:
 
             - Typos in user-facing strings, dartdoc/rustdoc, or code comments.
 
             ### Do not comment on
 
             - Formatting / style — `dart format` and the linter cover it.
-            - Renames or comment rewording (typos themselves are P2 above).
+            - Renames or comment rewording.
             - Speculative refactors ("you could extract this...") unless the code as written is wrong.
             - Things the PR author explicitly called out in the description.
 
-            Skip preamble. Skip "great work!". Skip emoji. Output: one short paragraph per finding stating the problem then the fix, anchored inline. End with a one-sentence verdict and a bulleted list of P0s, then P1s, then P2s. If nothing material, post "no blocking issues found" and stop.
+            Skip preamble. Skip "great work!". Skip emoji. One short paragraph per finding: state the problem, then the fix. End with a one-sentence verdict, then the findings grouped Urgent, then High, then Medium, then Low. If nothing material, post "no blocking issues found" and stop.
           claude_args: |
             --model claude-opus-4-7
             --effort max
