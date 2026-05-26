@@ -688,16 +688,35 @@ cleanup_prime_tmp() {
           /tmp/prime-assert-shot.png
 }
 
+CLEANED_UP=0
 cleanup() {
     # Order matters: send the sleep command before killing the HTTP bridge.
     # NOTE: Prime tmp screenshots are intentionally NOT deleted here — they
     # survive the run so a failure can be inspected after the fact. The
     # next run wipes them before it starts (see call below).
+    [ "$CLEANED_UP" = "1" ] && return
+    CLEANED_UP=1
     sleep_kebab_motors
     stop_prime_bridge
     stop_kebab_bridge
 }
-trap cleanup EXIT INT TERM
+
+# Ctrl-C / SIGTERM handler. Without this, the default INT trap (`cleanup`)
+# would run but bash would continue into the next test_loop iteration —
+# meaning a Ctrl-C during one test silently started the next one. We also
+# force-disable motors here regardless of KEBAB_WAKE_ACTIVE: the firmware
+# re-energizes steppers whenever a position command arrives, so the flag
+# isn't a reliable signal of current motor state.
+on_interrupt() {
+    echo ""
+    echo -e "${RED}Interrupted — stopping tests and cleaning up...${NC}"
+    curl -s -o /dev/null --max-time 3 http://localhost:7555/disable_motors 2>/dev/null || true
+    cleanup
+    exit 130
+}
+
+trap cleanup EXIT
+trap on_interrupt INT TERM
 
 # Wipe stable-path artifacts from the *previous* run before anything new
 # happens this run. Screenshots etc. survive their own run for inspection;
@@ -787,6 +806,29 @@ run_test_group() {
     fi
 }
 
+# ------------------------------------------------------------
+# Pre-position the Kebab rig at FaceTesterPos2 so it's visually aligned
+# from the start of the run, then disable motors. The Hot Wallet and
+# Passport Wallet groups don't drive the kebab, so there's no reason to
+# leave the steppers energized for that stretch. The Prime group's pre-
+# wake (below) re-energizes when it's actually needed.
+# ------------------------------------------------------------
+echo -e "${YELLOW}Pre-positioning Kebab at FaceTesterPos2...${NC}"
+if curl -s -o /dev/null --max-time 5 http://localhost:7555/wake; then
+    if curl -s -o /dev/null --max-time 10 http://localhost:7555/face_tester_2; then
+        echo -e "${GREEN}✓${NC} Kebab parked at FaceTesterPos2"
+    else
+        echo -e "${YELLOW}⚠ face_tester_2 failed — rig may be at home${NC}"
+    fi
+    if curl -s -o /dev/null --max-time 5 http://localhost:7555/disable_motors; then
+        echo -e "${GREEN}✓${NC} Kebab motors disabled for non-Prime groups"
+    else
+        echo -e "${YELLOW}⚠ disable_motors failed — motors may stay energized${NC}"
+    fi
+else
+    echo -e "${YELLOW}⚠ Kebab wake request failed — continuing${NC}"
+fi
+
 # --- Group 1: Hot Wallet Tests ---
 run_test_group "Hot Wallet Tests" "$HOT_WALLET_TESTS_DIR"
 
@@ -802,6 +844,14 @@ echo -e "${YELLOW}Waking Kebab motors for Prime tests...${NC}"
 if curl -s -o /dev/null --max-time 5 http://localhost:7555/wake; then
     KEBAB_WAKE_ACTIVE=1
     echo -e "${GREEN}✓${NC} Kebab motors awake"
+    # Firmware's `wake` only enables steppers and homes — it does NOT park at
+    # FaceTesterPos2. Issue an explicit face_tester_2 so the rig ends up in
+    # the intended ready pose with motors still energized.
+    if curl -s -o /dev/null --max-time 10 http://localhost:7555/face_tester_2; then
+        echo -e "${GREEN}✓${NC} Kebab parked at FaceTesterPos2"
+    else
+        echo -e "${YELLOW}⚠ Kebab face_tester_2 request failed — rig left at home${NC}"
+    fi
 else
     echo -e "${YELLOW}⚠ Kebab wake request failed — continuing${NC}"
 fi
