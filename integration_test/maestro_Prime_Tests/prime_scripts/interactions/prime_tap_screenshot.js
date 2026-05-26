@@ -14,10 +14,6 @@
 //           Y: "400"
 //           WAIT_MS: "800"        # optional
 //           PATH: "/tmp/foo.png"  # optional
-//
-//   From shell (via prime-tap-screenshot.sh):
-//     ./prime-tap-screenshot.sh 240 400                       # default 800ms wait
-//     ./prime-tap-screenshot.sh 240 400 1500 /tmp/foo.png     # custom wait + path
 
 var body = { x: parseInt(X, 10), y: parseInt(Y, 10) };
 if (typeof WAIT_MS !== "undefined" && WAIT_MS) body.wait_ms = parseInt(WAIT_MS, 10);

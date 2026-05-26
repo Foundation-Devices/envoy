@@ -19,10 +19,6 @@
 //         file: prime_scripts/interactions/prime_tap.js
 //         env:
 //           X: "home"
-//
-//   From shell (via prime-tap.sh):
-//     ./prime-tap.sh 240 400
-//     ./prime-tap.sh home
 
 var tapX, tapY;
 if (typeof X === "string" && X.toLowerCase() === "home") {

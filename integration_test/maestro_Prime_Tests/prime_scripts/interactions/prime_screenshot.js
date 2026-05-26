@@ -10,9 +10,6 @@
 //         file: prime_scripts/interactions/prime_screenshot.js
 //         env:
 //           PATH: "/tmp/prime.png"   // optional
-//
-//   From shell (via prime-screenshot.sh):
-//     ./prime-screenshot.sh -o /tmp/prime.png
 
 var body = {};
 if (typeof PATH !== "undefined" && PATH) body.path = PATH;

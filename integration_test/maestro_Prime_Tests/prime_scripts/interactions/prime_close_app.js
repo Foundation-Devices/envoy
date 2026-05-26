@@ -10,9 +10,6 @@
 //         file: prime_scripts/interactions/prime_close_app.js
 //         env:
 //           PID: "40"
-//
-//   From shell (via prime-close-app.sh):
-//     ./prime-close-app.sh 40
 
 var response = http.post(
   "http://127.0.0.1:7556/prime/close-app",

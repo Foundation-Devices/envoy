@@ -16,10 +16,6 @@
 //           EY: "200"
 //           WAIT_MS: "1000"       # optional
 //           PATH: "/tmp/foo.png"  # optional
-//
-//   From shell (via prime-swipe-screenshot.sh):
-//     ./prime-swipe-screenshot.sh 240 600 240 200                       # default 1000ms wait
-//     ./prime-swipe-screenshot.sh 240 600 240 200 1500 /tmp/foo.png     # custom wait + path
 
 var body = {
   sx: parseInt(SX, 10),

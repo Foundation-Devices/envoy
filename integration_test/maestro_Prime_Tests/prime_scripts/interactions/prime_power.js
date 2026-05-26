@@ -7,9 +7,6 @@
 // How to use
 //   From Maestro YAML:
 //     - runScript: prime_scripts/interactions/prime_power.js
-//
-//   From shell (via prime-power.sh):
-//     ./prime-power.sh
 
 var response = http.post(
   "http://127.0.0.1:7556/prime/power",

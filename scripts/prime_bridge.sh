@@ -38,10 +38,26 @@ import http.server
 import json
 import os
 import subprocess
+import time
 
 PORT = 7556
 SCRIPT_DIR = os.environ["SCRIPT_DIR"]            # envoy-dev/scripts/
 TAP_SCRIPTS_DIR = os.environ["TAP_SCRIPTS_DIR"]  # …/maestro_Prime_Tests/prime_scripts/
+
+# passport-drive binary — replaces the per-action prime-*.sh wrappers that
+# used to live under prime_scripts/interactions/. Honors KEYOS_DEV_DIR the
+# same way the old wrappers did, falling back to ~/KeyOS-dev.
+PD = os.path.join(
+    os.environ.get("KEYOS_DEV_DIR", os.path.expanduser("~/KeyOS-dev")),
+    "target/release/passport-drive",
+)
+
+# Settle delay before every /prime/tap. The Prime renders slower than
+# Maestro can dispatch taps, so back-to-back taps without this delay can
+# land before the previous UI transition has finished. (Previously lived in
+# prime-tap.sh but never fired for Maestro because the bridge invoked the
+# wrapper anyway — now it does fire for every tap caller.)
+TAP_SETTLE_SECONDS = 0.8
 
 
 def run(cmd):
@@ -94,47 +110,48 @@ class Handler(http.server.BaseHTTPRequestHandler):
 
         elif path == "/prime/screenshot":
             out_path = body.get("path", "/tmp/prime-bridge-shot.png")
-            self._exec([script("prime-screenshot.sh"), "-o", out_path])
+            self._exec([PD, "screenshot", "-o", out_path])
 
         elif path == "/prime/tap" and method == "POST":
-            self._exec([script("prime-tap.sh"), str(body["x"]), str(body["y"])])
+            time.sleep(TAP_SETTLE_SECONDS)
+            self._exec([PD, "tap", str(body["x"]), str(body["y"])])
 
         elif path == "/prime/swipe" and method == "POST":
             steps = str(body.get("steps", 15))
             self._exec([
-                script("prime-swipe.sh"),
+                PD, "swipe",
                 str(body["sx"]), str(body["sy"]),
                 str(body["ex"]), str(body["ey"]),
-                steps,
+                "-s", steps,
             ])
 
         elif path == "/prime/power" and method == "POST":
-            self._exec([script("prime-power.sh")])
+            self._exec([PD, "power"])
 
         elif path == "/prime/tap-screenshot" and method == "POST":
             wait_ms = str(body.get("wait_ms", 800))
             out_path = body.get("path", "/tmp/prime-bridge-shot.png")
             self._exec([
-                script("prime-tap-screenshot.sh"),
+                PD, "tap-screenshot",
                 str(body["x"]), str(body["y"]),
-                wait_ms, out_path,
+                "-w", wait_ms, "-o", out_path,
             ])
 
         elif path == "/prime/swipe-screenshot" and method == "POST":
             wait_ms = str(body.get("wait_ms", 1000))
             out_path = body.get("path", "/tmp/prime-bridge-shot.png")
             self._exec([
-                script("prime-swipe-screenshot.sh"),
+                PD, "swipe-screenshot",
                 str(body["sx"]), str(body["sy"]),
                 str(body["ex"]), str(body["ey"]),
-                wait_ms, out_path,
+                "-w", wait_ms, "-o", out_path,
             ])
 
         elif path == "/prime/input-text" and method == "POST":
-            self._exec([script("prime-input-text.sh"), str(body["text"])])
+            self._exec([PD, "input-text", str(body["text"])])
 
         elif path == "/prime/close-app" and method == "POST":
-            self._exec([script("prime-close-app.sh"), str(body["pid"])])
+            self._exec([PD, "close-app", str(body["pid"])])
 
         elif path == "/prime/seeds" and method == "POST":
             rc, out, err = run([script("prime-seeds.sh")])
