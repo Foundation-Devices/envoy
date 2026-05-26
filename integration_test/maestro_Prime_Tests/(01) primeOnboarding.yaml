@@ -10,9 +10,8 @@ appId: com.foundationdevices.envoy
 # On the PRIME side you need to be in HOME (DEV app version installed)
 # Also this test is adjusted for MOTOROLA only
 
-# already starting clean
-#- launchApp:
-#    clearState: true
+- launchApp:
+    clearState: true
 
 # "Skip prime security check"
 - tapOn: "ENVOY"

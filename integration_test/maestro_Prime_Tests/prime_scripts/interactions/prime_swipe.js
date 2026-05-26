@@ -15,10 +15,6 @@
 //           EX: "240"
 //           EY: "200"
 //           STEPS: "15"   # optional
-//
-//   From shell (via prime-swipe.sh):
-//     ./prime-swipe.sh 240 600 240 200            # default 15 steps
-//     ./prime-swipe.sh 240 600 240 200 30         # 30 steps
 
 var body = {
   sx: parseInt(SX, 10),

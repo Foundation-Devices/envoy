@@ -10,9 +10,6 @@
 //         file: prime_scripts/interactions/prime_input_text.js
 //         env:
 //           TEXT: "hello world"
-//
-//   From shell (via prime-input-text.sh):
-//     ./prime-input-text.sh "hello world"
 
 var response = http.post(
   "http://127.0.0.1:7556/prime/input-text",
