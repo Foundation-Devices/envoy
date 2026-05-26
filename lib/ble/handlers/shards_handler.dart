@@ -28,7 +28,6 @@ class ShardsHandler extends PassportMessageHandler {
       kPrint("Got shard backup request!");
       final shard = request.field0.shard;
 
-      // TODO: add shard ids to API
       try {
         await PrimeShard().addShard(shard: shard.field0);
         qlConnection.writeMessage(
