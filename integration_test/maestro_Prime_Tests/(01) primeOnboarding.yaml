@@ -159,10 +159,19 @@ appId: com.foundationdevices.envoy
 
 - tapOn: "Continue"
 
-- tapOn: "Connect with QuantumLink"
+# allow ble and pair — the runtime permission dialog only shows when the OS
+# hasn't already granted it. Poll up to 10s, then tap if visible, skip if not.
+- extendedWaitUntil:
+    visible: "Allow"
+    timeout: 10000
+    optional: true
+- runFlow:
+    when:
+      visible: "Allow"
+    commands:
+      - tapOn: "Allow"
 
-# allow ble and pair
-- tapOn: "Allow"
+- tapOn: "Connect with QuantumLink"
 
 - runFlow:
     when:

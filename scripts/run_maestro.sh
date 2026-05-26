@@ -124,16 +124,30 @@ print_test_failure() {
         cp "$last_shot" "$screenshot_path"
     fi
 
-    # Extract the failed command from maestro output. Maestro reports an
-    # action failure on a line ending in "... FAILED" and follows up with
-    # one of several reason patterns ("Assertion is false", "Element not
-    # found", etc.). We grep them all and take the first hit; if the
-    # failed-action line itself wraps across lines (multi-line text in
-    # selector), the context dump below picks up the rest.
+    # Extract the failed command from maestro output. Several layers so a
+    # benign description ("Run flow when ... is not visible") in a
+    # COMPLETED step doesn't get mistaken for the actual error.
+    #
+    #   Tier 1: a line ending in "... FAILED" — Maestro's canonical
+    #           per-step failure marker. Most reliable.
+    #   Tier 2: explicit error-prefix lines like "Element not found:" or
+    #           "Assertion is false:" or "[prime_*]" from our JS shims.
+    #   Tier 3: loose phrase matches as a last resort (these can grab
+    #           benign runFlow descriptions, so they're least preferred).
     local failed_cmd=""
-    failed_cmd=$(echo "$output" \
-        | grep -iE "\\.\\.\\. FAILED$|element not visible|not visible|unable to find|not found|timed out|assertion is false|assertion.*failed|could not|couldn't|\[prime_|throw|exception" \
-        | head -1)
+    failed_cmd=$(echo "$output" | grep -E '\.\.\. FAILED$' | head -1)
+
+    if [ -z "$failed_cmd" ]; then
+        failed_cmd=$(echo "$output" \
+            | grep -E '^(Element (not found|not visible)|Error:|Assertion is false|Caused by:|\[prime_)' \
+            | head -1)
+    fi
+
+    if [ -z "$failed_cmd" ]; then
+        failed_cmd=$(echo "$output" \
+            | grep -iE 'unable to find|timed out|could not|couldn'\''t|throw|exception' \
+            | head -1)
+    fi
 
     if [ -z "$failed_cmd" ]; then
         failed_cmd=$(echo "$output" | sed -n '/Failed at/,+3p' | head -4)
