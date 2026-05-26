@@ -45,7 +45,7 @@ jobs:
           KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
           ALIAS_PASSWORD: ${{ secrets.ALIAS_PASSWORD }}
 
-      - run: echo -n $KEY_JKS | base64 -di > android/key.jks && nix develop --command flutter build aab --release
+      - run: echo -n $KEY_JKS | base64 -di > android/key.jks && nix develop --command flutter build aab --release --target-platform android-arm64
         name: Build Envoy AAB
         env:
           KEY_JKS: ${{ secrets.KEY_JKS }}
@@ -61,12 +61,3 @@ jobs:
         with:
           name: app-release.aab
           path: build/app/outputs/bundle/release/app-release.aab
-
-      - name: Upload AAB to Play Store (internal testing)
-        uses: r0adkll/upload-google-play@v1
-        with:
-          serviceAccountJsonPlainText: ${{ secrets.PLAY_STORE_SERVICE_ACCOUNT_JSON }}
-          packageName: com.foundationdevices.envoy
-          releaseFiles: build/app/outputs/bundle/release/app-release.aab
-          track: internal
-          status: completed
