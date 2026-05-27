@@ -189,6 +189,7 @@ class _EnvoyAppState extends State<EnvoyApp> {
 
     // timeago requires this for any language that's not english or spanish
     timeago.setLocaleMessages('ca', timeago.CaMessages());
+    timeago.setLocaleMessages('pt', timeago.PtBrMessages());
 
     return ProviderScope(
       child: DevBannerWrapper(
