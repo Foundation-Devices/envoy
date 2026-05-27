@@ -246,4 +246,4 @@ Low:
 - Speculative refactors ("you could extract this...") unless the code as written is wrong.
 - Things the PR author explicitly called out in the description.
 
-Skip preamble. Skip "great work!". Skip emoji. One short paragraph per finding: state the problem, then the fix. End with a one-sentence verdict, then the findings grouped Urgent, then High, then Medium, then Low. If nothing material, post "no blocking issues found" and stop.
+Skip preamble. Skip "great work!". Skip emoji. One short paragraph per finding: state the problem, then the fix. End with a one-sentence verdict, then the findings grouped Urgent, then High, then Medium, then Low. If you find nothing to flag, still post that verdict as a short written comment (for example, "Reviewed the diff — no issues found.") rather than only a reaction or emoji.
