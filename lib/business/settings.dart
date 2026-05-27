@@ -333,7 +333,7 @@ class Settings extends ChangeNotifier {
         return "https://staging.backup.foundation.xyz";
       case Environment.production:
         return usingTor
-            ? "http://TODO-v2-onion-address.onion"
+            ? "http://sqyx2dozvzqkuwokh5lhcrcxhkavbdnf65c7n6aezorcztxhgn63f3ad.onion"
             : "https://backup.foundation.xyz";
     }
   }
