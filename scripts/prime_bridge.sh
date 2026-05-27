@@ -25,6 +25,17 @@
 #   POST /prime/assert-visible    — screenshot + OCR; assert a given text appears
 #                                   body: { text, regex?: bool, timeout_s?: int }
 #
+# SAM-BA bootloader (device must be in SAM-BA mode, except /prime/reboot-samba
+# which is issued from normal mode to enter SAM-BA):
+#
+#   POST /prime/reboot-samba       — reboot the running device into SAM-BA mode
+#   POST /prime/samba/version      — read SAM-BA monitor version string
+#   POST /prime/samba/read-u32     — body: { address }                (hex int OK)
+#   POST /prime/samba/write-u32    — body: { address, value }         (hex int OK)
+#   POST /prime/samba/flash        — body: { image, boot?, system?, no_verify? }
+#   POST /prime/samba/dump-flash   — body: { output?, megabytes?, offset? }
+#   POST /prime/samba/reboot       — leave SAM-BA, reboot back to normal mode
+#
 # Run before maestro starts, kill on exit (run_maestro.sh does both).
 
 set -euo pipefail
@@ -64,6 +75,13 @@ def run(cmd):
     """Run a shell command, capture output, return (rc, stdout, stderr)."""
     proc = subprocess.run(cmd, capture_output=True, text=True)
     return proc.returncode, proc.stdout, proc.stderr
+
+
+def samba_hex(v):
+    """Normalize a JSON value into the 0x-prefixed hex string the SAM-BA CLI expects."""
+    if isinstance(v, str):
+        return v
+    return f"0x{int(v):x}"
 
 
 def script(name):
@@ -169,6 +187,51 @@ class Handler(http.server.BaseHTTPRequestHandler):
             if body.get("timeout_s"):
                 argv += ["--timeout", str(body["timeout_s"])]
             self._exec(argv)
+
+        # ---- SAM-BA bootloader ---------------------------------------
+        # /prime/reboot-samba is issued while Prime is in normal mode;
+        # the device disconnects and reappears as VID:PID 03eb:6124.
+        # All /prime/samba/* endpoints require the device to be in
+        # SAM-BA mode first.
+
+        elif path == "/prime/reboot-samba" and method == "POST":
+            self._exec([PD, "reboot-samba"])
+
+        elif path == "/prime/samba/version" and method == "POST":
+            self._exec([PD, "samba", "version"])
+
+        elif path == "/prime/samba/read-u32" and method == "POST":
+            self._exec([PD, "samba", "read-u32", samba_hex(body["address"])])
+
+        elif path == "/prime/samba/write-u32" and method == "POST":
+            self._exec([
+                PD, "samba", "write-u32",
+                samba_hex(body["address"]),
+                samba_hex(body["value"]),
+            ])
+
+        elif path == "/prime/samba/flash" and method == "POST":
+            argv = [PD, "samba", "flash", str(body["image"])]
+            if body.get("boot"):
+                argv.append("--boot")
+            if body.get("system"):
+                argv.append("--system")
+            if body.get("no_verify"):
+                argv.append("--no-verify")
+            self._exec(argv)
+
+        elif path == "/prime/samba/dump-flash" and method == "POST":
+            argv = [PD, "samba", "dump-flash"]
+            if "output" in body:
+                argv += ["-o", str(body["output"])]
+            if "megabytes" in body:
+                argv += ["-n", str(body["megabytes"])]
+            if "offset" in body:
+                argv += ["--offset", str(body["offset"])]
+            self._exec(argv)
+
+        elif path == "/prime/samba/reboot" and method == "POST":
+            self._exec([PD, "samba", "reboot"])
 
         else:
             self._reply(404, {"error": "not found", "path": path, "method": method})
