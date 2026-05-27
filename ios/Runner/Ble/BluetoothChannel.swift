@@ -36,6 +36,7 @@ class BluetoothChannel: NSObject, CBCentralManagerDelegate, FlutterStreamHandler
     var scanEventSink: FlutterEventSink? = nil
     var setupResult: FlutterResult? = nil
     let session = ASAccessorySession()
+    private var pickerFilter: (name: String, image: UIImage)?
 
     // Connected QLConnection instances, keyed by UUID string
     private var devices: [String: QLConnection] = [:]
@@ -400,6 +401,7 @@ class BluetoothChannel: NSObject, CBCentralManagerDelegate, FlutterStreamHandler
         eventSink = nil
         scanEventSink = nil
         setupResult = nil
+        clearPickerFilter()
 
         // Clear accessory references
         pairedAccessories.removeAll()
@@ -531,12 +533,10 @@ class BluetoothChannel: NSObject, CBCentralManagerDelegate, FlutterStreamHandler
         let isMidnight = (arguments["c"] as? Int ?? 1) == 1
         let qrDeviceName = (arguments["n"] as? String)?
             .trimmingCharacters(in: .whitespacesAndNewlines)
-        let nameSubstring: String
-        if let qrDeviceName = qrDeviceName, !qrDeviceName.isEmpty {
-            nameSubstring = qrDeviceName
-        } else {
-            nameSubstring = "Prime"
-        }
+        let nameSubstring =
+            qrDeviceName?.localizedCaseInsensitiveContains("Passport Prime") == true
+            ? "Passport Prime"
+            : "Passport"
         let passportDescriptor = ASDiscoveryDescriptor()
         passportDescriptor.bluetoothServiceUUID = primeUUID
         passportDescriptor.bluetoothNameSubstring = nameSubstring
@@ -544,6 +544,15 @@ class BluetoothChannel: NSObject, CBCentralManagerDelegate, FlutterStreamHandler
         //Maybe tweak this if multiple primes present
         passportDescriptor.bluetoothRange = ASDiscoveryDescriptor.Range.default
         let productImage = UIImage(named:isMidnight ?  "prime_dark_midnight_bronze" : "prime_light_arctic_copper") ?? UIImage()
+
+        clearPickerFilter()
+        if #available(iOS 26.1, *), let qrDeviceName, !qrDeviceName.isEmpty {
+            pickerFilter = (qrDeviceName, productImage)
+            let settings = ASPickerDisplaySettings.default
+            settings.options.insert(.filterDiscoveryResults)
+            session.pickerDisplaySettings = settings
+        }
+
         let passportDisplayItem = ASPickerDisplayItem(
             name: "Passport Prime",
             productImage: productImage,
@@ -559,6 +568,7 @@ class BluetoothChannel: NSObject, CBCentralManagerDelegate, FlutterStreamHandler
                 result(nil)
                 setupResult = nil
             }
+            clearPickerFilter()
         }
     }
 
@@ -569,6 +579,14 @@ class BluetoothChannel: NSObject, CBCentralManagerDelegate, FlutterStreamHandler
         for item in session.accessories {
             print("Found accessory: \(item.debugDescription)")
         }
+        if #available(iOS 26.1, *),
+           event.eventType == .accessoryDiscovered,
+           let accessory = event.accessory as? ASDiscoveredAccessory
+        {
+            showDiscoveredAccessoryIfNeeded(accessory)
+            return
+        }
+
         switch event.eventType {
         case .accessoryAdded, .accessoryChanged:
             guard let accessory = event.accessory else { return }
@@ -587,8 +605,38 @@ class BluetoothChannel: NSObject, CBCentralManagerDelegate, FlutterStreamHandler
                 result(nil)
                 setupResult = nil
             }
+            clearPickerFilter()
         default:
             print("Received accessory event type: \(event.eventType)")
+        }
+    }
+
+    private func clearPickerFilter() {
+        pickerFilter = nil
+        if #available(iOS 26.0, *) {
+            session.pickerDisplaySettings = nil
+        }
+    }
+
+    @available(iOS 26.1, *)
+    private func showDiscoveredAccessoryIfNeeded(_ accessory: ASDiscoveredAccessory) {
+        guard let pickerFilter,
+              let localName = accessory.bluetoothAdvertisementData?[CBAdvertisementDataLocalNameKey]
+                as? String,
+              localName.caseInsensitiveCompare(pickerFilter.name) == .orderedSame
+        else {
+            return
+        }
+
+        let item = ASDiscoveredDisplayItem(
+            name: "Passport Prime",
+            productImage: pickerFilter.image,
+            accessory: accessory
+        )
+        session.updatePicker(showing: [item]) { error in
+            if let error {
+                print("Failed to update accessory picker: \(error.localizedDescription)")
+            }
         }
     }
 
@@ -624,6 +672,7 @@ class BluetoothChannel: NSObject, CBCentralManagerDelegate, FlutterStreamHandler
             result(deviceId)
             setupResult = nil
         }
+        clearPickerFilter()
 
         // If accessory has Bluetooth identifier, try to connect via CoreBluetooth
         if let bluetoothId = accessory.bluetoothIdentifier,
