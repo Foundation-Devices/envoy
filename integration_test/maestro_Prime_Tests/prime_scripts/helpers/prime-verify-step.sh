@@ -39,11 +39,19 @@ WORDS_Y_MAX=520
 SHOT="/tmp/prime-verify-shot.png"
 rm -f "$SHOT"
 
-# Retry up to TIMEOUT_S seconds: USB can hiccup right after a tap (device
-# busy, partial frame, "Screenshot payload too small"), and the quiz
-# screen can be mid-transition. We need both a good screenshot AND the
-# "#N" prompt to be readable before proceeding.
-TIMEOUT_S=10
+# Cross-invocation state: which "#N" did the LAST call solve? Used below to
+# refuse the same "#N" again — otherwise we'd race the screen and tap the
+# wrong word against the previous round's options. Wiped by run_maestro.sh
+# at the start of each run.
+STATE_FILE="${PRIME_VERIFY_STATE_FILE:-/tmp/prime-verify-last-n.txt}"
+PREV_N="$(cat "$STATE_FILE" 2>/dev/null || true)"
+
+# Retry up to TIMEOUT_S seconds. We need ALL of:
+#   1. a good screenshot (USB can hiccup right after a tap),
+#   2. a readable "#N" prompt,
+#   3. and that "#N" must be DIFFERENT from the one we solved last time —
+#      otherwise the screen hasn't advanced to the next round yet.
+TIMEOUT_S=15
 OCR=""
 N=""
 last_err=""
@@ -63,17 +71,25 @@ for attempt in $(seq 1 "$TIMEOUT_S"); do
     fi
 
     # Find "#N" — Vision may return it as "#4" or "# 4"; tolerate both.
-    N=$(printf '%s\n' "$OCR" | awk -F'\t' '
+    candidate_n=$(printf '%s\n' "$OCR" | awk -F'\t' '
         $5 ~ /^#[ ]*[0-9]+$/ { gsub(/[# ]/, "", $5); print $5; exit }
     ')
-    [ -n "$N" ] && break
 
-    echo "verify-step: attempt $attempt: no \"#N\" prompt yet, retrying..." >&2
+    if [ -z "$candidate_n" ]; then
+        echo "verify-step: attempt $attempt: no \"#N\" prompt yet, retrying..." >&2
+    elif [ -n "$PREV_N" ] && [ "$candidate_n" = "$PREV_N" ]; then
+        # Screen still shows the round we just solved. Wait for transition.
+        echo "verify-step: attempt $attempt: still on prior #$PREV_N, waiting for next round..." >&2
+    else
+        N="$candidate_n"
+        break
+    fi
+
     [ "$attempt" -lt "$TIMEOUT_S" ] && sleep 1
 done
 
 if [ -z "$N" ]; then
-    echo "verify-step: no \"#N\" prompt on screen after ${TIMEOUT_S}s" >&2
+    echo "verify-step: no NEW \"#N\" prompt on screen after ${TIMEOUT_S}s (previous was #${PREV_N:-<none>})" >&2
     [ -n "$last_err" ] && echo "last error: $last_err" >&2
     exit 1
 fi
@@ -104,3 +120,7 @@ sleep 0.4
 
 echo "verify-step #$N: tapping bottom button ($BOTTOM_BUTTON_X, $BOTTOM_BUTTON_Y)"
 "$KEYOS_DEV_DIR/target/release/passport-drive" tap "$BOTTOM_BUTTON_X" "$BOTTOM_BUTTON_Y" >/dev/null
+
+# Record the #N we just solved so the next invocation can detect when the
+# screen has actually advanced past it (instead of re-OCR'ing the stale page).
+echo "$N" > "$STATE_FILE"

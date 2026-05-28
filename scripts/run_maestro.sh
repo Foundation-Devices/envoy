@@ -124,16 +124,30 @@ print_test_failure() {
         cp "$last_shot" "$screenshot_path"
     fi
 
-    # Extract the failed command from maestro output. Maestro reports an
-    # action failure on a line ending in "... FAILED" and follows up with
-    # one of several reason patterns ("Assertion is false", "Element not
-    # found", etc.). We grep them all and take the first hit; if the
-    # failed-action line itself wraps across lines (multi-line text in
-    # selector), the context dump below picks up the rest.
+    # Extract the failed command from maestro output. Several layers so a
+    # benign description ("Run flow when ... is not visible") in a
+    # COMPLETED step doesn't get mistaken for the actual error.
+    #
+    #   Tier 1: a line ending in "... FAILED" — Maestro's canonical
+    #           per-step failure marker. Most reliable.
+    #   Tier 2: explicit error-prefix lines like "Element not found:" or
+    #           "Assertion is false:" or "[prime_*]" from our JS shims.
+    #   Tier 3: loose phrase matches as a last resort (these can grab
+    #           benign runFlow descriptions, so they're least preferred).
     local failed_cmd=""
-    failed_cmd=$(echo "$output" \
-        | grep -iE "\\.\\.\\. FAILED$|element not visible|not visible|unable to find|not found|timed out|assertion is false|assertion.*failed|could not|couldn't|\[prime_|throw|exception" \
-        | head -1)
+    failed_cmd=$(echo "$output" | grep -E '\.\.\. FAILED$' | head -1)
+
+    if [ -z "$failed_cmd" ]; then
+        failed_cmd=$(echo "$output" \
+            | grep -E '^(Element (not found|not visible)|Error:|Assertion is false|Caused by:|\[prime_)' \
+            | head -1)
+    fi
+
+    if [ -z "$failed_cmd" ]; then
+        failed_cmd=$(echo "$output" \
+            | grep -iE 'unable to find|timed out|could not|couldn'\''t|throw|exception' \
+            | head -1)
+    fi
 
     if [ -z "$failed_cmd" ]; then
         failed_cmd=$(echo "$output" | sed -n '/Failed at/,+3p' | head -4)
@@ -685,7 +699,8 @@ cleanup_prime_tmp() {
           /tmp/prime-seeds.txt \
           /tmp/prime-seeds-shot.png \
           /tmp/prime-verify-shot.png \
-          /tmp/prime-assert-shot.png
+          /tmp/prime-assert-shot.png \
+          /tmp/prime-verify-last-n.txt
 }
 
 CLEANED_UP=0
@@ -724,7 +739,6 @@ trap on_interrupt INT TERM
 cleanup_prime_tmp
 
 start_kebab_bridge
-start_prime_bridge
 
 # ------------------------------------------------------------
 # Test Runner
@@ -836,7 +850,74 @@ run_test_group "Hot Wallet Tests" "$HOT_WALLET_TESTS_DIR"
 run_test_group "Passport Wallet Tests" "$PASSPORT_WALLET_TESTS_DIR"
 
 # --- Group 3: Prime Tests (cross-device, Android + Prime via passport-drive) ---
-# Wake the Kebab motors (enable → home → park at FaceTesterPos2) before the
+# Prime setup happens here, AFTER the phone-only groups above — so a run that
+# only touches Hot Wallet / Passport Wallet never pays for (or depends on) the
+# Prime rig.
+#
+# 1) Reflash KeyOS if the chosen branch moved since the last flash. This is a
+#    no-op (fast SHA check, exit 0) when nothing changed, so it's safe to run
+#    unconditionally — no flag needed. Pick a branch with KEYOS_MAIN_BRANCH.
+#    Must run BEFORE the prime bridge binds the USB vendor interface, since
+#    flashing drives passport-drive directly and needs exclusive access.
+KEYOS_BRANCH="${KEYOS_MAIN_BRANCH:-dev-v1.3.0}"
+# Export so keyos_flash_if_new.sh inherits the exact same branch — the banner
+# below and the actual flash stay in lockstep.
+export KEYOS_MAIN_BRANCH="$KEYOS_BRANCH"
+KEYOS_DIR="${KEYOS_DEV_DIR:-$HOME/KeyOS-dev}"
+KEYOS_STATE="${KEYOS_FLASHED_SHA_FILE:-$HOME/.cache/keyos-flashed-sha}"
+
+git -C "$KEYOS_DIR" fetch --quiet origin "$KEYOS_BRANCH" 2>/dev/null || true
+# Keep BOTH short (for display) and full SHAs (for the equality check the
+# flash script does — it stores/compares full SHAs in $KEYOS_STATE).
+KEYOS_UPCOMING_FULL=""
+if git -C "$KEYOS_DIR" rev-parse --verify --quiet "origin/$KEYOS_BRANCH^{commit}" >/dev/null 2>&1; then
+    KEYOS_UPCOMING="$(git -C "$KEYOS_DIR" rev-parse --short "origin/$KEYOS_BRANCH")"
+    KEYOS_UPCOMING_FULL="$(git -C "$KEYOS_DIR" rev-parse "origin/$KEYOS_BRANCH")"
+elif git -C "$KEYOS_DIR" rev-parse --verify --quiet "refs/heads/$KEYOS_BRANCH^{commit}" >/dev/null 2>&1; then
+    KEYOS_UPCOMING="$(git -C "$KEYOS_DIR" rev-parse --short "$KEYOS_BRANCH")"
+    KEYOS_UPCOMING_FULL="$(git -C "$KEYOS_DIR" rev-parse "$KEYOS_BRANCH")"
+else
+    KEYOS_UPCOMING="<branch not found>"
+fi
+KEYOS_SAVED_FULL="$(cat "$KEYOS_STATE" 2>/dev/null || true)"
+KEYOS_SAVED="${KEYOS_SAVED_FULL:0:12}"
+
+# Status line: predicts what the flash script will do. Uses FULL SHAs so it
+# matches keyos_flash_if_new.sh's actual diff check (the short forms have
+# different widths and can't be compared directly).
+if [ -z "$KEYOS_UPCOMING_FULL" ]; then
+    KEYOS_STATUS="✗ BRANCH NOT FOUND — flash will abort"
+elif [ -z "$KEYOS_SAVED_FULL" ]; then
+    KEYOS_STATUS="⚡ FIRST FLASH — no SHA recorded yet, will flash"
+elif [ "$KEYOS_SAVED_FULL" = "$KEYOS_UPCOMING_FULL" ]; then
+    KEYOS_STATUS="✓ UP TO DATE — no flash needed"
+else
+    KEYOS_STATUS="⚡ FLASH NEEDED — branch has new commits"
+fi
+
+echo ""
+echo -e "${GREEN}${BOLD}╔══════════════════════════════════════════════════════════╗${NC}"
+echo -e "${GREEN}${BOLD}║                  K E Y O S   F L A S H                   ║${NC}"
+echo -e "${GREEN}${BOLD}╠══════════════════════════════════════════════════════════╣${NC}"
+echo -e "${GREEN}${BOLD}║  BRANCH      : ${KEYOS_BRANCH}${NC}"
+echo -e "${GREEN}${BOLD}║  SAVED  SHA  : ${KEYOS_SAVED:-<none>}${NC}"
+echo -e "${GREEN}${BOLD}║  UPCOMING SHA: ${KEYOS_UPCOMING}${NC}"
+echo -e "${GREEN}${BOLD}║  STATUS      : ${KEYOS_STATUS}${NC}"
+echo -e "${GREEN}${BOLD}╚══════════════════════════════════════════════════════════╝${NC}"
+echo ""
+
+echo -e "${BLUE}Checking KeyOS-dev for new commits to flash...${NC}"
+# Free the USB vendor interface first (kills stale holders), same as the bridge.
+[ -x "$SCRIPT_DIR/prime_driver_setup.sh" ] && "$SCRIPT_DIR/prime_driver_setup.sh" || true
+if ! "$SCRIPT_DIR/keyos_flash_if_new.sh"; then
+    echo -e "${RED}✗ KeyOS update/flash failed — aborting before Prime tests${NC}"
+    exit 1
+fi
+
+# 2) Bring up the prime bridge now that any flashing is done.
+start_prime_bridge
+
+# 3) Wake the Kebab motors (enable → home → park at FaceTesterPos2) before the
 # group, and sleep them again after, so the steppers aren't energized while
 # idle between runs. The cleanup trap above guarantees the sleep command
 # is sent even if the script is interrupted mid-group.

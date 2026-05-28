@@ -22,6 +22,8 @@ appId: com.foundationdevices.envoy
 - tapOn: "ENVOY"
 - longPressOn: "ENVOY"
 
+# TODO: handle formating screen here if it shows up!!!
+
 # PRIME: open menu (bottom-left hamburger on home)
 - runScript:
     file: prime_scripts/interactions/prime_tap.js
@@ -159,10 +161,19 @@ appId: com.foundationdevices.envoy
 
 - tapOn: "Continue"
 
-- tapOn: "Connect with QuantumLink"
+# allow ble and pair — the runtime permission dialog only shows when the OS
+# hasn't already granted it. Poll up to 10s, then tap if visible, skip if not.
+- extendedWaitUntil:
+    visible: "Allow"
+    timeout: 10000
+    optional: true
+- runFlow:
+    when:
+      visible: "Allow"
+    commands:
+      - tapOn: "Allow"
 
-# allow ble and pair
-- tapOn: "Allow"
+- tapOn: "Connect with QuantumLink"
 
 - runFlow:
     when:
@@ -359,7 +370,24 @@ appId: com.foundationdevices.envoy
 
 # VERIFY SEED WORDS:
 
-# PRIME: solve the 4 verify-rounds (each round: OCR "#N" → tap correct word → tap bottom button)
+# PRIME: solve the 12 verify-rounds (each round: OCR "#N" → tap correct word →
+# tap bottom button). The current firmware verifies all 12 seed words.
+- runScript:
+    file: prime_scripts/helpers/prime_verify_step.js
+- runScript:
+    file: prime_scripts/helpers/prime_verify_step.js
+- runScript:
+    file: prime_scripts/helpers/prime_verify_step.js
+- runScript:
+    file: prime_scripts/helpers/prime_verify_step.js
+- runScript:
+    file: prime_scripts/helpers/prime_verify_step.js
+- runScript:
+    file: prime_scripts/helpers/prime_verify_step.js
+- runScript:
+    file: prime_scripts/helpers/prime_verify_step.js
+- runScript:
+    file: prime_scripts/helpers/prime_verify_step.js
 - runScript:
     file: prime_scripts/helpers/prime_verify_step.js
 - runScript:
