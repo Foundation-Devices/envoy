@@ -34,8 +34,8 @@ esac
 # ------------------------------------------------------------
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 PROJECT_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
-#HOT_WALLET_TESTS_DIR="$PROJECT_ROOT/integration_test/maestro_Hot_Wallet_Tests"
-#PASSPORT_WALLET_TESTS_DIR="$PROJECT_ROOT/integration_test/maestro_Passport_Wallet_Tests"
+HOT_WALLET_TESTS_DIR="$PROJECT_ROOT/integration_test/maestro_Hot_Wallet_Tests"
+PASSPORT_WALLET_TESTS_DIR="$PROJECT_ROOT/integration_test/maestro_Passport_Wallet_Tests"
 PRIME_TESTS_DIR="$PROJECT_ROOT/integration_test/maestro_Prime_Tests"
 
 FAIL_VIDEOS_DIR="$PROJECT_ROOT/fail-videos"
@@ -866,14 +866,33 @@ KEYOS_DIR="${KEYOS_DEV_DIR:-$HOME/KeyOS-dev}"
 KEYOS_STATE="${KEYOS_FLASHED_SHA_FILE:-$HOME/.cache/keyos-flashed-sha}"
 
 git -C "$KEYOS_DIR" fetch --quiet origin "$KEYOS_BRANCH" 2>/dev/null || true
+# Keep BOTH short (for display) and full SHAs (for the equality check the
+# flash script does — it stores/compares full SHAs in $KEYOS_STATE).
+KEYOS_UPCOMING_FULL=""
 if git -C "$KEYOS_DIR" rev-parse --verify --quiet "origin/$KEYOS_BRANCH^{commit}" >/dev/null 2>&1; then
     KEYOS_UPCOMING="$(git -C "$KEYOS_DIR" rev-parse --short "origin/$KEYOS_BRANCH")"
+    KEYOS_UPCOMING_FULL="$(git -C "$KEYOS_DIR" rev-parse "origin/$KEYOS_BRANCH")"
 elif git -C "$KEYOS_DIR" rev-parse --verify --quiet "refs/heads/$KEYOS_BRANCH^{commit}" >/dev/null 2>&1; then
     KEYOS_UPCOMING="$(git -C "$KEYOS_DIR" rev-parse --short "$KEYOS_BRANCH")"
+    KEYOS_UPCOMING_FULL="$(git -C "$KEYOS_DIR" rev-parse "$KEYOS_BRANCH")"
 else
     KEYOS_UPCOMING="<branch not found>"
 fi
-KEYOS_SAVED="$(cat "$KEYOS_STATE" 2>/dev/null || true)"; KEYOS_SAVED="${KEYOS_SAVED:0:12}"
+KEYOS_SAVED_FULL="$(cat "$KEYOS_STATE" 2>/dev/null || true)"
+KEYOS_SAVED="${KEYOS_SAVED_FULL:0:12}"
+
+# Status line: predicts what the flash script will do. Uses FULL SHAs so it
+# matches keyos_flash_if_new.sh's actual diff check (the short forms have
+# different widths and can't be compared directly).
+if [ -z "$KEYOS_UPCOMING_FULL" ]; then
+    KEYOS_STATUS="✗ BRANCH NOT FOUND — flash will abort"
+elif [ -z "$KEYOS_SAVED_FULL" ]; then
+    KEYOS_STATUS="⚡ FIRST FLASH — no SHA recorded yet, will flash"
+elif [ "$KEYOS_SAVED_FULL" = "$KEYOS_UPCOMING_FULL" ]; then
+    KEYOS_STATUS="✓ UP TO DATE — no flash needed"
+else
+    KEYOS_STATUS="⚡ FLASH NEEDED — branch has new commits"
+fi
 
 echo ""
 echo -e "${GREEN}${BOLD}╔══════════════════════════════════════════════════════════╗${NC}"
@@ -882,6 +901,7 @@ echo -e "${GREEN}${BOLD}╠═════════════════�
 echo -e "${GREEN}${BOLD}║  BRANCH      : ${KEYOS_BRANCH}${NC}"
 echo -e "${GREEN}${BOLD}║  SAVED  SHA  : ${KEYOS_SAVED:-<none>}${NC}"
 echo -e "${GREEN}${BOLD}║  UPCOMING SHA: ${KEYOS_UPCOMING}${NC}"
+echo -e "${GREEN}${BOLD}║  STATUS      : ${KEYOS_STATUS}${NC}"
 echo -e "${GREEN}${BOLD}╚══════════════════════════════════════════════════════════╝${NC}"
 echo ""
 

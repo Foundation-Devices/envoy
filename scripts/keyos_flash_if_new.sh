@@ -166,6 +166,14 @@ if [[ ! -d "$KEYOS_DEV_DIR" ]]; then
     exit 1
 fi
 
+# fail-videos lives next to scripts/. Resolve once and wipe any stale build
+# log from a previous failed run — symmetric with how run_maestro.sh wipes
+# per-test .log / .png / Prime screenshots at the start of each run.
+ENVOY_DEV_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+FAIL_VIDEOS_DIR="$ENVOY_DEV_DIR/fail-videos"
+mkdir -p "$FAIL_VIDEOS_DIR"
+rm -f "$FAIL_VIDEOS_DIR/keyos-build.log"
+
 # Set up the bare toolchain before any keyos_run — exits if prereqs missing.
 ensure_bare_toolchain
 
@@ -236,8 +244,24 @@ if git -C "$KEYOS_DEV_DIR" rev-parse --verify --quiet "origin/$MAIN_BRANCH^{comm
     git -C "$KEYOS_DEV_DIR" pull --ff-only origin "$MAIN_BRANCH"
 fi
 
-log "building firmware (just build-all) — this takes a while"
-keyos_run just build-all
+# Quiet build: capture all output to a scratch log; on success only print
+# "✓ done" and delete the scratch file, on failure dump the tail in the
+# runner's terminal AND move the full log into fail-videos/ so it ships with
+# the GitHub artifact bundle alongside test logs/videos/screenshots. Stable
+# filename, wiped at start of every run — no per-run loose files.
+build_log_tmp="$(mktemp -t keyos-build-XXXXXX).log"
+log "Building KeyOS... (this will take a while — live output: $build_log_tmp)"
+if keyos_run just build-all >"$build_log_tmp" 2>&1; then
+    log "✓ KeyOS built"
+    rm -f "$build_log_tmp"
+else
+    build_log_kept="$FAIL_VIDEOS_DIR/keyos-build.log"
+    mv "$build_log_tmp" "$build_log_kept"
+    warn "✗ KeyOS build FAILED — last 40 lines:"
+    tail -40 "$build_log_kept" >&2
+    warn "full build log preserved at: $build_log_kept"
+    exit 1
+fi
 
 # --------------------------------------------------------------------
 # 3. Enter SAM-BA over USB, then flash
