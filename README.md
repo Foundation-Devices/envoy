@@ -193,6 +193,13 @@ Other Foundation Devices repos Envoy depends on or talks to. Consult them when a
 - [`envoy-server`](https://github.com/Foundation-Devices/envoy-server) — Private Rust + Axum backend Envoy calls into. Two responsibilities: (1) serve Passport firmware release metadata (verified via GitHub webhook HMAC), and (2) act as the encrypted backup gateway against S3 or local storage.
 - [`backup-server`](https://github.com/Foundation-Devices/backup-server) — Private Rust + Axum service for encrypted backup storage using post-quantum signatures (`libcrux-ml-dsa` / ML-DSA). Sits alongside or augments `envoy-server`'s backup path.
 
+### Review scope
+
+First, check whether you have reviewed this PR before — look for earlier reviews or review comments you authored on it.
+
+- If this is your first review: review the entire diff and raise every issue you find. Be thorough; this is the moment to surface everything about the existing code, because later reviews will not revisit it.
+- If you have reviewed this PR before: comment only on what changed in the commits pushed since your last review. Do not raise new issues about code that was already present at your previous review, even if you only noticed it now. If the new commits resolve earlier findings, you may note that briefly.
+
 ### How to comment
 
 Give every finding a priority — the reviewer triages from it, and any finding promoted to a Linear ticket inherits it:

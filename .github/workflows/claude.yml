@@ -46,6 +46,6 @@ jobs:
           # See https://github.com/anthropics/claude-code-action/blob/main/docs/usage.md
           # or https://code.claude.com/docs/en/cli-reference for available options
           claude_args: |
-            --model claude-opus-4-7
+            --model claude-opus-4-8
             --effort max
 
