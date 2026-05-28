@@ -9,6 +9,7 @@ import 'package:envoy/ui/envoy_colors.dart';
 import 'package:envoy/ui/theme/envoy_spacing.dart';
 import 'package:envoy/ui/widgets/blur_dialog.dart';
 import 'package:envoy/ui/widgets/scanner/scanner_decoder.dart';
+import 'package:envoy/util/bug_report_helper.dart';
 import 'package:envoy/util/rive_util.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -232,7 +233,16 @@ class _QrScannerState extends State<QrScanner>
 
       try {
         await widget.decoder.onDetectBarCode(barcode);
-      } catch (e) {
+      } catch (e, stack) {
+        final code = barcode.code ?? '';
+        final prefix = code.length > 24 ? code.substring(0, 24) : code;
+        EnvoyReport().log(
+          "QrScanner",
+          "Decode failed: ${e.runtimeType}: $e | "
+              "code_prefix='$prefix' code_len=${code.length} "
+              "progress=${widget.decoder.progress.toStringAsFixed(2)}",
+          stackTrace: stack,
+        );
         if (context.mounted) {
           widget.decoder.onDecodeError(
             context,

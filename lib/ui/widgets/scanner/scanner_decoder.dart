@@ -5,6 +5,7 @@
 import 'package:envoy/business/uniform_resource.dart';
 import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/widgets/toast/envoy_toast.dart';
+import 'package:envoy/util/bug_report_helper.dart';
 import 'package:flutter/material.dart';
 import 'package:qr_code_scanner_plus/qr_code_scanner_plus.dart';
 import 'package:envoy/ui/theme/envoy_icons.dart';
@@ -40,7 +41,20 @@ abstract class ScannerDecoder {
       try {
         _urDecoder.receive(barCode.code?.toLowerCase() ?? "");
         progressCallBack?.call(_urDecoder.urDecoder.progress);
-      } catch (e) {
+      } catch (e, stack) {
+        final code = barCode.code ?? "";
+        final colon = code.indexOf(":");
+        final slash = code.indexOf("/");
+        final urType = (colon >= 0 && slash > colon + 1)
+            ? code.substring(colon + 1, slash)
+            : "?";
+        EnvoyReport().log(
+          "ScannerDecoder",
+          "UR receive() failed | ur_type=$urType "
+              "progress=${_urDecoder.urDecoder.progress.toStringAsFixed(2)} "
+              "code_len=${code.length} cause=${e.runtimeType}: $e",
+          stackTrace: stack,
+        );
         reset(); // clear bad partial state so next scan can work
         throw UnableToDecodeException();
       } finally {
