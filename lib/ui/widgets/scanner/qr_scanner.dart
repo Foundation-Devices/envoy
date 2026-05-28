@@ -73,6 +73,7 @@ class _QrScannerState extends State<QrScanner>
   List<int>? _lastRawBytesDetected = [];
   String _lastCodeDetected = "";
   String _lastScan = "";
+  String _lastFailedCode = "";
   double _progress = 0.0;
 
   bool _viewReady = false;
@@ -235,14 +236,16 @@ class _QrScannerState extends State<QrScanner>
         await widget.decoder.onDetectBarCode(barcode);
       } catch (e, stack) {
         final code = barcode.code ?? '';
-        final prefix = code.length > 24 ? code.substring(0, 24) : code;
-        EnvoyReport().log(
-          "QrScanner",
-          "Decode failed: ${e.runtimeType}: $e | "
-              "code_prefix='$prefix' code_len=${code.length} "
-              "progress=${widget.decoder.progress.toStringAsFixed(2)}",
-          stackTrace: stack,
-        );
+        if (code != _lastFailedCode) {
+          _lastFailedCode = code;
+          EnvoyReport().log(
+            "QrScanner",
+            "Decode failed: ${e.runtimeType}: $e | "
+                "code_len=${code.length} "
+                "progress=${widget.decoder.progress.toStringAsFixed(2)}",
+            stackTrace: stack,
+          );
+        }
         if (context.mounted) {
           widget.decoder.onDecodeError(
             context,
@@ -255,6 +258,7 @@ class _QrScannerState extends State<QrScanner>
                 _progress = 0.0;
                 _lastCodeDetected = "";
                 _lastRawBytesDetected = [];
+                _lastFailedCode = "";
               });
             },
             onCancel: () {
