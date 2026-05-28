@@ -20,6 +20,7 @@ class CryptoTxDecoder extends ScannerDecoder {
   final Function(CryptoPsbt cryptoPsbt) onScan;
   bool _invoked = false;
   bool _errorDialogShown = false;
+  bool _invalidQrLogged = false;
 
   CryptoTxDecoder({required this.onScan});
 
@@ -33,11 +34,13 @@ class CryptoTxDecoder extends ScannerDecoder {
 
     // Check if it's a UR code
     if (!code.startsWith("ur:")) {
-      EnvoyReport().log(
-        "CryptoTxDecoder",
-        "Non-UR QR rejected | "
-            "code_prefix='${_codePrefix(code)}' code_len=${code.length}",
-      );
+      if (!_invalidQrLogged) {
+        _invalidQrLogged = true;
+        EnvoyReport().log(
+          "CryptoTxDecoder",
+          "Non-UR QR rejected | code_len=${code.length}",
+        );
+      }
       throw InvalidPsbtQrException();
     }
 
@@ -46,14 +49,17 @@ class CryptoTxDecoder extends ScannerDecoder {
     // Check if the UR decoded successfully and is a CryptoPsbt
     if (payload != null && !_invoked) {
       if (payload is! CryptoPsbt) {
-        EnvoyReport().log(
-          "CryptoTxDecoder",
-          "Decoded UR is not CryptoPsbt | "
-              "ur_type=${_urType(code)} "
-              "progress=${progress.toStringAsFixed(2)} "
-              "decoded=${payload.runtimeType} "
-              "first_byte=${_firstPayloadByte(payload)}",
-        );
+        if (!_invalidQrLogged) {
+          _invalidQrLogged = true;
+          EnvoyReport().log(
+            "CryptoTxDecoder",
+            "Decoded UR is not CryptoPsbt | "
+                "ur_type=${_urType(code)} "
+                "progress=${progress.toStringAsFixed(2)} "
+                "decoded=${payload.runtimeType} "
+                "first_byte=${_firstPayloadByte(payload)}",
+          );
+        }
         throw InvalidPsbtQrException();
       }
       _invoked = true;
@@ -61,8 +67,11 @@ class CryptoTxDecoder extends ScannerDecoder {
     }
   }
 
-  String _codePrefix(String code) =>
-      code.length > 24 ? code.substring(0, 24) : code;
+  @override
+  void reset() {
+    super.reset();
+    _invalidQrLogged = false;
+  }
 
   String _urType(String code) {
     final colon = code.indexOf(":");
