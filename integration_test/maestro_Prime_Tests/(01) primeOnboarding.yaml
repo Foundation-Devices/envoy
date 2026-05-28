@@ -370,7 +370,24 @@ appId: com.foundationdevices.envoy
 
 # VERIFY SEED WORDS:
 
-# PRIME: solve the 4 verify-rounds (each round: OCR "#N" → tap correct word → tap bottom button)
+# PRIME: solve the 12 verify-rounds (each round: OCR "#N" → tap correct word →
+# tap bottom button). The current firmware verifies all 12 seed words.
+- runScript:
+    file: prime_scripts/helpers/prime_verify_step.js
+- runScript:
+    file: prime_scripts/helpers/prime_verify_step.js
+- runScript:
+    file: prime_scripts/helpers/prime_verify_step.js
+- runScript:
+    file: prime_scripts/helpers/prime_verify_step.js
+- runScript:
+    file: prime_scripts/helpers/prime_verify_step.js
+- runScript:
+    file: prime_scripts/helpers/prime_verify_step.js
+- runScript:
+    file: prime_scripts/helpers/prime_verify_step.js
+- runScript:
+    file: prime_scripts/helpers/prime_verify_step.js
 - runScript:
     file: prime_scripts/helpers/prime_verify_step.js
 - runScript:
