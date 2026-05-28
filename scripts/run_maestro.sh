@@ -34,8 +34,8 @@ esac
 # ------------------------------------------------------------
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 PROJECT_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
-HOT_WALLET_TESTS_DIR="$PROJECT_ROOT/integration_test/maestro_Hot_Wallet_Tests"
-PASSPORT_WALLET_TESTS_DIR="$PROJECT_ROOT/integration_test/maestro_Passport_Wallet_Tests"
+#HOT_WALLET_TESTS_DIR="$PROJECT_ROOT/integration_test/maestro_Hot_Wallet_Tests"
+#PASSPORT_WALLET_TESTS_DIR="$PROJECT_ROOT/integration_test/maestro_Passport_Wallet_Tests"
 PRIME_TESTS_DIR="$PROJECT_ROOT/integration_test/maestro_Prime_Tests"
 
 FAIL_VIDEOS_DIR="$PROJECT_ROOT/fail-videos"
@@ -45,7 +45,6 @@ APP_ID="com.foundationdevices.envoy"
 DEVICE_ID=""
 TEST_ARG=""
 BUILD_APP=false
-UPDATE_KEYOS=false
 KEBAB_PID=""
 PRIME_PID=""
 
@@ -244,12 +243,6 @@ while [[ $# -gt 0 ]]; do
             ;;
         --build)
             BUILD_APP=true
-            shift
-            ;;
-        --update-keyos)
-            # Before tests, reflash the Prime if origin/<main> has new commits
-            # since the last flash (scripts/keyos_flash_if_new.sh).
-            UPDATE_KEYOS=true
             shift
             ;;
         *)
@@ -746,49 +739,6 @@ cleanup_prime_tmp
 
 start_kebab_bridge
 
-# Optionally reflash the Prime with the latest KeyOS-dev main before testing.
-# Runs BEFORE the prime bridge binds the USB vendor interface, since the flash
-# step drives the device directly via passport-drive (needs exclusive access).
-# No-op (exit 0) when origin/<main> hasn't moved since the last flash.
-if [ "$UPDATE_KEYOS" = true ]; then
-    # Banner: which branch we'll flash from, the commit last flashed, and the
-    # commit we'd flash now. Defaults mirror keyos_flash_if_new.sh.
-    KEYOS_BRANCH="${KEYOS_MAIN_BRANCH:-dev-v1.3.0}"
-    KEYOS_DIR="${KEYOS_DEV_DIR:-$HOME/KeyOS-dev}"
-    KEYOS_STATE="${KEYOS_FLASHED_SHA_FILE:-$HOME/.cache/keyos-flashed-sha}"
-
-    git -C "$KEYOS_DIR" fetch --quiet origin "$KEYOS_BRANCH" 2>/dev/null || true
-    if git -C "$KEYOS_DIR" rev-parse --verify --quiet "origin/$KEYOS_BRANCH^{commit}" >/dev/null 2>&1; then
-        KEYOS_UPCOMING="$(git -C "$KEYOS_DIR" rev-parse --short "origin/$KEYOS_BRANCH")"
-    elif git -C "$KEYOS_DIR" rev-parse --verify --quiet "refs/heads/$KEYOS_BRANCH^{commit}" >/dev/null 2>&1; then
-        KEYOS_UPCOMING="$(git -C "$KEYOS_DIR" rev-parse --short "$KEYOS_BRANCH")"
-    else
-        KEYOS_UPCOMING="<branch not found>"
-    fi
-    KEYOS_SAVED="$(cat "$KEYOS_STATE" 2>/dev/null || true)"; KEYOS_SAVED="${KEYOS_SAVED:0:12}"
-
-    echo ""
-    echo -e "${GREEN}${BOLD}╔══════════════════════════════════════════════════════════╗${NC}"
-    echo -e "${GREEN}${BOLD}║                  K E Y O S   F L A S H                   ║${NC}"
-    echo -e "${GREEN}${BOLD}╠══════════════════════════════════════════════════════════╣${NC}"
-    echo -e "${GREEN}${BOLD}║  BRANCH      : ${KEYOS_BRANCH}${NC}"
-    echo -e "${GREEN}${BOLD}║  SAVED  SHA  : ${KEYOS_SAVED:-<none>}${NC}"
-    echo -e "${GREEN}${BOLD}║  UPCOMING SHA: ${KEYOS_UPCOMING}${NC}"
-    echo -e "${GREEN}${BOLD}╚══════════════════════════════════════════════════════════╝${NC}"
-    echo ""
-
-    echo -e "${BLUE}Checking KeyOS-dev for new commits to flash...${NC}"
-    # Free the USB vendor interface first (kills stale holders), same as the
-    # bridge does on startup.
-    [ -x "$SCRIPT_DIR/prime_driver_setup.sh" ] && "$SCRIPT_DIR/prime_driver_setup.sh" || true
-    if ! "$SCRIPT_DIR/keyos_flash_if_new.sh"; then
-        echo -e "${RED}✗ KeyOS update/flash failed — aborting before tests${NC}"
-        exit 1
-    fi
-fi
-
-start_prime_bridge
-
 # ------------------------------------------------------------
 # Test Runner
 # ------------------------------------------------------------
@@ -899,7 +849,54 @@ run_test_group "Hot Wallet Tests" "$HOT_WALLET_TESTS_DIR"
 run_test_group "Passport Wallet Tests" "$PASSPORT_WALLET_TESTS_DIR"
 
 # --- Group 3: Prime Tests (cross-device, Android + Prime via passport-drive) ---
-# Wake the Kebab motors (enable → home → park at FaceTesterPos2) before the
+# Prime setup happens here, AFTER the phone-only groups above — so a run that
+# only touches Hot Wallet / Passport Wallet never pays for (or depends on) the
+# Prime rig.
+#
+# 1) Reflash KeyOS if the chosen branch moved since the last flash. This is a
+#    no-op (fast SHA check, exit 0) when nothing changed, so it's safe to run
+#    unconditionally — no flag needed. Pick a branch with KEYOS_MAIN_BRANCH.
+#    Must run BEFORE the prime bridge binds the USB vendor interface, since
+#    flashing drives passport-drive directly and needs exclusive access.
+KEYOS_BRANCH="${KEYOS_MAIN_BRANCH:-dev-v1.3.0}"
+# Export so keyos_flash_if_new.sh inherits the exact same branch — the banner
+# below and the actual flash stay in lockstep.
+export KEYOS_MAIN_BRANCH="$KEYOS_BRANCH"
+KEYOS_DIR="${KEYOS_DEV_DIR:-$HOME/KeyOS-dev}"
+KEYOS_STATE="${KEYOS_FLASHED_SHA_FILE:-$HOME/.cache/keyos-flashed-sha}"
+
+git -C "$KEYOS_DIR" fetch --quiet origin "$KEYOS_BRANCH" 2>/dev/null || true
+if git -C "$KEYOS_DIR" rev-parse --verify --quiet "origin/$KEYOS_BRANCH^{commit}" >/dev/null 2>&1; then
+    KEYOS_UPCOMING="$(git -C "$KEYOS_DIR" rev-parse --short "origin/$KEYOS_BRANCH")"
+elif git -C "$KEYOS_DIR" rev-parse --verify --quiet "refs/heads/$KEYOS_BRANCH^{commit}" >/dev/null 2>&1; then
+    KEYOS_UPCOMING="$(git -C "$KEYOS_DIR" rev-parse --short "$KEYOS_BRANCH")"
+else
+    KEYOS_UPCOMING="<branch not found>"
+fi
+KEYOS_SAVED="$(cat "$KEYOS_STATE" 2>/dev/null || true)"; KEYOS_SAVED="${KEYOS_SAVED:0:12}"
+
+echo ""
+echo -e "${GREEN}${BOLD}╔══════════════════════════════════════════════════════════╗${NC}"
+echo -e "${GREEN}${BOLD}║                  K E Y O S   F L A S H                   ║${NC}"
+echo -e "${GREEN}${BOLD}╠══════════════════════════════════════════════════════════╣${NC}"
+echo -e "${GREEN}${BOLD}║  BRANCH      : ${KEYOS_BRANCH}${NC}"
+echo -e "${GREEN}${BOLD}║  SAVED  SHA  : ${KEYOS_SAVED:-<none>}${NC}"
+echo -e "${GREEN}${BOLD}║  UPCOMING SHA: ${KEYOS_UPCOMING}${NC}"
+echo -e "${GREEN}${BOLD}╚══════════════════════════════════════════════════════════╝${NC}"
+echo ""
+
+echo -e "${BLUE}Checking KeyOS-dev for new commits to flash...${NC}"
+# Free the USB vendor interface first (kills stale holders), same as the bridge.
+[ -x "$SCRIPT_DIR/prime_driver_setup.sh" ] && "$SCRIPT_DIR/prime_driver_setup.sh" || true
+if ! "$SCRIPT_DIR/keyos_flash_if_new.sh"; then
+    echo -e "${RED}✗ KeyOS update/flash failed — aborting before Prime tests${NC}"
+    exit 1
+fi
+
+# 2) Bring up the prime bridge now that any flashing is done.
+start_prime_bridge
+
+# 3) Wake the Kebab motors (enable → home → park at FaceTesterPos2) before the
 # group, and sleep them again after, so the steppers aren't energized while
 # idle between runs. The cleanup trap above guarantees the sleep command
 # is sent even if the script is interrupted mid-group.

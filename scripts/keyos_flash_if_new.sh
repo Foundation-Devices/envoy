@@ -17,6 +17,10 @@
 # need to be running yet. Resolves the KeyOS-dev checkout from $KEYOS_DEV_DIR
 # (falling back to ~/KeyOS-dev), matching prime_driver_setup.sh / prime_bridge.sh.
 #
+# REQUIREMENT: KeyOS-dev must already be cloned at $KEYOS_DEV_DIR (default
+# ~/KeyOS-dev) — we build/flash from it and won't clone it for you. The branch
+# checkout within that repo is automatic.
+#
 # Usage:  ./scripts/keyos_flash_if_new.sh
 #
 # Exit codes:  0 = up to date OR update+unlock succeeded (safe to run tests)
@@ -51,15 +55,108 @@ BOOT_TIMEOUT_S="${PRIME_BOOT_TIMEOUT_S:-120}"
 BOOT_SETTLE_S="${PRIME_BOOT_SETTLE_S:-5}"
 
 # PIN digit -> "X Y" on the keypad. 1-6 verified from onboarding; 7-9,0 guessed.
-declare -A KEYPAD=(
-    [1]="80 520"  [2]="240 520" [3]="400 520"
-    [4]="80 600"  [5]="240 600" [6]="400 600"
-    [7]="80 680"  [8]="240 680" [9]="400 680"
-    [0]="240 760"
-)
+# Plain function instead of `declare -A` so this runs on macOS's stock bash 3.2,
+# which has no associative arrays. Returns non-zero for an unknown digit.
+keypad_coord() {
+    case "$1" in
+        1) echo "80 520"  ;; 2) echo "240 520" ;; 3) echo "400 520" ;;
+        4) echo "80 600"  ;; 5) echo "240 600" ;; 6) echo "400 600" ;;
+        7) echo "80 680"  ;; 8) echo "240 680" ;; 9) echo "400 680" ;;
+        0) echo "240 760" ;;
+        *) return 1 ;;
+    esac
+}
 
 log()  { echo "==> $*"; }
 warn() { echo "!! $*" >&2; }
+
+# --------------------------------------------------------------------
+# Toolchain setup
+# --------------------------------------------------------------------
+# Uses a plain rustup + brew toolchain. The pinned nightly channel is read
+# from rust-toolchain.toml and exported as RUSTUP_TOOLCHAIN for every build
+# sub-invocation, because the host's default toolchain may be `stable` and
+# rust-toolchain.toml's directory override does NOT propagate to all of
+# xtask's sub-cargos — that's the cryptic "could not find specification for
+# target armv7a-unknown-xous-elf" failure.
+keyos_pinned_toolchain() {
+    local f="$KEYOS_DEV_DIR/rust-toolchain.toml"
+    [[ -f "$f" ]] && awk -F'"' '/^[[:space:]]*channel[[:space:]]*=/ { print $2; exit }' "$f"
+}
+
+# Filled in by ensure_bare_toolchain. keyos_run uses it.
+BARE_TOOLCHAIN_CHANNEL=""
+
+# Make the bare toolchain ready. Auto-provides what's cheap (rustup target add,
+# scripts/install-stdlib.sh for the Xous std). For tools that require sudo /
+# brew cask / cargo install (arm-none-eabi-gcc, cosign2, protoc), checks
+# presence and prints the exact command to install. Aborts the script if any
+# required piece is missing.
+ensure_bare_toolchain() {
+    local channel
+    channel="$(keyos_pinned_toolchain)"
+    if [[ -z "$channel" ]]; then
+        warn "could not read toolchain channel from $KEYOS_DEV_DIR/rust-toolchain.toml"
+        exit 1
+    fi
+
+    if ! command -v rustup >/dev/null 2>&1; then
+        warn "rustup not found — install from https://rustup.rs"
+        exit 1
+    fi
+
+    # The bootloader target. Cheap; just install it if missing.
+    if ! ( cd "$KEYOS_DEV_DIR" && rustup target list --installed 2>/dev/null \
+            | grep -qx armv7a-none-eabi ); then
+        log "installing rust target armv7a-none-eabi for $channel"
+        ( cd "$KEYOS_DEV_DIR" && rustup target add armv7a-none-eabi )
+    fi
+
+    # The Xous std (armv7a-unknown-xous-elf). Auto-discovered by rustc via
+    # <sysroot>/lib/rustlib/<target>/target.json — never appears in `rustc
+    # --print target-list`. If the cfg probe errors, install-stdlib.sh
+    # downloads the prebuilt sysroot zip and unzips it into the toolchain.
+    if ! ( cd "$KEYOS_DEV_DIR" && RUSTUP_TOOLCHAIN="$channel" \
+            rustc --print cfg --target armv7a-unknown-xous-elf >/dev/null 2>&1 ); then
+        if [[ ! -x "$KEYOS_DEV_DIR/scripts/install-stdlib.sh" ]]; then
+            warn "scripts/install-stdlib.sh not found in $KEYOS_DEV_DIR"
+            exit 1
+        fi
+        log "Xous std not in $channel sysroot — running scripts/install-stdlib.sh"
+        ( cd "$KEYOS_DEV_DIR" && RUSTUP_TOOLCHAIN="$channel" \
+            ./scripts/install-stdlib.sh ) || {
+                warn "scripts/install-stdlib.sh failed"
+                exit 1
+            }
+    fi
+
+    # Host tools we don't auto-install (each one is sudo / brew cask / a long
+    # cargo build). If any are missing, print the exact one-liner and bail.
+    local missing=()
+    command -v arm-none-eabi-gcc >/dev/null 2>&1 \
+        || missing+=("arm-none-eabi-gcc   →  brew install --cask gcc-arm-embedded")
+    command -v cosign2 >/dev/null 2>&1 \
+        || missing+=("cosign2             →  cd \$KEYOS_DEV_DIR && cargo install --path imports/cosign2/cosign2-bin")
+    command -v protoc >/dev/null 2>&1 \
+        || missing+=("protoc              →  brew install protobuf")
+
+    if [[ ${#missing[@]} -gt 0 ]]; then
+        warn "bare toolchain is missing host tools:"
+        printf '  - %s\n' "${missing[@]}" >&2
+        exit 1
+    fi
+
+    BARE_TOOLCHAIN_CHANNEL="$channel"
+    log "bare toolchain ready (RUSTUP_TOOLCHAIN=$BARE_TOOLCHAIN_CHANNEL)"
+}
+
+# Run a build/flash command inside the KeyOS-dev checkout with the pinned
+# nightly forced. Only build/flash go through this — passport-drive device
+# commands run the prebuilt binary directly.
+keyos_run() {
+    ( cd "$KEYOS_DEV_DIR" \
+        && RUSTUP_TOOLCHAIN="$BARE_TOOLCHAIN_CHANNEL" "$@" )
+}
 
 # --------------------------------------------------------------------
 # Preconditions
@@ -69,9 +166,12 @@ if [[ ! -d "$KEYOS_DEV_DIR" ]]; then
     exit 1
 fi
 
+# Set up the bare toolchain before any keyos_run — exits if prereqs missing.
+ensure_bare_toolchain
+
 if [[ ! -x "$PD" ]]; then
     log "passport-drive not built — building it (cargo build --release -p passport-drive)"
-    ( cd "$KEYOS_DEV_DIR" && cargo build --release -p passport-drive )
+    keyos_run cargo build --release -p passport-drive
 fi
 
 # --------------------------------------------------------------------
@@ -115,6 +215,20 @@ fi
 # 2. Check out + build
 # --------------------------------------------------------------------
 log "new commit on $MAIN_BRANCH (${target_sha:0:12}) — updating"
+
+# Stash any local edits in KeyOS-dev (tracked + untracked) before we change
+# branches, so in-progress work isn't blown away by `git checkout`. We do NOT
+# auto-pop afterwards: this is a flash rig, the local tree should reflect what
+# we just flashed, and an auto-pop could conflict against the new tip. The
+# stash is labeled and stays around for manual recovery:
+#     git -C $KEYOS_DEV_DIR stash list
+#     git -C $KEYOS_DEV_DIR stash pop stash@{N}
+if [[ -n "$(git -C "$KEYOS_DEV_DIR" status --porcelain)" ]]; then
+    stash_msg="keyos_flash_if_new auto-stash $(date '+%Y-%m-%d %H:%M:%S')"
+    log "local edits in KeyOS-dev — stashing as \"$stash_msg\" (recover with: git -C $KEYOS_DEV_DIR stash list)"
+    git -C "$KEYOS_DEV_DIR" stash push --include-untracked -m "$stash_msg" >/dev/null
+fi
+
 git -C "$KEYOS_DEV_DIR" checkout "$MAIN_BRANCH"
 # Fast-forward to the remote tip if this branch tracks one; a local-only branch
 # under test is used exactly as checked out.
@@ -123,7 +237,7 @@ if git -C "$KEYOS_DEV_DIR" rev-parse --verify --quiet "origin/$MAIN_BRANCH^{comm
 fi
 
 log "building firmware (just build-all) — this takes a while"
-( cd "$KEYOS_DEV_DIR" && just build-all )
+keyos_run just build-all
 
 # --------------------------------------------------------------------
 # 3. Enter SAM-BA over USB, then flash
@@ -134,7 +248,7 @@ log "rebooting Prime into SAM-BA mode (software, over usb-debug)"
 # `just flash` (no --switch) waits for the SAM-BA device that's now present,
 # flashes, verifies, and reboots the device back into normal mode itself.
 log "flashing (just flash) — waits for SAM-BA, flashes, reboots to normal"
-( cd "$KEYOS_DEV_DIR" && just flash )
+keyos_run just flash
 
 # --------------------------------------------------------------------
 # 4. Wait for the device to come back up in normal mode
@@ -155,23 +269,31 @@ sleep "$BOOT_SETTLE_S"
 # --------------------------------------------------------------------
 # 5. Unlock: swipe up, enter PIN, tap Done
 # --------------------------------------------------------------------
+# Settle delay before every interaction in this section so the Prime has time
+# to render each screen transition before we drive the next tap/swipe — the
+# device sometimes paints slower than passport-drive can dispatch input.
+# Matches the TAP_SETTLE_SECONDS the prime-bridge uses for normal taps.
+UNLOCK_SETTLE_S="${PRIME_UNLOCK_SETTLE_S:-0.8}"
+
 log "unlocking: swipe up"
+sleep "$UNLOCK_SETTLE_S"
 "$PD" swipe "$SWIPE_SX" "$SWIPE_SY" "$SWIPE_EX" "$SWIPE_EY"
 sleep 1
 
 log "entering PIN"
 for (( i = 0; i < ${#PIN}; i++ )); do
     digit="${PIN:$i:1}"
-    coord="${KEYPAD[$digit]:-}"
-    if [[ -z "$coord" ]]; then
+    if ! coord="$(keypad_coord "$digit")"; then
         warn "no keypad coordinate for digit '$digit'"
         exit 1
     fi
+    sleep "$UNLOCK_SETTLE_S"
     # shellcheck disable=SC2086
     "$PD" tap $coord
 done
 
 log "tapping Done"
+sleep "$UNLOCK_SETTLE_S"
 "$PD" tap "$DONE_X" "$DONE_Y"
 
 # Record the commit we just flashed so the next run skips when nothing changed.

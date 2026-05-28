@@ -22,6 +22,8 @@ appId: com.foundationdevices.envoy
 - tapOn: "ENVOY"
 - longPressOn: "ENVOY"
 
+# TODO: handle formating screen here if it shows up!!!
+
 # PRIME: open menu (bottom-left hamburger on home)
 - runScript:
     file: prime_scripts/interactions/prime_tap.js
