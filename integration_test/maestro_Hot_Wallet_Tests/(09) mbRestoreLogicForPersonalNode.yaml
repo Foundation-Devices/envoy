@@ -1,0 +1,445 @@
+# SPDX-FileCopyrightText: 2026 Foundation Devices Inc.
+#
+# SPDX-License-Identifier: GPL-3.0-or-later
+
+# (09) mbRestoreLogicForPersonalNode
+appId: com.foundationdevices.envoy
+---
+
+- launchApp:
+    clearState: true
+
+# Test 1) During onboarding, don't touch any advanced setting,
+# load clearnet MB, check that clearnet node is loaded and clearnet setting is selected
+
+# turn off MB
+- tapOn: Advanced
+- tapOn: magic backup
+- tapOn:
+    id: PopUp Secondary Button
+- tapOn: Back
+
+# recover
+- tapOn: |-
+    Create a 
+    Mobile Wallet
+
+- tapOn: Recover
+
+# Insert seed words (12 word) ----- clearnet
+- tapOn: 12 Word Seed
+- tapOn: "1. "
+- inputText: "when"
+- tapOn: "2. "
+- inputText: "minor"
+- tapOn: "3. "
+- inputText: "age"
+- tapOn: "4. "
+- inputText: "anger"
+- tapOn: "5. "
+- inputText: "antique"
+- tapOn: "6. "
+- inputText: "balcony"
+- tapOn: "7. "
+- inputText: "asset"
+- tapOn: "8. "
+- inputText: "fury"
+- tapOn: "9. "
+- inputText: "spider"
+- tapOn: "10. "
+- inputText: "together"
+- tapOn: "11. "
+- inputText: "morning"
+- tapOn: "12. "
+- inputText: "hint"
+
+- tapOn: Done
+
+- extendedWaitUntil:
+    visible: Magic Backup Detected
+    timeout: 60000
+
+# restore from server
+- tapOn:
+    id: PopUp Primary Button
+
+- extendedWaitUntil:
+    visible: Continue
+    timeout: 7000
+
+- tapOn: Continue
+
+# check that clearnet node is loaded and clearnet setting is selected
+- tapOn: Privacy
+
+- assertVisible: Blockstream
+# if you saved blockstream as personal node, the app changes
+# this to blockstream (because that is one of the default options)
+
+
+########################################################################################
+# clear and restart app for the next test
+- launchApp:
+    clearState: true
+
+# Test 2) During onboarding, change clearnet node to a predefined
+# one like DIY, then load tor MB, check that clearnet is selected
+# and DIY node is selected (logic test to check user intervention
+# is above tor MB)
+
+# turn off MB
+- tapOn: Advanced
+- tapOn: magic backup
+- tapOn:
+    id: PopUp Secondary Button
+
+# change to DIY
+- tapOn: Foundation (Default)
+
+- tapOn: DIYnodes
+
+- tapOn: Back
+
+- tapOn: |-
+    Create a 
+    Mobile Wallet
+
+- tapOn: Recover
+
+# Insert seed words (12 word) ----- tor MB
+- tapOn: 12 Word Seed
+- tapOn: "1. "
+- inputText: "pepper"
+- tapOn: "2. "
+- inputText: "zebra"
+- tapOn: "3. "
+- inputText: "bronze"
+- tapOn: "4. "
+- inputText: "slow"
+- tapOn: "5. "
+- inputText: "chest"
+- tapOn: "6. "
+- inputText: "glue"
+- tapOn: "7. "
+- inputText: "wage"
+- tapOn: "8. "
+- inputText: "journey"
+- tapOn: "9. "
+- inputText: "walk"
+- tapOn: "10. "
+- inputText: "deposit"
+- tapOn: "11. "
+- inputText: "pet"
+- tapOn: "12. "
+- inputText: "local"
+
+- tapOn: Done
+
+- extendedWaitUntil:
+    visible: Magic Backup Detected
+    timeout: 60000
+
+# restore from server
+- tapOn:
+    id: PopUp Primary Button
+
+- extendedWaitUntil:
+    visible: Continue
+    timeout: 7000
+
+- tapOn: Continue
+
+# check that clearnet node is loaded and clearnet setting is selected
+- tapOn: Privacy
+
+- assertVisible: DIYnodes
+- assertVisible: |-
+    PRIVACY
+    off
+
+########################################################################################
+# clear and restart app for the next test
+- launchApp:
+    clearState: true
+
+# Test 3) During onboarding, change advanced settings to tor,
+# select personal node, paste onion address, then load clearnet MB,
+# check that tor node is loaded (logic test to check the other way around works as well)
+
+# turn off MB
+- tapOn: Advanced
+- tapOn: magic backup
+- tapOn:
+    id: PopUp Secondary Button
+
+- tapOn: |-
+    Improved
+    Privacy
+
+- tapOn: Foundation (Default)
+- tapOn: Personal Node
+
+- tapOn: Enter your node address
+
+- inputText: "l7wsl4yghqvdgp4ullod67ydb54ttxs3nnvctblbofl7umw6j72e5did.onion:50001"
+
+- tapOn: Back
+- tapOn: Back
+
+# recover
+- tapOn: |-
+    Create a 
+    Mobile Wallet
+
+- tapOn: Recover
+
+# Insert seed words (12 word) ----- clearnet
+- tapOn: 12 Word Seed
+- tapOn: "1. "
+- inputText: "when"
+- tapOn: "2. "
+- inputText: "minor"
+- tapOn: "3. "
+- inputText: "age"
+- tapOn: "4. "
+- inputText: "anger"
+- tapOn: "5. "
+- inputText: "antique"
+- tapOn: "6. "
+- inputText: "balcony"
+- tapOn: "7. "
+- inputText: "asset"
+- tapOn: "8. "
+- inputText: "fury"
+- tapOn: "9. "
+- inputText: "spider"
+- tapOn: "10. "
+- inputText: "together"
+- tapOn: "11. "
+- inputText: "morning"
+- tapOn: "12. "
+- inputText: "hint"
+
+- tapOn: Done
+
+- extendedWaitUntil:
+    visible: Magic Backup Detected
+    timeout: 60000
+
+# restore from server
+- tapOn:
+    id: PopUp Primary Button
+
+- extendedWaitUntil:
+    visible: Continue
+    timeout: 7000
+
+- tapOn: Continue
+
+#  check that tor node is loaded
+- tapOn: Privacy
+
+- assertVisible: tcp://l7wsl4yghqvdgp4ullod67ydb54ttxs3nnvctblbofl7umw6j72e5did.onion:50001
+- assertVisible: |-
+    PRIVACY
+    connected
+
+########################################################################################
+# clear and restart app for the next test
+- launchApp:
+    clearState: true
+
+# Test 4) During onboarding, don't change advanced settings, load tor MB,
+# check that tor node is loaded and tor setting enabled (logic test to check
+# that MB prevails over "default" selection)
+
+# turn off MB
+- tapOn: Advanced
+- tapOn: magic backup
+- tapOn:
+    id: PopUp Secondary Button
+
+- tapOn: Back
+
+- tapOn: |-
+    Create a 
+    Mobile Wallet
+
+- tapOn: Recover
+
+# Insert seed words (12 word) ----- tor MB
+- tapOn: 12 Word Seed
+- tapOn: "1. "
+- inputText: "pepper"
+- tapOn: "2. "
+- inputText: "zebra"
+- tapOn: "3. "
+- inputText: "bronze"
+- tapOn: "4. "
+- inputText: "slow"
+- tapOn: "5. "
+- inputText: "chest"
+- tapOn: "6. "
+- inputText: "glue"
+- tapOn: "7. "
+- inputText: "wage"
+- tapOn: "8. "
+- inputText: "journey"
+- tapOn: "9. "
+- inputText: "walk"
+- tapOn: "10. "
+- inputText: "deposit"
+- tapOn: "11. "
+- inputText: "pet"
+- tapOn: "12. "
+- inputText: "local"
+
+- tapOn: Done
+
+- extendedWaitUntil:
+    visible: Magic Backup Detected
+    timeout: 60000
+
+# restore from server
+- tapOn:
+    id: PopUp Primary Button
+
+- extendedWaitUntil:
+    visible: Continue
+    timeout: 7000
+
+- tapOn: Continue
+
+# check that tor node is loaded and tor setting enabled
+- tapOn: Privacy
+
+- assertVisible: |-
+    PRIVACY
+    connected
+
+- assertVisible: tcp://l7wsl4yghqvdgp4ullod67ydb54ttxs3nnvctblbofl7umw6j72e5did.onion:50001
+
+
+########################################################################################
+# clear and restart app for the next test
+- launchApp:
+    clearState: true
+
+# Test 5) During onboarding, change to tor setting, but do not define
+# personal node, leave Foundation (default), then load tor MB, check that
+# tor setting is on but Foundation node is selected (logic test to check
+# that even if tor selection matches MB, user decision prevails over MB)
+
+# turn off MB
+- tapOn: Advanced
+- tapOn: magic backup
+- tapOn:
+    id: PopUp Secondary Button
+
+# change to tor setting
+- tapOn: |-
+    Improved
+    Privacy
+
+- tapOn: Back
+
+- tapOn: |-
+    Create a 
+    Mobile Wallet
+
+- tapOn: Recover
+
+# Insert seed words (12 word) ----- tor MB
+- tapOn: 12 Word Seed
+- tapOn: "1. "
+- inputText: "pepper"
+- tapOn: "2. "
+- inputText: "zebra"
+- tapOn: "3. "
+- inputText: "bronze"
+- tapOn: "4. "
+- inputText: "slow"
+- tapOn: "5. "
+- inputText: "chest"
+- tapOn: "6. "
+- inputText: "glue"
+- tapOn: "7. "
+- inputText: "wage"
+- tapOn: "8. "
+- inputText: "journey"
+- tapOn: "9. "
+- inputText: "walk"
+- tapOn: "10. "
+- inputText: "deposit"
+- tapOn: "11. "
+- inputText: "pet"
+- tapOn: "12. "
+- inputText: "local"
+
+- tapOn: Done
+
+- extendedWaitUntil:
+    visible: Magic Backup Detected
+    timeout: 60000
+
+# restore from server
+- tapOn:
+    id: PopUp Primary Button
+
+- extendedWaitUntil:
+    visible: Continue
+    timeout: 7000
+
+- tapOn: Continue
+
+# check that tor setting is enabled
+- tapOn: Privacy
+- assertVisible: |-
+    PRIVACY
+    connected
+
+- assertVisible:
+      text: "Foundation (Default)"
+      index: 0
+- assertVisible:
+      text: "Foundation (Default)"
+      index: 1
+
+# Return Tor and Node for the next cycle of testing !!!
+
+- tapOn: "Improved\nPrivacy"
+
+- tapOn: "Foundation (Default)"
+- tapOn: "Personal Node"
+- tapOn: "Enter your node address"
+- inputText: "tcp://l7wsl4yghqvdgp4ullod67ydb54ttxs3nnvctblbofl7umw6j72e5did.onion:50001"
+
+- assertVisible: |-
+      PRIVACY
+      connected
+
+# Make MB to save Privacy and Node settings
+
+- tapOn:
+    id: "hamburger_menu"
+- tapOn: "BACKUPS\nBACKUPS"
+- tapOn: "Back up now"
+- tapOn: "Continue"
+
+# wait for MB
+- extendedWaitUntil:
+    visible: "A moment ago to Foundation Servers"
+    timeout: 30000
+
+# hack to wait 5 seconds for the toast
+- swipe:
+    start: "50%, 50%"
+    end: "50%, 50%"
+    duration: 5000
+
+# go home
+- tapOn:
+    id: "hamburger_menu"
+- tapOn:
+    id: "hamburger_menu"
+- tapOn: "Accounts"

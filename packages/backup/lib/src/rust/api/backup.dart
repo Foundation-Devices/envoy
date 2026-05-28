@@ -6,7 +6,8 @@
 import '../frb_generated.dart';
 import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated.dart';
 
-// These types are ignored because they are neither used by any `pub` functions nor (for structs and enums) marked `#[frb(unignore)]`: `BackupRequest`, `ChallengeResponse`, `GetBackupResponse`, `RUNTIME`
+// These functions are ignored because they are not marked as `pub`: `compute_backup_hash`, `derive_mldsa_keypair`
+// These types are ignored because they are neither used by any `pub` functions nor (for structs and enums) marked `#[frb(unignore)]`: `BackupRequest`, `ChallengeResponse`, `RUNTIME`
 // These function are ignored because they are on traits that is not defined in current crate (put an empty `#[frb]` on it to unignore): `deref`, `initialize`
 // These functions are ignored (category: IgnoreBecauseExplicitAttribute): `get_challenge_async`, `post_backup_async`
 
@@ -41,6 +42,28 @@ class Backup {
       RustLib.instance.api.crateApiBackupBackupDeleteBackupAsync(
           serverUrl: serverUrl, proxyPort: proxyPort, hash: hash);
 
+  /// Delete a Prime backup from the v2 server using pre-signed auth.
+  static Future<int> deletePrimeBackupV2(
+          {required String v2ServerUrl,
+          required int proxyPort,
+          required List<int> key,
+          required BigInt timestamp,
+          required List<int> signature}) =>
+      RustLib.instance.api.crateApiBackupBackupDeletePrimeBackupV2(
+          v2ServerUrl: v2ServerUrl,
+          proxyPort: proxyPort,
+          key: key,
+          timestamp: timestamp,
+          signature: signature);
+
+  /// Delete Envoy's own backup from the v2 server.
+  static Future<int> deleteV2(
+          {required String seedWords,
+          required String v2ServerUrl,
+          required int proxyPort}) =>
+      RustLib.instance.api.crateApiBackupBackupDeleteV2(
+          seedWords: seedWords, v2ServerUrl: v2ServerUrl, proxyPort: proxyPort);
+
   static Future<Uint8List> encryptBackup(
           {required List<(String, String)> files,
           required StaticSecret secret}) =>
@@ -64,12 +87,34 @@ class Backup {
       RustLib.instance.api.crateApiBackupBackupGetBackupOffline(
           seedWords: seedWords, filePath: filePath);
 
+  /// Retrieve Envoy's own backup from the v2 server.
+  static Future<List<(String, String)>> getBackupV2(
+          {required String seedWords,
+          required String v2ServerUrl,
+          required int proxyPort}) =>
+      RustLib.instance.api.crateApiBackupBackupGetBackupV2(
+          seedWords: seedWords, v2ServerUrl: v2ServerUrl, proxyPort: proxyPort);
+
   static Future<Uint8List> getPrimeBackup(
           {required List<int> hash,
           required String serverUrl,
           required int proxyPort}) =>
       RustLib.instance.api.crateApiBackupBackupGetPrimeBackup(
           hash: hash, serverUrl: serverUrl, proxyPort: proxyPort);
+
+  /// Retrieve a Prime backup from the v2 server using pre-signed auth.
+  static Future<Uint8List> getPrimeBackupV2(
+          {required String v2ServerUrl,
+          required int proxyPort,
+          required List<int> key,
+          required BigInt timestamp,
+          required List<int> signature}) =>
+      RustLib.instance.api.crateApiBackupBackupGetPrimeBackupV2(
+          v2ServerUrl: v2ServerUrl,
+          proxyPort: proxyPort,
+          key: key,
+          timestamp: timestamp,
+          signature: signature);
 
   static Future<Client> getReqwestClient({required int proxyPort}) =>
       RustLib.instance.api
@@ -101,6 +146,22 @@ class Backup {
       RustLib.instance.api.crateApiBackupBackupPerformBackupOffline(
           payload: payload, seedWords: seedWords, path: path);
 
+  /// Encrypt and upload Envoy's own backup to the v2 server.
+  static Future<bool> performBackupV2(
+          {required Map<String, String> payload,
+          required String seedWords,
+          required String v2ServerUrl,
+          required String localBackup,
+          required int proxyPort,
+          required bool performCloud}) =>
+      RustLib.instance.api.crateApiBackupBackupPerformBackupV2(
+          payload: payload,
+          seedWords: seedWords,
+          v2ServerUrl: v2ServerUrl,
+          localBackup: localBackup,
+          proxyPort: proxyPort,
+          performCloud: performCloud);
+
   static Future<bool> performPrimeBackup(
           {required String serverUrl,
           required int proxyPort,
@@ -111,6 +172,24 @@ class Backup {
           proxyPort: proxyPort,
           seedHash: seedHash,
           payload: payload);
+
+  /// Upload a pre-signed Prime backup to the v2 server.
+  static Future<bool> performPrimeBackupV2(
+          {required String v2ServerUrl,
+          required int proxyPort,
+          required BigInt timestamp,
+          required List<int> hash,
+          required List<int> pubkey,
+          required List<int> data,
+          required List<int> clientSignature}) =>
+      RustLib.instance.api.crateApiBackupBackupPerformPrimeBackupV2(
+          v2ServerUrl: v2ServerUrl,
+          proxyPort: proxyPort,
+          timestamp: timestamp,
+          hash: hash,
+          pubkey: pubkey,
+          data: data,
+          clientSignature: clientSignature);
 
   @override
   int get hashCode => 0;
@@ -149,5 +228,10 @@ enum GetBackupException {
   invalidSeed,
   invalidServer,
   invalidBackupFile,
+
+  /// Server returned 401 — backup exists but is missing its sibling pubkey
+  /// and the client could not heal it. Caller should consider falling back
+  /// to the v1 server.
+  unauthorized,
   ;
 }

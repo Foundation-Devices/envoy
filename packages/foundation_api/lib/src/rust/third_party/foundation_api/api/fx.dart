@@ -72,3 +72,22 @@ class PricePoint {
           rate == other.rate &&
           timestamp == other.timestamp;
 }
+
+/// Prime → Envoy. ISO-4217 code; sent on settings change and on every reconnect.
+class PrimeFiatPreference {
+  final String currencyCode;
+
+  const PrimeFiatPreference({
+    required this.currencyCode,
+  });
+
+  @override
+  int get hashCode => currencyCode.hashCode;
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is PrimeFiatPreference &&
+          runtimeType == other.runtimeType &&
+          currencyCode == other.currencyCode;
+}

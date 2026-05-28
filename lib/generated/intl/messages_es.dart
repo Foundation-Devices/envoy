@@ -569,6 +569,9 @@ class MessageLookup extends MessageLookupByLibrary {
         "camera_toast_couldntDecodeUr": MessageLookupByLibrary.simpleMessage(
           "Couldn’t decode UR.",
         ),
+        "camera_toast_invalidPairPayload": MessageLookupByLibrary.simpleMessage(
+          "Invalid Pair Payload.",
+        ),
         "camera_toast_notAValidAddress": MessageLookupByLibrary.simpleMessage(
           "Not a valid address.",
         ),
@@ -1548,8 +1551,12 @@ class MessageLookup extends MessageLookupByLibrary {
         ),
         "firmware_connectionModalCancelUpdate_header":
             MessageLookupByLibrary.simpleMessage("Cancel Update?"),
+        "firmware_downloadingUpdate_aboutOneMin":
+            MessageLookupByLibrary.simpleMessage("About 1 minute remains"),
         "firmware_downloadingUpdate_downloaded":
             MessageLookupByLibrary.simpleMessage("Actualización Descargada"),
+        "firmware_downloadingUpdate_estimating":
+            MessageLookupByLibrary.simpleMessage("Estimating remaining time…"),
         "firmware_downloadingUpdate_header":
             MessageLookupByLibrary.simpleMessage(
           "Descargando Actualización",
@@ -2188,6 +2195,9 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage(
           "Couldn’t delete Envoy seed.",
         ),
+        "menu_toast_developerModeEnabled": MessageLookupByLibrary.simpleMessage(
+          "Developer Mode Enabled.",
+        ),
         "menu_toast_envoySeedDeleted": MessageLookupByLibrary.simpleMessage(
           "Envoy seed deleted.",
         ),
@@ -2508,6 +2518,15 @@ class MessageLookup extends MessageLookupByLibrary {
         ),
         "privacy_applicationLock_unlock": MessageLookupByLibrary.simpleMessage(
           "Desbloqueo con Huella o PIN",
+        ),
+        "privacy_blockExplorer_couldNotReachBlockExplorer":
+            MessageLookupByLibrary.simpleMessage(
+                "Could not reach Block Explorer"),
+        "privacy_blockExplorer_success": MessageLookupByLibrary.simpleMessage(
+          "Successfully connected to Block Explorer",
+        ),
+        "privacy_blockExplorer_urlError": MessageLookupByLibrary.simpleMessage(
+          "URL missing http:// or https:// prefix",
         ),
         "privacy_explorer_configure": MessageLookupByLibrary.simpleMessage(
           "Mejora tu privacidad con tu propio explorador de bloques. Pulsa Más información arriba.",

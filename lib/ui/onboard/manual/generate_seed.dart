@@ -371,11 +371,9 @@ class _SeedScreenState extends State<SeedScreen> {
     return Column(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        Column(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Column(
+        Expanded(
+          child: SingleChildScrollView(
+            child: Column(
               mainAxisSize: MainAxisSize.min,
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
@@ -398,56 +396,51 @@ class _SeedScreenState extends State<SeedScreen> {
                   padding: const EdgeInsets.only(top: EnvoySpacing.xs),
                   child: Image.asset("assets/shield_ok.png", height: 184),
                 ),
+                const SizedBox(height: EnvoySpacing.medium3),
+                Text(
+                  S().manual_setup_generate_seed_verify_seed_heading,
+                  textAlign: TextAlign.center,
+                  style: EnvoyTypography.heading.copyWith(
+                    color: EnvoyColors.textPrimary,
+                  ),
+                ),
+                const SizedBox(height: EnvoySpacing.medium3),
+                Padding(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: EnvoySpacing.medium1,
+                  ),
+                  child: Text(
+                    S().manual_setup_generate_seed_verify_seed_subheading,
+                    textAlign: TextAlign.center,
+                    style: EnvoyTypography.body.copyWith(
+                      color: EnvoyColors.textSecondary,
+                    ),
+                  ),
+                ),
               ],
             ),
-            const SizedBox(height: EnvoySpacing.medium3),
-            Flexible(
-              child: SingleChildScrollView(
-                child: Column(
-                  children: [
-                    Text(
-                      S().manual_setup_generate_seed_verify_seed_heading,
-                      textAlign: TextAlign.center,
-                      style: EnvoyTypography.heading.copyWith(
-                        color: EnvoyColors.textPrimary,
-                      ),
-                    ),
-                    const SizedBox(height: EnvoySpacing.medium3),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: EnvoySpacing.medium1,
-                      ),
-                      child: Text(
-                        S().manual_setup_generate_seed_verify_seed_subheading,
-                        textAlign: TextAlign.center,
-                        style: EnvoyTypography.body.copyWith(
-                          color: EnvoyColors.textSecondary,
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-          ],
+          ),
         ),
         Padding(
           padding: const EdgeInsets.symmetric(
             horizontal: EnvoySpacing.xs,
             vertical: EnvoySpacing.medium2,
           ),
-          child: EnvoyButton(
-            S().component_continue,
-            borderRadius: BorderRadius.all(
-              Radius.circular(EnvoySpacing.medium1),
+          child: Semantics(
+            container: true,
+            child: EnvoyButton(
+              S().component_continue,
+              borderRadius: BorderRadius.all(
+                Radius.circular(EnvoySpacing.medium1),
+              ),
+              fontWeight: FontWeight.w600,
+              onTap: () {
+                _pageController.nextPage(
+                  duration: const Duration(milliseconds: 300),
+                  curve: Curves.ease,
+                );
+              },
             ),
-            fontWeight: FontWeight.w600,
-            onTap: () {
-              _pageController.nextPage(
-                duration: const Duration(milliseconds: 300),
-                curve: Curves.ease,
-              );
-            },
           ),
         ),
       ],

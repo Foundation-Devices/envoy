@@ -2,7 +2,6 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-import 'package:envoy/account/sync_manager.dart';
 import 'package:envoy/business/devices.dart';
 import 'package:envoy/business/exchange_rate.dart';
 import 'package:envoy/business/settings.dart';
@@ -55,11 +54,13 @@ class _AccountListTileState extends ConsumerState<AccountListTile> {
     super.initState();
     // Redraw when we fetch exchange rate
     ExchangeRate().addListener(_redraw);
+    Devices().addListener(_redraw);
   }
 
   @override
   void dispose() {
     ExchangeRate().removeListener(_redraw);
+    Devices().removeListener(_redraw);
     super.dispose();
   }
 
@@ -71,21 +72,23 @@ class _AccountListTileState extends ConsumerState<AccountListTile> {
   Widget build(BuildContext context) {
     ref.watch(settingsProvider);
     ref.watch(accountsProvider);
-    final currentProgress = ref.watch(accountSync);
+    final fullScanInProgress =
+        ref.watch(accountFullScanInProgressProvider(widget.account.id));
     final requiredScan = ref.watch(isAccountRequiredScan(widget.account));
-    bool isScanning = false;
-    if (currentProgress is Scanning) {
-      isScanning = currentProgress.id == widget.account.id;
-    }
-    if (requiredScan) {
-      isScanning = true;
-    }
+    bool isScanning = fullScanInProgress || requiredScan;
     EnvoyAccount? account = ref.watch(accountStateProvider(widget.account.id));
     if (widget.account.xfp == "ghost") {
       account = widget.account;
     }
     if (account == null) {
       return const SizedBox.shrink();
+    }
+    // Keep the tile in the loading state until the initial sync sets
+    // `dateSynced` — that way the balance shown here and the transactions
+    // shown on the detail page appear at the same time. Ghost accounts have
+    // no real sync, so they're exempt.
+    if (widget.account.xfp != "ghost" && account.dateSynced == null) {
+      isScanning = true;
     }
     int balance = widget.account.xfp == "ghost"
         ? 0

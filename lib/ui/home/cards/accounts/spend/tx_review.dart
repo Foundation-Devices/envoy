@@ -35,6 +35,7 @@ import 'package:envoy/ui/theme/envoy_colors.dart';
 import 'package:envoy/ui/theme/envoy_icons.dart';
 import 'package:envoy/ui/theme/envoy_spacing.dart';
 import 'package:envoy/ui/theme/envoy_typography.dart';
+import 'package:envoy/ui/theme/new_envoy_color.dart';
 import 'package:envoy/ui/widgets/blur_dialog.dart';
 import 'package:envoy/ui/widgets/envoy_step_item.dart';
 import 'package:envoy/util/bug_report_helper.dart';
@@ -641,6 +642,9 @@ class _TransactionReviewScreenState
         kPrint("No device found for account, cannot init tx stream");
         return;
       }
+      if (device.type != DeviceType.passportPrime) {
+        return;
+      }
       _primeTransactionsSubscription = device
           .qlConnection()
           .qlHandler
@@ -889,7 +893,6 @@ class _TransactionReviewScreenState
                 mainAxisSize: MainAxisSize.min,
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
-                  const Padding(padding: EdgeInsets.all(6)),
                   if (transactionModel.canModify && !widget.primeTransferMode)
                     EnvoyButton(
                       enabled: !transactionModel.loading,
@@ -983,7 +986,7 @@ class _TransactionReviewScreenState
             Flexible(
               child: SingleChildScrollView(
                 child: Padding(
-                  padding: const EdgeInsets.only(bottom: 160),
+                  padding: const EdgeInsets.only(bottom: 116),
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     mainAxisSize: MainAxisSize.min,
@@ -1062,27 +1065,19 @@ class _TransactionReviewScreenState
                       // Special warning if we are sending max or the fee changed the TX
                       if (transactionModel.mode == SpendMode.sendMax ||
                           showFeeChangeNotice)
-                        ListTile(
-                          subtitle: Padding(
-                              padding: const EdgeInsets.symmetric(
-                                  vertical: 12, horizontal: EnvoySpacing.small),
-                              child: Padding(
-                                padding:
-                                    const EdgeInsets.all(EnvoySpacing.small),
-                                child: Text(
-                                  showFeeChangeNotice
-                                      ? S()
-                                          .coincontrol_tx_detail_feeChange_information
-                                      : S().send_reviewScreen_sendMaxWarning,
-                                  style: Theme.of(context)
-                                      .textTheme
-                                      .bodyMedium
-                                      ?.copyWith(
-                                          fontSize: 13,
-                                          fontWeight: FontWeight.w400),
-                                  textAlign: TextAlign.center,
-                                ),
-                              )),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(
+                              vertical: 12, horizontal: EnvoySpacing.small),
+                          child: Text(
+                            showFeeChangeNotice
+                                ? S()
+                                    .coincontrol_tx_detail_feeChange_information
+                                : S().send_reviewScreen_sendMaxWarning,
+                            style: EnvoyTypography.info.copyWith(
+                              color: NewEnvoyColor.contentTertiary,
+                            ),
+                            textAlign: TextAlign.center,
+                          ),
                         ),
                     ],
                   ),
@@ -1232,6 +1227,8 @@ class _TransactionReviewScreenState
               setFee(fee, context, customFee);
               ref.read(userHasChangedFeesProvider.notifier).state = true;
             },
+            onFeeProbe: (fee) =>
+                ref.read(spendTransactionProvider.notifier).previewFee(fee),
           );
         },
         transitionDuration: const Duration(milliseconds: 100),
@@ -1286,9 +1283,6 @@ void editTransaction(BuildContext context, WidgetRef ref) async {
   ///make a copy of wallet selected coins so that we can backtrack to it
   ref.read(coinSelectionFromWallet.notifier).reset();
   ref.read(coinSelectionFromWallet.notifier).addAll(inputs);
-
-  final scope = ProviderScope.containerOf(context);
-  await ref.read(spendTransactionProvider.notifier).validate(scope);
 }
 
 class DiscardTransactionDialog extends ConsumerStatefulWidget {

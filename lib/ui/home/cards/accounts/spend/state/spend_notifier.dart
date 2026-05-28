@@ -368,13 +368,25 @@ class TransactionModeNotifier extends StateNotifier<TransactionModel> {
         );
         final preparedTransaction = feeCalcResult.draftTransaction;
 
+        // ngwallet's getMaxFee assumes the slow-rate input set, but
+        // composePsbt may pick more / different inputs at higher rates
+        // (especially when the user sends close to the full balance),
+        // making the reported max overoptimistic. Verify by probing.
+        final reportedMax = FeeRate.fromBigInt(feeCalcResult.maxFeeRate.field0)
+            .clamp(FeeRate.fromSatPerKvb(0), FeeRate.fromSatPerVb(5000));
+        final verifiedMax = await _findFeasibleMaxFee(
+          handler: handler,
+          baseParams: params,
+          knownFeasibleSatPerKvb: slowRate.satPerKvb,
+          candidateMaxSatPerKvb: reportedMax.satPerKvb,
+        );
+
         container.read(feeChooserStateProvider.notifier).state =
             FeeChooserState(
           standardFeeRate: FeeRate.fromSatPerVb(Fees().slowRate(network)),
           fasterFeeRate: FeeRate.fromSatPerVb(Fees().fastRate(network)),
           minFeeRate: FeeRate.fromBigInt(feeCalcResult.minFeeRate.field0),
-          maxFeeRate: FeeRate.fromBigInt(feeCalcResult.maxFeeRate.field0)
-              .clamp(FeeRate.fromSatPerVb(2), FeeRate.fromSatPerVb(5000)),
+          maxFeeRate: verifiedMax,
         );
 
         _updateWithPreparedTransaction(preparedTransaction, params);
@@ -399,6 +411,108 @@ class TransactionModeNotifier extends StateNotifier<TransactionModel> {
       debugPrintStack(stackTrace: stack);
     }
     return false;
+  }
+
+  /// Returns the highest fee rate at which a tx can actually be composed for
+  /// [baseParams]. Probes the [candidateMaxSatPerKvb] reported by
+  /// `getMaxFee` first; if that fails, binary-searches down to the highest
+  /// feasible rate within ~1 sat/vB. [knownFeasibleSatPerKvb] is treated as a
+  /// guaranteed lower bound (e.g. the slow rate that already composed).
+  Future<FeeRate> _findFeasibleMaxFee({
+    required EnvoyAccountHandler handler,
+    required TransactionParams baseParams,
+    required int knownFeasibleSatPerKvb,
+    required int candidateMaxSatPerKvb,
+  }) async {
+    if (candidateMaxSatPerKvb <= knownFeasibleSatPerKvb) {
+      return FeeRate.fromSatPerKvb(knownFeasibleSatPerKvb);
+    }
+    // Fast path: most sends succeed at the reported max.
+    if (await _canComposeAt(handler, baseParams, candidateMaxSatPerKvb)) {
+      return FeeRate.fromSatPerKvb(candidateMaxSatPerKvb);
+    }
+    int lo = knownFeasibleSatPerKvb;
+    int hi = candidateMaxSatPerKvb;
+    // Converge to within 1 sat/vB (= 1000 sat/kvB).
+    while (hi - lo > 1000) {
+      final mid = (lo + hi) ~/ 2;
+      if (await _canComposeAt(handler, baseParams, mid)) {
+        lo = mid;
+      } else {
+        hi = mid;
+      }
+    }
+    return FeeRate.fromSatPerKvb(lo);
+  }
+
+  Future<bool> _canComposeAt(
+    EnvoyAccountHandler handler,
+    TransactionParams baseParams,
+    int satPerKvb,
+  ) async {
+    try {
+      final params = TransactionParams(
+        address: baseParams.address,
+        amount: baseParams.amount,
+        feeRate: FeeRateSatPerKvb(field0: BigInt.from(satPerKvb)),
+        selectedOutputs: baseParams.selectedOutputs,
+        note: baseParams.note,
+        tag: baseParams.tag,
+        doNotSpendChange: baseParams.doNotSpendChange,
+      );
+      await handler.composePsbt(transactionParams: params);
+      return true;
+    } catch (_) {
+      return false;
+    }
+  }
+
+  /// Compose a draft transaction at [feeRate] without mutating notifier state.
+  /// Used by the fee chooser to show the real fee and detect unfeasible rates
+  /// while the user is still scrolling.
+  Future<({BitcoinTransaction? transaction, String? error})> previewFee(
+    FeeRate feeRate,
+  ) async {
+    final account = ref.read(selectedAccountProvider);
+    final handler = account?.handler;
+    if (handler == null || account == null) {
+      return (transaction: null, error: null);
+    }
+    final sendTo = ref.read(spendAddressProvider);
+    var amount = ref.read(spendAmountProvider);
+    final spendableBalance = ref.read(totalSpendableAmountProvider);
+    final utxos = ref.read(getSelectedCoinsProvider(account.id)).toList();
+    final notes = ref.read(stagingTxNoteProvider);
+
+    if (sendTo.isEmpty ||
+        amount == 0 ||
+        state.broadcastProgress == BroadcastProgress.inProgress) {
+      return (transaction: null, error: null);
+    }
+
+    // Preserve sendMax semantics from setFee — pin amount to the spendable
+    // balance when the selected coin set hasn't changed — but don't mutate
+    // state.
+    if (state.mode == SpendMode.sendMax &&
+        (state.transactionParams?.selectedOutputs ?? []).length ==
+            utxos.length) {
+      amount = spendableBalance;
+    }
+
+    try {
+      final params = TransactionParams(
+        address: sendTo,
+        amount: BigInt.from(amount),
+        feeRate: FeeRateSatPerKvb(field0: feeRate.asBigInt),
+        selectedOutputs: utxos,
+        note: notes,
+        doNotSpendChange: false,
+      );
+      final draftTx = await handler.composePsbt(transactionParams: params);
+      return (transaction: draftTx.transaction, error: null);
+    } catch (e) {
+      return (transaction: null, error: _composeErrorMessage(e));
+    }
   }
 
   void reset() {
@@ -551,54 +665,56 @@ class TransactionModeNotifier extends StateNotifier<TransactionModel> {
       ..note = draftTransaction.transaction.note ?? ""
       ..canProceed = true;
 
-    ref.read(stagingTxChangeOutPutTagProvider.notifier).state =
-        draftTransaction.changeOutPutTag;
-    ref.read(stagingTxNoteProvider.notifier).state =
-        draftTransaction.transaction.note;
+    // Preserve user-chosen values if the freshly-composed draft doesn't
+    // echo them back — otherwise re-composing a draft (e.g. after coin
+    // control apply) silently clears the user's change-tag and note.
+    final newChangeTag = draftTransaction.changeOutPutTag;
+    if (newChangeTag != null && newChangeTag.isNotEmpty) {
+      ref.read(stagingTxChangeOutPutTagProvider.notifier).state = newChangeTag;
+    }
+    final newNote = draftTransaction.transaction.note;
+    if (newNote != null && newNote.isNotEmpty) {
+      ref.read(stagingTxNoteProvider.notifier).state = newNote;
+    }
   }
 
   void _handleComposeError(Object error) {
-    String errorMessage = "Unable to compose transaction";
     if (error is TxComposeError) {
-      TxComposeError composeTxError = error;
-
       EnvoyReport().log(
         "Spend",
-        "Spend validation failed : ${composeTxError.field0.toString()}",
+        "Spend validation failed : ${error.field0.toString()}",
       );
-
-      composeTxError.when(
-        coinSelectionError: (field0) {
-          // Handle coin selection error
-          errorMessage = S().send_keyboard_amount_insufficient_funds_info;
-        },
-        error: (err) {
-          // Handle generic error
-          if (err.contains("OutputBelowDustLimit")) {
-            errorMessage = S().send_keyboard_amount_too_low_info;
-          } else {
-            errorMessage = S().send_keyboard_amount_insufficient_funds_info;
-          }
-        },
-        insufficientFunds: (field0) {
-          // Handle insufficient funds
-          debugPrint("Insufficient funds: $field0");
-          errorMessage = S().send_keyboard_amount_insufficient_funds_info;
-        },
-        insufficientFees: (field0) {
-          // Handle insufficient fees
-          debugPrint("Insufficient fees: $field0");
-          errorMessage = "Insufficient fees";
-        },
-        insufficientFeeRate: (field0) {
-          // Handle insufficient fee rate
-          debugPrint("Insufficient fee rate: $field0");
-          errorMessage = S().send_keyboard_amount_too_low_info;
-        },
-      );
-    } else {
-      errorMessage = S().send_keyboard_amount_insufficient_funds_info;
     }
-    _setErrorState(errorMessage);
+    _setErrorState(_composeErrorMessage(error));
+  }
+
+  String _composeErrorMessage(Object error) {
+    if (error is! TxComposeError) {
+      return S().send_keyboard_amount_insufficient_funds_info;
+    }
+    String msg = S().send_keyboard_amount_insufficient_funds_info;
+    error.when(
+      coinSelectionError: (_) {
+        msg = S().send_keyboard_amount_insufficient_funds_info;
+      },
+      error: (err) {
+        msg = err.contains("OutputBelowDustLimit")
+            ? S().send_keyboard_amount_too_low_info
+            : S().send_keyboard_amount_insufficient_funds_info;
+      },
+      insufficientFunds: (_) {
+        msg = S().send_keyboard_amount_insufficient_funds_info;
+      },
+      insufficientFees: (_) {
+        msg = "Insufficient fees";
+      },
+      insufficientFeeRate: (_) {
+        msg = S().send_keyboard_amount_too_low_info;
+      },
+      lockedUtxoSelected: (_) {
+        msg = "Selected coin is locked. Unlock it or pick another.";
+      },
+    );
+    return msg;
   }
 }

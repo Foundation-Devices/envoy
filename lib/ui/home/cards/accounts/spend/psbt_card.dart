@@ -3,9 +3,10 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 import 'dart:async';
-import 'dart:convert';
+import 'dart:io';
 
 import 'package:envoy/generated/l10n.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:envoy/ui/animated_qr_image.dart';
 import 'package:envoy/ui/components/envoy_scaffold.dart';
 import 'package:envoy/ui/components/step_indicator.dart';
@@ -19,11 +20,12 @@ import 'package:envoy/ui/theme/envoy_icons.dart';
 import 'package:envoy/ui/theme/envoy_spacing.dart';
 import 'package:envoy/ui/theme/envoy_typography.dart';
 import 'package:envoy/ui/theme/new_envoy_color.dart';
+import 'package:file_saver/file_saver.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:ngwallet/ngwallet.dart';
-import 'package:share_plus/share_plus.dart';
 
 enum _QrDensity { low, medium, high }
 
@@ -157,48 +159,72 @@ class _PsbtCardState extends ConsumerState<PsbtCard> {
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   SizedBox(height: EnvoySpacing.medium1),
-                  Text(
-                    S().send_qr_code_card_heading,
-                    style: EnvoyTypography.heading,
-                    textAlign: TextAlign.center,
+                  Padding(
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: EnvoySpacing.medium1),
+                    child: Text(
+                      S().send_qr_code_card_heading,
+                      style: EnvoyTypography.heading,
+                      textAlign: TextAlign.center,
+                    ),
                   ),
                   SizedBox(height: EnvoySpacing.small),
-                  Text(
-                    S().send_qr_code_card_subheading,
-                    style: EnvoyTypography.body.copyWith(
-                        color: envoy_colors.EnvoyColors.textSecondary),
-                    textAlign: TextAlign.center,
+                  Padding(
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: EnvoySpacing.medium1),
+                    child: Text(
+                      S().send_qr_code_card_subheading,
+                      style: EnvoyTypography.body.copyWith(
+                          color: envoy_colors.EnvoyColors.textSecondary),
+                      textAlign: TextAlign.center,
+                    ),
                   ),
                   SizedBox(height: EnvoySpacing.medium2),
                   Flexible(
                     child: Padding(
                       padding: const EdgeInsets.symmetric(
                           horizontal: EnvoySpacing.medium1),
-                      child: Container(
-                        width: double.infinity,
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          border: Border.all(
-                            width: 1,
-                            color: envoy_colors.EnvoyColors.border2,
+                      child: GestureDetector(
+                        behavior: HitTestBehavior.opaque,
+                        onHorizontalDragEnd: (details) {
+                          final velocity = details.primaryVelocity ?? 0;
+                          if (velocity == 0) return;
+                          final values = _QrDensity.values;
+                          final index = values.indexOf(_qrDensity);
+                          final next = velocity < 0
+                              ? (index + 1).clamp(0, values.length - 1)
+                              : (index - 1).clamp(0, values.length - 1);
+                          if (next != index) {
+                            setState(() => _qrDensity = values[next]);
+                          }
+                        },
+                        child: Container(
+                          width: double.infinity,
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            border: Border.all(
+                              width: 1,
+                              color: envoy_colors.EnvoyColors.border2,
+                            ),
+                            borderRadius: const BorderRadius.all(
+                              Radius.circular(EnvoySpacing.medium1),
+                            ),
                           ),
-                          borderRadius: const BorderRadius.all(
-                            Radius.circular(EnvoySpacing.medium1),
-                          ),
-                        ),
-                        child: AspectRatio(
-                          aspectRatio: 1.0,
-                          child: Align(
-                            alignment: Alignment.topCenter,
-                            child: Padding(
-                              padding:
-                                  const EdgeInsets.all(EnvoySpacing.medium1),
-                              child: AnimatedQrImage(
-                                key: ValueKey(_qrDensity),
-                                widget.transaction.psbt,
-                                urType: "crypto-psbt",
-                                binaryCborTag: true,
-                                maxFragmentLength: _qrDensity.maxFragmentLength,
+                          child: AspectRatio(
+                            aspectRatio: 1.0,
+                            child: Align(
+                              alignment: Alignment.topCenter,
+                              child: Padding(
+                                padding:
+                                    const EdgeInsets.all(EnvoySpacing.medium1),
+                                child: AnimatedQrImage(
+                                  key: ValueKey(_qrDensity),
+                                  widget.transaction.psbt,
+                                  urType: "crypto-psbt",
+                                  binaryCborTag: true,
+                                  maxFragmentLength:
+                                      _qrDensity.maxFragmentLength,
+                                ),
                               ),
                             ),
                           ),
@@ -223,16 +249,31 @@ class _PsbtCardState extends ConsumerState<PsbtCard> {
                   children: [
                     EnvoyButton(
                       S().send_QrScan_saveToFile,
-                      onTap: () {
-                        final box = context.findRenderObject() as RenderBox?;
-                        SharePlus.instance.share(
-                          ShareParams(
-                            text: base64Encode(widget.transaction.psbt),
-                            sharePositionOrigin: box == null
-                                ? null
-                                : box.localToGlobal(Offset.zero) & box.size,
-                          ),
-                        );
+                      onTap: () async {
+                        final txId = widget.transaction.transaction.txId;
+                        final shortId =
+                            txId.length >= 8 ? txId.substring(0, 8) : txId;
+                        final fileName = 'envoy-$shortId.psbt';
+                        if (Platform.isAndroid) {
+                          final tempDir = await getTemporaryDirectory();
+                          final tempFile = File('${tempDir.path}/$fileName');
+                          await tempFile.writeAsBytes(widget.transaction.psbt,
+                              flush: true);
+                          await const MethodChannel('envoy').invokeMethod(
+                            'save_document',
+                            {
+                              'from': tempFile.path,
+                              'mimeType': 'application/octet-stream',
+                            },
+                          );
+                        } else {
+                          await FileSaver.instance.saveAs(
+                            name: 'envoy-$shortId',
+                            bytes: widget.transaction.psbt,
+                            fileExtension: 'psbt',
+                            mimeType: MimeType.other,
+                          );
+                        }
                       },
                       type: EnvoyButtonTypes.tertiary,
                       leading: EnvoyIcon(

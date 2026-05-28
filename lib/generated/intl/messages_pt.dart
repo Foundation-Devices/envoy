@@ -73,8 +73,7 @@ class MessageLookup extends MessageLookupByLibrary {
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
         "_": MessageLookupByLibrary.simpleMessage(
-          "bc1q ar0s rrr7 xfkv y5l6 43ly dnw9 re59 gtzz wf5m dq",
-        ),
+            "https://blockstream.info/api/"),
         "about_appVersion": MessageLookupByLibrary.simpleMessage(
           "Versão da Aplicação",
         ),
@@ -569,6 +568,9 @@ class MessageLookup extends MessageLookupByLibrary {
         ),
         "camera_toast_couldntDecodeUr": MessageLookupByLibrary.simpleMessage(
           "Couldn’t decode UR.",
+        ),
+        "camera_toast_invalidPairPayload": MessageLookupByLibrary.simpleMessage(
+          "Invalid Pair Payload.",
         ),
         "camera_toast_notAValidAddress": MessageLookupByLibrary.simpleMessage(
           "Not a valid address.",
@@ -1543,8 +1545,12 @@ class MessageLookup extends MessageLookupByLibrary {
         ),
         "firmware_connectionModalCancelUpdate_header":
             MessageLookupByLibrary.simpleMessage("Cancel Update?"),
+        "firmware_downloadingUpdate_aboutOneMin":
+            MessageLookupByLibrary.simpleMessage("About 1 minute remains"),
         "firmware_downloadingUpdate_downloaded":
             MessageLookupByLibrary.simpleMessage("Update Downloaded"),
+        "firmware_downloadingUpdate_estimating":
+            MessageLookupByLibrary.simpleMessage("Estimating remaining time…"),
         "firmware_downloadingUpdate_header":
             MessageLookupByLibrary.simpleMessage(
           "Downloading Update",
@@ -2182,6 +2188,9 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage(
           "Couldn’t delete Envoy seed.",
         ),
+        "menu_toast_developerModeEnabled": MessageLookupByLibrary.simpleMessage(
+          "Developer Mode Enabled.",
+        ),
         "menu_toast_envoySeedDeleted": MessageLookupByLibrary.simpleMessage(
           "Envoy seed deleted.",
         ),
@@ -2252,7 +2261,7 @@ class MessageLookup extends MessageLookupByLibrary {
         ),
         "onboarding_bluetoothIntro_content":
             MessageLookupByLibrary.simpleMessage(
-          "Passport Prime uses a new, secure Bluetooth-based protocol for real time communication with Envoy.\n\nQuantumLink creates and end-to-end encrypted tunnel between Passport and Envoy, ensuring a secure connection.",
+          "Passport Prime uses a new, secure Bluetooth-based protocol for real time communication with Envoy.\n\nQuantumLink creates an end-to-end encrypted tunnel between Passport and Envoy, ensuring a secure connection.",
         ),
         "onboarding_bluetoothIntro_header":
             MessageLookupByLibrary.simpleMessage(
@@ -2487,6 +2496,15 @@ class MessageLookup extends MessageLookupByLibrary {
         ),
         "privacy_applicationLock_unlock": MessageLookupByLibrary.simpleMessage(
           "Utilizar biometria ou PIN",
+        ),
+        "privacy_blockExplorer_couldNotReachBlockExplorer":
+            MessageLookupByLibrary.simpleMessage(
+                "Could not reach Block Explorer"),
+        "privacy_blockExplorer_success": MessageLookupByLibrary.simpleMessage(
+          "Successfully connected to Block Explorer",
+        ),
+        "privacy_blockExplorer_urlError": MessageLookupByLibrary.simpleMessage(
+          "URL missing http:// or https:// prefix",
         ),
         "privacy_explorer_configure": MessageLookupByLibrary.simpleMessage(
           "Improve your privacy by connecting to your own block explorer. Tap learn more above.",

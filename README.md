@@ -179,3 +179,71 @@ Make sure the package's Rust crate is listed in the root `Cargo.toml` workspace 
 ### Analyzer errors in generated files
 
 Generated files are excluded from analysis. If you see errors in `src/rust/` or `*.freezed.dart`, they're likely stale. Regenerate with `./scripts/generate_frb.sh` or `just generate`.
+
+## Review guidelines
+
+You are reviewing a PR in Envoy, Foundation Devices' Bitcoin wallet mobile app (Flutter/Dart UI, Rust core via FFI, iOS + Android, companion to the Passport hardware wallet).
+
+### Related repositories
+
+Other Foundation Devices repos Envoy depends on or talks to. Consult them when a diff touches the integration surface; assume the contract on the other side is fixed unless the PR description says otherwise.
+
+- [`foundation-api`](https://github.com/Foundation-Devices/foundation-api) — Rust monorepo for the device-to-device API built on Blockchain Commons' GSTP. Defines Quantum Link (QL) messages, the Beefcake Transfer Protocol (BTP) for MTU-sized chunking, and BLE/SE abstractions. Envoy wraps it as the `foundation_api` FRB package and uses it to talk to Passport over BLE.
+- [`ngwallet`](https://github.com/Foundation-Devices/ngwallet) — Foundation's next-gen Bitcoin wallet core, built on a Foundation-forked BDK. Owns the wallet logic: account/key derivation, PSBT construction and signing, fee handling, RBF, UTXO selection, `sign_message`. Envoy wraps it as the `ngwallet` FRB package; every transaction Envoy builds or signs flows through it.
+- [`envoy-server`](https://github.com/Foundation-Devices/envoy-server) — Private Rust + Axum backend Envoy calls into. Two responsibilities: (1) serve Passport firmware release metadata (verified via GitHub webhook HMAC), and (2) act as the encrypted backup gateway against S3 or local storage.
+- [`backup-server`](https://github.com/Foundation-Devices/backup-server) — Private Rust + Axum service for encrypted backup storage using post-quantum signatures (`libcrux-ml-dsa` / ML-DSA). Sits alongside or augments `envoy-server`'s backup path.
+
+### How to comment
+
+Give every finding a priority — the reviewer triages from it, and any finding promoted to a Linear ticket inherits it:
+
+- **Urgent** — must fix before merge: a correctness, security, or data-loss bug.
+- **High** — should fix before merge: likely to bite, but not catastrophic.
+- **Medium** — worth fixing; can be deferred to a follow-up ticket.
+- **Low** — minor; nice-to-have.
+
+Lead every inline comment with the priority in brackets, then a prefix that signals the action expected:
+
+- *(no prefix)* — change this, or justify why not.
+- `Optional:` — an improvement; can be dismissed without justification.
+- `Note:` — FYI only, no action required.
+
+For example: `[Urgent] <problem>. <fix>.` or `[Low] Optional: <suggestion>.` or `[Medium] Note: <observation>.`
+
+Do not resolve your own comments — leave that to the human reviewer or the PR author.
+
+### What to look for
+
+Urgent:
+
+- Anything that could leak, log, or weaken handling of seeds, xprivs, descriptors, PSBTs, BIP39 words, or session secrets. Includes logging, crash reports, analytics, screenshots, clipboard, deep links, and accidental serialisation.
+- Incorrect Bitcoin maths: fee calculation, sat/byte vs sat/vB, dust thresholds, change derivation, address-type assumptions, signature/PSBT round-trips.
+- FFI boundary bugs across the Dart ↔ Rust seam: lifetime/ownership, nullability, blocking the UI isolate, missing `dispose`, leaks of pointers or `Box`-ed values, panics not converted to errors.
+- Concurrency bugs around BLE (connect/disconnect/reconnect, GATT writes, queue ordering) and around wallet sync.
+- Android permissions regressions, especially BLE on Android 11+ (`BLUETOOTH_CONNECT`/`SCAN`, location prompt skips, foreground service requirements) and iOS Bluetooth state restoration / background modes.
+
+High:
+
+- Missing or incorrect error handling on network, BLE, or FFI calls that could land the user in a stuck UI state.
+- State management mistakes (Riverpod/Provider): rebuild loops, stale references after hot reload, accidental `watch` in `build` that triggers infinite rebuilds.
+- i18n strings hard-coded in English in user-facing widgets that should go through the localisation pipeline (`just copy`).
+- Obvious perf cliffs on lower-end Android (heavy work on the UI isolate, large `setState` blasts, missing `const`).
+
+Medium:
+
+- Latent bugs that only trigger under uncommon conditions, or error paths that leave the user without a way to recover.
+- Missing test coverage on a non-critical path the PR changes.
+- New TODOs or technical debt added without a tracking ticket.
+
+Low:
+
+- Typos in user-facing strings, dartdoc/rustdoc, or code comments.
+
+### Do not comment on
+
+- Formatting / style — `dart format` and the linter cover it.
+- Renames or comment rewording.
+- Speculative refactors ("you could extract this...") unless the code as written is wrong.
+- Things the PR author explicitly called out in the description.
+
+Skip preamble. Skip "great work!". Skip emoji. One short paragraph per finding: state the problem, then the fix. End with a one-sentence verdict, then the findings grouped Urgent, then High, then Medium, then Low. If you find nothing to flag, still post that verdict as a short written comment (for example, "Reviewed the diff — no issues found.") rather than only a reaction or emoji.

@@ -2,6 +2,7 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
+import 'dart:async';
 import 'package:envoy/business/settings.dart';
 import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/components/amount_widget.dart';
@@ -62,11 +63,19 @@ class FeeChooser extends ConsumerStatefulWidget {
   /// Should be false for RBF, where the minimum is always ≥1 sat/vB.
   final bool allowSubOneInCustom;
 
+  /// Optional callback that composes a draft transaction at [fee] without
+  /// committing state, so the chooser can show the real fee and detect
+  /// unfeasible custom rates while the user is still scrolling.
+  final Future<({BitcoinTransaction? transaction, String? error})> Function(
+    FeeRate fee,
+  )? onFeeProbe;
+
   const FeeChooser(
     this.transaction, {
     super.key,
     required this.onFeeSelect,
     this.allowSubOneInCustom = true,
+    this.onFeeProbe,
   });
 
   @override
@@ -88,6 +97,11 @@ class _FeeChooserState extends ConsumerState<FeeChooser>
   bool _showCustom = false;
   EnvoyAccount? account;
 
+  BitcoinTransaction? _previewTx;
+  String? _previewError;
+  bool _previewing = false;
+  FeeRate? _previewedRate;
+
   @override
   void initState() {
     super.initState();
@@ -106,6 +120,51 @@ class _FeeChooserState extends ConsumerState<FeeChooser>
     });
   }
 
+  Future<void> _probeFee(FeeRate fee) async {
+    final probe = widget.onFeeProbe;
+    if (probe == null) return;
+    if (!mounted) return;
+    setState(() {
+      _previewing = true;
+      _previewedRate = fee;
+    });
+    final result = await probe(fee);
+    if (!mounted) return;
+    // Drop stale results — a newer scroll may have superseded this probe.
+    if (_previewedRate != fee) return;
+    setState(() {
+      _previewing = false;
+      _previewTx = result.transaction;
+      _previewError = result.error;
+    });
+  }
+
+  void _clearPreview() {
+    if (_previewTx == null && _previewError == null && !_previewing) return;
+    setState(() {
+      _previewTx = null;
+      _previewError = null;
+      _previewing = false;
+      _previewedRate = null;
+    });
+  }
+
+  /// Sats to show on the custom row's trailing — prefer the real fee from the
+  /// most recent successful preview at the current slider rate; otherwise fall
+  /// back to a linear `rate × vsize` approximation.
+  int _customFeeDisplaySats(FeeRate selectedFee) {
+    if (_previewTx != null && _previewedRate == selectedFee) {
+      return _previewTx!.fee.toInt();
+    }
+    return getApproxFeeInSats(
+      feeRate: selectedFee,
+      txVSizeVb: _safeTxVSizeVb(
+        widget.transaction.fee.toDouble(),
+        FeeRate.fromBigInt(widget.transaction.feeRate.field0).satPerVb,
+      ),
+    );
+  }
+
   void setFees(FeeChooserState feeChooserState) {
     standardFee = feeChooserState.standardFeeRate;
     fasterFee = feeChooserState.fasterFeeRate;
@@ -121,6 +180,9 @@ class _FeeChooserState extends ConsumerState<FeeChooser>
       _selectedOption = option;
       _showCustom = option == FeeOption.custom;
     });
+    if (option != FeeOption.custom) {
+      _clearPreview();
+    }
   }
 
   /// Returns the vsize derived from the current transaction, falling back to
@@ -313,14 +375,9 @@ class _FeeChooserState extends ConsumerState<FeeChooser>
                                     .copyWith(color: EnvoyColors.textTertiary)),
                           ),
                           EnvoyAmount(
-                              amountSats: getApproxFeeInSats(
-                                  feeRate: ref.watch(_selectedFeeStateProvider),
-                                  txVSizeVb: _safeTxVSizeVb(
-                                    widget.transaction.fee.toDouble(),
-                                    FeeRate.fromBigInt(
-                                            widget.transaction.feeRate.field0)
-                                        .satPerVb,
-                                  )),
+                              amountSats: _customFeeDisplaySats(
+                                ref.watch(_selectedFeeStateProvider),
+                              ),
                               amountWidgetStyle: AmountWidgetStyle.normal,
                               account: account!),
                         ],
@@ -346,6 +403,7 @@ class _FeeChooserState extends ConsumerState<FeeChooser>
                         ref.read(_selectedFeeStateProvider.notifier).state =
                             fee;
                       },
+                      onProbe: widget.onFeeProbe != null ? _probeFee : null,
                       allowSubOne: widget.allowSubOneInCustom &&
                           (Settings().usingDefaultElectrumServer ||
                               Settings().subSatFeeEnabled),
@@ -356,6 +414,8 @@ class _FeeChooserState extends ConsumerState<FeeChooser>
           SizedBox(height: EnvoySpacing.medium1),
           EnvoyButton(
             S().component_apply,
+            enabled: !(_selectedOption == FeeOption.custom &&
+                (_previewError != null || _previewing)),
             onTap: () async {
               ref.read(selectedFeeOptionProvider.notifier).state =
                   _selectedOption;
@@ -401,7 +461,7 @@ class _FeeChooserState extends ConsumerState<FeeChooser>
         "totalFeeSuggestion $totalSteps steps "
         "(${feeChooserState.minFeeRate} to ${feeChooserState.maxFeeRate})",
       );
-      if (totalSteps <= 0) {
+      if (totalSteps <= 1) {
         feeList = [feeChooserState.minFeeRate];
       } else {
         feeList = List.generate(
@@ -443,19 +503,23 @@ class _FeeOptionRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-      CheckBoxFilterItem(
-        text: title,
-        checked: selected,
-        subtitle: subtitle,
-        onTap: () {
-          if (onTap != null) {
-            onTap!();
-          }
-        },
-      ),
-      if (trailing != null) trailing!,
-    ]);
+    return GestureDetector(
+      behavior: HitTestBehavior.opaque,
+      onTap: onTap,
+      child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+        CheckBoxFilterItem(
+          text: title,
+          checked: selected,
+          subtitle: subtitle,
+          onTap: () {
+            if (onTap != null) {
+              onTap!();
+            }
+          },
+        ),
+        if (trailing != null) trailing!,
+      ]),
+    );
   }
 }
 
@@ -468,6 +532,10 @@ class FeeSlider extends ConsumerStatefulWidget {
   /// This feature will be implemented in future release
   final bool allowSubOne;
 
+  /// Called (debounced) when the user settles on a new rate so the parent
+  /// can probe the wallet for the actual fee/feasibility at that rate.
+  final Future<void> Function(FeeRate fee)? onProbe;
+
   const FeeSlider({
     super.key,
     this.selectedItem = 1,
@@ -475,6 +543,7 @@ class FeeSlider extends ConsumerStatefulWidget {
     required this.fees,
     required this.transaction,
     required this.allowSubOne,
+    this.onProbe,
   });
 
   @override
@@ -501,6 +570,14 @@ class _FeeSliderState extends ConsumerState<FeeSlider> {
 
   bool _allowSubOne = false;
 
+  // Decimal picker state
+  bool _showDecimalPicker = false;
+  int _decimalBaseValue = 0;
+  double _selectedDecimalValue = 0.0;
+  FeeRate? _injectedDecimalFee;
+
+  Timer? _probeDebounce;
+
   @override
   void initState() {
     super.initState();
@@ -509,6 +586,21 @@ class _FeeSliderState extends ConsumerState<FeeSlider> {
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
       initializeSelectedRate();
+    });
+  }
+
+  @override
+  void dispose() {
+    _probeDebounce?.cancel();
+    super.dispose();
+  }
+
+  void _scheduleProbe(FeeRate fee) {
+    final probe = widget.onProbe;
+    if (probe == null) return;
+    _probeDebounce?.cancel();
+    _probeDebounce = Timer(const Duration(milliseconds: 250), () {
+      probe(fee);
     });
   }
 
@@ -521,6 +613,21 @@ class _FeeSliderState extends ConsumerState<FeeSlider> {
     // Keep only ≥1 sat/vB, sorted descending
     final baseGe1 = base.where((f) => !f.isSubSat).toList();
     result.addAll(baseGe1.reversed);
+
+    // Inject the decimal fee, replacing its base integer (e.g. 4 → 4.7)
+    if (_injectedDecimalFee != null) {
+      final fee = _injectedDecimalFee!;
+      final baseKvb = fee.satPerVb.floor() * 1000;
+      result.removeWhere((f) => f.satPerKvb == baseKvb);
+      if (!result.any((f) => f.satPerKvb == fee.satPerKvb)) {
+        final insertIdx = result.indexWhere((f) => f.satPerKvb < fee.satPerKvb);
+        if (insertIdx == -1) {
+          result.add(fee);
+        } else {
+          result.insert(insertIdx, fee);
+        }
+      }
+    }
 
     if (_allowSubOne) {
       // 0.99 → 0.10 sat/vB in 0.01 steps
@@ -541,6 +648,16 @@ class _FeeSliderState extends ConsumerState<FeeSlider> {
         ref.read(_selectedFeeStateProvider.notifier).state = feeRate;
         _disableHaptic = true;
       });
+
+      final missingFromList =
+          !feeRate.isSubSat && !_effectiveFees.any((f) => f == feeRate);
+      if (missingFromList &&
+          _injectedDecimalFee?.satPerKvb != feeRate.satPerKvb) {
+        setState(() {
+          _injectedDecimalFee = feeRate;
+          _effectiveFees = _buildEffectiveFees();
+        });
+      }
 
       int jumpIndex = _effectiveFees.indexWhere((f) => f == feeRate);
       if (jumpIndex < 0) {
@@ -564,6 +681,14 @@ class _FeeSliderState extends ConsumerState<FeeSlider> {
     return Theme.of(
       context,
     ).textTheme.titleSmall?.copyWith(fontSize: 12, color: EnvoyColors.gray600);
+  }
+
+  TextStyle? get _boundaryTextStyle {
+    return EnvoyTypography.subheading
+        .copyWith(
+          color: NewEnvoyColor.contentSecondary,
+        )
+        .setWeight(FontWeight.w500);
   }
 
   TextStyle? get _selectedTextStyle {
@@ -601,7 +726,7 @@ class _FeeSliderState extends ConsumerState<FeeSlider> {
             height: 68,
             child: Column(
               mainAxisSize: MainAxisSize.min,
-              mainAxisAlignment: MainAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.end,
               children: [
                 AnimatedScale(
                   duration: const Duration(milliseconds: 200),
@@ -667,172 +792,113 @@ class _FeeSliderState extends ConsumerState<FeeSlider> {
               mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                SizedBox(
-                  height: 100,
-                  child: Stack(
-                    children: [
-                      // Slider always full-width so 1 sat/vB stays centred.
-                      Positioned.fill(
-                        child: SizedBox(
-                          width: MediaQuery.of(context).size.width,
-                          child: RotatedBox(
-                            quarterTurns: 1,
-                            child: Stack(
-                              children: <Widget>[
-                                Positioned.fill(
-                                  child: ListWheelScrollView.useDelegate(
-                                    controller: _controller,
-                                    renderChildrenOutsideViewport: false,
-                                    physics: const FixedExtentScrollPhysics(
-                                        parent: ClampingScrollPhysics()),
-                                    diameterRatio: 2.8,
-                                    offAxisFraction: -.3,
-                                    useMagnifier: false,
-                                    perspective: 0.004,
-                                    overAndUnderCenterOpacity: 1,
-                                    itemExtent: 48,
-                                    squeeze: _effectiveFees.length > 1000
-                                        ? 1.0
-                                        : 1.3,
-                                    onSelectedItemChanged: _handleItemChanged,
-                                    childDelegate:
-                                        ListWheelChildBuilderDelegate(
-                                      childCount: _effectiveFees.length,
-                                      builder: (context, index) {
-                                        return _buildIndicatorWidget(
-                                            _effectiveFees[index],
-                                            feePercentage);
-                                      },
-                                    ),
-                                  ),
-                                ),
-                                Center(
-                                  child: RotatedBox(
-                                    quarterTurns: 3,
-                                    child: Container(
-                                        alignment: const Alignment(0.0, 1.3),
-                                        margin: const EdgeInsets.only(top: 4),
-                                        child: Text(
-                                          selectedFee == FeeRate.fromSatPerVb(1)
-                                              ? "sat/vb"
-                                              : "sats/vb",
-                                          style: feePercentage >= 25
-                                              ? _satPerVbWarningStyle
-                                              : _satPerVbStyle,
-                                        )),
-                                  ),
-                                ),
-                                Positioned.fill(
-                                  child: IgnorePointer(
-                                    child: Container(
-                                        width:
-                                            MediaQuery.of(context).size.width,
-                                        decoration: BoxDecoration(
-                                          gradient: RadialGradient(
-                                            transform:
-                                                const GradientRotation(1.6),
-                                            radius: 3,
-                                            focal: Alignment.center,
-                                            colors: [
-                                              gradientOverlayColor
-                                                  .applyOpacity(0.0),
-                                              gradientOverlayColor
-                                                  .applyOpacity(0.0),
-                                              gradientOverlayColor
-                                                  .applyOpacity(0.0),
-                                              gradientOverlayColor
-                                                  .applyOpacity(0.6),
-                                              gradientOverlayColor
-                                                  .applyOpacity(0.7),
-                                              gradientOverlayColor
-                                                  .applyOpacity(0.8),
-                                              gradientOverlayColor
-                                                  .applyOpacity(0.8),
-                                              gradientOverlayColor
-                                                  .applyOpacity(0.9),
-                                              gradientOverlayColor
-                                                  .applyOpacity(0.9),
-                                              gradientOverlayColor
-                                                  .applyOpacity(1),
-                                            ],
-                                          ),
-                                        )),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
-                      ),
-                      // Warning centred in the left half of the screen.
-                      if (!_allowSubOne &&
-                          selectedFee == FeeRate.fromSatPerVb(1))
-                        Positioned(
-                          left: 0,
-                          top: 0,
-                          bottom: 0,
-                          width: MediaQuery.of(context).size.width / 2,
-                          child: Center(
-                            child: Padding(
-                              padding: const EdgeInsets.symmetric(
-                                  horizontal: EnvoySpacing.medium2),
-                              child: Column(
-                                mainAxisSize: MainAxisSize.min,
-                                crossAxisAlignment: CrossAxisAlignment.stretch,
-                                children: [
-                                  Text(
-                                    S().coincontrol_subsat_selectorWarning,
-                                    style: EnvoyTypography.label.copyWith(
-                                      color: EnvoyColors.textTertiary,
-                                    ),
-                                    textAlign: TextAlign.center,
-                                    softWrap: true,
-                                  ),
-                                  GestureDetector(
-                                    onTap: () {
-                                      showEnvoyPopUp(
-                                          context,
-                                          S()
-                                              .send_editTxDetailsSubsatModal_content,
-                                          S()
-                                              .settings_advanced_taproot_modal_cta1,
-                                          (context) {
-                                            Navigator.of(context).pop();
-                                            Settings().subSatFeeEnabled = true;
-                                            Settings().store();
-                                            setState(() {
-                                              _allowSubOne = true;
-                                              _effectiveFees =
-                                                  _buildEffectiveFees();
-                                              final selectedFee = ref.read(
-                                                  _selectedFeeStateProvider);
-                                              final idx =
-                                                  _effectiveFees.indexWhere(
-                                                      (f) => f == selectedFee);
-                                              if (idx != -1) {
-                                                _controller.jumpToItem(idx);
-                                              }
-                                            });
+                GestureDetector(
+                  onLongPressStart: _onLongPressStart,
+                  onLongPressMoveUpdate: _onLongPressMoveUpdate,
+                  onLongPressEnd: (_) => _commitDecimalSelection(),
+                  onLongPressCancel: () {
+                    if (_showDecimalPicker) {
+                      setState(() => _showDecimalPicker = false);
+                    }
+                  },
+                  child: SizedBox(
+                    height: 100,
+                    child: Stack(
+                      children: [
+                        // Slider always full-width so 1 sat/vB stays centred.
+                        Positioned.fill(
+                          child: SizedBox(
+                            width: MediaQuery.of(context).size.width,
+                            child: RotatedBox(
+                              quarterTurns: 1,
+                              child: Stack(
+                                children: <Widget>[
+                                  Positioned.fill(
+                                    child: Visibility(
+                                      visible: !_showDecimalPicker,
+                                      maintainState: true,
+                                      maintainAnimation: true,
+                                      maintainSize: true,
+                                      child: ListWheelScrollView.useDelegate(
+                                        controller: _controller,
+                                        renderChildrenOutsideViewport: false,
+                                        physics: const FixedExtentScrollPhysics(
+                                            parent: ClampingScrollPhysics()),
+                                        diameterRatio: 2.8,
+                                        offAxisFraction: -.3,
+                                        useMagnifier: false,
+                                        perspective: 0.004,
+                                        overAndUnderCenterOpacity: 1,
+                                        itemExtent: 48,
+                                        squeeze: _effectiveFees.length > 1000
+                                            ? 1.0
+                                            : 1.3,
+                                        onSelectedItemChanged:
+                                            _handleItemChanged,
+                                        childDelegate:
+                                            ListWheelChildBuilderDelegate(
+                                          childCount: _effectiveFees.length,
+                                          builder: (context, index) {
+                                            return _buildIndicatorWidget(
+                                                _effectiveFees[index],
+                                                feePercentage);
                                           },
-                                          title: S()
-                                              .send_editTxDetailsSubsatModal_header,
-                                          showCloseButton: false,
-                                          icon: EnvoyIcons.info,
-                                          learnMoreText:
-                                              S().component_learnMore,
-                                          onLearnMore: () {},
-                                          secondaryButtonLabel:
-                                              S().component_back,
-                                          onSecondaryButtonTap: (context) {
-                                            Navigator.of(context).pop();
-                                          });
-                                    },
-                                    child: Text(
-                                      S().component_learnMore,
-                                      textAlign: TextAlign.center,
-                                      style: EnvoyTypography.label.copyWith(
-                                        color: EnvoyColors.accentPrimary,
+                                        ),
                                       ),
+                                    ),
+                                  ),
+                                  Center(
+                                    child: RotatedBox(
+                                      quarterTurns: 3,
+                                      child: Container(
+                                          alignment: const Alignment(0.0, 1.3),
+                                          margin: const EdgeInsets.only(top: 4),
+                                          child: Text(
+                                            selectedFee ==
+                                                    FeeRate.fromSatPerVb(1)
+                                                ? "sat/vb"
+                                                : "sats/vb",
+                                            style: feePercentage >= 25
+                                                ? _satPerVbWarningStyle
+                                                : _satPerVbStyle,
+                                          )),
+                                    ),
+                                  ),
+                                  Positioned.fill(
+                                    child: IgnorePointer(
+                                      child: Container(
+                                          width:
+                                              MediaQuery.of(context).size.width,
+                                          decoration: BoxDecoration(
+                                            gradient: RadialGradient(
+                                              transform:
+                                                  const GradientRotation(1.6),
+                                              radius: 3,
+                                              focal: Alignment.center,
+                                              colors: [
+                                                gradientOverlayColor
+                                                    .applyOpacity(0.0),
+                                                gradientOverlayColor
+                                                    .applyOpacity(0.0),
+                                                gradientOverlayColor
+                                                    .applyOpacity(0.0),
+                                                gradientOverlayColor
+                                                    .applyOpacity(0.6),
+                                                gradientOverlayColor
+                                                    .applyOpacity(0.7),
+                                                gradientOverlayColor
+                                                    .applyOpacity(0.8),
+                                                gradientOverlayColor
+                                                    .applyOpacity(0.8),
+                                                gradientOverlayColor
+                                                    .applyOpacity(0.9),
+                                                gradientOverlayColor
+                                                    .applyOpacity(0.9),
+                                                gradientOverlayColor
+                                                    .applyOpacity(1),
+                                              ],
+                                            ),
+                                          )),
                                     ),
                                   ),
                                 ],
@@ -840,9 +906,90 @@ class _FeeSliderState extends ConsumerState<FeeSlider> {
                             ),
                           ),
                         ),
-                    ],
+                        // Warning centred in the left half of the screen.
+                        if (!_allowSubOne &&
+                            selectedFee == FeeRate.fromSatPerVb(1))
+                          Positioned(
+                            left: 0,
+                            top: 0,
+                            bottom: 0,
+                            width: MediaQuery.of(context).size.width / 2,
+                            child: Center(
+                              child: Padding(
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: EnvoySpacing.medium2),
+                                child: Column(
+                                  mainAxisSize: MainAxisSize.min,
+                                  crossAxisAlignment:
+                                      CrossAxisAlignment.stretch,
+                                  children: [
+                                    Text(
+                                      S().coincontrol_subsat_selectorWarning,
+                                      style: EnvoyTypography.label.copyWith(
+                                        color: EnvoyColors.textTertiary,
+                                      ),
+                                      textAlign: TextAlign.center,
+                                      softWrap: true,
+                                    ),
+                                    GestureDetector(
+                                      onTap: () {
+                                        showEnvoyPopUp(
+                                            context,
+                                            S()
+                                                .send_editTxDetailsSubsatModal_content,
+                                            S()
+                                                .settings_advanced_taproot_modal_cta1,
+                                            (context) {
+                                              Navigator.of(context).pop();
+                                              Settings().subSatFeeEnabled =
+                                                  true;
+                                              Settings().store();
+                                              setState(() {
+                                                _allowSubOne = true;
+                                                _effectiveFees =
+                                                    _buildEffectiveFees();
+                                                final selectedFee = ref.read(
+                                                    _selectedFeeStateProvider);
+                                                final idx = _effectiveFees
+                                                    .indexWhere((f) =>
+                                                        f == selectedFee);
+                                                if (idx != -1) {
+                                                  _controller.jumpToItem(idx);
+                                                }
+                                              });
+                                            },
+                                            title: S()
+                                                .send_editTxDetailsSubsatModal_header,
+                                            showCloseButton: false,
+                                            icon: EnvoyIcons.info,
+                                            learnMoreText:
+                                                S().component_learnMore,
+                                            onLearnMore: () {},
+                                            secondaryButtonLabel:
+                                                S().component_back,
+                                            onSecondaryButtonTap: (context) {
+                                              Navigator.of(context).pop();
+                                            });
+                                      },
+                                      child: Text(
+                                        S().component_learnMore,
+                                        textAlign: TextAlign.center,
+                                        style: EnvoyTypography.label.copyWith(
+                                          color: EnvoyColors.accentPrimary,
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ),
+                        if (_showDecimalPicker)
+                          Container(child: _buildDecimalPicker(feePercentage)),
+                      ],
+                    ),
                   ),
-                ),
+                ), // GestureDetector
                 // const Spacer(),
                 // Padding(
                 //   padding:
@@ -869,6 +1016,154 @@ class _FeeSliderState extends ConsumerState<FeeSlider> {
     );
   }
 
+  void _onLongPressStart(LongPressStartDetails details) {
+    final selectedIndex = _controller.selectedItem;
+    final widgetCenterX = MediaQuery.of(context).size.width / 2;
+    final fingerX = details.localPosition.dx;
+    final itemOffset = ((fingerX - widgetCenterX) / 48).round();
+    final pressedIndex =
+        (selectedIndex + itemOffset).clamp(0, _effectiveFees.length - 1);
+    final pressedFee = _effectiveFees[pressedIndex];
+
+    if (pressedFee.isSubSat) return;
+    // Disallow on the maximum fee rate — the picker's upper boundary would
+    // exceed the allowed maximum.
+    if (pressedFee.satPerKvb >= _effectiveFees.first.satPerKvb) return;
+    final baseValue = pressedFee.satPerVb.floor();
+    if (baseValue < 1) return;
+
+    HapticFeedback.mediumImpact();
+    final width = MediaQuery.of(context).size.width;
+    final dx = details.localPosition.dx.clamp(0.0, width);
+    // 11 steps: 0=base, 1..9=decimals, 10=base+1
+    final step = ((dx / width) * 11).floor().clamp(0, 10);
+    final initialDecimal =
+        double.parse((baseValue + step / 10.0).toStringAsFixed(1));
+
+    setState(() {
+      _showDecimalPicker = true;
+      _decimalBaseValue = baseValue;
+      _selectedDecimalValue = initialDecimal;
+    });
+  }
+
+  void _onLongPressMoveUpdate(LongPressMoveUpdateDetails details) {
+    if (!_showDecimalPicker) return;
+    final width = MediaQuery.of(context).size.width;
+    final dx = details.localPosition.dx.clamp(0.0, width);
+    // 11 steps: 0=base, 1..9=decimals, 10=base+1
+    final step = ((dx / width) * 11).floor().clamp(0, 10);
+    final newValue =
+        double.parse((_decimalBaseValue + step / 10.0).toStringAsFixed(1));
+
+    if ((newValue - _selectedDecimalValue).abs() > 0.001) {
+      HapticFeedback.selectionClick();
+      setState(() {
+        _selectedDecimalValue = newValue;
+      });
+    }
+  }
+
+  void _commitDecimalSelection() {
+    if (!_showDecimalPicker) return;
+    final satKvb = (_selectedDecimalValue * 1000).round();
+    final selectedFee = FeeRate.fromSatPerKvb(satKvb);
+    // Inject if not already in the list: covers decimals (4.7) and
+    // out-of-range integers (e.g. maxFee+1 picked as the upper boundary).
+    final existsInList = _effectiveFees.any((f) => f.satPerKvb == satKvb);
+
+    setState(() {
+      _showDecimalPicker = false;
+      _injectedDecimalFee = existsInList ? null : selectedFee;
+      _effectiveFees = _buildEffectiveFees();
+    });
+
+    final idx = _effectiveFees.indexWhere((f) => f.satPerKvb == satKvb);
+    if (idx >= 0) {
+      _controller.jumpToItem(idx);
+    }
+
+    ref.read(_selectedFeeStateProvider.notifier).state = selectedFee;
+    ref.read(spendFeeRateProvider.notifier).state = selectedFee;
+    widget.onFeeSelect(selectedFee);
+    _scheduleProbe(selectedFee);
+    HapticFeedback.selectionClick();
+  }
+
+  Widget _buildDecimalPicker(int feePercentage) {
+    // 11 items: base integer, 9 decimals (.1–.9), next integer
+    final items = [
+      _decimalBaseValue.toDouble(),
+      ...List.generate(
+          9,
+          (i) => double.parse(
+              (_decimalBaseValue + (i + 1) / 10.0).toStringAsFixed(1))),
+      _decimalBaseValue + 1.0,
+    ];
+
+    return Container(
+      color: Colors.white,
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.end,
+        children: items.map((value) {
+          final isSelected = (_selectedDecimalValue - value).abs() < 0.01;
+          final isInt = (value * 10).round() % 10 == 0;
+          final label = isInt
+              ? value.toInt().toString()
+              : '.${((value * 10).round() % 10)}';
+          return Expanded(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                AnimatedScale(
+                  duration: const Duration(milliseconds: 200),
+                  scale: isInt || isSelected ? 1.2 : 1.0,
+                  child: Text(
+                    label,
+                    textAlign: TextAlign.center,
+                    style: isInt
+                        ? _boundaryTextStyle
+                        : isSelected
+                            ? feePercentage >= 25
+                                ? _warningTextStyle
+                                : _selectedTextStyle
+                            : _unselectedTextStyle,
+                  ),
+                ),
+                AnimatedContainer(
+                  duration: const Duration(milliseconds: 120),
+                  height: isInt
+                      ? 40
+                      : isSelected
+                          ? 34
+                          : 32,
+                  margin: EdgeInsets.only(
+                      top: isInt
+                          ? 12
+                          : isSelected
+                              ? 4
+                              : 0),
+                  width: isSelected ? 3 : 2,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(2),
+                    color: isInt
+                        ? NewEnvoyColor.contentSecondary
+                        : isSelected
+                            ? feePercentage >= 25
+                                ? EnvoyColors.warning
+                                : EnvoyColors.teal500
+                            : EnvoyColors.gray600,
+                  ),
+                ),
+              ],
+            ),
+          );
+        }).toList(),
+      ),
+    );
+  }
+
   void _handleItemChanged(int index) {
     if (index != _lastHapticIndex) {
       _lastHapticIndex = index;
@@ -881,5 +1176,9 @@ class _FeeSliderState extends ConsumerState<FeeSlider> {
     if (_initializationFinished) {
       ref.read(spendFeeRateProvider.notifier).state = fee;
     }
+
+    // Debounced probe — the parent uses this to compose the tx at [fee] and
+    // surface the real fee / unfeasible-rate error in the chooser.
+    _scheduleProbe(fee);
   }
 }

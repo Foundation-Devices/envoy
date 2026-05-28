@@ -48,15 +48,16 @@ class Device {
   @JsonKey(defaultValue: false)
   bool onboardingComplete;
   @Uint8ListConverter()
-  final Uint8List? xid;
+  Uint8List? xid;
 
   //type QuantumLinkIdentity
   @Uint8ListConverter()
-  final Uint8List? senderXid;
+  Uint8List? senderXid;
   final DateTime datePaired;
   String firmwareVersion;
   List<String>? pairedAccountIds;
   bool? primeBackupEnabled;
+  String? primeFiatCurrency;
 
   @JsonKey(toJson: colorToJson, fromJson: colorFromJson)
   final Color color;
@@ -75,6 +76,7 @@ class Device {
     this.senderXid,
     this.pairedAccountIds,
     this.primeBackupEnabled,
+    this.primeFiatCurrency,
     this.onboardingComplete = false,
   });
 
@@ -263,7 +265,10 @@ class Devices extends ChangeNotifier {
     final existingIndex = devices.indexWhere((d) => d.serial == device.serial);
 
     if (existingIndex != -1) {
-      device.pairedAccountIds = devices[existingIndex].pairedAccountIds;
+      final existing = devices[existingIndex];
+      device.pairedAccountIds = existing.pairedAccountIds;
+      device.primeBackupEnabled ??= existing.primeBackupEnabled;
+      device.primeFiatCurrency ??= existing.primeFiatCurrency;
       devices[existingIndex] = device;
     } else {
       devices.add(device);
@@ -303,9 +308,23 @@ class Devices extends ChangeNotifier {
   }
 
   Future renameDevice(Device device, String newName) async {
+    if (device.name == newName) return;
     device.name = newName;
     await storeDevices();
     notifyListeners();
+
+    if (device.type == DeviceType.passportPrime) {
+      try {
+        await device.qlConnection().writeMessage(
+              api.QuantumLinkMessage.deviceNameUpdate(
+                api.DeviceNameUpdate(deviceName: newName),
+              ),
+            );
+      } catch (e, stack) {
+        kPrint("Failed to push device name update to Prime: $e",
+            stackTrace: stack);
+      }
+    }
   }
 
   void markDeviceUpdated(int deviceId, String firmwareVersion) {
@@ -430,6 +449,19 @@ class Devices extends ChangeNotifier {
     }
   }
 
+  Future updatePrimeFiatCurrency(
+      String currencyCode, Device targetDevice) async {
+    for (var device in devices) {
+      if (device.serial == targetDevice.serial &&
+          device.type == DeviceType.passportPrime) {
+        device.primeFiatCurrency = currencyCode;
+        await storeDevices();
+        notifyListeners();
+        return;
+      }
+    }
+  }
+
   bool hasNonPrimeDevices() {
     return devices.any((device) => device.type != DeviceType.passportPrime);
   }
@@ -439,6 +471,18 @@ class Devices extends ChangeNotifier {
       if (device.type == DeviceType.passportPrime &&
           device.serial == targetDevice.serial) {
         device.onboardingComplete = onboarded;
+        await storeDevices();
+        notifyListeners();
+        return;
+      }
+    }
+  }
+
+  Future<void> clearDeviceQLKeys(Device targetDevice) async {
+    for (var device in devices) {
+      if (device.serial == targetDevice.serial) {
+        device.xid = null;
+        device.senderXid = null;
         await storeDevices();
         notifyListeners();
         return;

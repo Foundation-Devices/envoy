@@ -36,6 +36,7 @@ class BluetoothChannel: NSObject, CBCentralManagerDelegate, FlutterStreamHandler
     var scanEventSink: FlutterEventSink? = nil
     var setupResult: FlutterResult? = nil
     let session = ASAccessorySession()
+    private var pickerFilter: (name: String, image: UIImage)?
 
     // Connected QLConnection instances, keyed by UUID string
     private var devices: [String: QLConnection] = [:]
@@ -61,6 +62,10 @@ class BluetoothChannel: NSObject, CBCentralManagerDelegate, FlutterStreamHandler
     private var reconnectionTimer: Timer?
     private var reconnectionAttempts: Int = 0
     private var isShuttingDown = false
+
+    // Reconnect calls received before `centralManager` reaches `.poweredOn`.
+    // Drained from `handleBluetoothPoweredOn`. Only touched on `bleQueue`.
+    private var pendingReconnects: [(FlutterMethodCall, FlutterResult)] = []
 
     private let bleQueue = DispatchQueue(label: "com.envoy.ble", qos: .userInteractive)
 
@@ -128,11 +133,13 @@ class BluetoothChannel: NSObject, CBCentralManagerDelegate, FlutterStreamHandler
         })
 
         setupAccessorySession()
+        setupBluetoothManager()
     }
 
     override init() {
         super.init()
         setupAccessorySession()
+        setupBluetoothManager()
     }
 
     // MARK: - QLConnectionDelegate
@@ -187,6 +194,8 @@ class BluetoothChannel: NSObject, CBCentralManagerDelegate, FlutterStreamHandler
             return
         }
 
+        setupBluetoothManager()
+
         // Create QLConnection so its channels are registered
         guard getOrCreateDevice(deviceId: deviceId) != nil else {
             result(
@@ -204,6 +213,14 @@ class BluetoothChannel: NSObject, CBCentralManagerDelegate, FlutterStreamHandler
 
     /// Reconnect to a previously paired device.
     /// prepareDevice() should be called first to register native channels.
+    ///
+    /// If the central manager isn't `.poweredOn` yet (e.g. right after app
+    /// launch when CoreBluetooth is still transitioning from `.unknown`, or
+    /// after the user toggles Bluetooth while `.resetting`), the call is
+    /// parked in `pendingReconnects` and drained from
+    /// `centralManagerDidUpdateState` when the manager transitions to
+    /// `.poweredOn`. Prime advertises continuously, so the phone side is
+    /// the only thing preventing recovery.
     private func reconnect(call: FlutterMethodCall, result: @escaping FlutterResult) {
         guard let arguments = call.arguments as? [String: Any],
               let deviceId = arguments["deviceId"] as? String,
@@ -212,8 +229,15 @@ class BluetoothChannel: NSObject, CBCentralManagerDelegate, FlutterStreamHandler
             return
         }
 
+        // Make sure a CBCentralManager exists so we'll get the
+        // `.poweredOn` transition that drains the parked calls.
+        setupBluetoothManager()
+
         guard let central = centralManager, central.state == .poweredOn else {
-            result(FlutterError(code: "NO_CENTRAL", message: "Central manager not available or not powered on", details: nil))
+            print("\(Self.TAG) Central not ready for reconnect; parking call until .poweredOn")
+            bleQueue.async { [weak self] in
+                self?.pendingReconnects.append((call, result))
+            }
             return
         }
 
@@ -336,6 +360,8 @@ class BluetoothChannel: NSObject, CBCentralManagerDelegate, FlutterStreamHandler
     }
 
     private func setupBluetoothManager() {
+        guard centralManager == nil else { return }
+
         // Use the shared BLE queue for all BLE operations
         centralManager = CBCentralManager(
             delegate: self,
@@ -351,6 +377,13 @@ class BluetoothChannel: NSObject, CBCentralManagerDelegate, FlutterStreamHandler
     func cleanup() {
         // Set flag first to prevent any further Flutter channel communication
         isShuttingDown = true
+
+        // Fail any parked reconnect calls so Flutter futures don't leak.
+        let parked = pendingReconnects
+        pendingReconnects.removeAll()
+        for (_, result) in parked {
+            result(FlutterError(code: "NO_CENTRAL", message: "Bluetooth channel shutting down", details: nil))
+        }
 
         // Stop any pending reconnection timers
         stopReconnection()
@@ -368,6 +401,7 @@ class BluetoothChannel: NSObject, CBCentralManagerDelegate, FlutterStreamHandler
         eventSink = nil
         scanEventSink = nil
         setupResult = nil
+        clearPickerFilter()
 
         // Clear accessory references
         pairedAccessories.removeAll()
@@ -497,13 +531,28 @@ class BluetoothChannel: NSObject, CBCentralManagerDelegate, FlutterStreamHandler
 
         let arguments = call.arguments as? [String: Any] ?? [:]
         let isMidnight = (arguments["c"] as? Int ?? 1) == 1
+        let qrDeviceName = (arguments["n"] as? String)?
+            .trimmingCharacters(in: .whitespacesAndNewlines)
+        let nameSubstring =
+            qrDeviceName?.localizedCaseInsensitiveContains("Passport Prime") == true
+            ? "Passport Prime"
+            : "Passport"
         let passportDescriptor = ASDiscoveryDescriptor()
         passportDescriptor.bluetoothServiceUUID = primeUUID
-        passportDescriptor.bluetoothNameSubstring = "Passport"
+        passportDescriptor.bluetoothNameSubstring = nameSubstring
 
         //Maybe tweak this if multiple primes present
         passportDescriptor.bluetoothRange = ASDiscoveryDescriptor.Range.default
         let productImage = UIImage(named:isMidnight ?  "prime_dark_midnight_bronze" : "prime_light_arctic_copper") ?? UIImage()
+
+        clearPickerFilter()
+        if #available(iOS 26.1, *), let qrDeviceName, !qrDeviceName.isEmpty {
+            pickerFilter = (qrDeviceName, productImage)
+            let settings = ASPickerDisplaySettings.default
+            settings.options.insert(.filterDiscoveryResults)
+            session.pickerDisplaySettings = settings
+        }
+
         let passportDisplayItem = ASPickerDisplayItem(
             name: "Passport Prime",
             productImage: productImage,
@@ -519,6 +568,7 @@ class BluetoothChannel: NSObject, CBCentralManagerDelegate, FlutterStreamHandler
                 result(nil)
                 setupResult = nil
             }
+            clearPickerFilter()
         }
     }
 
@@ -529,6 +579,14 @@ class BluetoothChannel: NSObject, CBCentralManagerDelegate, FlutterStreamHandler
         for item in session.accessories {
             print("Found accessory: \(item.debugDescription)")
         }
+        if #available(iOS 26.1, *),
+           event.eventType == .accessoryDiscovered,
+           let accessory = event.accessory as? ASDiscoveredAccessory
+        {
+            showDiscoveredAccessoryIfNeeded(accessory)
+            return
+        }
+
         switch event.eventType {
         case .accessoryAdded, .accessoryChanged:
             guard let accessory = event.accessory else { return }
@@ -547,8 +605,38 @@ class BluetoothChannel: NSObject, CBCentralManagerDelegate, FlutterStreamHandler
                 result(nil)
                 setupResult = nil
             }
+            clearPickerFilter()
         default:
             print("Received accessory event type: \(event.eventType)")
+        }
+    }
+
+    private func clearPickerFilter() {
+        pickerFilter = nil
+        if #available(iOS 26.0, *) {
+            session.pickerDisplaySettings = nil
+        }
+    }
+
+    @available(iOS 26.1, *)
+    private func showDiscoveredAccessoryIfNeeded(_ accessory: ASDiscoveredAccessory) {
+        guard let pickerFilter,
+              let localName = accessory.bluetoothAdvertisementData?[CBAdvertisementDataLocalNameKey]
+                as? String,
+              localName.caseInsensitiveCompare(pickerFilter.name) == .orderedSame
+        else {
+            return
+        }
+
+        let item = ASDiscoveredDisplayItem(
+            name: "Passport Prime",
+            productImage: pickerFilter.image,
+            accessory: accessory
+        )
+        session.updatePicker(showing: [item]) { error in
+            if let error {
+                print("Failed to update accessory picker: \(error.localizedDescription)")
+            }
         }
     }
 
@@ -565,10 +653,8 @@ class BluetoothChannel: NSObject, CBCentralManagerDelegate, FlutterStreamHandler
         print("\(Self.TAG)   - Bluetooth ID: \(accessory.bluetoothIdentifier?.uuidString ?? "None")")
         print("\(Self.TAG)   - Has Bluetooth ID: \(hasBluetoothId)")
 
-        // Initialize CoreBluetooth manager if needed
-        if centralManager == nil {
-            setupBluetoothManager()
-        }
+        // No-op if already initialized (setupBluetoothManager guards on centralManager == nil).
+        setupBluetoothManager()
 
         // Create QLConnection for this accessory if it has a Bluetooth ID
         var deviceId: String? = nil
@@ -586,6 +672,7 @@ class BluetoothChannel: NSObject, CBCentralManagerDelegate, FlutterStreamHandler
             result(deviceId)
             setupResult = nil
         }
+        clearPickerFilter()
 
         // If accessory has Bluetooth identifier, try to connect via CoreBluetooth
         if let bluetoothId = accessory.bluetoothIdentifier,
@@ -605,10 +692,8 @@ class BluetoothChannel: NSObject, CBCentralManagerDelegate, FlutterStreamHandler
             return
         }
 
-        // Initialize CoreBluetooth manager if needed
-        if centralManager == nil {
-            setupBluetoothManager()
-        }
+        // No-op if already initialized (setupBluetoothManager guards on centralManager == nil).
+        setupBluetoothManager()
 
         for accessory in accessories {
             guard let bluetoothId = accessory.bluetoothIdentifier else {
@@ -716,6 +801,17 @@ class BluetoothChannel: NSObject, CBCentralManagerDelegate, FlutterStreamHandler
     }
 
     private func handleBluetoothPoweredOn(central: CBCentralManager) {
+        // Drain any reconnect calls that arrived before the central was ready.
+        // Already on `bleQueue` here, so no dispatch is needed.
+        if !pendingReconnects.isEmpty {
+            let parked = pendingReconnects
+            pendingReconnects.removeAll()
+            print("\(Self.TAG) Draining \(parked.count) parked reconnect call(s)")
+            for (call, result) in parked {
+                reconnect(call: call, result: result)
+            }
+        }
+
         // Rebuild pairedAccessories from current session state.
         var sessionPaired: [UUID: ASAccessory] = [:]
         for accessory in session.accessories {

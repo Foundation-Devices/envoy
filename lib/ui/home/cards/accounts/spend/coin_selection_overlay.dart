@@ -945,41 +945,33 @@ class _SpendSelectionCancelWarningState
     bool isDismissed = ref.watch(
       arePromptsDismissedProvider(DismissiblePrompt.txDiscardWarning),
     );
-    return PopScope(
-      canPop: true,
-      onPopInvokedWithResult: (didPop, result) {
-        if (!didPop) {
-          Navigator.of(context).pop(false);
+    return EnvoyPopUp(
+      icon: EnvoyIcons.alert,
+      typeOfMessage: PopUpState.warning,
+      showCloseButton: false,
+      content: S().manual_coin_preselection_dialog_description,
+      primaryButtonLabel: S().component_yes,
+      onPrimaryButtonTap: (context) {
+        hideCoinSnack(ref);
+        Navigator.of(context).pop(true);
+      },
+      tertiaryButtonLabel: S().component_no,
+      onTertiaryButtonTap: (context) {
+        Navigator.of(context).pop(false);
+      },
+      checkBoxText: S().component_dontShowAgain,
+      checkedValue: isDismissed,
+      onCheckBoxChanged: (checkedValue) async {
+        if (checkedValue) {
+          await EnvoyStorage().addPromptState(
+            DismissiblePrompt.txDiscardWarning,
+          );
+        } else {
+          await EnvoyStorage().removePromptState(
+            DismissiblePrompt.txDiscardWarning,
+          );
         }
       },
-      child: EnvoyPopUp(
-        icon: EnvoyIcons.alert,
-        typeOfMessage: PopUpState.warning,
-        showCloseButton: false,
-        content: S().manual_coin_preselection_dialog_description,
-        primaryButtonLabel: S().component_yes,
-        onPrimaryButtonTap: (context) {
-          hideCoinSnack(ref);
-          Navigator.of(context).pop(true);
-        },
-        tertiaryButtonLabel: S().component_no,
-        onTertiaryButtonTap: (context) {
-          Navigator.of(context).pop(false);
-        },
-        checkBoxText: S().component_dontShowAgain,
-        checkedValue: isDismissed,
-        onCheckBoxChanged: (checkedValue) async {
-          if (!checkedValue) {
-            await EnvoyStorage().addPromptState(
-              DismissiblePrompt.txDiscardWarning,
-            );
-          } else {
-            await EnvoyStorage().removePromptState(
-              DismissiblePrompt.txDiscardWarning,
-            );
-          }
-        },
-      ),
     );
   }
 }

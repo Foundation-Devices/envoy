@@ -4,16 +4,21 @@
 
 import 'package:envoy/business/bitcoin_parser.dart';
 import 'package:envoy/business/exchange_rate.dart';
+import 'package:envoy/business/fee_rate.dart';
+import 'package:envoy/business/fees.dart';
 import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/address_entry.dart';
 import 'package:envoy/ui/amount_entry.dart';
 import 'package:envoy/ui/home/cards/accounts/accounts_state.dart';
+import 'package:envoy/ui/home/cards/accounts/spend/fee_slider.dart';
+import 'package:envoy/ui/home/cards/accounts/spend/spend_fee_state.dart';
 import 'package:envoy/ui/home/cards/accounts/spend/state/spend_notifier.dart';
 import 'package:envoy/ui/home/cards/accounts/spend/state/spend_state.dart';
 import 'package:envoy/ui/home/cards/envoy_text_button.dart';
 import 'package:envoy/ui/home/home_state.dart';
 import 'package:envoy/ui/state/send_unit_state.dart';
 import 'package:envoy/ui/theme/envoy_spacing.dart';
+import 'package:envoy/util/amount.dart';
 import 'package:envoy/util/build_context_extension.dart';
 import 'package:envoy/util/console.dart';
 import 'package:flutter/cupertino.dart';
@@ -51,10 +56,21 @@ class _SendCardState extends ConsumerState<SendCard>
       }
 
       if (parsed.amountSats != null) {
-        setAmount(parsed.amountSats!);
+        AmountDisplayUnit? unit = parsed.unit;
+        bool autoSwitched = false;
+        if (unit == AmountDisplayUnit.sat &&
+            satsExceedDisplayLimit(parsed.amountSats!)) {
+          unit = AmountDisplayUnit.btc;
+          autoSwitched = true;
+        }
+        setAmount(
+          parsed.amountSats!,
+          displayFiat: parsed.displayFiat,
+          autoSwitchedToBtc: autoSwitched,
+        );
 
-        if (parsed.unit != null) {
-          ref.read(sendUnitProvider.notifier).state = parsed.unit!;
+        if (unit != null) {
+          ref.read(sendUnitProvider.notifier).state = unit;
         }
       }
     });
@@ -110,8 +126,14 @@ class _SendCardState extends ConsumerState<SendCard>
     });
   }
 
-  void setAmount(int amount) {
+  void setAmount(
+    int amount, {
+    double? displayFiat,
+    bool autoSwitchedToBtc = false,
+  }) {
     ref.read(spendAmountProvider.notifier).state = amount;
+    ref.read(displayFiatSendAmountProvider.notifier).state =
+        displayFiat ?? ExchangeRate().convertSatsToFiat(amount);
     setState(() {
       _amountEntry = AmountEntry(
         onAmountChanged: _updateAmount,
@@ -119,6 +141,7 @@ class _SendCardState extends ConsumerState<SendCard>
         account: account,
         initalSatAmount: amount,
         onPaste: _onPaste,
+        autoSwitchedToBtc: autoSwitchedToBtc,
       );
     });
   }
@@ -278,6 +301,21 @@ class _SendCardState extends ConsumerState<SendCard>
                         if (formValidation) {
                           try {
                             ref.read(spendTransactionProvider.notifier).reset();
+
+                            final network =
+                                ref.read(selectedAccountProvider)?.network;
+                            if (network != null) {
+                              ref.read(spendFeeRateProvider.notifier).state =
+                                  FeeRate.fromSatPerVb(
+                                Fees().slowRate(network),
+                              );
+                            }
+                            ref.read(selectedFeeOptionProvider.notifier).state =
+                                FeeOption.standard;
+                            ref
+                                .read(userHasChangedFeesProvider.notifier)
+                                .state = false;
+
                             bool valid = await ref
                                 .read(spendTransactionProvider.notifier)
                                 .validate(ProviderScope.containerOf(context));

@@ -69,6 +69,7 @@ pub async fn decode_ble_message(_data: Vec<u8>) -> PassportMessage {
         passport_serial: PassportSerial("abc".to_string()),
         passport_color: PassportColor::Dark,
         onboarding_complete: false,
+        device_name: None,
     });
     PassportMessage {
         message: msg,

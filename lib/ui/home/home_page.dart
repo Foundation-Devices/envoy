@@ -3,11 +3,13 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 import 'dart:async';
+import 'dart:io';
 import 'dart:ui';
 
 import 'package:envoy/account/accounts_manager.dart';
 import 'package:envoy/account/envoy_transaction.dart';
 import 'package:envoy/account/sync_manager.dart';
+import 'package:envoy/ui/home/prime_ql_unpair_dialog.dart';
 import 'package:envoy/business/connectivity_manager.dart';
 import 'package:envoy/business/devices.dart';
 import 'package:envoy/business/envoy_seed.dart';
@@ -104,7 +106,7 @@ class HomePage extends ConsumerStatefulWidget {
 }
 
 class HomePageState extends ConsumerState<HomePage>
-    with TickerProviderStateMixin {
+    with TickerProviderStateMixin, WidgetsBindingObserver {
   final Map<String, bool> transactionIdExpandedState = {};
   bool _backgroundShown = false;
   final bool _modalShown = false;
@@ -117,8 +119,6 @@ class HomePageState extends ConsumerState<HomePage>
   final bool _optionsShown = false;
   double _optionsHeight = 0;
   final backButtonDispatcher = RootBackButtonDispatcher();
-
-  final double _bottomTabBarHeight = 70.0;
 
   Function()? _rightAction;
 
@@ -191,6 +191,7 @@ class HomePageState extends ConsumerState<HomePage>
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addObserver(this);
     MigrationManager().resetMigrationPrefs();
     _resetTorWarningTimer();
     _resetServerDownWarningTimer();
@@ -341,9 +342,9 @@ class HomePageState extends ConsumerState<HomePage>
         checkBoxText: S().component_dontShowAgain,
         checkedValue: dismissed,
         onCheckBoxChanged: (checkedValue) {
-          if (!checkedValue) {
+          if (checkedValue) {
             EnvoyStorage().addPromptState(DismissiblePrompt.buyTxWarning);
-          } else if (checkedValue) {
+          } else {
             EnvoyStorage().removePromptState(DismissiblePrompt.buyTxWarning);
           }
         },
@@ -523,7 +524,15 @@ class HomePageState extends ConsumerState<HomePage>
   }
 
   @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.resumed) {
+      ConnectivityManager().resetFailureCounters();
+    }
+  }
+
+  @override
   void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
     SessionManager().remove();
     _torWarningTimer?.cancel();
     _serverDownWarningTimer?.cancel();
@@ -570,6 +579,7 @@ class HomePageState extends ConsumerState<HomePage>
   @override
   Widget build(BuildContext context) {
     _checkUpdatesAndNotify();
+    listenForPrimeUnpair(context, ref);
 
     bool optionsShown = ref.watch(homePageOptionsVisibilityProvider);
 
@@ -595,8 +605,8 @@ class HomePageState extends ConsumerState<HomePage>
     double bottomTabBarShieldOffset =
         hasNavButtons ? 15 : (Platform.isAndroid ? 5 : -10);
     double shieldHeight = screenHeight -
-        _bottomTabBarHeight -
-        bottomOffset -
+        kBottomNavigationBarHeight -
+        _cachedBottomInset -
         shieldTop -
         bottomTabBarShieldOffset;
 

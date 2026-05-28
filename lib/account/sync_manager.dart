@@ -54,6 +54,29 @@ class SyncManager {
 
   Stream<WalletProgress> get currentLoading => _currentLoading.stream;
 
+  // Per-account full-scan tracking. The global `_currentLoading` stream is
+  // shared across all accounts and gets clobbered by unrelated `Syncing`
+  // events from the periodic `_syncAll`, so the UI can't rely on it to know
+  // whether a specific account is being rescanned. This set is set once in
+  // `initiateAccountFullScan` and cleared only when *all* descriptors finish.
+  final Set<String> _fullScanningAccountIds = {};
+  final StreamController<Set<String>> _fullScanningAccountsController =
+      StreamController<Set<String>>.broadcast();
+
+  Stream<Set<String>> get fullScanningAccountsStream =>
+      _fullScanningAccountsController.stream;
+
+  Set<String> get fullScanningAccounts =>
+      Set.unmodifiable(_fullScanningAccountIds);
+
+  bool isAccountFullScanning(String accountId) =>
+      _fullScanningAccountIds.contains(accountId);
+
+  void _emitFullScanningAccounts() {
+    _fullScanningAccountsController
+        .add(Set<String>.from(_fullScanningAccountIds));
+  }
+
   static final SyncManager _instance = SyncManager._internal();
 
   SyncManager._internal();
@@ -166,6 +189,7 @@ class SyncManager {
               null) {
             FullScanRequest request = await account.handler!
                 .requestFullScan(addressType: descriptor.addressType);
+            _fullScanRequests[(account, descriptor.addressType)] = request;
             performFullScan(account.handler!, descriptor.addressType, request);
           }
         }
@@ -211,6 +235,11 @@ class SyncManager {
     );
 
     bool success = true;
+    // Hold the per-account "scanning" flag for the full duration so the UI
+    // doesn't flicker off between descriptors or when the shared progress
+    // stream emits an unrelated `Syncing` event.
+    _fullScanningAccountIds.add(account.id);
+    _emitFullScanningAccounts();
 
     try {
       for (var descriptor in account.descriptors) {
@@ -234,6 +263,8 @@ class SyncManager {
       success = false;
       rethrow;
     } finally {
+      _fullScanningAccountIds.remove(account.id);
+      _emitFullScanningAccounts();
       _onAccFullScanFinished?.call(account, success);
     }
   }
@@ -297,7 +328,6 @@ class SyncManager {
         continue;
       }
 
-      _activeFullScanOperations.add(accountKey);
       Future sync() async {
         try {
           final fullScanRequest = _fullScanRequests[entry.key];
@@ -350,6 +380,7 @@ class SyncManager {
 
     if (fullScanRequest.isDisposed) {
       _currentLoading.sink.add(None());
+      _activeFullScanOperations.remove((account.id, addressType));
       if (_enableLogging) {
         kPrint("FullScanRequest is disposed");
       }
@@ -490,6 +521,7 @@ class SyncManager {
     }
     _syncTimer.cancel();
     _currentLoading.close();
+    _fullScanningAccountsController.close();
   }
 
   /// Dumps the current progress of sync and scan operations to the log

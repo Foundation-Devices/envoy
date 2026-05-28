@@ -363,6 +363,8 @@ Future<void> tryMagicRecover(
   BuildContext context,
 ) async {
   final navigator = Navigator.of(context);
+  navigator.pop();
+
   bool success = await EnvoySeed().processRecoveryData(
     seed,
     data,
@@ -372,6 +374,7 @@ Future<void> tryMagicRecover(
 
   if (success) {
     Settings().setSyncToCloud(true);
+    Settings().updateAccountsViewSettings();
     EnvoySeed().copySeedToNonSecure();
     navigator.push(
       MaterialPageRoute(
@@ -381,9 +384,15 @@ Future<void> tryMagicRecover(
       ),
     );
   } else {
-    if (context.mounted) {
-      recoverManually(seedList, context);
-      Navigator.pop(context);
+    bool createSuccess = await EnvoySeed().create(seedList, requireScan: true);
+    if (createSuccess) {
+      navigator.push(
+        MaterialPageRoute(
+          builder: (context) => const ManualSetupImportBackup(),
+        ),
+      );
+    } else if (context.mounted) {
+      showInvalidSeedDialog(context: context);
     }
   }
 }
@@ -392,17 +401,15 @@ Future<void> recoverManually(
   List<String> seedList,
   BuildContext context,
 ) async {
-  bool success = await EnvoySeed().create(seedList);
+  final navigator = Navigator.of(context);
+  bool success = await EnvoySeed().create(seedList, requireScan: true);
 
-  if (success && context.mounted) {
-    Navigator.push(
-      context,
+  if (success) {
+    navigator.push(
       MaterialPageRoute(builder: (context) => const ManualSetupImportBackup()),
     );
-  } else {
-    if (context.mounted) {
-      showInvalidSeedDialog(context: context);
-    }
+  } else if (context.mounted) {
+    showInvalidSeedDialog(context: context);
   }
 }
 

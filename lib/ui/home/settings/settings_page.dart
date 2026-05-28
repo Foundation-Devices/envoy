@@ -4,7 +4,6 @@
 
 import 'package:envoy/business/settings.dart';
 import 'package:envoy/generated/l10n.dart';
-import 'package:envoy/ui/amount_entry.dart';
 import 'package:envoy/ui/components/pop_up.dart';
 import 'package:envoy/ui/home/settings/dev_options_page.dart';
 import 'package:envoy/ui/home/settings/fiat/settings_fiat_chooser.dart';
@@ -23,7 +22,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:local_auth/local_auth.dart';
 import 'package:ngwallet/ngwallet.dart';
 import 'package:url_launcher/url_launcher_string.dart';
-import 'package:envoy/ui/state/app_unit_state.dart';
 import 'package:envoy/ui/theme/envoy_colors.dart';
 import 'package:envoy/ui/theme/envoy_typography.dart';
 import 'package:envoy/business/region_manager.dart';
@@ -81,12 +79,6 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
                 (enabled) {
                   setState(() {
                     s.setDisplayFiat(enabled ? "USD" : null);
-                    if (!enabled) {
-                      ref.read(appUnitProvider.notifier).state =
-                          s.displayUnitSat()
-                              ? AmountDisplayUnit.sat
-                              : AmountDisplayUnit.btc;
-                    }
                   });
                 },
                 semanticsLabel: 'Show Fiat Toggle',

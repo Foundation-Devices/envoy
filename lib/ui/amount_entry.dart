@@ -42,6 +42,7 @@ class AmountEntry extends ConsumerStatefulWidget {
   final int initalSatAmount;
   final Function(ParseResult)? onPaste;
   final bool trailingZeroes;
+  final bool autoSwitchedToBtc;
 
   const AmountEntry({
     this.account,
@@ -49,6 +50,7 @@ class AmountEntry extends ConsumerStatefulWidget {
     this.initalSatAmount = 0,
     this.onPaste,
     this.trailingZeroes = false,
+    this.autoSwitchedToBtc = false,
     super.key,
   });
 
@@ -59,12 +61,15 @@ class AmountEntry extends ConsumerStatefulWidget {
 class AmountEntryState extends ConsumerState<AmountEntry> {
   String _enteredAmount = "0";
   int _amountSats = 0;
+  bool _autoSwitchedToBtc = false;
+  bool _suppressUnitToggle = false;
   final GlobalKey _fittedBoxKey = GlobalKey();
   double? _fittedBoxHeight;
 
   @override
   void initState() {
     super.initState();
+    _autoSwitchedToBtc = widget.autoSwitchedToBtc;
     var unit = ref.read(sendUnitProvider);
 
     if (widget.initalSatAmount > 0) {
@@ -126,8 +131,14 @@ class AmountEntryState extends ConsumerState<AmountEntry> {
 
       setState(() {
         unit = decodedInfo.unit ?? unit;
-        ref.read(displayFiatSendAmountProvider.notifier).state =
-            decodedInfo.displayFiat;
+        // Only overwrite the displayed fiat amount when the parse actually
+        // produced one (valid amount or address). For invalid pastes
+        // (random text) BitcoinParser returns null and we preserve the
+        // previous value — same as we already do for amountSats / unit.
+        if (decodedInfo.displayFiat != null) {
+          ref.read(displayFiatSendAmountProvider.notifier).state =
+              decodedInfo.displayFiat;
+        }
       });
 
       if (widget.onPaste != null) {
@@ -138,6 +149,7 @@ class AmountEntryState extends ConsumerState<AmountEntry> {
 
   void onNumPadEvents(dynamic event) {
     final s = Settings();
+    bool commaMoved = false;
 
     TransactionModel tx = ref.read(spendTransactionProvider);
     // Lock numpad while loading after tapping confirm
@@ -148,18 +160,43 @@ class AmountEntryState extends ConsumerState<AmountEntry> {
     switch (event) {
       case NumPadEvents.backspace:
         {
-          setState(() {
-            if (_enteredAmount.isNotEmpty) {
-              _enteredAmount = _enteredAmount.substring(
-                0,
-                _enteredAmount.length - 1,
-              );
-            }
+          if (_autoSwitchedToBtc && unit == AmountDisplayUnit.btc) {
+            // In auto-switched BTC mode, backspace removes last sats digit
+            setState(() {
+              _amountSats = _amountSats ~/ 10;
+              if (!satsExceedDisplayLimit(_amountSats) &&
+                  Settings().displayUnitSat()) {
+                // Switch back to sats
+                _autoSwitchedToBtc = false;
+                _suppressUnitToggle = true;
+                unit = AmountDisplayUnit.sat;
+                ref.read(sendUnitProvider.notifier).state =
+                    AmountDisplayUnit.sat;
+                Settings().setSendUnit(AmountDisplayUnit.sat);
+                _enteredAmount = _amountSats == 0
+                    ? "0"
+                    : getDisplayAmount(_amountSats, AmountDisplayUnit.sat);
+              } else {
+                // Stay in BTC but update display
+                _enteredAmount =
+                    getDisplayAmount(_amountSats, AmountDisplayUnit.btc);
+              }
+            });
+          } else {
+            // Normal backspace behavior
+            setState(() {
+              if (_enteredAmount.isNotEmpty) {
+                _enteredAmount = _enteredAmount.substring(
+                  0,
+                  _enteredAmount.length - 1,
+                );
+              }
 
-            if (_enteredAmount.isEmpty) {
-              _enteredAmount = "0";
-            }
-          });
+              if (_enteredAmount.isEmpty) {
+                _enteredAmount = "0";
+              }
+            });
+          }
         }
         break;
       case NumPadEvents.clearAll:
@@ -169,6 +206,14 @@ class AmountEntryState extends ConsumerState<AmountEntry> {
             _amountSats = 0;
             ref.read(displayFiatSendAmountProvider.notifier).state = 0;
           });
+          // Reset auto-switch on clear
+          if (_autoSwitchedToBtc && Settings().displayUnitSat()) {
+            _autoSwitchedToBtc = false;
+            _suppressUnitToggle = true;
+            ref.read(sendUnitProvider.notifier).state = AmountDisplayUnit.sat;
+            Settings().setSendUnit(AmountDisplayUnit.sat);
+          }
+          _autoSwitchedToBtc = false;
           if (widget.onAmountChanged != null) {
             widget.onAmountChanged!(0);
           }
@@ -188,13 +233,32 @@ class AmountEntryState extends ConsumerState<AmountEntry> {
         }
       default:
         {
-          // No more than eight decimal digits for BTC
+          // 9-digit rule: dynamic decimal limit based on integer part size
           if (unit == AmountDisplayUnit.btc &&
-              _enteredAmount.contains(fiatDecimalSeparator) &&
-              ((_enteredAmount.length -
-                      _enteredAmount.indexOf(fiatDecimalSeparator)) >
-                  8)) {
-            break;
+              _enteredAmount.contains(fiatDecimalSeparator)) {
+            int decSepIndex = _enteredAmount.indexOf(fiatDecimalSeparator);
+            String beforeDec = _enteredAmount.substring(0, decSepIndex);
+            String afterDec = _enteredAmount.substring(decSepIndex + 1);
+            int intDigits = beforeDec.replaceAll(RegExp('[^0-9]'), '').length;
+            int maxDecimals = intDigits <= 1 ? 8 : (9 - intDigits).clamp(0, 8);
+            if (afterDec.length >= maxDecimals) {
+              if (_autoSwitchedToBtc) {
+                // "Move the comma": append digit in sats space
+                int digit = int.tryParse(event) ?? 0;
+                setState(() {
+                  _amountSats = _amountSats * 10 + digit;
+                  // Limit to max supply
+                  if (_amountSats >= 2.1e15) {
+                    _amountSats = _amountSats ~/ 10;
+                  }
+                  _enteredAmount =
+                      getDisplayAmount(_amountSats, AmountDisplayUnit.btc);
+                });
+                commaMoved = true;
+                break;
+              }
+              break;
+            }
           }
 
           // No more than two decimal digits for fiat
@@ -224,7 +288,18 @@ class AmountEntryState extends ConsumerState<AmountEntry> {
         }
     }
 
-    _amountSats = getAmountSats();
+    if (!commaMoved) {
+      _amountSats = getAmountSats();
+    }
+
+    // Auto-switch: sats → BTC when reaching 9+ sats digits
+    if (unit == AmountDisplayUnit.sat && satsExceedDisplayLimit(_amountSats)) {
+      _autoSwitchedToBtc = true;
+      _suppressUnitToggle = true;
+      unit = AmountDisplayUnit.btc;
+      ref.read(sendUnitProvider.notifier).state = AmountDisplayUnit.btc;
+      Settings().setSendUnit(AmountDisplayUnit.btc);
+    }
 
     // Make sure we don't do any formatting in certain situations
     bool addZero = (event == "0") &&
@@ -340,6 +415,16 @@ class AmountEntryState extends ConsumerState<AmountEntry> {
               displayFiat: ref.watch(displayFiatSendAmountProvider),
               amountSats: _amountSats,
               onUnitToggled: (enteredAmount) {
+                // Don't override when unit was changed programmatically
+                if (_suppressUnitToggle) {
+                  _suppressUnitToggle = false;
+                  return;
+                }
+                // Don't override cleared amount with stale widget value
+                if (_amountSats == 0) {
+                  _enteredAmount = "0";
+                  return;
+                }
                 // SFT-2508: special rule for circling through is to pad fiat with last 0
                 final unit = ref.watch(sendUnitProvider);
                 if (unit == AmountDisplayUnit.fiat) {

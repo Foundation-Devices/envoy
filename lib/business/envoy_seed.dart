@@ -336,10 +336,10 @@ class EnvoySeed {
 
     //add accounts
     backupData = await processBackupData(backupData, cloud);
-    return Backup.performBackup(
+    return Backup.performBackupV2(
       payload: backupData,
       seedWords: seed,
-      serverUrl: Settings().envoyServerAddress,
+      v2ServerUrl: Settings().backupServerV2Address,
       proxyPort: Tor.instance.port,
       localBackup: encryptedBackupFilePath,
       performCloud: cloud,
@@ -466,12 +466,20 @@ class EnvoySeed {
           await Tor.instance.isReady();
         }
 
-        isDeleted = await Backup.delete(
+        isDeleted = await Backup.deleteV2(
               seedWords: seed!,
-              serverUrl: Settings().envoyServerAddress,
+              v2ServerUrl: Settings().backupServerV2Address,
               proxyPort: Tor.instance.port,
             ) ==
             202;
+        // Best-effort v1 cleanup
+        try {
+          await Backup.delete(
+            seedWords: seed,
+            serverUrl: Settings().envoyServerAddress,
+            proxyPort: Tor.instance.port,
+          );
+        } catch (_) {}
       } on Exception {
         return false;
       }
@@ -511,12 +519,23 @@ class EnvoySeed {
     if (Settings().torEnabled()) {
       await Tor.instance.isReady();
     }
-    return await Backup.delete(
-          seedWords: seed,
-          serverUrl: Settings().envoyServerAddress,
-          proxyPort: Tor.instance.port,
-        ) ==
-        202;
+    // Delete from v2 server
+    final v2Status = await Backup.deleteV2(
+      seedWords: seed,
+      v2ServerUrl: Settings().backupServerV2Address,
+      proxyPort: Tor.instance.port,
+    );
+    // Best-effort cleanup from v1 server
+    try {
+      await Backup.delete(
+        seedWords: seed,
+        serverUrl: Settings().envoyServerAddress,
+        proxyPort: Tor.instance.port,
+      );
+    } catch (_) {
+      // v1 cleanup is best-effort
+    }
+    return v2Status == 202;
   }
 
   Future<bool> restoreData({
@@ -540,11 +559,29 @@ class EnvoySeed {
         if (Settings().usingTor) {
           await Tor.instance.isReady();
         }
-        final backupPayload = await Backup.getBackup(
-          seedWords: seed,
-          serverUrl: Settings().envoyServerAddress,
-          proxyPort: Tor.instance.port,
-        );
+        List<(String, String)> backupPayload;
+        try {
+          backupPayload = await Backup.getBackupV2(
+            seedWords: seed,
+            v2ServerUrl: Settings().backupServerV2Address,
+            proxyPort: Tor.instance.port,
+          );
+        } on GetBackupException catch (e) {
+          // Unauthorized means the v2 server has a backup blob but no sibling
+          // pubkey and the client-supplied pubkey didn't match (or healing was
+          // refused). Treat it like backupNotFound and fall back to v1 — that
+          // way we still try the legacy server for the data.
+          if (e == GetBackupException.backupNotFound ||
+              e == GetBackupException.unauthorized) {
+            backupPayload = await Backup.getBackup(
+              seedWords: seed,
+              serverUrl: Settings().envoyServerAddress,
+              proxyPort: Tor.instance.port,
+            );
+          } else {
+            rethrow;
+          }
+        }
         final status = await processRecoveryData(
           seed,
           extractDataFromPayload(backupPayload),

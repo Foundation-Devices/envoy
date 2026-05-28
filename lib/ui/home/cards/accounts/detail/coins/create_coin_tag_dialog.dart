@@ -101,6 +101,12 @@ class _CreateCoinTagState extends ConsumerState<CreateCoinTag> {
         List<String> suggestions =
             tags.isEmpty ? tagSuggestions : tags.map((e) => e.name).toList();
         suggestions = suggestions.toSet().toList();
+        if (tags.isNotEmpty) {
+          final untaggedLabel = S().account_details_untagged_card;
+          if (!suggestions.contains(untaggedLabel)) {
+            suggestions.insert(0, untaggedLabel);
+          }
+        }
         List<String> firstRowContent = [];
         List<String> secondRowContent = [];
 
@@ -255,6 +261,8 @@ class _CreateCoinTagState extends ConsumerState<CreateCoinTag> {
   Future tagSelected(BuildContext context, WidgetRef ref) async {
     if (!context.mounted) return;
 
+    bool isUntagged = false;
+    bool isLastUntaggedCoins = false;
     try {
       final selectedAccount = ref.read(selectedAccountProvider);
       if (selectedAccount == null) {
@@ -266,11 +274,23 @@ class _CreateCoinTagState extends ConsumerState<CreateCoinTag> {
       if (tag.toLowerCase().trim().isEmpty) {
         return;
       }
-      if (tag.toLowerCase().trim() ==
-              S().account_details_untagged_card.toLowerCase().trim() ||
-          tag.toLowerCase().trim() == "untagged") {
+      if (isUntaggedName(tag)) {
         tag = "";
+        isUntagged = true;
       }
+
+      // Check if these coins are the last untagged coins before tagging them
+      if (!isUntagged) {
+        final allTags = ref.read(tagsProvider(widget.accountId));
+        final untaggedList = allTags.where((t) => t.untagged).toList();
+        if (untaggedList.isNotEmpty) {
+          final untaggedIds =
+              untaggedList.first.utxo.map((u) => u.getId()).toSet();
+          final coinIds = widget.coins.map((c) => c.getId()).toSet();
+          isLastUntaggedCoins = untaggedIds.every((id) => coinIds.contains(id));
+        }
+      }
+
       setState(() {
         _isLoading = true;
       });
@@ -283,6 +303,11 @@ class _CreateCoinTagState extends ConsumerState<CreateCoinTag> {
       });
       if (context.mounted) {
         Navigator.of(context).pop();
+        if ((isUntagged || isLastUntaggedCoins) &&
+            context.mounted &&
+            Navigator.of(context).canPop()) {
+          Navigator.of(context).pop();
+        }
       }
     }
   }

@@ -72,9 +72,12 @@ class _SpendTxDetailsState extends ConsumerState<StagingTxDetails>
   }
 
   bool loading = false;
+  bool _choosingCoins = false;
 
   @override
   Widget build(BuildContext context) {
+    if (_choosingCoins) return const SizedBox.shrink();
+
     EnvoyAccount? account = ref.watch(selectedAccountProvider);
     if (account == null) {
       return Container();
@@ -119,6 +122,35 @@ class _SpendTxDetailsState extends ConsumerState<StagingTxDetails>
     AmountDisplayUnit formatUnit =
         unit == DisplayUnit.btc ? AmountDisplayUnit.btc : AmountDisplayUnit.sat;
 
+    editCoinSelection() async {
+      if (!widget.canEdit) return;
+      setState(() => _choosingCoins = true);
+      editTransaction(context, ref);
+      final applied = await Navigator.of(context, rootNavigator: true)
+          .push<bool>(PageRouteBuilder(
+              pageBuilder: (context, animation, secondaryAnimation) {
+                return ChooseCoinsWidget();
+              },
+              transitionDuration: const Duration(milliseconds: 100),
+              transitionsBuilder:
+                  (context, animation, secondaryAnimation, child) {
+                return FadeTransition(
+                  opacity: animation,
+                  child: child,
+                );
+              },
+              opaque: false,
+              fullscreenDialog: true));
+      ref.read(spendEditModeProvider.notifier).state =
+          SpendOverlayContext.hidden;
+      if (!context.mounted) return;
+      if (applied == true) {
+        Navigator.of(context).pop();
+      } else {
+        setState(() => _choosingCoins = false);
+      }
+    }
+
     if (sendScreenUnit == AmountDisplayUnit.fiat) {
       unit = Settings().displayUnit;
     }
@@ -126,77 +158,62 @@ class _SpendTxDetailsState extends ConsumerState<StagingTxDetails>
         child: Column(
       mainAxisSize: MainAxisSize.min,
       children: [
-        EnvoyInfoCardListItem(
-          spacingPriority: FlexPriority.trailing,
-          title:
-              "${S().coincontrol_tx_detail_expand_spentFrom} ${inputs.toSet().length} ${inputs.toSet().length == 1 ? S().coincontrol_tx_detail_expand_coin : S().coincontrol_tx_detail_expand_coins}",
-          icon: const EnvoyIcon(EnvoyIcons.utxo,
-              color: EnvoyColors.textPrimary, size: EnvoyIconSize.small),
-          trailing: Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              EnvoyAmount(
-                  unit: formatUnit,
-                  account: account,
-                  amountSats: totalInputAmount,
-                  displayFiatAmount: displayFiatTotalInputAmount,
-                  millionaireMode: false,
-                  amountWidgetStyle: AmountWidgetStyle.normal),
-              if (widget.canEdit)
-                GestureDetector(
-                    onTap: () async {
-                      Navigator.of(context).pop();
-
-                      editTransaction(context, ref);
-                      Navigator.of(context, rootNavigator: true).push(
-                          PageRouteBuilder(
-                              pageBuilder:
-                                  (context, animation, secondaryAnimation) {
-                                return ChooseCoinsWidget();
-                              },
-                              transitionDuration:
-                                  const Duration(milliseconds: 100),
-                              transitionsBuilder: (context, animation,
-                                  secondaryAnimation, child) {
-                                return FadeTransition(
-                                  opacity: animation,
-                                  child: child,
-                                );
-                              },
-                              opaque: false,
-                              fullscreenDialog: true));
-                    },
-                    child: EnvoyIcon(
-                      EnvoyIcons.chevron_right,
-                      size: EnvoyIconSize.extraSmall,
-                    )),
-            ],
-          ),
-        ),
-        Padding(
-          padding: const EdgeInsets.only(left: 12, top: EnvoySpacing.small),
-          child: Align(
-            alignment: Alignment.topLeft,
-            child: Row(
+        GestureDetector(
+          behavior: HitTestBehavior.opaque,
+          onTap: editCoinSelection,
+          child: EnvoyInfoCardListItem(
+            spacingPriority: FlexPriority.trailing,
+            title:
+                "${S().coincontrol_tx_detail_expand_spentFrom} ${inputs.toSet().length} ${inputs.toSet().length == 1 ? S().coincontrol_tx_detail_expand_coin : S().coincontrol_tx_detail_expand_coins}",
+            icon: const EnvoyIcon(EnvoyIcons.utxo,
+                color: EnvoyColors.textPrimary, size: EnvoyIconSize.small),
+            trailing: Row(
               mainAxisSize: MainAxisSize.min,
               children: [
-                const EnvoyIcon(EnvoyIcons.tag,
-                    color: EnvoyColors.textPrimary,
-                    size: EnvoyIconSize.extraSmall),
-                const Padding(padding: EdgeInsets.only(left: EnvoySpacing.xs)),
-                Wrap(
-                  spacing: EnvoySpacing.xs,
-                  runSpacing: EnvoySpacing.small,
-                  children: inputTags
-                      .map((e) => e ?? "")
-                      .map((e) =>
-                          (e.isEmpty) ? S().account_details_untagged_card : e)
-                      .toSet()
-                      .map((e) {
-                    return coinTagPill(e);
-                  }).toList(),
-                ),
+                EnvoyAmount(
+                    unit: formatUnit,
+                    account: account,
+                    amountSats: totalInputAmount,
+                    displayFiatAmount: displayFiatTotalInputAmount,
+                    millionaireMode: false,
+                    amountWidgetStyle: AmountWidgetStyle.normal),
+                if (widget.canEdit)
+                  EnvoyIcon(
+                    EnvoyIcons.chevron_right,
+                    size: EnvoyIconSize.extraSmall,
+                  ),
               ],
+            ),
+          ),
+        ),
+        GestureDetector(
+          onTap: editCoinSelection,
+          child: Padding(
+            padding: const EdgeInsets.only(left: 12, top: EnvoySpacing.small),
+            child: Align(
+              alignment: Alignment.topLeft,
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  const EnvoyIcon(EnvoyIcons.tag,
+                      color: EnvoyColors.textPrimary,
+                      size: EnvoyIconSize.extraSmall),
+                  const Padding(
+                      padding: EdgeInsets.only(left: EnvoySpacing.xs)),
+                  Wrap(
+                    spacing: EnvoySpacing.xs,
+                    runSpacing: EnvoySpacing.small,
+                    children: inputTags
+                        .map((e) => e ?? "")
+                        .map((e) =>
+                            (e.isEmpty) ? S().account_details_untagged_card : e)
+                        .toSet()
+                        .map((e) {
+                      return coinTagPill(e);
+                    }).toList(),
+                  ),
+                ],
+              ),
             ),
           ),
         ),
@@ -258,58 +275,62 @@ class _SpendTxDetailsState extends ConsumerState<StagingTxDetails>
             ),
           ),
         if (totalChangeAmount != 0 && inputTags.length >= 2)
-          Padding(
-            padding: const EdgeInsets.only(top: EnvoySpacing.small),
-            child: Container(
-              height: 24,
-              margin: const EdgeInsets.only(left: 12),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      const EnvoyIcon(EnvoyIcons.tag,
-                          color: EnvoyColors.textPrimary,
-                          size: EnvoyIconSize.extraSmall),
-                      const Padding(
-                          padding: EdgeInsets.only(left: EnvoySpacing.xs)),
-                      if (totalChangeAmount != 0 && changeOutputTag.isNotEmpty)
-                        coinTagPill(changeOutputTag),
-                      if (changeOutputTag.isEmpty)
-                        Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            const Padding(
-                                padding:
-                                    EdgeInsets.only(left: EnvoySpacing.xs)),
-                            Text(S().send_editTxDetails_applyChangeTag,
-                                style: EnvoyTypography.body
-                                    .copyWith(color: EnvoyColors.textPrimary))
-                          ],
-                        )
-                    ],
-                  ),
-                  if (widget.canEdit)
-                    GestureDetector(
-                      onTap: () {
-                        showEnvoyDialog(
-                            context: context,
-                            builder: Builder(
-                              builder: (_) => ChooseTagForStagingTx(
-                                accountId: account.id,
-                                onEditTransaction: () =>
-                                    _onEditTransaction(context),
-                                onTagUpdate: () {
-                                  widget.onTagUpdate?.call();
-                                  Navigator.pop(context);
-                                },
-                              ),
-                            ),
-                            alignment: const Alignment(0.0, -.6));
-                      },
-                      child: Padding(
-                        padding: const EdgeInsets.only(right: EnvoySpacing.xs),
+          GestureDetector(
+            behavior: HitTestBehavior.opaque,
+            onTap: () {
+              if (widget.canEdit) {
+                showEnvoyDialog(
+                    context: context,
+                    builder: Builder(
+                      builder: (_) => ChooseTagForStagingTx(
+                        accountId: account.id,
+                        onEditTransaction: () => _onEditTransaction(context),
+                        onTagUpdate: () {
+                          widget.onTagUpdate?.call();
+                          Navigator.pop(context);
+                        },
+                      ),
+                    ),
+                    alignment: const Alignment(0.0, -.6));
+              }
+            },
+            child: Padding(
+              padding: const EdgeInsets.only(top: EnvoySpacing.small),
+              child: Container(
+                height: 24,
+                margin: const EdgeInsets.only(left: 12),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        const EnvoyIcon(EnvoyIcons.tag,
+                            color: EnvoyColors.textPrimary,
+                            size: EnvoyIconSize.extraSmall),
+                        const Padding(
+                            padding: EdgeInsets.only(left: EnvoySpacing.xs)),
+                        if (totalChangeAmount != 0 &&
+                            changeOutputTag.isNotEmpty)
+                          coinTagPill(changeOutputTag),
+                        if (changeOutputTag.isEmpty)
+                          Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              const Padding(
+                                  padding:
+                                      EdgeInsets.only(left: EnvoySpacing.xs)),
+                              Text(S().send_editTxDetails_applyChangeTag,
+                                  style: EnvoyTypography.body
+                                      .copyWith(color: EnvoyColors.textPrimary))
+                            ],
+                          )
+                      ],
+                    ),
+                    if (widget.canEdit)
+                      Padding(
+                        padding: const EdgeInsets.only(
+                            right: EnvoySpacing.xs, left: EnvoySpacing.medium1),
                         child: changeOutputTag.isNotEmpty
                             ? EnvoyIcon(
                                 EnvoyIcons.edit,
@@ -322,8 +343,8 @@ class _SpendTxDetailsState extends ConsumerState<StagingTxDetails>
                                 size: EnvoySpacing.medium2,
                               ),
                       ),
-                    ),
-                ],
+                  ],
+                ),
               ),
             ),
           ),

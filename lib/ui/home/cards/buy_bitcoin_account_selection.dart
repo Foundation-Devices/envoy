@@ -263,11 +263,11 @@ class _SelectAccountState extends ConsumerState<SelectAccount> {
                             checkBoxText: S().component_dontShowAgain,
                             checkedValue: dismissed,
                             onCheckBoxChanged: (checkedValue) {
-                              if (!checkedValue) {
+                              if (checkedValue) {
                                 EnvoyStorage().addPromptState(
                                   DismissiblePrompt.leavingEnvoy,
                                 );
-                              } else if (checkedValue) {
+                              } else {
                                 EnvoyStorage().removePromptState(
                                   DismissiblePrompt.leavingEnvoy,
                                 );

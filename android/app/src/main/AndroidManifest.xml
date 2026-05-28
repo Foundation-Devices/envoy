@@ -1,5 +1,9 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
+    <permission
+        android:name="com.foundationdevices.envoy.READ_SHARD_DATA"
+        android:protectionLevel="signature" />
+
     <uses-permission android:name="android.permission.INTERNET"/>
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" android:maxSdkVersion="29" />
     <uses-permission android:name="android.permission.USE_BIOMETRIC"/>
@@ -21,6 +25,15 @@
 
     <uses-feature android:name="android.hardware.bluetooth_le"
         android:required="true" />
+
+    <!-- Tor-capable browsers we probe for, so we can launch personal block
+         explorer URLs through them when Tor is enabled or the URL is .onion.
+         Android 11+ requires explicit <queries> for getPackageInfo to see
+         other apps. -->
+    <queries>
+        <package android:name="org.torproject.torbrowser" />
+        <package android:name="org.torproject.torbrowser_alpha" />
+    </queries>
 
 
     <application
@@ -89,6 +102,12 @@
             </intent-filter>
             <!-- Deep linking -->
         </activity>
+        <provider
+            android:name=".EnvoyDataProvider"
+            android:authorities="com.foundationdevices.envoy.provider"
+            android:exported="true"
+            android:readPermission="com.foundationdevices.envoy.READ_SHARD_DATA" />
+
         <!-- Don't delete the meta-data below.
              This is used by the Flutter tool to generate GeneratedPluginRegistrant.java -->
         <meta-data

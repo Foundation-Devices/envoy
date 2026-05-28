@@ -100,90 +100,88 @@ class _FwAndroidProgressPageState extends ConsumerState<FwAndroidProgressPage> {
                 key: const Key("fw_progress"),
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Column(
-                    children: [
-                      const SdCardSpinner(),
-                      Transform.translate(
-                        offset: const Offset(0, -EnvoySpacing.medium2),
-                        child: ExpandablePageView(
-                          physics: const NeverScrollableScrollPhysics(),
-                          controller: _instructionPageController,
-                          children: [
-                            SingleChildScrollView(
-                              child: Column(
-                                children: [
-                                  Text(
-                                    S().envoy_fw_progress_heading,
-                                    style: EnvoyTypography.heading,
-                                    textAlign: TextAlign.center,
-                                  ),
-                                  const SizedBox(height: EnvoySpacing.medium3),
-                                  Text(
-                                    S().envoy_fw_progress_subheading,
-                                    style: EnvoyTypography.body.copyWith(
-                                      color: EnvoyColors.textSecondary,
-                                    ),
-                                    textAlign: TextAlign.center,
-                                  ),
-                                ],
-                              ),
-                            ),
-                            SingleChildScrollView(
-                              child: Column(
-                                children: [
-                                  Text(
-                                    S().envoy_fw_success_heading,
-                                    style: EnvoyTypography.heading,
-                                    textAlign: TextAlign.center,
-                                  ),
-                                  const SizedBox(height: EnvoySpacing.medium3),
-                                  Text(
-                                    S().envoy_fw_success_subheading,
-                                    style: EnvoyTypography.body.copyWith(
-                                      color: EnvoyColors.textSecondary,
-                                    ),
-                                    textAlign: TextAlign.center,
-                                  ),
-                                ],
-                              ),
-                            ),
-                            Column(
-                              mainAxisSize: MainAxisSize.min,
+                  Expanded(
+                    child: SingleChildScrollView(
+                      child: Column(
+                        children: [
+                          const SdCardSpinner(),
+                          Transform.translate(
+                            offset: const Offset(0, -EnvoySpacing.medium2),
+                            child: ExpandablePageView(
+                              physics: const NeverScrollableScrollPhysics(),
+                              controller: _instructionPageController,
                               children: [
-                                Flexible(
-                                  child: SingleChildScrollView(
-                                    child: Column(
-                                      children: [
-                                        Text(
-                                          S().envoy_fw_fail_heading,
-                                          style: EnvoyTypography.heading,
-                                          textAlign: TextAlign.center,
-                                        ),
-                                        const SizedBox(
-                                          height: EnvoySpacing.medium3,
-                                        ),
-                                        LinkText(
-                                          text: S().envoy_fw_fail_subheading,
-                                          linkStyle:
-                                              EnvoyTypography.button.copyWith(
-                                            color: EnvoyColors.accentPrimary,
-                                          ),
-                                          onTap: () {
-                                            launchUrlString(
-                                              "https://github.com/Foundation-Devices/passport2/releases/tag/${fwInfo.value!.storedVersion}",
-                                            );
-                                          },
-                                        ),
-                                      ],
+                                Column(
+                                  children: [
+                                    Text(
+                                      S().envoy_fw_progress_heading,
+                                      style: EnvoyTypography.heading,
+                                      textAlign: TextAlign.center,
                                     ),
-                                  ),
+                                    const SizedBox(
+                                        height: EnvoySpacing.medium3),
+                                    Text(
+                                      S().envoy_fw_progress_subheading,
+                                      style: EnvoyTypography.body.copyWith(
+                                        color: EnvoyColors.textSecondary,
+                                      ),
+                                      textAlign: TextAlign.center,
+                                    ),
+                                  ],
+                                ),
+                                Column(
+                                  children: [
+                                    Semantics(
+                                      container: true,
+                                      identifier: 'fw_success_heading',
+                                      child: Text(
+                                        S().envoy_fw_success_heading,
+                                        style: EnvoyTypography.heading,
+                                        textAlign: TextAlign.center,
+                                      ),
+                                    ),
+                                    const SizedBox(
+                                        height: EnvoySpacing.medium3),
+                                    Text(
+                                      S().envoy_fw_success_subheading,
+                                      style: EnvoyTypography.body.copyWith(
+                                        color: EnvoyColors.textSecondary,
+                                      ),
+                                      textAlign: TextAlign.center,
+                                    ),
+                                  ],
+                                ),
+                                Column(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    Text(
+                                      S().envoy_fw_fail_heading,
+                                      style: EnvoyTypography.heading,
+                                      textAlign: TextAlign.center,
+                                    ),
+                                    const SizedBox(
+                                      height: EnvoySpacing.medium3,
+                                    ),
+                                    LinkText(
+                                      text: S().envoy_fw_fail_subheading,
+                                      linkStyle:
+                                          EnvoyTypography.button.copyWith(
+                                        color: EnvoyColors.accentPrimary,
+                                      ),
+                                      onTap: () {
+                                        launchUrlString(
+                                          "https://github.com/Foundation-Devices/passport2/releases/tag/${fwInfo.value!.storedVersion}",
+                                        );
+                                      },
+                                    ),
+                                  ],
                                 ),
                               ],
                             ),
-                          ],
-                        ),
+                          ),
+                        ],
                       ),
-                    ],
+                    ),
                   ),
                   if (done != null)
                     EnvoyButton(

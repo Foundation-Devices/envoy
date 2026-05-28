@@ -3,6 +3,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 import 'package:envoy/ui/envoy_button.dart';
+import 'package:envoy/ui/envoy_method_channel.dart';
 import 'package:envoy/ui/onboard/manual/widgets/mnemonic_grid_widget.dart';
 import 'package:envoy/util/tuple.dart';
 import 'package:flutter/material.dart';
@@ -26,6 +27,18 @@ class ExportSeedModalWords extends StatefulWidget {
 
 class _ExportSeedModalWordsState extends State<ExportSeedModalWords> {
   final PageController _pageController = PageController();
+
+  @override
+  void initState() {
+    super.initState();
+    enableSecureScreen();
+  }
+
+  @override
+  void dispose() {
+    disableSecureScreen();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {

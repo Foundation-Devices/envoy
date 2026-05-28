@@ -43,7 +43,7 @@ flutter_rust_bridge::frb_generated_boilerplate!(
     default_rust_auto_opaque = RustAutoOpaqueMoi,
 );
 pub(crate) const FLUTTER_RUST_BRIDGE_CODEGEN_VERSION: &str = "2.11.1";
-pub(crate) const FLUTTER_RUST_BRIDGE_CODEGEN_CONTENT_HASH: i32 = -2097346255;
+pub(crate) const FLUTTER_RUST_BRIDGE_CODEGEN_CONTENT_HASH: i32 = -1392544800;
 
 // Section: executor
 
@@ -164,6 +164,96 @@ fn wire__crate__api__backup__backup_delete_backup_async_impl(
                             &api_server_url,
                             api_proxy_port,
                             api_hash,
+                        )
+                        .await?;
+                        Ok(output_ok)
+                    })()
+                    .await,
+                )
+            }
+        },
+    )
+}
+fn wire__crate__api__backup__backup_delete_prime_backup_v2_impl(
+    port_: flutter_rust_bridge::for_generated::MessagePort,
+    ptr_: flutter_rust_bridge::for_generated::PlatformGeneralizedUint8ListPtr,
+    rust_vec_len_: i32,
+    data_len_: i32,
+) {
+    FLUTTER_RUST_BRIDGE_HANDLER.wrap_async::<flutter_rust_bridge::for_generated::SseCodec, _, _, _>(
+        flutter_rust_bridge::for_generated::TaskInfo {
+            debug_name: "backup_delete_prime_backup_v2",
+            port: Some(port_),
+            mode: flutter_rust_bridge::for_generated::FfiCallMode::Normal,
+        },
+        move || {
+            let message = unsafe {
+                flutter_rust_bridge::for_generated::Dart2RustMessageSse::from_wire(
+                    ptr_,
+                    rust_vec_len_,
+                    data_len_,
+                )
+            };
+            let mut deserializer =
+                flutter_rust_bridge::for_generated::SseDeserializer::new(message);
+            let api_v2_server_url = <String>::sse_decode(&mut deserializer);
+            let api_proxy_port = <i32>::sse_decode(&mut deserializer);
+            let api_key = <Vec<u8>>::sse_decode(&mut deserializer);
+            let api_timestamp = <u64>::sse_decode(&mut deserializer);
+            let api_signature = <Vec<u8>>::sse_decode(&mut deserializer);
+            deserializer.end();
+            move |context| async move {
+                transform_result_sse::<_, flutter_rust_bridge::for_generated::anyhow::Error>(
+                    (move || async move {
+                        let output_ok = crate::api::backup::Backup::delete_prime_backup_v2(
+                            &api_v2_server_url,
+                            api_proxy_port,
+                            api_key,
+                            api_timestamp,
+                            api_signature,
+                        )
+                        .await?;
+                        Ok(output_ok)
+                    })()
+                    .await,
+                )
+            }
+        },
+    )
+}
+fn wire__crate__api__backup__backup_delete_v2_impl(
+    port_: flutter_rust_bridge::for_generated::MessagePort,
+    ptr_: flutter_rust_bridge::for_generated::PlatformGeneralizedUint8ListPtr,
+    rust_vec_len_: i32,
+    data_len_: i32,
+) {
+    FLUTTER_RUST_BRIDGE_HANDLER.wrap_async::<flutter_rust_bridge::for_generated::SseCodec, _, _, _>(
+        flutter_rust_bridge::for_generated::TaskInfo {
+            debug_name: "backup_delete_v2",
+            port: Some(port_),
+            mode: flutter_rust_bridge::for_generated::FfiCallMode::Normal,
+        },
+        move || {
+            let message = unsafe {
+                flutter_rust_bridge::for_generated::Dart2RustMessageSse::from_wire(
+                    ptr_,
+                    rust_vec_len_,
+                    data_len_,
+                )
+            };
+            let mut deserializer =
+                flutter_rust_bridge::for_generated::SseDeserializer::new(message);
+            let api_seed_words = <String>::sse_decode(&mut deserializer);
+            let api_v2_server_url = <String>::sse_decode(&mut deserializer);
+            let api_proxy_port = <i32>::sse_decode(&mut deserializer);
+            deserializer.end();
+            move |context| async move {
+                transform_result_sse::<_, flutter_rust_bridge::for_generated::anyhow::Error>(
+                    (move || async move {
+                        let output_ok = crate::api::backup::Backup::delete_v2(
+                            &api_seed_words,
+                            &api_v2_server_url,
+                            api_proxy_port,
                         )
                         .await?;
                         Ok(output_ok)
@@ -345,6 +435,49 @@ fn wire__crate__api__backup__backup_get_backup_offline_impl(
         },
     )
 }
+fn wire__crate__api__backup__backup_get_backup_v2_impl(
+    port_: flutter_rust_bridge::for_generated::MessagePort,
+    ptr_: flutter_rust_bridge::for_generated::PlatformGeneralizedUint8ListPtr,
+    rust_vec_len_: i32,
+    data_len_: i32,
+) {
+    FLUTTER_RUST_BRIDGE_HANDLER.wrap_async::<flutter_rust_bridge::for_generated::SseCodec, _, _, _>(
+        flutter_rust_bridge::for_generated::TaskInfo {
+            debug_name: "backup_get_backup_v2",
+            port: Some(port_),
+            mode: flutter_rust_bridge::for_generated::FfiCallMode::Normal,
+        },
+        move || {
+            let message = unsafe {
+                flutter_rust_bridge::for_generated::Dart2RustMessageSse::from_wire(
+                    ptr_,
+                    rust_vec_len_,
+                    data_len_,
+                )
+            };
+            let mut deserializer =
+                flutter_rust_bridge::for_generated::SseDeserializer::new(message);
+            let api_seed_words = <String>::sse_decode(&mut deserializer);
+            let api_v2_server_url = <String>::sse_decode(&mut deserializer);
+            let api_proxy_port = <i32>::sse_decode(&mut deserializer);
+            deserializer.end();
+            move |context| async move {
+                transform_result_sse::<_, crate::api::backup::GetBackupException>(
+                    (move || async move {
+                        let output_ok = crate::api::backup::Backup::get_backup_v2(
+                            &api_seed_words,
+                            &api_v2_server_url,
+                            api_proxy_port,
+                        )
+                        .await?;
+                        Ok(output_ok)
+                    })()
+                    .await,
+                )
+            }
+        },
+    )
+}
 fn wire__crate__api__backup__backup_get_prime_backup_impl(
     port_: flutter_rust_bridge::for_generated::MessagePort,
     ptr_: flutter_rust_bridge::for_generated::PlatformGeneralizedUint8ListPtr,
@@ -378,6 +511,53 @@ fn wire__crate__api__backup__backup_get_prime_backup_impl(
                             api_hash,
                             &api_server_url,
                             api_proxy_port,
+                        )
+                        .await?;
+                        Ok(output_ok)
+                    })()
+                    .await,
+                )
+            }
+        },
+    )
+}
+fn wire__crate__api__backup__backup_get_prime_backup_v2_impl(
+    port_: flutter_rust_bridge::for_generated::MessagePort,
+    ptr_: flutter_rust_bridge::for_generated::PlatformGeneralizedUint8ListPtr,
+    rust_vec_len_: i32,
+    data_len_: i32,
+) {
+    FLUTTER_RUST_BRIDGE_HANDLER.wrap_async::<flutter_rust_bridge::for_generated::SseCodec, _, _, _>(
+        flutter_rust_bridge::for_generated::TaskInfo {
+            debug_name: "backup_get_prime_backup_v2",
+            port: Some(port_),
+            mode: flutter_rust_bridge::for_generated::FfiCallMode::Normal,
+        },
+        move || {
+            let message = unsafe {
+                flutter_rust_bridge::for_generated::Dart2RustMessageSse::from_wire(
+                    ptr_,
+                    rust_vec_len_,
+                    data_len_,
+                )
+            };
+            let mut deserializer =
+                flutter_rust_bridge::for_generated::SseDeserializer::new(message);
+            let api_v2_server_url = <String>::sse_decode(&mut deserializer);
+            let api_proxy_port = <i32>::sse_decode(&mut deserializer);
+            let api_key = <Vec<u8>>::sse_decode(&mut deserializer);
+            let api_timestamp = <u64>::sse_decode(&mut deserializer);
+            let api_signature = <Vec<u8>>::sse_decode(&mut deserializer);
+            deserializer.end();
+            move |context| async move {
+                transform_result_sse::<_, crate::api::backup::GetBackupException>(
+                    (move || async move {
+                        let output_ok = crate::api::backup::Backup::get_prime_backup_v2(
+                            &api_v2_server_url,
+                            api_proxy_port,
+                            api_key,
+                            api_timestamp,
+                            api_signature,
                         )
                         .await?;
                         Ok(output_ok)
@@ -552,6 +732,56 @@ fn wire__crate__api__backup__backup_perform_backup_offline_impl(
         },
     )
 }
+fn wire__crate__api__backup__backup_perform_backup_v2_impl(
+    port_: flutter_rust_bridge::for_generated::MessagePort,
+    ptr_: flutter_rust_bridge::for_generated::PlatformGeneralizedUint8ListPtr,
+    rust_vec_len_: i32,
+    data_len_: i32,
+) {
+    FLUTTER_RUST_BRIDGE_HANDLER.wrap_async::<flutter_rust_bridge::for_generated::SseCodec, _, _, _>(
+        flutter_rust_bridge::for_generated::TaskInfo {
+            debug_name: "backup_perform_backup_v2",
+            port: Some(port_),
+            mode: flutter_rust_bridge::for_generated::FfiCallMode::Normal,
+        },
+        move || {
+            let message = unsafe {
+                flutter_rust_bridge::for_generated::Dart2RustMessageSse::from_wire(
+                    ptr_,
+                    rust_vec_len_,
+                    data_len_,
+                )
+            };
+            let mut deserializer =
+                flutter_rust_bridge::for_generated::SseDeserializer::new(message);
+            let api_payload =
+                <std::collections::HashMap<String, String>>::sse_decode(&mut deserializer);
+            let api_seed_words = <String>::sse_decode(&mut deserializer);
+            let api_v2_server_url = <String>::sse_decode(&mut deserializer);
+            let api_local_backup = <String>::sse_decode(&mut deserializer);
+            let api_proxy_port = <i32>::sse_decode(&mut deserializer);
+            let api_perform_cloud = <bool>::sse_decode(&mut deserializer);
+            deserializer.end();
+            move |context| async move {
+                transform_result_sse::<_, flutter_rust_bridge::for_generated::anyhow::Error>(
+                    (move || async move {
+                        let output_ok = crate::api::backup::Backup::perform_backup_v2(
+                            api_payload,
+                            &api_seed_words,
+                            &api_v2_server_url,
+                            &api_local_backup,
+                            api_proxy_port,
+                            api_perform_cloud,
+                        )
+                        .await?;
+                        Ok(output_ok)
+                    })()
+                    .await,
+                )
+            }
+        },
+    )
+}
 fn wire__crate__api__backup__backup_perform_prime_backup_impl(
     port_: flutter_rust_bridge::for_generated::MessagePort,
     ptr_: flutter_rust_bridge::for_generated::PlatformGeneralizedUint8ListPtr,
@@ -587,6 +817,57 @@ fn wire__crate__api__backup__backup_perform_prime_backup_impl(
                             api_proxy_port,
                             api_seed_hash,
                             api_payload,
+                        )
+                        .await?;
+                        Ok(output_ok)
+                    })()
+                    .await,
+                )
+            }
+        },
+    )
+}
+fn wire__crate__api__backup__backup_perform_prime_backup_v2_impl(
+    port_: flutter_rust_bridge::for_generated::MessagePort,
+    ptr_: flutter_rust_bridge::for_generated::PlatformGeneralizedUint8ListPtr,
+    rust_vec_len_: i32,
+    data_len_: i32,
+) {
+    FLUTTER_RUST_BRIDGE_HANDLER.wrap_async::<flutter_rust_bridge::for_generated::SseCodec, _, _, _>(
+        flutter_rust_bridge::for_generated::TaskInfo {
+            debug_name: "backup_perform_prime_backup_v2",
+            port: Some(port_),
+            mode: flutter_rust_bridge::for_generated::FfiCallMode::Normal,
+        },
+        move || {
+            let message = unsafe {
+                flutter_rust_bridge::for_generated::Dart2RustMessageSse::from_wire(
+                    ptr_,
+                    rust_vec_len_,
+                    data_len_,
+                )
+            };
+            let mut deserializer =
+                flutter_rust_bridge::for_generated::SseDeserializer::new(message);
+            let api_v2_server_url = <String>::sse_decode(&mut deserializer);
+            let api_proxy_port = <i32>::sse_decode(&mut deserializer);
+            let api_timestamp = <u64>::sse_decode(&mut deserializer);
+            let api_hash = <Vec<u8>>::sse_decode(&mut deserializer);
+            let api_pubkey = <Vec<u8>>::sse_decode(&mut deserializer);
+            let api_data = <Vec<u8>>::sse_decode(&mut deserializer);
+            let api_client_signature = <Vec<u8>>::sse_decode(&mut deserializer);
+            deserializer.end();
+            move |context| async move {
+                transform_result_sse::<_, flutter_rust_bridge::for_generated::anyhow::Error>(
+                    (move || async move {
+                        let output_ok = crate::api::backup::Backup::perform_prime_backup_v2(
+                            &api_v2_server_url,
+                            api_proxy_port,
+                            api_timestamp,
+                            api_hash,
+                            api_pubkey,
+                            api_data,
+                            api_client_signature,
                         )
                         .await?;
                         Ok(output_ok)
@@ -765,6 +1046,7 @@ impl SseDecode for crate::api::backup::GetBackupException {
             3 => crate::api::backup::GetBackupException::InvalidSeed,
             4 => crate::api::backup::GetBackupException::InvalidServer,
             5 => crate::api::backup::GetBackupException::InvalidBackupFile,
+            6 => crate::api::backup::GetBackupException::Unauthorized,
             _ => unreachable!("Invalid variant for GetBackupException: {}", inner),
         };
     }
@@ -829,6 +1111,13 @@ impl SseDecode for u16 {
     }
 }
 
+impl SseDecode for u64 {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        deserializer.cursor.read_u64::<NativeEndian>().unwrap()
+    }
+}
+
 impl SseDecode for u8 {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
@@ -867,56 +1156,84 @@ fn pde_ffi_dispatcher_primary_impl(
             rust_vec_len,
             data_len,
         ),
-        4 => {
+        4 => wire__crate__api__backup__backup_delete_prime_backup_v2_impl(
+            port,
+            ptr,
+            rust_vec_len,
+            data_len,
+        ),
+        5 => wire__crate__api__backup__backup_delete_v2_impl(port, ptr, rust_vec_len, data_len),
+        6 => {
             wire__crate__api__backup__backup_encrypt_backup_impl(port, ptr, rust_vec_len, data_len)
         }
-        5 => wire__crate__api__backup__backup_extract_backup_data_impl(
+        7 => wire__crate__api__backup__backup_extract_backup_data_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        6 => wire__crate__api__backup__backup_get_backup_impl(port, ptr, rust_vec_len, data_len),
-        7 => wire__crate__api__backup__backup_get_backup_offline_impl(
+        8 => wire__crate__api__backup__backup_get_backup_impl(port, ptr, rust_vec_len, data_len),
+        9 => wire__crate__api__backup__backup_get_backup_offline_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        8 => wire__crate__api__backup__backup_get_prime_backup_impl(
+        10 => {
+            wire__crate__api__backup__backup_get_backup_v2_impl(port, ptr, rust_vec_len, data_len)
+        }
+        11 => wire__crate__api__backup__backup_get_prime_backup_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        9 => wire__crate__api__backup__backup_get_reqwest_client_impl(
+        12 => wire__crate__api__backup__backup_get_prime_backup_v2_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        10 => wire__crate__api__backup__backup_get_static_secret_impl(
+        13 => wire__crate__api__backup__backup_get_reqwest_client_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        11 => {
+        14 => wire__crate__api__backup__backup_get_static_secret_impl(
+            port,
+            ptr,
+            rust_vec_len,
+            data_len,
+        ),
+        15 => {
             wire__crate__api__backup__backup_perform_backup_impl(port, ptr, rust_vec_len, data_len)
         }
-        12 => wire__crate__api__backup__backup_perform_backup_offline_impl(
+        16 => wire__crate__api__backup__backup_perform_backup_offline_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        13 => wire__crate__api__backup__backup_perform_prime_backup_impl(
+        17 => wire__crate__api__backup__backup_perform_backup_v2_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        14 => wire__crate__api__backup__init_app_impl(port, ptr, rust_vec_len, data_len),
+        18 => wire__crate__api__backup__backup_perform_prime_backup_impl(
+            port,
+            ptr,
+            rust_vec_len,
+            data_len,
+        ),
+        19 => wire__crate__api__backup__backup_perform_prime_backup_v2_impl(
+            port,
+            ptr,
+            rust_vec_len,
+            data_len,
+        ),
+        20 => wire__crate__api__backup__init_app_impl(port, ptr, rust_vec_len, data_len),
         _ => unreachable!(),
     }
 }
@@ -1023,6 +1340,7 @@ impl flutter_rust_bridge::IntoDart for crate::api::backup::GetBackupException {
             Self::InvalidSeed => 3.into_dart(),
             Self::InvalidServer => 4.into_dart(),
             Self::InvalidBackupFile => 5.into_dart(),
+            Self::Unauthorized => 6.into_dart(),
             _ => unreachable!(),
         }
     }
@@ -1143,6 +1461,7 @@ impl SseEncode for crate::api::backup::GetBackupException {
                 crate::api::backup::GetBackupException::InvalidSeed => 3,
                 crate::api::backup::GetBackupException::InvalidServer => 4,
                 crate::api::backup::GetBackupException::InvalidBackupFile => 5,
+                crate::api::backup::GetBackupException::Unauthorized => 6,
                 _ => {
                     unimplemented!("");
                 }
@@ -1201,6 +1520,13 @@ impl SseEncode for u16 {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
         serializer.cursor.write_u16::<NativeEndian>(self).unwrap();
+    }
+}
+
+impl SseEncode for u64 {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        serializer.cursor.write_u64::<NativeEndian>(self).unwrap();
     }
 }
 

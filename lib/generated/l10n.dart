@@ -56,10 +56,10 @@ class S {
 
   // skipped getter for the ':' key
 
-  /// `bc1q ar0s rrr7 xfkv y5l6 43ly dnw9 re59 gtzz wf5m dq`
+  /// `https://blockstream.info/api/`
   String get _ {
     return Intl.message(
-      'bc1q ar0s rrr7 xfkv y5l6 43ly dnw9 re59 gtzz wf5m dq',
+      'https://blockstream.info/api/',
       name: '_',
       desc: '',
       args: [],
@@ -1708,6 +1708,16 @@ class S {
     return Intl.message(
       'Couldn’t decode UR.',
       name: 'camera_toast_couldntDecodeUr',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Invalid Pair Payload.`
+  String get camera_toast_invalidPairPayload {
+    return Intl.message(
+      'Invalid Pair Payload.',
+      name: 'camera_toast_invalidPairPayload',
       desc: '',
       args: [],
     );
@@ -5048,11 +5058,31 @@ class S {
     );
   }
 
+  /// `About 1 minute remains`
+  String get firmware_downloadingUpdate_aboutOneMin {
+    return Intl.message(
+      'About 1 minute remains',
+      name: 'firmware_downloadingUpdate_aboutOneMin',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Update Downloaded`
   String get firmware_downloadingUpdate_downloaded {
     return Intl.message(
       'Update Downloaded',
       name: 'firmware_downloadingUpdate_downloaded',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Estimating remaining time…`
+  String get firmware_downloadingUpdate_estimating {
+    return Intl.message(
+      'Estimating remaining time…',
+      name: 'firmware_downloadingUpdate_estimating',
       desc: '',
       args: [],
     );
@@ -7088,6 +7118,16 @@ class S {
     );
   }
 
+  /// `Developer Mode Enabled.`
+  String get menu_toast_developerModeEnabled {
+    return Intl.message(
+      'Developer Mode Enabled.',
+      name: 'menu_toast_developerModeEnabled',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Envoy seed deleted.`
   String get menu_toast_envoySeedDeleted {
     return Intl.message(
@@ -7278,10 +7318,10 @@ class S {
     );
   }
 
-  /// `Passport Prime uses a new, secure Bluetooth-based protocol for real time communication with Envoy.\n\nQuantumLink creates and end-to-end encrypted tunnel between Passport and Envoy, ensuring a secure connection.`
+  /// `Passport Prime uses a new, secure Bluetooth-based protocol for real time communication with Envoy.\n\nQuantumLink creates an end-to-end encrypted tunnel between Passport and Envoy, ensuring a secure connection.`
   String get onboarding_bluetoothIntro_content {
     return Intl.message(
-      'Passport Prime uses a new, secure Bluetooth-based protocol for real time communication with Envoy.\n\nQuantumLink creates and end-to-end encrypted tunnel between Passport and Envoy, ensuring a secure connection.',
+      'Passport Prime uses a new, secure Bluetooth-based protocol for real time communication with Envoy.\n\nQuantumLink creates an end-to-end encrypted tunnel between Passport and Envoy, ensuring a secure connection.',
       name: 'onboarding_bluetoothIntro_content',
       desc: '',
       args: [],
@@ -8063,6 +8103,36 @@ class S {
     return Intl.message(
       'Unlock with biometrics or PIN',
       name: 'privacy_applicationLock_unlock',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Could not reach Block Explorer`
+  String get privacy_blockExplorer_couldNotReachBlockExplorer {
+    return Intl.message(
+      'Could not reach Block Explorer',
+      name: 'privacy_blockExplorer_couldNotReachBlockExplorer',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Successfully connected to Block Explorer`
+  String get privacy_blockExplorer_success {
+    return Intl.message(
+      'Successfully connected to Block Explorer',
+      name: 'privacy_blockExplorer_success',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `URL missing http:// or https:// prefix`
+  String get privacy_blockExplorer_urlError {
+    return Intl.message(
+      'URL missing http:// or https:// prefix',
+      name: 'privacy_blockExplorer_urlError',
       desc: '',
       args: [],
     );

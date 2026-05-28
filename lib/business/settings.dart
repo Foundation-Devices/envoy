@@ -155,7 +155,11 @@ class Settings extends ChangeNotifier {
   void setDisplayFiat(String? displayFiat) {
     selectedFiat = displayFiat;
     ExchangeRate().setCurrency(selectedFiat);
-
+    // Fiat was disabled globally: clear the send-screen fiat choice if set,
+    // so send/staging fall back to the app unit.
+    if (displayFiat == null && sendUnit == AmountDisplayUnit.fiat) {
+      sendUnit = null;
+    }
     notifyListeners();
     store();
   }
@@ -315,6 +319,22 @@ class Settings extends ChangeNotifier {
         return usingTor
             ? "http://pcwglac5cacmdgviitf3mkyvrpcx4tkpeew7gyf4ipp4enskr37gquqd.onion"
             : "https://envoy.foundation.xyz";
+    }
+  }
+
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  String get backupServerV2Address {
+    switch (environment) {
+      case Environment.local:
+        return "http://127.0.0.1:8001";
+      case Environment.development:
+        return "https://development.backup.foundation.xyz";
+      case Environment.staging:
+        return "https://staging.backup.foundation.xyz";
+      case Environment.production:
+        return usingTor
+            ? "http://sqyx2dozvzqkuwokh5lhcrcxhkavbdnf65c7n6aezorcztxhgn63f3ad.onion"
+            : "https://backup.foundation.xyz";
     }
   }
 

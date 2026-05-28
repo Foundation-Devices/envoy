@@ -147,9 +147,13 @@ class _WelcomeScreenState extends ConsumerState<WelcomeScreen> {
               );
             }
           },
-          child: SizedBox(
-            height: MediaQuery.of(context).size.height * 0.25,
-            child: Image.asset("assets/envoy_logo_with_title.png"),
+          child: Semantics(
+            label: "ENVOY",
+            container: true,
+            child: SizedBox(
+              height: MediaQuery.of(context).size.height * 0.25,
+              child: Image.asset("assets/envoy_logo_with_title.png"),
+            ),
           ),
         ),
         shield: Padding(
@@ -178,7 +182,9 @@ class _WelcomeScreenState extends ConsumerState<WelcomeScreen> {
                             ref.read(devModeEnabledProvider.notifier).state =
                                 true;
                             ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(content: Text("Dev mode enabled")),
+                              SnackBar(
+                                  content: Text(
+                                      S().menu_toast_developerModeEnabled)),
                             );
                           },
                           child: Text(
@@ -610,6 +616,7 @@ class _LegacyFirmwareAlertState extends State<LegacyFirmwareAlert>
                               ),
                             ),
                             onPressed: () async {
+                              context.pop();
                               context.pushNamed(ONBOARD_PASSPORT_SETUP);
                             },
                           ),

@@ -6,6 +6,24 @@
 import '../../../frb_generated.dart';
 import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated.dart';
 
+class DeviceNameUpdate {
+  final String deviceName;
+
+  const DeviceNameUpdate({
+    required this.deviceName,
+  });
+
+  @override
+  int get hashCode => deviceName.hashCode;
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is DeviceNameUpdate &&
+          runtimeType == other.runtimeType &&
+          deviceName == other.deviceName;
+}
+
 class DeviceStatus {
   final String version;
   final int batteryLevel;

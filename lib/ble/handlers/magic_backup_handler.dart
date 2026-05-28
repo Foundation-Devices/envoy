@@ -26,7 +26,8 @@ class BleMagicBackupHandler extends PassportMessageHandler {
     return message is api.QuantumLinkMessage_EnvoyMagicBackupEnabledRequest ||
         message is api.QuantumLinkMessage_CreateMagicBackupEvent ||
         message is api.QuantumLinkMessage_RestoreMagicBackupRequest ||
-        message is api.QuantumLinkMessage_PrimeMagicBackupEnabled;
+        message is api.QuantumLinkMessage_PrimeMagicBackupEnabled ||
+        message is api.QuantumLinkMessage_MagicBackupRequestV2;
   }
 
   @override
@@ -50,6 +51,8 @@ class BleMagicBackupHandler extends PassportMessageHandler {
           Devices().updatePrimeBackupStatus(enabled.field0.enabled, device),
         );
       }
+    } else if (message case api.QuantumLinkMessage_MagicBackupRequestV2 v2Req) {
+      await _handleMagicBackupRequestV2(v2Req.field0);
     } else if (message
         case api.QuantumLinkMessage_PrimeMagicBackupStatusRequest
             enabledRequest) {
@@ -179,6 +182,7 @@ class BleMagicBackupHandler extends PassportMessageHandler {
               ),
             );
           case backup_lib.GetBackupException.backupNotFound:
+          case backup_lib.GetBackupException.unauthorized:
             qlConnection.writeMessage(
               api.QuantumLinkMessage_RestoreMagicBackupEvent(
                 api.RestoreMagicBackupEvent.notFound(),
@@ -224,6 +228,76 @@ class BleMagicBackupHandler extends PassportMessageHandler {
         api.EnvoyMagicBackupEnabledResponse(enabled: Settings().syncToCloud),
       ),
     );
+  }
+
+  Future<void> _handleMagicBackupRequestV2(
+    api.MagicBackupRequestV2 request,
+  ) async {
+    final v2Url = Settings().backupServerV2Address;
+    final proxyPort = Tor.instance.port;
+
+    try {
+      switch (request) {
+        case api.MagicBackupRequestV2_Create(:final field0):
+          final success = await backup_lib.Backup.performPrimeBackupV2(
+            v2ServerUrl: v2Url,
+            proxyPort: proxyPort,
+            timestamp: field0.timestamp,
+            hash: field0.hash,
+            pubkey: field0.pubkey,
+            data: field0.data,
+            clientSignature: field0.clientSignature,
+          );
+          if (success) {
+            await qlConnection.writeMessage(
+              api.QuantumLinkMessage_MagicBackupResponseV2(
+                api.MagicBackupResponseV2.created(),
+              ),
+            );
+          } else {
+            await qlConnection.writeMessage(
+              api.QuantumLinkMessage_MagicBackupResponseV2(
+                api.MagicBackupResponseV2.error(
+                  error: "Failed to upload v2 backup",
+                ),
+              ),
+            );
+          }
+        case api.MagicBackupRequestV2_Get(:final field0):
+          final data = await backup_lib.Backup.getPrimeBackupV2(
+            v2ServerUrl: v2Url,
+            proxyPort: proxyPort,
+            key: field0.key,
+            timestamp: field0.timestamp,
+            signature: field0.signature,
+          );
+          await qlConnection.writeMessage(
+            api.QuantumLinkMessage_MagicBackupResponseV2(
+              api.MagicBackupResponseV2.backup(data: data),
+            ),
+          );
+        case api.MagicBackupRequestV2_Delete(:final field0):
+          await backup_lib.Backup.deletePrimeBackupV2(
+            v2ServerUrl: v2Url,
+            proxyPort: proxyPort,
+            key: field0.key,
+            timestamp: field0.timestamp,
+            signature: field0.signature,
+          );
+          await qlConnection.writeMessage(
+            api.QuantumLinkMessage_MagicBackupResponseV2(
+              api.MagicBackupResponseV2.deleted(),
+            ),
+          );
+      }
+    } catch (e, stack) {
+      kPrint("Error handling v2 magic backup request: $e", stackTrace: stack);
+      await qlConnection.writeMessage(
+        api.QuantumLinkMessage_MagicBackupResponseV2(
+          api.MagicBackupResponseV2.error(error: e.toString()),
+        ),
+      );
+    }
   }
 
   Future<void> _handleStatusRequest(

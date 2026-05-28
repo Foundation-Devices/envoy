@@ -143,9 +143,9 @@ class _OnboardPrimeFwUpdateState extends ConsumerState<OnboardPrimeFwUpdate> {
         typeOfMessage: PopUpState.warning,
         showCloseButton: false,
         title: S().onboarding_connectionModalAbort_header,
-        content: S().onboarding_connectionModalAbort_content,
-        primaryButtonLabel: S().component_cancel,
-        secondaryButtonLabel: S().component_exit,
+        content: S().onboarding_connectionModalExitOnboarding_content,
+        primaryButtonLabel: S().component_back,
+        secondaryButtonLabel: S().firmware_updateModalConnectionLost_exit,
         onPrimaryButtonTap: (context) async {
           completer.complete(false);
           Navigator.pop(context);
@@ -608,18 +608,28 @@ class _PrimeFwDownloadProgressState
                             ),
                             if (ref.watch(fwDownloadStateProvider).state ==
                                 EnvoyStepState.FINISHED)
-                              Text(
-                                progressAsync.value.remainingTime.isEmpty
-                                    //TODO: copy update
-                                    ? "Estimating remaining time..."
-                                    : S()
-                                        .firmware_downloadingUpdate_timeRemaining(
-                                        progressAsync.value.remainingTime,
-                                      ), //
-                                style: EnvoyTypography.explainer.copyWith(
-                                  fontSize: 14,
-                                ),
-                              ),
+                              Builder(builder: (context) {
+                                final remainingTime =
+                                    progressAsync.value.remainingTime;
+                                final String label;
+                                if (remainingTime.isEmpty) {
+                                  label =
+                                      S().firmware_downloadingUpdate_estimating;
+                                } else if (remainingTime ==
+                                    S().firmware_downloadingUpdate_aboutOneMin) {
+                                  label = remainingTime;
+                                } else {
+                                  label = S()
+                                      .firmware_downloadingUpdate_timeRemaining(
+                                          remainingTime);
+                                }
+                                return Text(
+                                  label,
+                                  style: EnvoyTypography.explainer.copyWith(
+                                    fontSize: 14,
+                                  ),
+                                );
+                              }),
                           ],
                         );
                       },
