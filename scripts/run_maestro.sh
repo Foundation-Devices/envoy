@@ -699,7 +699,8 @@ cleanup_prime_tmp() {
           /tmp/prime-seeds.txt \
           /tmp/prime-seeds-shot.png \
           /tmp/prime-verify-shot.png \
-          /tmp/prime-assert-shot.png
+          /tmp/prime-assert-shot.png \
+          /tmp/prime-verify-last-n.txt
 }
 
 CLEANED_UP=0
