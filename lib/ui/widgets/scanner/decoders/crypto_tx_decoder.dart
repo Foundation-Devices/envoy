@@ -7,6 +7,7 @@ import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/components/pop_up.dart';
 import 'package:envoy/ui/theme/envoy_icons.dart';
 import 'package:envoy/ui/widgets/scanner/scanner_decoder.dart';
+import 'package:envoy/util/bug_report_helper.dart';
 import 'package:flutter/material.dart';
 import 'package:qr_code_scanner_plus/qr_code_scanner_plus.dart';
 
@@ -19,6 +20,7 @@ class CryptoTxDecoder extends ScannerDecoder {
   final Function(CryptoPsbt cryptoPsbt) onScan;
   bool _invoked = false;
   bool _errorDialogShown = false;
+  bool _invalidQrLogged = false;
 
   CryptoTxDecoder({required this.onScan});
 
@@ -32,6 +34,13 @@ class CryptoTxDecoder extends ScannerDecoder {
 
     // Check if it's a UR code
     if (!code.startsWith("ur:")) {
+      if (!_invalidQrLogged) {
+        _invalidQrLogged = true;
+        EnvoyReport().log(
+          "CryptoTxDecoder",
+          "Non-UR QR rejected | code_len=${code.length}",
+        );
+      }
       throw InvalidPsbtQrException();
     }
 
@@ -40,11 +49,47 @@ class CryptoTxDecoder extends ScannerDecoder {
     // Check if the UR decoded successfully and is a CryptoPsbt
     if (payload != null && !_invoked) {
       if (payload is! CryptoPsbt) {
+        if (!_invalidQrLogged) {
+          _invalidQrLogged = true;
+          EnvoyReport().log(
+            "CryptoTxDecoder",
+            "Decoded UR is not CryptoPsbt | "
+                "ur_type=${_urType(code)} "
+                "progress=${progress.toStringAsFixed(2)} "
+                "decoded=${payload.runtimeType} "
+                "first_byte=${_firstPayloadByte(payload)}",
+          );
+        }
         throw InvalidPsbtQrException();
       }
       _invoked = true;
       onScan(payload);
     }
+  }
+
+  @override
+  void reset() {
+    super.reset();
+    _invalidQrLogged = false;
+  }
+
+  String _urType(String code) {
+    final colon = code.indexOf(":");
+    final slash = code.indexOf("/");
+    if (colon < 0 || slash < 0 || slash <= colon + 1) return "?";
+    return code.substring(colon + 1, slash);
+  }
+
+  // CBOR major type lives in the top 3 bits of the first byte:
+  //   2 (0x40-0x5f) = byte string — what a valid CryptoPsbt payload should be.
+  String _firstPayloadByte(Object payload) {
+    try {
+      final bytes = (payload as dynamic).payload;
+      if (bytes is List<int> && bytes.isNotEmpty) {
+        return "0x${bytes[0].toRadixString(16).padLeft(2, '0')}";
+      }
+    } catch (_) {}
+    return "n/a";
   }
 
   @override

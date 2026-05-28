@@ -9,6 +9,7 @@ import 'package:envoy/ui/envoy_colors.dart';
 import 'package:envoy/ui/theme/envoy_spacing.dart';
 import 'package:envoy/ui/widgets/blur_dialog.dart';
 import 'package:envoy/ui/widgets/scanner/scanner_decoder.dart';
+import 'package:envoy/util/bug_report_helper.dart';
 import 'package:envoy/util/rive_util.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -72,6 +73,7 @@ class _QrScannerState extends State<QrScanner>
   List<int>? _lastRawBytesDetected = [];
   String _lastCodeDetected = "";
   String _lastScan = "";
+  String _lastFailedCode = "";
   double _progress = 0.0;
 
   bool _viewReady = false;
@@ -232,7 +234,18 @@ class _QrScannerState extends State<QrScanner>
 
       try {
         await widget.decoder.onDetectBarCode(barcode);
-      } catch (e) {
+      } catch (e, stack) {
+        final code = barcode.code ?? '';
+        if (code != _lastFailedCode) {
+          _lastFailedCode = code;
+          EnvoyReport().log(
+            "QrScanner",
+            "Decode failed: ${e.runtimeType}: $e | "
+                "code_len=${code.length} "
+                "progress=${widget.decoder.progress.toStringAsFixed(2)}",
+            stackTrace: stack,
+          );
+        }
         if (context.mounted) {
           widget.decoder.onDecodeError(
             context,
@@ -245,6 +258,7 @@ class _QrScannerState extends State<QrScanner>
                 _progress = 0.0;
                 _lastCodeDetected = "";
                 _lastRawBytesDetected = [];
+                _lastFailedCode = "";
               });
             },
             onCancel: () {
