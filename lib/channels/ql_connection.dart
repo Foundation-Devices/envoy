@@ -99,6 +99,7 @@ class QLConnection with EnvoyMessageWriter {
   bool _lastQLActive = false;
   bool _awaitingHeartbeatAfterConnect = false;
   bool _autoReconnectInFlight = false;
+  bool _intentionalDisconnectPending = false;
 
   /// Serial number of the connected Prime device, set synchronously when the
   /// pairing response is received (before the async [getDevice] lookup works).
@@ -176,19 +177,32 @@ class QLConnection with EnvoyMessageWriter {
       DeviceStatus event,
     ) {
       _lastDeviceStatus = event;
-      if (event.type == BluetoothConnectionEventType.deviceConnected) {
-        // Defer "QL connected" work until we receive a fresh heartbeat
-        // after this BLE connect event.
-        _stopAutoReconnect();
-        _awaitingHeartbeatAfterConnect = true;
-      } else if (event.type ==
-          BluetoothConnectionEventType.deviceDisconnected) {
-        _awaitingHeartbeatAfterConnect = false;
-        qlHandler.heartbeatHandler.lastHeartbeat = null;
-        qlHandler.bleAccountHandler.resetSendingState();
-        _sendingExRate = false;
-        _emitQLActiveIfChanged();
-        _startAutoReconnect();
+      switch (event.type) {
+        case BluetoothConnectionEventType.connectionAttempt:
+          _intentionalDisconnectPending = false;
+          _autoReconnectInFlight = true;
+        case BluetoothConnectionEventType.deviceConnected:
+          _intentionalDisconnectPending = false;
+          // after this BLE connect event.
+          _stopAutoReconnect();
+          _awaitingHeartbeatAfterConnect = true;
+        case BluetoothConnectionEventType.deviceDisconnected:
+          final shouldAutoReconnect = !_intentionalDisconnectPending;
+          _intentionalDisconnectPending = false;
+          _autoReconnectInFlight = false;
+          _awaitingHeartbeatAfterConnect = false;
+          qlHandler.heartbeatHandler.lastHeartbeat = null;
+          qlHandler.bleAccountHandler.resetSendingState();
+          _sendingExRate = false;
+          _emitQLActiveIfChanged();
+          if (shouldAutoReconnect) {
+            _startAutoReconnect();
+          } else {
+            _stopAutoReconnect();
+          }
+        case BluetoothConnectionEventType.connectionError:
+          _autoReconnectInFlight = false;
+        default:
       }
       kPrint(
         "[$deviceId] BLE Connection Event: connected=${event.connected}, bonded=${event.bonded}",
@@ -324,7 +338,10 @@ class QLConnection with EnvoyMessageWriter {
   }
 
   Future<void> _autoReconnect() async {
-    if (_autoReconnectInFlight || _lastDeviceStatus.connected) {
+    if (_autoReconnectInFlight ||
+        _lastDeviceStatus.connected ||
+        _lastDeviceStatus.type ==
+            BluetoothConnectionEventType.connectionAttempt) {
       return;
     }
 
@@ -335,6 +352,7 @@ class QLConnection with EnvoyMessageWriter {
     }
 
     _autoReconnectInFlight = true;
+    var nativeReconnectStarted = false;
     try {
       kPrint("[$deviceId] Auto-reconnecting BLE");
       await reconnect(device);
@@ -342,13 +360,17 @@ class QLConnection with EnvoyMessageWriter {
         return;
       }
       await BluetoothChannel().reconnect(deviceId);
+      nativeReconnectStarted = true;
     } catch (e, stack) {
+      _autoReconnectInFlight = false;
       debugPrintStack(
         label: "[$deviceId] Auto-reconnect failed: $e",
         stackTrace: stack,
       );
     } finally {
-      _autoReconnectInFlight = false;
+      if (!nativeReconnectStarted) {
+        _autoReconnectInFlight = false;
+      }
     }
   }
 
@@ -413,10 +435,13 @@ class QLConnection with EnvoyMessageWriter {
 
   /// Disconnect from this device
   Future<void> disconnect() async {
+    _intentionalDisconnectPending = true;
+    _stopAutoReconnect();
     try {
       await _methodChannel.invokeMethod("disconnect");
       kPrint("[$deviceId] Disconnected");
     } catch (e) {
+      _intentionalDisconnectPending = false;
       debugPrint("[$deviceId] Error disconnecting: $e");
     }
   }
