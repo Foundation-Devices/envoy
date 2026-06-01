@@ -151,6 +151,9 @@ class EnvoyBottomNavigationState extends ConsumerState<EnvoyBottomNavigation> {
 
   @override
   Widget build(BuildContext context) {
+    final double additionalBottomPadding =
+        MediaQuery.viewPaddingOf(context).bottom;
+
 // homeTabRoutes are defined in the same order as the bottom navigation bar.
     // Get only the FIRST route in the list (e.g. "/devices")
     final routeList = ref.watch(routeMatchListProvider);
@@ -168,30 +171,42 @@ class EnvoyBottomNavigationState extends ConsumerState<EnvoyBottomNavigation> {
       });
     }
 
-    return SafeArea(
-      bottom: true,
-      maintainBottomViewPadding: true,
-      minimum: EdgeInsets.only(
-        bottom: Platform.isAndroid ? EnvoySpacing.xs : EnvoySpacing.small,
+    // Only add extra padding above the system inset when actual navigation
+    // buttons are present (3-button / 2-button nav bar, typically >= 40dp).
+    // With gesture-only navigation the system inset already reserves the right
+    // amount of space and the extra offset makes the bar look too high.
+    final bool hasNavButtons = additionalBottomPadding > 40.0;
+    return Transform.translate(
+      offset: Offset(
+        0,
+        hasNavButtons ? 0 : (Platform.isAndroid ? 5 : 20),
       ),
-      child: EnvoyBottomNavBar(
-        _navBarItems(),
-        selectedIndex: _selectedIndex,
-        labelStyle: labelStyle,
-        onItemSelected: (int index) {
-          setState(() {
-            if (index == _selectedIndex) {
-              // if selected index is "Accounts"
-              if (index == 2) {
-                context.go("/");
-              } else {
-                return;
+      child: Padding(
+        padding: EdgeInsets.only(
+          bottom: (hasNavButtons
+                  ? (Platform.isAndroid ? EnvoySpacing.xs : EnvoySpacing.small)
+                  : 0) +
+              additionalBottomPadding,
+        ),
+        child: EnvoyBottomNavBar(
+          _navBarItems(),
+          selectedIndex: _selectedIndex,
+          labelStyle: labelStyle,
+          onItemSelected: (int index) {
+            setState(() {
+              if (index == _selectedIndex) {
+                // if selected index is "Accounts"
+                if (index == 2) {
+                  context.go("/");
+                } else {
+                  return;
+                }
               }
-            }
-            _selectedIndex = index;
-            widget.onIndexChanged?.call(_selectedIndex);
-          });
-        },
+              _selectedIndex = index;
+              widget.onIndexChanged?.call(_selectedIndex);
+            });
+          },
+        ),
       ),
     );
   }
