@@ -38,6 +38,7 @@ class QLConnection with EnvoyMessageWriter {
   // we consider connection active if we received heartbeat in the last 8 seconds.
   static const int _heartbeatActiveThreshold = 8;
   static const Duration _heartbeatCheckInterval = Duration(seconds: 1);
+  static const Duration _autoReconnectInterval = Duration(seconds: 3);
 
   //Mac address on android, Device UUID on iOS
   final String deviceId;
@@ -73,6 +74,7 @@ class QLConnection with EnvoyMessageWriter {
 
   StreamSubscription? _deviceStatusSubscription;
   Timer? _qlActivityMonitorTimer;
+  Timer? _autoReconnectTimer;
 
   late final Stream<DeviceStatus> _deviceStatusStream;
   late final Stream<WriteProgress> _writeProgressStream;
@@ -96,6 +98,7 @@ class QLConnection with EnvoyMessageWriter {
   bool _sendingExRate = false;
   bool _lastQLActive = false;
   bool _awaitingHeartbeatAfterConnect = false;
+  bool _autoReconnectInFlight = false;
 
   /// Serial number of the connected Prime device, set synchronously when the
   /// pairing response is received (before the async [getDevice] lookup works).
@@ -176,6 +179,7 @@ class QLConnection with EnvoyMessageWriter {
       if (event.type == BluetoothConnectionEventType.deviceConnected) {
         // Defer "QL connected" work until we receive a fresh heartbeat
         // after this BLE connect event.
+        _stopAutoReconnect();
         _awaitingHeartbeatAfterConnect = true;
       } else if (event.type ==
           BluetoothConnectionEventType.deviceDisconnected) {
@@ -184,6 +188,7 @@ class QLConnection with EnvoyMessageWriter {
         qlHandler.bleAccountHandler.resetSendingState();
         _sendingExRate = false;
         _emitQLActiveIfChanged();
+        _startAutoReconnect();
       }
       kPrint(
         "[$deviceId] BLE Connection Event: connected=${event.connected}, bonded=${event.bonded}",
@@ -300,6 +305,57 @@ class QLConnection with EnvoyMessageWriter {
     _lastQLActive = false;
     _qlActivityMonitorTimer?.cancel();
     _startQLActivityMonitoring();
+  }
+
+  void _startAutoReconnect() {
+    if (_autoReconnectTimer?.isActive ?? false) {
+      return;
+    }
+
+    if (getDevice() == null) {
+      kPrint("[$deviceId] Skipping auto-reconnect, paired device not found");
+      return;
+    }
+
+    kPrint("[$deviceId] Starting BLE auto-reconnect");
+    _autoReconnectTimer = Timer.periodic(_autoReconnectInterval, (_) {
+      unawaited(_autoReconnect());
+    });
+  }
+
+  Future<void> _autoReconnect() async {
+    if (_autoReconnectInFlight || _lastDeviceStatus.connected) {
+      return;
+    }
+
+    final device = getDevice();
+    if (device == null) {
+      kPrint("[$deviceId] Skipping auto-reconnect, paired device not found");
+      return;
+    }
+
+    _autoReconnectInFlight = true;
+    try {
+      kPrint("[$deviceId] Auto-reconnecting BLE");
+      await reconnect(device);
+      if (_qlIdentity == null || _recipientXid == null) {
+        return;
+      }
+      await BluetoothChannel().reconnect(deviceId);
+    } catch (e, stack) {
+      debugPrintStack(
+        label: "[$deviceId] Auto-reconnect failed: $e",
+        stackTrace: stack,
+      );
+    } finally {
+      _autoReconnectInFlight = false;
+    }
+  }
+
+  void _stopAutoReconnect() {
+    _autoReconnectTimer?.cancel();
+    _autoReconnectTimer = null;
+    _autoReconnectInFlight = false;
   }
 
   /// Write all data chunks to this BLE device.
@@ -556,6 +612,7 @@ class QLConnection with EnvoyMessageWriter {
   void dispose() {
     _deviceStatusSubscription?.cancel();
     _qlActivityMonitorTimer?.cancel();
+    _autoReconnectTimer?.cancel();
     _qlHandlers.dispose();
     _readController.close();
     _qlActiveController.close();
