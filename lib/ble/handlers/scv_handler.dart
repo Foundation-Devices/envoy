@@ -96,21 +96,15 @@ class ScvHandler extends PassportMessageHandler {
           }
         } else if (proofResult is api.ChallengeResponseResult_Error) {
           final proofError = proofResult.error;
-          //TODO: fix SCV .
-          kPrint("challege proof failed $proofError");
+          kPrint("challenge proof failed $proofError");
           await sendSecurityChallengeVerificationResult(
-            api.VerificationResult.success(),
+            api.VerificationResult.failure(),
           );
           updateScvState(
-            S().onboarding_connectionChecking_SecurityPassed,
-            EnvoyStepState.FINISHED,
+            S().onboarding_connectionIntroError_securityCheckFailed,
+            EnvoyStepState.ERROR,
+            errorType: ScvErrorType.verificationFailed,
           );
-          // await ref.read(deviceSecurityProvider.notifier).updateStep(
-          //     S().onboarding_connectionChecking_SecurityPassed,
-          //     EnvoyStepState.FINISHED);
-          // await ref.read(deviceSecurityProvider.notifier).updateStep(
-          //     S().onboarding_connectionIntroError_securityCheckFailed,
-          //     EnvoyStepState.ERROR);
         }
       } else if (check is api.SecurityCheck_ChallengeRequest) {
         kPrint("received unexpected security challenge request");
