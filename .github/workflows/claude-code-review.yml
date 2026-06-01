@@ -51,7 +51,7 @@ jobs:
             First, check whether you have reviewed this PR before — look for earlier reviews or review comments you authored on it.
 
             - If this is your first review: review the entire diff and raise every issue you find. Be thorough; this is the moment to surface everything about the existing code, because later reviews will not revisit it.
-            - If you have reviewed this PR before: comment only on what changed in the commits pushed since your last review. Do not raise new issues about code that was already present at your previous review, even if you only noticed it now. If the new commits resolve earlier findings, you may note that briefly.
+            - If you have reviewed this PR before: comment only on what changed in the commits pushed since your last review. Do not raise new issues about code that was already present at your previous review, even if you only noticed it now. Before reviewing the new changes, revisit each finding you raised earlier on this PR and check whether the new commits address it: if one is now fixed, reply on its thread citing the commit that fixed it (for example, `Resolved by <sha>.`) and resolve that thread; leave findings that still stand open.
 
             ### How to comment
 
@@ -70,7 +70,7 @@ jobs:
 
             For example: `[Urgent] <problem>. <fix>.` or `[Low] Optional: <suggestion>.` or `[Medium] Note: <observation>.`
 
-            Do not resolve your own comments — leave that to the human reviewer or the PR author.
+            Resolve only your own threads, and only when the code genuinely addresses them — never resolve a comment authored by a human.
 
             ### What to look for
 
@@ -106,9 +106,16 @@ jobs:
             - Speculative refactors ("you could extract this...") unless the code as written is wrong.
             - Things the PR author explicitly called out in the description.
 
-            Skip preamble. Skip "great work!". Skip emoji. One short paragraph per finding: state the problem, then the fix. End with a one-sentence verdict, then the findings grouped Urgent, then High, then Medium, then Low. If you find nothing to flag, still post that verdict as a short written comment (for example, "Reviewed the diff — no issues found.") rather than only a reaction or emoji.
+            Skip preamble. Skip "great work!". Skip emoji.
+
+            Post each finding as its own inline comment, anchored to the exact line it concerns — one finding per comment, never batched into a single review. Use the `[Priority] Prefix: ...` format above: state the problem, then the fix, in one short paragraph.
+
+            Post exactly one top-level summary comment, and keep it to a single short paragraph: the overall verdict, optionally with a count of findings by priority. Do not restate the individual findings there — they live in the inline comments. If you keep a working checklist while reviewing, edit it out when you finish: the final summary comment must be just that one paragraph, not the checklist.
+
+            If you find nothing to flag, post the summary comment anyway with a short verdict (for example, "Reviewed the diff — no issues found.") rather than only a reaction or emoji.
           claude_args: |
             --model claude-opus-4-8
             --effort max
+            --allowedTools "Read,Grep,Glob,LS,mcp__github_comment__update_claude_comment,mcp__github_inline_comment__create_inline_comment,Bash(gh pr diff:*),Bash(gh pr view:*),Bash(gh api:*)"
           # See https://github.com/anthropics/claude-code-action/blob/main/docs/usage.md
           # or https://code.claude.com/docs/en/cli-reference for available options
