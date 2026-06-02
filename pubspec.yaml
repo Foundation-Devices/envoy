@@ -53,7 +53,10 @@ dependencies:
       ref: 973ac30a242486df799f426c4258cdf7ce25a32f
 
   video_player: ^2.10.1
-  tor: 0.1.1
+  tor:
+    git:
+      url: https://github.com/Foundation-Devices/tor.git
+      ref: frb-rewrite
   qr_flutter: ^4.1.0
   dots_indicator: ^4.0.1
   flutter_secure_storage: ^9.2.2

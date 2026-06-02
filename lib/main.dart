@@ -85,11 +85,11 @@ Future<void> initSingletons({bool integrationTestsRunning = false}) async {
   }
   // This is notoriously low on iOS and GrapheneOS,
   // causing 'too many open files' errors
-  kPrint("Process nofile_limit: ${getNofileLimit()}");
+  kPrint("Process nofile_limit: ${await getNofileLimit()}");
 
   // Requesting a high number. The API will return the best we can get
   // ~10k on iPhone 11 which is much better than the default 256
-  kPrint("Process nofile_limit bumped to: ${setNofileLimit(16384)}");
+  kPrint("Process nofile_limit bumped to: ${await setNofileLimit(16384)}");
 
   await LocalStorage.init();
   await RiveNative.init();
