@@ -105,11 +105,16 @@ print_test_failure() {
     echo -e "${RED}✗ FAILED:${NC} ${BOLD}$test_name${NC}"
     echo -e "${RED}  Group:${NC}  $group_name"
 
-    # Always dump the full captured output to a log file so the user can
-    # see exactly what Maestro said when the pattern-extractors below miss.
+    # Log path — we write to it at the end of this function (after the
+    # extractors below run), so the file can lead with a plain-text
+    # summary header followed by the raw Maestro output.
     local log_path="$FAIL_VIDEOS_DIR/${test_name%.yaml}.log"
     mkdir -p "$FAIL_VIDEOS_DIR"
-    printf '%s\n' "$output" > "$log_path"
+
+    # Outer-scope vars so the log-write at the end can read what the
+    # extractor block found.
+    local line_num=""
+    local line_content=""
 
     # Snapshot the most recent Prime screenshot from the FIRST-attempt run
     # into fail-videos/ so it ships with the GitHub artifact bundle. The
@@ -163,8 +168,23 @@ print_test_failure() {
     # Try to find the line number in the YAML file
     if [ -n "$failed_cmd" ] && [ -f "$test_file" ]; then
         local search_term=""
-        # Try quoted text first: "some text"
-        search_term=$(echo "$failed_cmd" | grep -oE '"[^"]+"' | head -1 | tr -d '"')
+        # Multi-line quoted selector first — failures where the action spans
+        # newlines, e.g.
+        #     Assert that "cancel button-ready
+        #     Cancel Transaction" is visible... FAILED
+        # The "... FAILED$" grep only captures the tail half, so the
+        # single-line quoted-text tier below misses. Walk the multi-line
+        # block via perl's /s flag instead — greedy `.*"` finds the LAST
+        # opening `"` whose close reaches `... FAILED`, capturing the
+        # full selector across newlines.
+        if [ -n "$failed_block" ] && command -v perl >/dev/null 2>&1; then
+            search_term=$(printf '%s' "$failed_block" \
+                | perl -0777 -ne 'print $1 if /.*"([^"]+)"\s*[^"]*\.\.\.\s*FAILED/s')
+        fi
+        # Single-line quoted text: "some text"
+        if [ -z "$search_term" ]; then
+            search_term=$(echo "$failed_cmd" | grep -oE '"[^"]+"' | head -1 | tr -d '"')
+        fi
         # Try text after common patterns
         if [ -z "$search_term" ]; then
             search_term=$(echo "$failed_cmd" | sed -n 's/.*[Nn]ot [Vv]isible[: ]*//p' | head -1 | xargs)
@@ -185,10 +205,16 @@ print_test_failure() {
 
         if [ -n "$search_term" ]; then
             local line_match=""
-            line_match=$(grep -n "$search_term" "$test_file" | head -1)
+            # Selectors may span newlines (multi-line YAML strings) — grep
+            # with the first line only, since each segment is on its own
+            # line in the YAML too. -F treats parens/brackets/dots in
+            # selectors as literal text rather than regex meta-chars.
+            local search_first
+            search_first=$(echo "$search_term" | head -1 | xargs)
+            line_match=$(grep -nF "$search_first" "$test_file" | head -1)
             if [ -n "$line_match" ]; then
-                local line_num="${line_match%%:*}"
-                local line_content="${line_match#*:}"
+                line_num="${line_match%%:*}"
+                line_content="${line_match#*:}"
                 echo -e "${RED}  Line $line_num:${NC} $line_content"
             fi
         fi
@@ -212,6 +238,29 @@ print_test_failure() {
         echo -e "${RED}  Output (last 40 lines):${NC}"
         echo "$output" | grep -v '^$' | tail -40 | sed 's/^/    /'
     fi
+    # Write the .log file: plain-text summary header on top, full raw
+    # Maestro output below. The header mirrors what was just printed to
+    # the terminal (minus colors) so the file is self-explanatory without
+    # scrolling, while the dump underneath stays available for digging.
+    {
+        echo "==== Failure Summary ===="
+        echo "Test:   $test_name"
+        echo "Group:  $group_name"
+        if [ -n "$line_num" ]; then
+            echo "Line $line_num: $line_content"
+        fi
+        if [ -n "$failed_cmd" ]; then
+            echo "Reason: $failed_cmd"
+            if [ -n "$failed_block" ]; then
+                echo "Failed action:"
+                echo "$failed_block" | sed 's/^/    /'
+            fi
+        fi
+        echo ""
+        echo "==== Full Maestro Output ===="
+        printf '%s\n' "$output"
+    } > "$log_path"
+
     echo -e "${YELLOW}  Full log:${NC} $log_path"
     echo ""
 }
@@ -882,6 +931,18 @@ fi
 KEYOS_SAVED_FULL="$(cat "$KEYOS_STATE" 2>/dev/null || true)"
 KEYOS_SAVED="${KEYOS_SAVED_FULL:0:12}"
 
+# When the saved-SHA file was last written = when KeyOS was last flashed. stat
+# differs between macOS (BSD) and Linux (GNU), so branch on $PLATFORM.
+if [ -f "$KEYOS_STATE" ]; then
+    if [ "$PLATFORM" = "mac" ]; then
+        KEYOS_LAST_UPDATED="$(stat -f "%Sm" -t "%Y-%m-%d %H:%M:%S" "$KEYOS_STATE" 2>/dev/null)"
+    else
+        KEYOS_LAST_UPDATED="$(stat -c "%y" "$KEYOS_STATE" 2>/dev/null | cut -d'.' -f1)"
+    fi
+else
+    KEYOS_LAST_UPDATED="<never>"
+fi
+
 # Status line: predicts what the flash script will do. Uses FULL SHAs so it
 # matches keyos_flash_if_new.sh's actual diff check (the short forms have
 # different widths and can't be compared directly).
@@ -903,6 +964,7 @@ echo -e "${GREEN}${BOLD}║  BRANCH      : ${KEYOS_BRANCH}${NC}"
 echo -e "${GREEN}${BOLD}║  SAVED  SHA  : ${KEYOS_SAVED:-<none>}${NC}"
 echo -e "${GREEN}${BOLD}║  UPCOMING SHA: ${KEYOS_UPCOMING}${NC}"
 echo -e "${GREEN}${BOLD}║  STATUS      : ${KEYOS_STATUS}${NC}"
+echo -e "${GREEN}${BOLD}║  LAST UPDATED: ${YELLOW}${KEYOS_LAST_UPDATED}${NC}"
 echo -e "${GREEN}${BOLD}╚══════════════════════════════════════════════════════════╝${NC}"
 echo ""
 
