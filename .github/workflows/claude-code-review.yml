@@ -55,7 +55,7 @@ jobs:
             First, check whether you have reviewed this PR before — look for earlier reviews or review comments you authored on it.
 
             - If this is your first review: review the entire diff and raise every issue you find. Be thorough; this is the moment to surface everything about the existing code, because later reviews will not revisit it.
-            - If you have reviewed this PR before: comment only on what changed in the commits pushed since your last review. Do not raise new issues about code that was already present at your previous review, even if you only noticed it now. Before reviewing the new changes, revisit each finding you raised earlier on this PR and check whether the new commits address it: if one is now fixed, reply on its thread citing the commit that fixed it (for example, `Resolved by <sha>.`) and resolve that thread; leave findings that still stand open.
+            - If you have reviewed this PR before: review only what changed in the commits pushed since your last review, and comment only on new problems those commits introduce. Do not raise issues about code that was already present at your previous review, even if you only noticed it now, and do not restate, summarise, or reply to findings you raised earlier — whether or not the new commits resolved them. If one of your earlier findings is now genuinely fixed you may silently resolve its thread, but post no reply on it; leave threads that still stand untouched.
 
             ### How to comment
 
@@ -112,14 +112,16 @@ jobs:
 
             Skip preamble. Skip "great work!". Skip emoji.
 
-            Post each finding as its own inline comment, anchored to the exact line it concerns — one finding per comment, never batched into a single review. Use the `[Priority] Prefix: ...` format above: state the problem, then the fix, in one short paragraph.
+            Deliver the whole review as a single GitHub pull request review, so the summary and every finding render together as one threaded review instead of scattered comments. Do not post findings one at a time, and do not post a separate top-level summary comment — assemble everything and submit it in one `gh api` call.
 
-            Post exactly one top-level summary comment, and keep it to a single short paragraph: the overall verdict, optionally with a count of findings by priority. Do not restate the individual findings there — they live in the inline comments. If you keep a working checklist while reviewing, edit it out when you finish: the final summary comment must be just that one paragraph, not the checklist.
+            - Gather every inline finding into a `comments` array. Each entry needs `path`, `line`, `side` (`RIGHT` for added or context lines, `LEFT` for removed lines), and `body`. For a finding that spans a multi-line range, also set `start_line` and `start_side` (the side of the start line) — GitHub 422s a multi-line comment that omits `start_side`, and because the review is submitted atomically that one error sinks the whole review; when in doubt, keep the comment single-line. Anchor each to the exact line it concerns and write it in the `[Priority] Prefix: ...` format above: the problem, then the fix, in one short paragraph. Only anchor to lines that actually appear in the diff; if a finding can't be tied to a changed line, fold it into the summary instead of dropping it.
+            - The review `body` is one short paragraph: the overall verdict, optionally a count of findings by priority. Do not restate the individual findings there — they live in the inline comments. Drop any working checklist before submitting.
+            - Submit once, with `event` set to `COMMENT` (never `APPROVE` or `REQUEST_CHANGES`). Determine the PR number from the event context (e.g. `gh pr view`) and write it directly into the path — `gh api` expands `{owner}` and `{repo}` from the checkout but does not expand a `{number}` placeholder. Write the payload to a file and post it: `gh api --method POST repos/{owner}/{repo}/pulls/<pr-number>/reviews --input review.json`, replacing `<pr-number>` with the actual number. The payload shape is `{"event":"COMMENT","body":"<verdict>","comments":[{"path":"lib/foo.dart","line":42,"side":"RIGHT","body":"[High] <problem>. <fix>."}]}`.
 
-            If you find nothing to flag, post the summary comment anyway with a short verdict (for example, "Reviewed the diff — no issues found.") rather than only a reaction or emoji.
+            If you find nothing to flag, still submit one review: an empty `comments` array and a one- or two-line `body` verdict (for example, "Reviewed the diff — no issues found."), never just a reaction or emoji. On a re-review where the new commits introduce no new findings, make the `body` a single line saying so (for example, "Re-reviewed the new commits — no new issues.") with no `comments`, and say nothing about earlier findings.
           claude_args: |
             --model claude-opus-4-8
             --effort max
-            --allowedTools "Read,Grep,Glob,LS,mcp__github_comment__update_claude_comment,mcp__github_inline_comment__create_inline_comment,Bash(gh pr diff:*),Bash(gh pr view:*),Bash(gh api:*)"
+            --allowedTools "Read,Grep,Glob,LS,Write,mcp__github_comment__update_claude_comment,Bash(gh pr diff:*),Bash(gh pr view:*),Bash(gh api:*)"
           # See https://github.com/anthropics/claude-code-action/blob/main/docs/usage.md
           # or https://code.claude.com/docs/en/cli-reference for available options
