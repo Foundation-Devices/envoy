@@ -88,7 +88,10 @@ class _DraggableOverlayState extends State<DraggableOverlay>
                     ),
                     child: widget.child,
                   ),
-                  const SizedBox(height: EnvoySpacing.medium3),
+                  SizedBox(
+                    height: EnvoySpacing.medium2 +
+                        MediaQuery.viewPaddingOf(context).bottom,
+                  ),
                 ],
               ),
             ),
