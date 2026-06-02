@@ -44,5 +44,5 @@ jobs:
           git config --local user.email "github-actions[bot]@users.noreply.github.com"
           git config --local user.name "github-actions[bot]"
           git add pubspec.yaml
-          git diff --staged --quiet || git commit -m "chore: bump build number [skip ci]"
+          git diff --staged --quiet || git commit -m "chore: bump build number"
           git push origin HEAD:${{ github.head_ref }}
