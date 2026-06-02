@@ -10,6 +10,10 @@ on:
     #   - "src/**/*.js"
     #   - "src/**/*.jsx"
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.run_id }}
+  cancel-in-progress: true
+
 jobs:
   claude-review:
     # Review every non-draft PR (open / push / reopen / marked ready-for-review).
