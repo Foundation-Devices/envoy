@@ -248,7 +248,8 @@ class SyncManager {
       (key, _) => key.$1.id == account.id,
     );
 
-    bool success = true;
+    bool anyFailure = false;
+    bool anySkipped = false;
     // Hold the per-account "scanning" flag for the full duration so the UI
     // doesn't flicker off between descriptors or when the shared progress
     // stream emits an unrelated `Syncing` event.
@@ -258,7 +259,7 @@ class SyncManager {
     try {
       for (var descriptor in account.descriptors) {
         if (account.handler == null) {
-          success = false;
+          anyFailure = true;
           continue;
         }
 
@@ -273,19 +274,32 @@ class SyncManager {
           request,
           stopGap: stopGap,
         );
-        // A skipped scan (one already in flight) isn't a failure — it will
-        // report its own outcome. Only a genuine failure flips success.
-        if (outcome == FullScanOutcome.failure) {
-          success = false;
+        switch (outcome) {
+          case FullScanOutcome.failure:
+            anyFailure = true;
+          case FullScanOutcome.skipped:
+            // Another scan for this descriptor is already in flight; this
+            // rescan didn't actually run it and can't know its result.
+            anySkipped = true;
+          case FullScanOutcome.success:
+            break;
         }
       }
     } catch (e, stack) {
       debugPrintStack(stackTrace: stack);
-      success = false;
+      anyFailure = true;
     } finally {
       _fullScanningAccountIds.remove(account.id);
       _emitFullScanningAccounts();
-      _onAccFullScanFinished?.call(account, success);
+      // Report failure if anything failed. Otherwise report success only when
+      // every descriptor actually completed — if any was skipped because a
+      // scan was already running, suppress the callback rather than claim a
+      // premature success the in-flight scan hasn't earned yet.
+      if (anyFailure) {
+        _onAccFullScanFinished?.call(account, false);
+      } else if (!anySkipped) {
+        _onAccFullScanFinished?.call(account, true);
+      }
     }
   }
 
