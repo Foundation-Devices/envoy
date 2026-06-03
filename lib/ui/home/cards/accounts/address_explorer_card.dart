@@ -607,13 +607,18 @@ class _AddressSearchEntryState extends State<AddressSearchEntry> {
               children: [
                 if (widget.icon != null)
                   GestureDetector(
+                    behavior: HitTestBehavior.opaque,
                     onTap: () {
                       if (widget.onIconTap != null) {
                         widget.onIconTap!();
                       }
                     },
                     child: Padding(
-                      padding: EdgeInsets.symmetric(vertical: _verticalPadding),
+                      padding: EdgeInsets.only(
+                        top: _verticalPadding,
+                        bottom: _verticalPadding,
+                        right: EnvoySpacing.small,
+                      ),
                       child: EnvoyIcon(
                         widget.icon!,
                         size: EnvoyIconSize.extraSmall,
@@ -623,8 +628,7 @@ class _AddressSearchEntryState extends State<AddressSearchEntry> {
                   ),
 
                 Padding(
-                  padding: const EdgeInsets.symmetric(
-                      horizontal: EnvoySpacing.small),
+                  padding: const EdgeInsets.only(right: EnvoySpacing.small),
                   child: Container(
                     width: 1,
                     color: EnvoyColors.textTertiary.withValues(alpha: 0.3),
