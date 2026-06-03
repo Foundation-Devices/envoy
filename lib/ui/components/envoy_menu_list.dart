@@ -133,59 +133,57 @@ class _MenuItemState extends State<MenuItem> {
   @override
   Widget build(BuildContext context) {
     final enabled = widget.enabled;
+    final baseColor = enabled ? widget.color : EnvoyColors.textInactive;
     return Material(
       type: MaterialType.transparency,
-      child: Opacity(
-        opacity: enabled ? 1.0 : 0.4,
-        child: Column(
-          children: [
-            GestureDetector(
-              onTap: enabled ? widget.onTap : null,
-              behavior: HitTestBehavior.opaque,
-              onTapDown: enabled ? (_) => _setPressed(true) : null,
-              onTapUp: enabled ? (_) => _setPressed(false) : null,
-              onTapCancel: enabled ? () => _setPressed(false) : null,
-              child: AnimatedScale(
+      child: Column(
+        children: [
+          GestureDetector(
+            onTap: enabled ? widget.onTap : null,
+            behavior: HitTestBehavior.opaque,
+            onTapDown: enabled ? (_) => _setPressed(true) : null,
+            onTapUp: enabled ? (_) => _setPressed(false) : null,
+            onTapCancel: enabled ? () => _setPressed(false) : null,
+            child: AnimatedScale(
+              duration: _animationDuration,
+              curve: Curves.easeOut,
+              scale: _isPressed ? 0.95 : 1.0,
+              child: TweenAnimationBuilder<Color?>(
+                tween: ColorTween(
+                  end: enabled && _isPressed
+                      ? widget.color.applyOpacity(0.7)
+                      : baseColor,
+                ),
                 duration: _animationDuration,
                 curve: Curves.easeOut,
-                scale: _isPressed ? 0.95 : 1.0,
-                child: TweenAnimationBuilder<Color?>(
-                  tween: ColorTween(
-                    end: _isPressed
-                        ? widget.color.applyOpacity(0.7)
-                        : widget.color,
-                  ),
-                  duration: _animationDuration,
-                  curve: Curves.easeOut,
-                  builder: (context, animatedColor, child) {
-                    final foregroundColor = animatedColor ?? widget.color;
+                builder: (context, animatedColor, child) {
+                  final foregroundColor = animatedColor ?? baseColor;
 
-                    return Padding(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: EnvoySpacing.medium1,
-                        vertical: 12,
-                      ),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text(
-                            widget.label,
-                            style: EnvoyTypography.body
-                                .copyWith(color: foregroundColor),
-                            overflow: TextOverflow.ellipsis,
-                          ),
-                          const SizedBox(width: EnvoySpacing.xs),
-                          EnvoyIcon(widget.icon, color: foregroundColor),
-                        ],
-                      ),
-                    );
-                  },
-                ),
+                  return Padding(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: EnvoySpacing.medium1,
+                      vertical: 12,
+                    ),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          widget.label,
+                          style: EnvoyTypography.body
+                              .copyWith(color: foregroundColor),
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                        const SizedBox(width: EnvoySpacing.xs),
+                        EnvoyIcon(widget.icon, color: foregroundColor),
+                      ],
+                    ),
+                  );
+                },
               ),
             ),
-            widget.useDivider ? const Divider(height: 0) : const SizedBox(),
-          ],
-        ),
+          ),
+          widget.useDivider ? const Divider(height: 0) : const SizedBox(),
+        ],
       ),
     );
   }
