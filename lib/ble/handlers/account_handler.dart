@@ -78,6 +78,8 @@ class BleAccountHandler extends PassportMessageHandler {
         if (result == true) {
           lastExchangeRateHash = ExchangeRate().history.hashCode;
         }
+
+        await sendExchangeRate();
       }
     };
     ExchangeRate().addListener(_onExchangeRateChanged);
@@ -124,6 +126,8 @@ class BleAccountHandler extends PassportMessageHandler {
   Future<void> _handleFiatPreference(api.PrimeFiatPreference pref) async {
     final device = qlConnection.getDevice();
     if (device == null) return;
+
+    if (pref.currencyCode.isEmpty) return;
     if (device.primeFiatCurrency == pref.currencyCode) return;
     await Devices().updatePrimeFiatCurrency(pref.currencyCode, device);
     if (_sendingData) {
@@ -309,6 +313,9 @@ class BleAccountHandler extends PassportMessageHandler {
       final double rate;
       if (currencyCode == "USD") {
         rate = exchangeRate.usdRate!;
+      } else if (currencyCode == exchangeRate.getCode() &&
+          exchangeRate.selectedCurrencyRate != null) {
+        rate = exchangeRate.selectedCurrencyRate!;
       } else {
         rate = await exchangeRate.getRateForCode(currencyCode);
       }

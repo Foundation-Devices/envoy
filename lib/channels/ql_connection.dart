@@ -292,13 +292,12 @@ class QLConnection with EnvoyMessageWriter {
   /// Called by HeartbeatHandler when a heartbeat is received.
   void onHeartbeatReceived() {
     final wasQLActive = _lastQLActive;
+    _emitQLActiveIfChanged();
+
     if (_awaitingHeartbeatAfterConnect) {
       _awaitingHeartbeatAfterConnect = false;
       onQLConnected();
-    }
-    _emitQLActiveIfChanged();
-
-    if (!wasQLActive && _lastQLActive) {
+    } else if (!wasQLActive && _lastQLActive) {
       onQLConnected();
     }
   }
