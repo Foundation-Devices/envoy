@@ -187,20 +187,20 @@ print_test_failure() {
         fi
         # Try text after common patterns
         if [ -z "$search_term" ]; then
-            search_term=$(echo "$failed_cmd" | sed -n 's/.*[Nn]ot [Vv]isible[: ]*//p' | head -1 | xargs)
+            search_term=$(echo "$failed_cmd" | sed -n 's/.*[Nn]ot [Vv]isible[: ]*//p' | head -1 | sed -E 's/^[[:space:]]+//; s/[[:space:]]+$//')
         fi
         if [ -z "$search_term" ]; then
             # "Element not found: Text matching regex: Proceed with Cancellation"
-            search_term=$(echo "$failed_cmd" | sed -n 's/.*[Nn]ot [Ff]ound.*regex[: ]*//p' | head -1 | xargs)
+            search_term=$(echo "$failed_cmd" | sed -n 's/.*[Nn]ot [Ff]ound.*regex[: ]*//p' | head -1 | sed -E 's/^[[:space:]]+//; s/[[:space:]]+$//')
         fi
         if [ -z "$search_term" ]; then
-            search_term=$(echo "$failed_cmd" | sed -n 's/.*[Nn]ot [Ff]ound[: ]*//p' | head -1 | xargs)
+            search_term=$(echo "$failed_cmd" | sed -n 's/.*[Nn]ot [Ff]ound[: ]*//p' | head -1 | sed -E 's/^[[:space:]]+//; s/[[:space:]]+$//')
         fi
         if [ -z "$search_term" ]; then
-            search_term=$(echo "$failed_cmd" | sed -n 's/.*[Uu]nable to find[: ]*//p' | head -1 | xargs)
+            search_term=$(echo "$failed_cmd" | sed -n 's/.*[Uu]nable to find[: ]*//p' | head -1 | sed -E 's/^[[:space:]]+//; s/[[:space:]]+$//')
         fi
         if [ -z "$search_term" ]; then
-            search_term=$(echo "$failed_cmd" | sed -n 's/.*[Tt]imed out[: ]*//p' | head -1 | xargs)
+            search_term=$(echo "$failed_cmd" | sed -n 's/.*[Tt]imed out[: ]*//p' | head -1 | sed -E 's/^[[:space:]]+//; s/[[:space:]]+$//')
         fi
 
         if [ -n "$search_term" ]; then
@@ -210,7 +210,7 @@ print_test_failure() {
             # line in the YAML too. -F treats parens/brackets/dots in
             # selectors as literal text rather than regex meta-chars.
             local search_first
-            search_first=$(echo "$search_term" | head -1 | xargs)
+            search_first=$(printf '%s' "$search_term" | head -1 | sed -E 's/^[[:space:]]+//; s/[[:space:]]+$//')
             line_match=$(grep -nF "$search_first" "$test_file" | head -1)
             if [ -n "$line_match" ]; then
                 line_num="${line_match%%:*}"
