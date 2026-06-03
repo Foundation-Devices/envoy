@@ -889,6 +889,15 @@ class _AccountOptionsState extends ConsumerState<AccountOptions> {
   Widget build(context) {
     final account = ref.watch(accountStateProvider(widget.account.id));
     final navigator = Navigator.of(context);
+
+    // Disable rescan while a scan is already running (manual rescan, or the
+    // initial/required scan), so a second rescan can't overlap the first.
+    final scanInProgress =
+        ref.watch(accountFullScanInProgressProvider(widget.account.id));
+    final requiredScan = ref.watch(isAccountRequiredScan(widget.account));
+    final isAccountLoading =
+        account?.dateSynced == null || requiredScan || scanInProgress;
+
     return EnvoyMenuList(
       children: [
         const SizedBox(height: EnvoySpacing.xs),
@@ -1010,6 +1019,7 @@ class _AccountOptionsState extends ConsumerState<AccountOptions> {
         MenuItem(
           label: S().receive_qr_rescanAccount,
           icon: EnvoyIcons.refresh,
+          enabled: !scanInProgress && !isAccountLoading,
           onTap: () {
             navigator.pop();
             showEnvoyDialog(
