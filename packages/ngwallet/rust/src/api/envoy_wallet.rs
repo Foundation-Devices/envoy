@@ -612,7 +612,7 @@ impl EnvoyAccountHandler {
         let socks_proxy = socks_proxy.as_deref();
         let mut scan_request_guard = scan_request
             .lock()
-            .expect("Failed to lock scan request mutex");
+            .map_err(|e| anyhow!("Failed to lock scan request mutex: {}", e))?;
         if let Some(scan_request) = scan_request_guard.take() {
             let res = NgWallet::<Connection>::scan(
                 scan_request,
