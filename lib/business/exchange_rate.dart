@@ -212,6 +212,8 @@ class ExchangeRate extends ChangeNotifier {
     // Fetch rates for this session
     if (currencyCode != "USD") {
       _getNonUsdRate(false);
+    } else {
+      _getUsdRate();
     }
 
     notifyListeners();
@@ -269,7 +271,10 @@ class ExchangeRate extends ChangeNotifier {
 
   Future<void> _getUsdRate() async {
     try {
-      await _fetchRateHistory("USD");
+      final selected = _selectedCurrency?.code;
+      if (selected == null || selected == "USD") {
+        await _fetchRateHistory("USD");
+      }
       _usdRate = await _getRateForCode("USD");
       _usdRateTimestamp = DateTime.now();
       _storeRate(_selectedCurrencyRate, _selectedCurrency?.code, _usdRate);
