@@ -211,6 +211,11 @@ class HomePageState extends ConsumerState<HomePage>
       backButtonDispatcher.addCallback(_handleHomePageBackPress);
     });
 
+    SyncManager().onFullScanFinished((account, success) {
+      if (!mounted) return;
+      _notifyAboutAccRescanFinishedToast(account, success: success);
+    });
+
     // Home is there for the lifetime of the app so no need to dispose stream
     final connectivitySub = ConnectivityManager().events.stream.listen((event) {
       // If Tor is broken surface a warning
@@ -228,11 +233,6 @@ class HomePageState extends ConsumerState<HomePage>
           _torWarningDisplayedMoreThan5minAgo = false;
         }
       }
-
-      SyncManager().onFullScanFinished((account, success) {
-        if (!mounted) return;
-        _notifyAboutAccRescanFinishedToast(account, success: success);
-      });
 
       if (event == ConnectivityManagerEvent.foundationServerDown &&
           _serverDownWarningDisplayedMoreThan5minAgo &&

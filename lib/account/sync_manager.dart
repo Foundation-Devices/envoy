@@ -244,6 +244,7 @@ class SyncManager {
     try {
       for (var descriptor in account.descriptors) {
         if (account.handler == null) {
+          success = false;
           continue;
         }
 
@@ -252,16 +253,19 @@ class SyncManager {
 
         _fullScanRequests[(account, descriptor.addressType)] = request;
 
-        await performFullScan(
+        final descriptorSucceeded = await performFullScan(
           account.handler!,
           descriptor.addressType,
           request,
           stopGap: stopGap,
         );
+        if (!descriptorSucceeded) {
+          success = false;
+        }
       }
-    } catch (_) {
+    } catch (e, stack) {
+      debugPrintStack(stackTrace: stack);
       success = false;
-      rethrow;
     } finally {
       _fullScanningAccountIds.remove(account.id);
       _emitFullScanningAccounts();
@@ -358,7 +362,7 @@ class SyncManager {
     await Future.wait(futures);
   }
 
-  Future<void> performFullScan(
+  Future<bool> performFullScan(
     EnvoyAccountHandler handler,
     AddressType addressType,
     FullScanRequest fullScanRequest, {
@@ -366,7 +370,7 @@ class SyncManager {
   }) async {
     final account = await handler.state();
     if (_activeFullScanOperations.contains((account.id, addressType))) {
-      return;
+      return false;
     }
     _activeFullScanOperations.add((account.id, addressType));
     final server = Settings().electrumAddress(account.network);
@@ -384,7 +388,7 @@ class SyncManager {
       if (_enableLogging) {
         kPrint("FullScanRequest is disposed");
       }
-      return;
+      return false;
     }
 
     try {
@@ -393,7 +397,7 @@ class SyncManager {
           kPrint(
               "Skipping Scan because Tor is not ready yet $addressType - ${account.name} | ${account.network} | $server | Tor: $port");
         }
-        return;
+        return false;
       }
       // Use the scheduler to run this task in the background
       WalletUpdate update = await EnvoyAccountHandler.scanWallet(
@@ -403,12 +407,19 @@ class SyncManager {
           stopGap: stopGap,
           validateDomain: Settings().validateDomain(server));
 
-      if (account.handler != null) {
-        await account.handler!
-            .applyUpdate(update: update, addressType: addressType);
-        await EnvoyStorage()
-            .setAccountScanStatus(account.id, addressType, true);
+      if (account.handler == null) {
+        // Handler went away before we could apply the update — treat as a
+        // failure rather than silently reporting success.
+        if (_enableLogging) {
+          kPrint(
+              "FullScan completed but handler is null, cannot apply update $addressType - ${account.name}");
+        }
+        return false;
       }
+
+      await account.handler!
+          .applyUpdate(update: update, addressType: addressType);
+      await EnvoyStorage().setAccountScanStatus(account.id, addressType, true);
 
       if (_enableLogging) {
         kPrint(
@@ -418,6 +429,7 @@ class SyncManager {
       if (account.network == Network.bitcoin) {
         ConnectivityManager().electrumSuccess();
       }
+      return true;
     } catch (e, stack) {
       debugPrintStack(stackTrace: stack);
       if (_enableLogging) {
@@ -431,6 +443,7 @@ class SyncManager {
       if (account.network == Network.bitcoin) {
         ConnectivityManager().electrumFailure();
       }
+      return false;
     } finally {
       _currentLoading.sink.add(None());
       _activeFullScanOperations.remove((account.id, addressType));
