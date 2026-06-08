@@ -95,142 +95,166 @@ class _AccountListTileState extends ConsumerState<AccountListTile> {
         : ref.watch(accountBalanceProvider(account.id));
 
     double cardRadius = EnvoySpacing.medium2;
-    return Hero(
-      tag: "account_card_${account.id}",
-      child: CardSwipeWrapper(
+    final card = CardSwipeWrapper(
+      height: containerHeight,
+      draggable: widget.draggable,
+      account: account,
+      child: Container(
         height: containerHeight,
-        draggable: widget.draggable,
-        account: account,
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.all(Radius.circular(cardRadius - 1)),
+          border: Border.all(
+            color: Colors.black,
+            width: 2,
+            style: BorderStyle.solid,
+          ),
+          gradient: LinearGradient(
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+            colors: [fromHex(account.color), Colors.black],
+          ),
+        ),
         child: Container(
-          height: containerHeight,
           decoration: BoxDecoration(
-            borderRadius: BorderRadius.all(Radius.circular(cardRadius - 1)),
+            borderRadius: BorderRadius.all(Radius.circular(cardRadius - 3)),
             border: Border.all(
-              color: Colors.black,
+              color: fromHex(account.color),
               width: 2,
               style: BorderStyle.solid,
             ),
-            gradient: LinearGradient(
-              begin: Alignment.topCenter,
-              end: Alignment.bottomCenter,
-              colors: [fromHex(account.color), Colors.black],
-            ),
           ),
-          child: Container(
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.all(Radius.circular(cardRadius - 3)),
-              border: Border.all(
-                color: fromHex(account.color),
-                width: 2,
-                style: BorderStyle.solid,
-              ),
-            ),
-            child: ClipRRect(
-              borderRadius: BorderRadius.all(Radius.circular(cardRadius - 4)),
-              child: Semantics(
-                container: true,
-                explicitChildNodes: true,
-                child: GestureDetector(
-                  excludeFromSemantics: true,
-                  onTap: () {
-                    EnvoyStorage().addPromptState(
-                        DismissiblePrompt.userInteractedWithAccDetail);
-                    widget.onTap();
-                  },
-                  child: Stack(children: [
-                    Positioned.fill(
-                      child: CustomPaint(
-                        isComplex: true,
-                        willChange: false,
-                        painter: StripePainter(
-                          EnvoyColors.gray1000.applyOpacity(0.4),
-                        ),
+          child: ClipRRect(
+            borderRadius: BorderRadius.all(Radius.circular(cardRadius - 4)),
+            child: Semantics(
+              container: true,
+              explicitChildNodes: true,
+              child: GestureDetector(
+                excludeFromSemantics: true,
+                onTap: () {
+                  EnvoyStorage().addPromptState(
+                      DismissiblePrompt.userInteractedWithAccDetail);
+                  widget.onTap();
+                },
+                child: Stack(children: [
+                  Positioned.fill(
+                    child: CustomPaint(
+                      isComplex: true,
+                      willChange: false,
+                      painter: StripePainter(
+                        EnvoyColors.gray1000.applyOpacity(0.4),
                       ),
                     ),
-                    Positioned.fill(
-                        child: Column(
-                      mainAxisSize: MainAxisSize.max,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Expanded(
-                          child: Padding(
-                            padding: const EdgeInsets.symmetric(
-                              horizontal:
-                                  EnvoySpacing.medium1 - EnvoySpacing.xs,
-                              vertical: EnvoySpacing.small - 3,
-                            ),
-                            child: Center(
-                              child: Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Flexible(
-                                    child: Column(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.center,
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        Semantics(
-                                          container: true,
-                                          identifier:
-                                              'account_name_${account.id}',
-                                          child: DefaultTextStyle(
+                  ),
+                  Positioned.fill(
+                      child: Column(
+                    mainAxisSize: MainAxisSize.max,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Expanded(
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: EnvoySpacing.medium1 - EnvoySpacing.xs,
+                            vertical: EnvoySpacing.small - 3,
+                          ),
+                          child: Center(
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Flexible(
+                                  child: Column(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Semantics(
+                                        container: true,
+                                        identifier:
+                                            'account_name_${account.id}',
+                                        child: DefaultTextStyle(
+                                          style: EnvoyTypography.subheading
+                                              .copyWith(
+                                                  color:
+                                                      EnvoyColors.solidWhite),
+                                          child: Text(
+                                            account.name,
                                             style: EnvoyTypography.subheading
                                                 .copyWith(
                                                     color:
                                                         EnvoyColors.solidWhite),
-                                            child: Text(
-                                              account.name,
-                                              style: EnvoyTypography.subheading
-                                                  .copyWith(
-                                                      color: EnvoyColors
-                                                          .solidWhite),
-                                            ),
                                           ),
                                         ),
-                                        Semantics(
-                                          container: true,
-                                          identifier:
-                                              'device_name_${account.id}',
-                                          child: DefaultTextStyle(
+                                      ),
+                                      Semantics(
+                                        container: true,
+                                        identifier: 'device_name_${account.id}',
+                                        child: DefaultTextStyle(
+                                          style: EnvoyTypography.info.copyWith(
+                                              color: EnvoyColors.solidWhite),
+                                          child: Text(
+                                            Devices().getDeviceName(
+                                                account.deviceSerial ?? ""),
                                             style: EnvoyTypography.info
                                                 .copyWith(
                                                     color:
                                                         EnvoyColors.solidWhite),
-                                            child: Text(
-                                              Devices().getDeviceName(
-                                                  account.deviceSerial ?? ""),
-                                              style: EnvoyTypography.info
-                                                  .copyWith(
-                                                      color: EnvoyColors
-                                                          .solidWhite),
-                                            ),
                                           ),
                                         ),
-                                      ],
-                                    ),
+                                      ),
+                                    ],
                                   ),
-                                  Semantics(
-                                    container: true,
-                                    identifier: 'account_badge_${account.id}',
-                                    child: AccountBadge(account: account),
-                                  ),
-                                ],
-                              ),
+                                ),
+                                Semantics(
+                                  container: true,
+                                  identifier: 'account_badge_${account.id}',
+                                  child: AccountBadge(account: account),
+                                ),
+                              ],
                             ),
                           ),
                         ),
-                        Container(
-                          height: 30,
-                          margin: const EdgeInsets.all(EnvoySpacing.xs),
-                          child: Consumer(
-                            builder: (context, ref, child) {
-                              final hide = ref.watch(
-                                  balanceHideStateStatusProvider(account!.id));
-                              if (hide) {
-                                return Container(
+                      ),
+                      Container(
+                        height: 30,
+                        margin: const EdgeInsets.all(EnvoySpacing.xs),
+                        child: Consumer(
+                          builder: (context, ref, child) {
+                            final hide = ref.watch(
+                                balanceHideStateStatusProvider(account!.id));
+                            if (hide) {
+                              return Container(
+                                decoration: ShapeDecoration(
+                                  color: const Color(0xFFF8F8F8),
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(
+                                        EnvoySpacing.medium1),
+                                  ),
+                                ),
+                                child: Padding(
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: EnvoySpacing.xs),
+                                  child: Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      LoaderGhost(
+                                        width: 200,
+                                        height: 24,
+                                      ),
+                                      LoaderGhost(
+                                        width: 50,
+                                        height: 24,
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              );
+                            }
+                            if (isScanning) {
+                              return Semantics(
+                                container: true,
+                                identifier: 'account_scanning_${account.id}',
+                                child: Container(
                                   decoration: ShapeDecoration(
                                     color: const Color(0xFFF8F8F8),
                                     shape: RoundedRectangleBorder(
@@ -239,108 +263,78 @@ class _AccountListTileState extends ConsumerState<AccountListTile> {
                                     ),
                                   ),
                                   child: Padding(
-                                    padding: const EdgeInsets.symmetric(
-                                        horizontal: EnvoySpacing.xs),
-                                    child: Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceBetween,
-                                      children: [
-                                        LoaderGhost(
-                                          width: 200,
-                                          height: 24,
-                                        ),
-                                        LoaderGhost(
-                                          width: 50,
-                                          height: 24,
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                );
-                              }
-                              if (isScanning) {
-                                return Semantics(
-                                  container: true,
-                                  identifier: 'account_scanning_${account.id}',
-                                  child: Container(
-                                    decoration: ShapeDecoration(
-                                      color: const Color(0xFFF8F8F8),
-                                      shape: RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.circular(
-                                            EnvoySpacing.medium1),
-                                      ),
-                                    ),
-                                    child: Padding(
-                                      padding:
-                                          const EdgeInsets.all(EnvoySpacing.xs),
-                                      child: Stack(
-                                          alignment:
-                                              AlignmentDirectional.center,
-                                          children: [
-                                            SizedBox.expand(
-                                              child: LoaderGhost(
-                                                width: double.infinity,
-                                                height: double.infinity,
+                                    padding:
+                                        const EdgeInsets.all(EnvoySpacing.xs),
+                                    child: Stack(
+                                        alignment: AlignmentDirectional.center,
+                                        children: [
+                                          SizedBox.expand(
+                                            child: LoaderGhost(
+                                              width: double.infinity,
+                                              height: double.infinity,
+                                            ),
+                                          ),
+                                          Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.center,
+                                            children: [
+                                              const EnvoyActivityIndicator(
+                                                  radius: 8),
+                                              const SizedBox(
+                                                  width: EnvoySpacing.xs),
+                                              Text(
+                                                S().accounts_loading_loadingAccount,
+                                                textAlign: TextAlign.center,
+                                                style: EnvoyTypography.info
+                                                    .copyWith(
+                                                        color: EnvoyColors
+                                                            .textTertiary),
                                               ),
-                                            ),
-                                            Row(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment.center,
-                                              children: [
-                                                const EnvoyActivityIndicator(
-                                                    radius: 8),
-                                                const SizedBox(
-                                                    width: EnvoySpacing.xs),
-                                                Text(
-                                                  S().accounts_loading_loadingAccount,
-                                                  textAlign: TextAlign.center,
-                                                  style: EnvoyTypography.info
-                                                      .copyWith(
-                                                          color: EnvoyColors
-                                                              .textTertiary),
-                                                ),
-                                              ],
-                                            ),
-                                          ]),
-                                    ),
-                                  ),
-                                );
-                              }
-                              return Semantics(
-                                container: true,
-                                identifier: 'account_balance_${account.id}',
-                                child: Container(
-                                  decoration: ShapeDecoration(
-                                    color: const Color(0xFFF8F8F8),
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(
-                                          cardRadius - (EnvoySpacing.small)),
-                                    ),
-                                  ),
-                                  child: Padding(
-                                    padding: const EdgeInsets.symmetric(
-                                        horizontal: EnvoySpacing.small),
-                                    child: EnvoyAmount(
-                                        account: widget.account,
-                                        amountSats: balance.toInt(),
-                                        amountWidgetStyle:
-                                            AmountWidgetStyle.singleLine),
+                                            ],
+                                          ),
+                                        ]),
                                   ),
                                 ),
                               );
-                            },
-                          ),
-                        )
-                      ],
-                    ))
-                  ]),
-                ),
+                            }
+                            return Semantics(
+                              container: true,
+                              identifier: 'account_balance_${account.id}',
+                              child: Container(
+                                decoration: ShapeDecoration(
+                                  color: const Color(0xFFF8F8F8),
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(
+                                        cardRadius - (EnvoySpacing.small)),
+                                  ),
+                                ),
+                                child: Padding(
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: EnvoySpacing.small),
+                                  child: EnvoyAmount(
+                                      account: widget.account,
+                                      amountSats: balance.toInt(),
+                                      amountWidgetStyle:
+                                          AmountWidgetStyle.singleLine),
+                                ),
+                              ),
+                            );
+                          },
+                        ),
+                      )
+                    ],
+                  ))
+                ]),
               ),
             ),
           ),
         ),
       ),
     );
+
+    return widget.useHero
+        ? Hero(tag: "account_card_${account.id}", child: card)
+        : card;
   }
 }
 

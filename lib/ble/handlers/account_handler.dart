@@ -78,6 +78,8 @@ class BleAccountHandler extends PassportMessageHandler {
         if (result == true) {
           lastExchangeRateHash = ExchangeRate().history.hashCode;
         }
+
+        await sendExchangeRate();
       }
     };
     ExchangeRate().addListener(_onExchangeRateChanged);
@@ -124,6 +126,8 @@ class BleAccountHandler extends PassportMessageHandler {
   Future<void> _handleFiatPreference(api.PrimeFiatPreference pref) async {
     final device = qlConnection.getDevice();
     if (device == null) return;
+
+    if (pref.currencyCode.isEmpty) return;
     if (device.primeFiatCurrency == pref.currencyCode) return;
     await Devices().updatePrimeFiatCurrency(pref.currencyCode, device);
     if (_sendingData) {
@@ -292,7 +296,7 @@ class BleAccountHandler extends PassportMessageHandler {
     final device = qlConnection.getDevice();
     if (device?.onboardingComplete != true) {
       kPrint(
-        "Device not onboarded, skipping sending exchange rate history. ${qlConnection.deviceId}",
+        "Device not onboarded, skipping sending exchange rate. ${qlConnection.deviceId}",
       );
       return;
     }
@@ -300,29 +304,23 @@ class BleAccountHandler extends PassportMessageHandler {
       _sendingData = true;
       final exchangeRate = ExchangeRate();
 
-      // Honour Prime's selected fiat. Empty string means "fiat disabled" — skip.
-      // Null (older Prime, never sent a preference) falls back to USD.
       final primeCurrency = device?.primeFiatCurrency;
-      if (primeCurrency != null && primeCurrency.isEmpty) {
-        return;
-      }
-      final currencyCode = (primeCurrency == null || primeCurrency.isEmpty)
-          ? "USD"
-          : primeCurrency;
+      final envoyCurrency = exchangeRate.history.currency;
+      final currencyCode = (primeCurrency != null && primeCurrency.isNotEmpty)
+          ? primeCurrency
+          : (envoyCurrency.isNotEmpty ? envoyCurrency : "USD");
 
       final double rate;
       if (currencyCode == "USD") {
         rate = exchangeRate.usdRate!;
+      } else if (currencyCode == exchangeRate.getCode() &&
+          exchangeRate.selectedCurrencyRate != null) {
+        rate = exchangeRate.selectedCurrencyRate!;
       } else {
         rate = await exchangeRate.getRateForCode(currencyCode);
       }
 
-      // Cached USD timestamp is meaningful for the USD branch; non-USD rates
-      // are fetched here so the timestamp is "now".
-      final timestampMs = currencyCode == "USD"
-          ? (exchangeRate.usdRateTimestamp?.millisecondsSinceEpoch ??
-              DateTime.now().millisecondsSinceEpoch)
-          : DateTime.now().millisecondsSinceEpoch;
+      final timestampMs = DateTime.now().millisecondsSinceEpoch;
 
       final exchangeRateMessage = api.ExchangeRate(
         currencyCode: currencyCode,
@@ -336,7 +334,7 @@ class BleAccountHandler extends PassportMessageHandler {
 
       kPrint(
           "Sending exchange rate ($currencyCode) to Prime: ${qlConnection.deviceId}");
-      qlConnection.writeMessage(
+      await qlConnection.writeMessage(
         api.QuantumLinkMessage.exchangeRate(exchangeRateMessage),
       );
     } catch (e) {
@@ -356,11 +354,7 @@ class BleAccountHandler extends PassportMessageHandler {
       return false;
     }
 
-    // Empty = Prime fiat disabled (skip). Null = legacy Prime (use Envoy's cached history).
     final primeCurrency = device?.primeFiatCurrency;
-    if (primeCurrency != null && primeCurrency.isEmpty) {
-      return false;
-    }
 
     try {
       _sendingData = true;
