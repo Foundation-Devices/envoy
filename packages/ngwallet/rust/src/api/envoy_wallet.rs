@@ -583,7 +583,9 @@ impl EnvoyAccountHandler {
         );
         let socks_proxy = tor_port.map(|port| format!("127.0.0.1:{}", port));
         let socks_proxy = socks_proxy.as_deref();
-        let mut scan_request_guard = sync_request.lock().expect("Failed to lock request");
+        let mut scan_request_guard = sync_request
+            .lock()
+            .map_err(|e| anyhow!("Failed to lock sync request mutex: {}", e))?;
         if let Some(sync_request) = scan_request_guard.take() {
             let update = NgWallet::<Connection>::sync(
                 sync_request,
@@ -591,7 +593,7 @@ impl EnvoyAccountHandler {
                 socks_proxy,
                 validate_domain,
             )
-            .expect("Electrum sync failed");
+            .map_err(|e| anyhow!("Electrum sync failed: {}", e))?;
             Ok(Arc::new(Mutex::new(Update::from(update))))
         } else {
             Err(anyhow!("No sync request found"))
@@ -610,7 +612,7 @@ impl EnvoyAccountHandler {
         let socks_proxy = socks_proxy.as_deref();
         let mut scan_request_guard = scan_request
             .lock()
-            .expect("Failed to lock scan request mutex");
+            .map_err(|e| anyhow!("Failed to lock scan request mutex: {}", e))?;
         if let Some(scan_request) = scan_request_guard.take() {
             let res = NgWallet::<Connection>::scan(
                 scan_request,
