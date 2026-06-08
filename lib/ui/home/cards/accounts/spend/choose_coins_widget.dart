@@ -90,15 +90,22 @@ class _ChooseCoinsWidget extends ConsumerState<ChooseCoinsWidget> {
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
                 GestureDetector(
+                  behavior: HitTestBehavior.opaque,
                   onTap: () {
                     Navigator.pop(context);
                   },
-                  child: EnvoyIcon(
-                    EnvoyIcons.chevron_left,
-                    size: EnvoyIconSize.extraSmall,
+                  child: const Padding(
+                    padding: EdgeInsets.only(
+                      top: EnvoySpacing.medium1,
+                      bottom: EnvoySpacing.medium1,
+                      right: EnvoySpacing.small,
+                    ),
+                    child: EnvoyIcon(
+                      EnvoyIcons.chevron_left,
+                      size: EnvoyIconSize.extraSmall,
+                    ),
                   ),
                 ),
-                const SizedBox(width: EnvoySpacing.small),
                 Text(
                   S().send_editTxDetails_spendingFromAccount,
                   style: EnvoyTypography.subheading
@@ -374,11 +381,24 @@ class _CoinsListState extends ConsumerState<CoinsListSpendState> {
           Row(
             children: [
               GestureDetector(
-                child: EnvoyIcon(EnvoyIcons.chevron_left),
+                behavior: HitTestBehavior.opaque,
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    EnvoyIcon(
+                      EnvoyIcons.chevron_left,
+                      size: EnvoyIconSize.small,
+                    ),
+                    SizedBox(width: EnvoySpacing.small),
+                  ],
+                ),
                 onTap: () => _setOpenTag(null),
               ),
-              SizedBox(width: EnvoySpacing.small),
-              Text(S().send_editTxDetails_tagDetails),
+              Text(
+                S().send_editTxDetails_tagDetails,
+                style: EnvoyTypography.subheading
+                    .copyWith(color: EnvoyColors.textPrimary),
+              ),
             ],
           ),
           SizedBox(height: EnvoySpacing.small),
@@ -419,9 +439,13 @@ class CoinItemSpendWidget extends ConsumerWidget {
             ),
             GestureDetector(
               onTap: onTap,
-              child: EnvoyIcon(
-                EnvoyIcons.chevron_right,
-                size: EnvoyIconSize.small,
+              behavior: HitTestBehavior.opaque,
+              child: Padding(
+                padding: const EdgeInsets.only(left: EnvoySpacing.medium1),
+                child: EnvoyIcon(
+                  EnvoyIcons.chevron_right,
+                  size: EnvoyIconSize.small,
+                ),
               ),
             ),
           ],
