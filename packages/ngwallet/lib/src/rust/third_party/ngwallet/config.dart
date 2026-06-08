@@ -93,6 +93,10 @@ class NgAccountConfig {
   final MultiSigDetails? multisig;
   final bool archived;
 
+  /// Monotonic counter incremented by each accepted `RemoteUpdate`. Used to
+  /// reject replayed or stale updates.
+  final BigInt lastRemoteSequence;
+
   const NgAccountConfig({
     required this.name,
     required this.color,
@@ -107,6 +111,7 @@ class NgAccountConfig {
     required this.id,
     this.multisig,
     required this.archived,
+    required this.lastRemoteSequence,
   });
 
   @override
@@ -123,7 +128,8 @@ class NgAccountConfig {
       network.hashCode ^
       id.hashCode ^
       multisig.hashCode ^
-      archived.hashCode;
+      archived.hashCode ^
+      lastRemoteSequence.hashCode;
 
   @override
   bool operator ==(Object other) =>
@@ -142,7 +148,8 @@ class NgAccountConfig {
           network == other.network &&
           id == other.id &&
           multisig == other.multisig &&
-          archived == other.archived;
+          archived == other.archived &&
+          lastRemoteSequence == other.lastRemoteSequence;
 }
 
 class NgDescriptor {

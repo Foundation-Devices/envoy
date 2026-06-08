@@ -29,6 +29,16 @@ class EnvoySignMessage {
           message: message,
           network: network);
 
+  /// Verify a signed message. Returns `true` if the signature is valid for
+  /// the given message and address. The verification scheme (BIP-137 for
+  /// legacy/SegWit, BIP-322 for Taproot) is selected from the address type.
+  static Future<bool> verifyMessage(
+          {required String message,
+          required String address,
+          required String signature}) =>
+      RustLib.instance.api.crateApiSignMessageEnvoySignMessageVerifyMessage(
+          message: message, address: address, signature: signature);
+
   @override
   int get hashCode => 0;
 

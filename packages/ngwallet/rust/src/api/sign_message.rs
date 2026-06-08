@@ -26,4 +26,12 @@ impl EnvoySignMessage {
     pub fn format_signed_message(signed: &SignedMessage) -> String {
         sign_message::format_signed_message(signed)
     }
+
+    /// Verify a signed message. Returns `true` if the signature is valid for
+    /// the given message and address. The verification scheme (BIP-137 for
+    /// legacy/SegWit, BIP-322 for Taproot) is selected from the address type.
+    pub fn verify_message(message: &str, address: &str, signature: &str) -> Result<bool> {
+        sign_message::verify_signed_message(message, address, signature)
+            .map_err(|e| anyhow::anyhow!("{}", e))
+    }
 }

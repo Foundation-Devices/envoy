@@ -513,6 +513,18 @@ dependencies = [
 ]
 
 [[package]]
+name = "bip322"
+version = "0.0.10"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "f9a160ac75a0c4885f0e69af525351e8d8cab51265fbc28eac15d885a9a0ac99"
+dependencies = [
+ "base64 0.22.1",
+ "bitcoin 0.32.7",
+ "sha2",
+ "snafu",
+]
+
+[[package]]
 name = "bip39"
 version = "2.2.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -2619,12 +2631,13 @@ dependencies = [
 [[package]]
 name = "ngwallet"
 version = "1.1.1"
-source = "git+https://github.com/Foundation-Devices/ngwallet?tag=3.5.0#3677c7a39506b580b18f0edc359f3139519b3534"
+source = "git+https://github.com/Foundation-Devices/ngwallet?rev=41aecb5225e485110e27bfb7eb5d2df8e35e6e71#41aecb5225e485110e27bfb7eb5d2df8e35e6e71"
 dependencies = [
  "anyhow",
  "bdk_core",
  "bdk_electrum",
  "bdk_wallet",
+ "bip322",
  "bip39",
  "bip85",
  "bitcoin 0.32.7",
@@ -3915,6 +3928,27 @@ name = "smallvec"
 version = "1.15.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "67b1b7a3b5fe4f1376887184045fcf45c69e92af734b7aaddc05fb777b6fbd03"
+
+[[package]]
+name = "snafu"
+version = "0.8.9"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "6e84b3f4eacbf3a1ce05eac6763b4d629d60cbc94d632e4092c54ade71f1e1a2"
+dependencies = [
+ "snafu-derive",
+]
+
+[[package]]
+name = "snafu-derive"
+version = "0.8.9"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "c1c97747dbf44bb1ca44a561ece23508e99cb592e862f22222dcf42f51d1e451"
+dependencies = [
+ "heck",
+ "proc-macro2",
+ "quote",
+ "syn 2.0.110",
+]
 
 [[package]]
 name = "socket2"

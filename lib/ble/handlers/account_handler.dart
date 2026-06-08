@@ -173,6 +173,7 @@ class BleAccountHandler extends PassportMessageHandler {
         id: config.id,
         multisig: config.multisig,
         archived: config.archived,
+        lastRemoteSequence: config.lastRemoteSequence,
       );
     }
 
@@ -192,6 +193,7 @@ class BleAccountHandler extends PassportMessageHandler {
         id: config.id,
         multisig: config.multisig,
         archived: config.archived,
+        lastRemoteSequence: config.lastRemoteSequence,
       );
     }
 

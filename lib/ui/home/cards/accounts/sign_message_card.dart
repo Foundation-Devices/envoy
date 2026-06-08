@@ -23,6 +23,8 @@ import 'package:envoy/ui/widgets/envoy_qr_widget.dart';
 import 'package:envoy/ui/widgets/scanner/decoders/generic_qr_decoder.dart';
 import 'package:envoy/ui/widgets/scanner/qr_scanner.dart';
 import 'package:envoy/util/console.dart';
+import 'package:envoy/ui/components/pop_up.dart';
+import 'package:file_picker/file_picker.dart';
 import 'package:file_saver/file_saver.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -69,6 +71,7 @@ class SignMessageResultData {
   final String formattedResult;
   final String message;
   final String accountId;
+  final bool isValid;
 
   const SignMessageResultData({
     required this.address,
@@ -76,6 +79,7 @@ class SignMessageResultData {
     required this.formattedResult,
     required this.message,
     required this.accountId,
+    this.isValid = true,
   });
 }
 
@@ -302,6 +306,7 @@ class _SignMessageCardState extends ConsumerState<SignMessageCard> {
         formattedResult: formatted,
         message: message,
         accountId: widget.account.id,
+        isValid: true,
       ));
     } catch (e) {
       setState(() {
@@ -334,17 +339,166 @@ class _SignMessageCardState extends ConsumerState<SignMessageCard> {
           _onSignatureScanned(code);
         },
       ),
+      child: SafeArea(
+        child: Align(
+          alignment: Alignment.bottomCenter,
+          child: Padding(
+            padding: const EdgeInsets.only(
+              left: EnvoySpacing.medium1,
+              right: EnvoySpacing.medium1,
+              bottom: EnvoySpacing.large2,
+            ),
+            child: GestureDetector(
+              behavior: HitTestBehavior.opaque,
+              onTap: _importSignatureFromFile,
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  const EnvoyIcon(
+                    EnvoyIcons.file,
+                    color: EnvoyColors.solidWhite,
+                    size: EnvoyIconSize.small,
+                  ),
+                  const SizedBox(width: EnvoySpacing.xs),
+                  Text(
+                    S().signMessage_qrCamera_importFromFile,
+                    style: EnvoyTypography.button.copyWith(
+                      color: EnvoyColors.solidWhite,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Future<void> _importSignatureFromFile() async {
+    String? content;
+    try {
+      final result = await FilePicker.platform.pickFiles(withData: true);
+      if (result == null) {
+        // Cancelled — leave the camera running.
+        return;
+      }
+      final file = result.files.single;
+      if (file.bytes != null) {
+        content = utf8.decode(file.bytes!);
+      } else if (file.path != null) {
+        content = await File(file.path!).readAsString();
+      }
+    } catch (e) {
+      kPrint(e);
+      content = null;
+    }
+
+    final signature = content == null ? null : _parseSignatureFromFile(content);
+
+    if (!mounted) return;
+
+    if (signature == null || signature.isEmpty) {
+      // Surface the failure on top of the still-open camera.
+      _showCantReadSignedMessageModal();
+      return;
+    }
+
+    // Success — close the scanner, then continue to the result screen.
+    Navigator.of(context, rootNavigator: true).pop();
+    await _onSignatureScanned(signature);
+  }
+
+  /// Extracts the base64 signature from a signed-message file. Passport Core
+  /// and Prime both export the RFC2440-style armored format (the markers
+  /// differ slightly between devices):
+  ///
+  ///   -----BEGIN BITCOIN SIGNED MESSAGE-----
+  ///   `message`
+  ///   -----BEGIN [BITCOIN ]SIGNATURE-----
+  ///   `address`
+  ///   `signature`
+  ///   -----END ...-----
+  ///
+  /// A file containing only a raw signature (e.g. a saved QR payload) is also
+  /// accepted. Returns null when no signature can be found.
+  String? _parseSignatureFromFile(String content) {
+    final trimmed = content.trim();
+    if (trimmed.isEmpty) return null;
+
+    if (trimmed.toUpperCase().contains('SIGNED MESSAGE')) {
+      final lines = trimmed.split('\n');
+
+      // Locate the signature header separating the message from address+sig.
+      int sigHeader = -1;
+      for (int i = 0; i < lines.length; i++) {
+        final upper = lines[i].toUpperCase();
+        if (upper.contains('BEGIN') && upper.contains('SIGNATURE')) {
+          sigHeader = i;
+          break;
+        }
+      }
+      if (sigHeader == -1) return null;
+
+      // The first meaningful line after the header is the address, the next
+      // is the signature. Skip blanks and stop at the closing marker.
+      final fields = <String>[];
+      for (int i = sigHeader + 1; i < lines.length && fields.length < 2; i++) {
+        final line = lines[i].trim();
+        if (line.isEmpty) continue;
+        if (line.toUpperCase().startsWith('-----END')) break;
+        fields.add(line);
+      }
+      if (fields.length < 2) return null;
+      return fields[1];
+    }
+
+    // No armor block: treat a single whitespace-free token as a raw signature.
+    if (!trimmed.contains(RegExp(r'\s'))) {
+      return trimmed;
+    }
+    return null;
+  }
+
+  void _showCantReadSignedMessageModal() {
+    showEnvoyPopUp(
+      context,
+      S().manual_setup_import_backup_fails_modal_subheading,
+      S().component_continue,
+      (ctx) {
+        Navigator.of(ctx).pop();
+      },
+      title: S().send_qrReviewModalCantReadSignedMessage_header,
+      typeOfMessage: PopUpState.warning,
+      icon: EnvoyIcons.alert,
+      dismissible: false,
+      showCloseButton: false,
     );
   }
 
   Future<void> _onSignatureScanned(String signature) async {
     final address = _addressController.text.trim().replaceAll(' ', '');
     final message = _messageController.text.trim();
+    final trimmedSignature = signature.trim();
+
+    // Verify the imported signature. We always show the result screen and
+    // surface the validity there instead of blocking with a toast.
+    bool isValid = false;
+    try {
+      isValid = await EnvoySignMessage.verifyMessage(
+        message: message,
+        address: address,
+        signature: trimmedSignature,
+      );
+    } catch (e) {
+      kPrint(e);
+      isValid = false;
+    }
 
     final signed = SignedMessage(
       message: message,
       address: address,
-      signature: signature.trim(),
+      signature: trimmedSignature,
     );
 
     final formatted =
@@ -352,14 +506,13 @@ class _SignMessageCardState extends ConsumerState<SignMessageCard> {
 
     _navigateToResult(SignMessageResultData(
       address: address,
-      signature: signature.trim(),
+      signature: trimmedSignature,
       formattedResult: formatted,
       message: message,
       accountId: widget.account.id,
+      isValid: isValid,
     ));
   }
-
-  // --- Build ---
 
   @override
   Widget build(BuildContext context) {
@@ -569,7 +722,7 @@ class _SignMessageCardState extends ConsumerState<SignMessageCard> {
                 SizedBox(
                   width: double.infinity,
                   child: EnvoyButton(
-                    S().component_continue,
+                    S().signMessage_qr_importSignature,
                     enabled: _scannedByPassport,
                     onTap: _scannedByPassport ? _scanSignature : null,
                     type: EnvoyButtonTypes.primary,
@@ -637,7 +790,7 @@ class _SignMessageResultCardState extends ConsumerState<SignMessageResultCard> {
                     child: Text(
                       data.address,
                       style: EnvoyTypography.body.copyWith(
-                        color: EnvoyColors.textTertiary,
+                        color: NewEnvoyColor.contentSecondary,
                       ),
                     ),
                   ),
@@ -663,7 +816,7 @@ class _SignMessageResultCardState extends ConsumerState<SignMessageResultCard> {
                     child: Text(
                       data.message,
                       style: EnvoyTypography.body.copyWith(
-                        color: EnvoyColors.textTertiary,
+                        color: NewEnvoyColor.contentSecondary,
                       ),
                     ),
                   ),
@@ -687,9 +840,33 @@ class _SignMessageResultCardState extends ConsumerState<SignMessageResultCard> {
                     child: SelectableText(
                       data.signature,
                       style: EnvoyTypography.body.copyWith(
-                        color: EnvoyColors.textPrimary,
+                        color: NewEnvoyColor.contentSecondary,
                       ),
                     ),
+                  ),
+                  const SizedBox(height: EnvoySpacing.small),
+                  Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      EnvoyIcon(
+                        data.isValid ? EnvoyIcons.check : EnvoyIcons.close,
+                        color: data.isValid
+                            ? NewEnvoyColor.contentPositive
+                            : NewEnvoyColor.contentNegative,
+                        size: EnvoyIconSize.small,
+                      ),
+                      const SizedBox(width: EnvoySpacing.xs),
+                      Text(
+                        data.isValid
+                            ? S().signMessage_mainSigned_signatureValid
+                            : S().signMessage_mainSigned_signatureInvalid,
+                        style: EnvoyTypography.body.copyWith(
+                          color: data.isValid
+                              ? NewEnvoyColor.contentPositive
+                              : NewEnvoyColor.contentNegative,
+                        ),
+                      ),
+                    ],
                   ),
                   const SizedBox(height: EnvoySpacing.small),
 

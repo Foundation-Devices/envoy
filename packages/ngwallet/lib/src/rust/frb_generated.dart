@@ -80,7 +80,7 @@ class RustLib extends BaseEntrypoint<RustLibApi, RustLibApiImpl, RustLibWire> {
   String get codegenVersion => '2.11.1';
 
   @override
-  int get rustContentHash => -1974303879;
+  int get rustContentHash => 532661858;
 
   static const kDefaultExternalLibraryLoaderConfig =
       ExternalLibraryLoaderConfig(
@@ -370,6 +370,11 @@ abstract class RustLibApi extends BaseApi {
       required String derivationPath,
       required String message,
       required Network network});
+
+  Future<bool> crateApiSignMessageEnvoySignMessageVerifyMessage(
+      {required String message,
+      required String address,
+      required String signature});
 
   Future<ServerFeatures> crateApiEnvoyWalletGetServerFeatures(
       {required String server, String? proxy, required bool validateDomain});
@@ -2497,6 +2502,37 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       );
 
   @override
+  Future<bool> crateApiSignMessageEnvoySignMessageVerifyMessage(
+      {required String message,
+      required String address,
+      required String signature}) {
+    return handler.executeNormal(NormalTask(
+      callFfi: (port_) {
+        final serializer = SseSerializer(generalizedFrbRustBinding);
+        sse_encode_String(message, serializer);
+        sse_encode_String(address, serializer);
+        sse_encode_String(signature, serializer);
+        pdeCallFfi(generalizedFrbRustBinding, serializer,
+            funcId: 64, port: port_);
+      },
+      codec: SseCodec(
+        decodeSuccessData: sse_decode_bool,
+        decodeErrorData: sse_decode_AnyhowException,
+      ),
+      constMeta: kCrateApiSignMessageEnvoySignMessageVerifyMessageConstMeta,
+      argValues: [message, address, signature],
+      apiImpl: this,
+    ));
+  }
+
+  TaskConstMeta
+      get kCrateApiSignMessageEnvoySignMessageVerifyMessageConstMeta =>
+          const TaskConstMeta(
+            debugName: "envoy_sign_message_verify_message",
+            argNames: ["message", "address", "signature"],
+          );
+
+  @override
   Future<ServerFeatures> crateApiEnvoyWalletGetServerFeatures(
       {required String server, String? proxy, required bool validateDomain}) {
     return handler.executeNormal(NormalTask(
@@ -2506,7 +2542,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         sse_encode_opt_String(proxy, serializer);
         sse_encode_bool(validateDomain, serializer);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 64, port: port_);
+            funcId: 65, port: port_);
       },
       codec: SseCodec(
         decodeSuccessData: sse_decode_server_features,
@@ -2530,7 +2566,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       callFfi: (port_) {
         final serializer = SseSerializer(generalizedFrbRustBinding);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 65, port: port_);
+            funcId: 66, port: port_);
       },
       codec: SseCodec(
         decodeSuccessData: sse_decode_unit,
@@ -2553,7 +2589,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       callFfi: () {
         final serializer = SseSerializer(generalizedFrbRustBinding);
         sse_encode_box_autoadd_output(that, serializer);
-        return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 66)!;
+        return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 67)!;
       },
       codec: SseCodec(
         decodeSuccessData: sse_decode_String,
@@ -2580,7 +2616,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         sse_encode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerTransactionComposeError(
             transactionComposeError, serializer);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 67, port: port_);
+            funcId: 68, port: port_);
       },
       codec: SseCodec(
         decodeSuccessData: sse_decode_tx_compose_error,
@@ -3246,8 +3282,8 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   NgAccountConfig dco_decode_ng_account_config(dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
     final arr = raw as List<dynamic>;
-    if (arr.length != 13)
-      throw Exception('unexpected arr length: expect 13 but see ${arr.length}');
+    if (arr.length != 14)
+      throw Exception('unexpected arr length: expect 14 but see ${arr.length}');
     return NgAccountConfig(
       name: dco_decode_String(arr[0]),
       color: dco_decode_String(arr[1]),
@@ -3264,6 +3300,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
           dco_decode_opt_box_autoadd_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerMultiSigDetails(
               arr[11]),
       archived: dco_decode_bool(arr[12]),
+      lastRemoteSequence: dco_decode_u_64(arr[13]),
     );
   }
 
@@ -4360,6 +4397,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         sse_decode_opt_box_autoadd_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerMultiSigDetails(
             deserializer);
     var var_archived = sse_decode_bool(deserializer);
+    var var_lastRemoteSequence = sse_decode_u_64(deserializer);
     return NgAccountConfig(
         name: var_name,
         color: var_color,
@@ -4373,7 +4411,8 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         network: var_network,
         id: var_id,
         multisig: var_multisig,
-        archived: var_archived);
+        archived: var_archived,
+        lastRemoteSequence: var_lastRemoteSequence);
   }
 
   @protected
@@ -5422,6 +5461,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
     sse_encode_opt_box_autoadd_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerMultiSigDetails(
         self.multisig, serializer);
     sse_encode_bool(self.archived, serializer);
+    sse_encode_u_64(self.lastRemoteSequence, serializer);
   }
 
   @protected

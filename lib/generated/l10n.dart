@@ -9423,6 +9423,26 @@ class S {
     return Intl.message('To:', name: 'send_keyboard_to', desc: '', args: []);
   }
 
+  /// `We can’t read the Signed Message`
+  String get send_qrReviewModalCantReadSignedMessage_header {
+    return Intl.message(
+      'We can’t read the Signed Message',
+      name: 'send_qrReviewModalCantReadSignedMessage_header',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `We can’t read the Signed Transaction`
+  String get send_qrReviewModalCantReadSignedTx_header {
+    return Intl.message(
+      'We can’t read the Signed Transaction',
+      name: 'send_qrReviewModalCantReadSignedTx_header',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Scan signed Transaction`
   String get send_qrReview_scanSignedTransaction {
     return Intl.message(
@@ -9913,6 +9933,28 @@ class S {
     );
   }
 
+  /// `Invalid signature`
+  String get signMessage_mainSigned_signatureInvalid {
+    return Intl.message(
+      'Invalid signature',
+      name: 'signMessage_mainSigned_signatureInvalid',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Valid signature`
+  String get signMessage_mainSigned_signatureValid {
+    return Intl.message(
+      'Valid signature',
+      name: 'signMessage_mainSigned_signatureValid',
+      desc: '',
+      args: [],
+    );
+  }
+
+  // skipped getter for the 'signMessage_mainSigned_valid signature' key
+
   /// `Address does not belong to this account.\nPlease enter another address.`
   String get signMessage_main_addressDoesNotBelong {
     return Intl.message(
@@ -9953,11 +9995,31 @@ class S {
     );
   }
 
+  /// `Import from File`
+  String get signMessage_qrCamera_importFromFile {
+    return Intl.message(
+      'Import from File',
+      name: 'signMessage_qrCamera_importFromFile',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Scan the QR with Passport`
   String get signMessage_qr_header {
     return Intl.message(
       'Scan the QR with Passport',
       name: 'signMessage_qr_header',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Import Signature`
+  String get signMessage_qr_importSignature {
+    return Intl.message(
+      'Import Signature',
+      name: 'signMessage_qr_importSignature',
       desc: '',
       args: [],
     );

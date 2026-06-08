@@ -80,7 +80,8 @@ Future<NgAccountConfig> getPassportAccountFromJson(dynamic json) async {
       dateSynced: null,
       id: Uuid().v4(),
       network: network,
-      archived: false);
+      archived: false,
+      lastRemoteSequence: BigInt.zero);
 
   // show freshly added testnet account if it is the only account (prevents empty Home for new users)
   if ((accountConfig.network == Network.testnet4 ||
