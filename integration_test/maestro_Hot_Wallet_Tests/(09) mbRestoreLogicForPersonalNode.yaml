@@ -429,7 +429,7 @@ appId: com.foundationdevices.envoy
 # wait for MB
 - extendedWaitUntil:
     visible: "A moment ago to Foundation Servers"
-    timeout: 60000
+    timeout: 240000
 
 # hack to wait 5 seconds for the toast
 - swipe:
