@@ -310,12 +310,56 @@ class QLConnection with EnvoyMessageWriter {
   }
 
   void _emitQLActiveIfChanged() {
+    final wasActive = _lastQLActive;
     final isActive = isQLActive();
-    if (_lastQLActive == isActive) {
+    if (wasActive == isActive) {
       return;
     }
     _lastQLActive = isActive;
     _qlActiveController.add(isActive);
+
+    if (wasActive && !isActive) {
+      unawaited(_reconnectAfterQLStall());
+    }
+  }
+
+  Future<void> _reconnectAfterQLStall() async {
+    if (_autoReconnectInFlight) {
+      return;
+    }
+
+    final device = getDevice();
+    if (device == null) {
+      kPrint(
+          "[$deviceId] Skipping QL stall reconnect, paired device not found");
+      return;
+    }
+
+    _autoReconnectInFlight = true;
+    var nativeReconnectStarted = false;
+    try {
+      if (await isConnected()) {
+        kPrint(
+          "[$deviceId] QL heartbeat stalled while BLE is connected; forcing BLE reconnect",
+        );
+        await reconnect(device);
+        if (_qlIdentity == null || _recipientXid == null) {
+          return;
+        }
+        await BluetoothChannel().reconnect(deviceId);
+        nativeReconnectStarted = true;
+      }
+    } catch (e, stack) {
+      _autoReconnectInFlight = false;
+      debugPrintStack(
+        label: "[$deviceId] QL stall reconnect failed: $e",
+        stackTrace: stack,
+      );
+    } finally {
+      if (!nativeReconnectStarted) {
+        _autoReconnectInFlight = false;
+      }
+    }
   }
 
   void resetQLStatus() {
