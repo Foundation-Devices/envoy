@@ -279,6 +279,13 @@ class BluetoothChannel: NSObject, CBCentralManagerDelegate, FlutterStreamHandler
             return
         }
 
+        if qlConnection.isConnected() || peripheral.state == .connected {
+            print("\(Self.TAG) Reconnect requested while already connected; disconnecting first: \(deviceId)")
+            central.cancelPeripheralConnection(peripheral)
+            result(["reconnecting": true])
+            return
+        }
+
         print("\(Self.TAG) Reconnecting to device: \(deviceId)")
         qlConnection.connect(peripheral: peripheral)
         result(["reconnecting": true])
