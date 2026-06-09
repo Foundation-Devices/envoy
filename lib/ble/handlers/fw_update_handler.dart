@@ -43,6 +43,8 @@ class FwUpdateHandler extends PassportMessageHandler {
 
   Set<PrimeFwUpdateStep> _completedUpdateStates = {};
 
+  PrimeFwUpdateStep _latestStep = PrimeFwUpdateStep.idle;
+
   String newVersion = "";
   String currentVersion = "";
   int totalPatchBytes = 0;
@@ -69,7 +71,7 @@ class FwUpdateHandler extends PassportMessageHandler {
       _transferProgress.stream.asBroadcastStream();
 
   Stream<PrimeFwUpdateStep> get primeFwUpdate =>
-      _primeFwUpdate.stream.asBroadcastStream();
+      _primeFwUpdate.stream.asBroadcastStream().replayLatest(_latestStep);
 
   Stream<FwUpdateState> get downloadStateStream =>
       _downloadState.stream.asBroadcastStream().replayLatest(
@@ -397,6 +399,7 @@ class FwUpdateHandler extends PassportMessageHandler {
   }
 
   void _updateFwUpdateState(PrimeFwUpdateStep step) {
+    _latestStep = step;
     _completedUpdateStates.add(step);
     _primeFwUpdate.sink.add(step);
   }
