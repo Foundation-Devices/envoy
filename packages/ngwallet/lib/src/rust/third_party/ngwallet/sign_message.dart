@@ -6,7 +6,11 @@
 import '../../frb_generated.dart';
 import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated.dart';
 
-/// A signed Bitcoin message (BIP-137).
+/// A signed Bitcoin message.
+///
+/// The signature scheme depends on the address type:
+/// * legacy / SegWit (BIP-44/49/84/48) addresses use BIP-137 (recoverable ECDSA);
+/// * Taproot (BIP-86) addresses use BIP-322 (Simple variant, Schnorr).
 class SignedMessage {
   /// The original message that was signed.
   final String message;

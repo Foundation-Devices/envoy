@@ -15,8 +15,8 @@ flutter_rust_bridge = "=2.11.1"
 
 
 #ngwallet = { path = "../../../../ngwallet", features = ["envoy"] }
-ngwallet = {  git = "https://github.com/Foundation-Devices/ngwallet", tag = "3.5.0", features = ["envoy"] }
-#ngwallet = {  git = "https://github.com/Foundation-Devices/ngwallet", rev = "cdd19c38438c54020551799e5edc6d83aeac03bc", features = ["envoy"] }
+ngwallet = {  git = "https://github.com/Foundation-Devices/ngwallet", tag = "3.6.0", features = ["envoy"] }
+#ngwallet = {  git = "https://github.com/Foundation-Devices/ngwallet", rev = "41aecb5225e485110e27bfb7eb5d2df8e35e6e71", features = ["envoy"] }
 
 bip39 = { version = "2.1.0", features = ["rand"] }
 anyhow = "1.0.97"
