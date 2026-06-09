@@ -40,63 +40,78 @@ class _DraggableOverlayState extends State<DraggableOverlay>
     return GestureDetector(
       onTap: _close,
       behavior: HitTestBehavior.opaque,
-      child: Align(
-        alignment: Alignment.bottomCenter,
-        child: SizeTransition(
-          sizeFactor: _controller,
-          axisAlignment: -1.0,
-          child: GestureDetector(
-            onTap: () {},
+      child: Stack(
+        children: [
+          Positioned.fill(
+            child: AnimatedBuilder(
+              animation: _controller,
+              builder: (context, child) {
+                final t = _controller.value.clamp(0.0, 1.0);
+                return Container(
+                  color: Color.fromRGBO(0, 0, 0, 0.7 * t),
+                );
+              },
+            ),
+          ),
+          Align(
+            alignment: Alignment.bottomCenter,
+            child: SizeTransition(
+              sizeFactor: _controller,
+              axisAlignment: -1.0,
+              child: GestureDetector(
+                onTap: () {},
 
-            // drag to close
-            onVerticalDragUpdate: (details) {
-              final height = 500;
-              _controller.value -= details.primaryDelta! / height;
-            },
-            onVerticalDragEnd: (details) {
-              if (_controller.value < 0.5) {
-                _close();
-              } else {
-                _controller.forward();
-              }
-            },
+                // drag to close
+                onVerticalDragUpdate: (details) {
+                  final height = 500;
+                  _controller.value -= details.primaryDelta! / height;
+                },
+                onVerticalDragEnd: (details) {
+                  if (_controller.value < 0.5) {
+                    _close();
+                  } else {
+                    _controller.forward();
+                  }
+                },
 
-            child: Material(
-              borderRadius:
-                  const BorderRadius.vertical(top: Radius.circular(24)),
-              color: Colors.white,
-              clipBehavior: Clip.antiAlias,
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.symmetric(
-                      vertical: EnvoySpacing.medium1,
-                    ),
-                    child: Container(
-                      width: 40,
-                      height: 4,
-                      decoration: BoxDecoration(
-                        color: Colors.grey,
-                        borderRadius: BorderRadius.circular(2),
+                child: Material(
+                  borderRadius:
+                      const BorderRadius.vertical(top: Radius.circular(24)),
+                  color: Colors.white,
+                  clipBehavior: Clip.antiAlias,
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.symmetric(
+                          vertical: EnvoySpacing.medium1,
+                        ),
+                        child: Container(
+                          width: 40,
+                          height: 4,
+                          decoration: BoxDecoration(
+                            color: Colors.grey,
+                            borderRadius: BorderRadius.circular(2),
+                          ),
+                        ),
                       ),
-                    ),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: EnvoySpacing.medium1,
+                        ),
+                        child: widget.child,
+                      ),
+                      SizedBox(
+                        height: EnvoySpacing.medium2 +
+                            MediaQuery.viewPaddingOf(context).bottom,
+                      ),
+                    ],
                   ),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: EnvoySpacing.medium1,
-                    ),
-                    child: widget.child,
-                  ),
-                  SizedBox(
-                    height: EnvoySpacing.medium2 +
-                        MediaQuery.viewPaddingOf(context).bottom,
-                  ),
-                ],
+                ),
               ),
             ),
           ),
-        ),
+        ],
       ),
     );
   }

@@ -31,6 +31,20 @@ class Syncing extends WalletProgress {
 
 class None extends WalletProgress {}
 
+/// Outcome of a single-descriptor [SyncManager.performFullScan].
+enum FullScanOutcome {
+  /// Scan completed and the update was applied.
+  success,
+
+  /// Skipped because a scan for this descriptor is already running. Not a
+  /// failure — the in-flight scan will report its own outcome.
+  skipped,
+
+  /// Scan could not run or errored (Tor not ready, disposed request, missing
+  /// handler, scan/apply error).
+  failure,
+}
+
 class SyncManager {
   static const int _syncInterval = 10;
 
@@ -234,7 +248,8 @@ class SyncManager {
       (key, _) => key.$1.id == account.id,
     );
 
-    bool success = true;
+    bool anyFailure = false;
+    bool anySkipped = false;
     // Hold the per-account "scanning" flag for the full duration so the UI
     // doesn't flicker off between descriptors or when the shared progress
     // stream emits an unrelated `Syncing` event.
@@ -244,6 +259,7 @@ class SyncManager {
     try {
       for (var descriptor in account.descriptors) {
         if (account.handler == null) {
+          anyFailure = true;
           continue;
         }
 
@@ -252,20 +268,38 @@ class SyncManager {
 
         _fullScanRequests[(account, descriptor.addressType)] = request;
 
-        await performFullScan(
+        final outcome = await performFullScan(
           account.handler!,
           descriptor.addressType,
           request,
           stopGap: stopGap,
         );
+        switch (outcome) {
+          case FullScanOutcome.failure:
+            anyFailure = true;
+          case FullScanOutcome.skipped:
+            // Another scan for this descriptor is already in flight; this
+            // rescan didn't actually run it and can't know its result.
+            anySkipped = true;
+          case FullScanOutcome.success:
+            break;
+        }
       }
-    } catch (_) {
-      success = false;
-      rethrow;
+    } catch (e, stack) {
+      debugPrintStack(stackTrace: stack);
+      anyFailure = true;
     } finally {
       _fullScanningAccountIds.remove(account.id);
       _emitFullScanningAccounts();
-      _onAccFullScanFinished?.call(account, success);
+      // Report failure if anything failed. Otherwise report success only when
+      // every descriptor actually completed — if any was skipped because a
+      // scan was already running, suppress the callback rather than claim a
+      // premature success the in-flight scan hasn't earned yet.
+      if (anyFailure) {
+        _onAccFullScanFinished?.call(account, false);
+      } else if (!anySkipped) {
+        _onAccFullScanFinished?.call(account, true);
+      }
     }
   }
 
@@ -358,7 +392,10 @@ class SyncManager {
     await Future.wait(futures);
   }
 
-  Future<void> performFullScan(
+  /// [FullScanOutcome.success] only on a completed-and-applied scan. An
+  /// already-running scan is [FullScanOutcome.skipped]; every other early-out
+  /// and error path is [FullScanOutcome.failure].
+  Future<FullScanOutcome> performFullScan(
     EnvoyAccountHandler handler,
     AddressType addressType,
     FullScanRequest fullScanRequest, {
@@ -366,7 +403,7 @@ class SyncManager {
   }) async {
     final account = await handler.state();
     if (_activeFullScanOperations.contains((account.id, addressType))) {
-      return;
+      return FullScanOutcome.skipped;
     }
     _activeFullScanOperations.add((account.id, addressType));
     final server = Settings().electrumAddress(account.network);
@@ -384,7 +421,7 @@ class SyncManager {
       if (_enableLogging) {
         kPrint("FullScanRequest is disposed");
       }
-      return;
+      return FullScanOutcome.failure;
     }
 
     try {
@@ -393,7 +430,7 @@ class SyncManager {
           kPrint(
               "Skipping Scan because Tor is not ready yet $addressType - ${account.name} | ${account.network} | $server | Tor: $port");
         }
-        return;
+        return FullScanOutcome.failure;
       }
       // Use the scheduler to run this task in the background
       WalletUpdate update = await EnvoyAccountHandler.scanWallet(
@@ -403,12 +440,19 @@ class SyncManager {
           stopGap: stopGap,
           validateDomain: Settings().validateDomain(server));
 
-      if (account.handler != null) {
-        await account.handler!
-            .applyUpdate(update: update, addressType: addressType);
-        await EnvoyStorage()
-            .setAccountScanStatus(account.id, addressType, true);
+      if (account.handler == null) {
+        // Handler went away before we could apply the update — treat as a
+        // failure rather than silently reporting success.
+        if (_enableLogging) {
+          kPrint(
+              "FullScan completed but handler is null, cannot apply update $addressType - ${account.name}");
+        }
+        return FullScanOutcome.failure;
       }
+
+      await account.handler!
+          .applyUpdate(update: update, addressType: addressType);
+      await EnvoyStorage().setAccountScanStatus(account.id, addressType, true);
 
       if (_enableLogging) {
         kPrint(
@@ -418,6 +462,7 @@ class SyncManager {
       if (account.network == Network.bitcoin) {
         ConnectivityManager().electrumSuccess();
       }
+      return FullScanOutcome.success;
     } catch (e, stack) {
       debugPrintStack(stackTrace: stack);
       if (_enableLogging) {
@@ -431,6 +476,7 @@ class SyncManager {
       if (account.network == Network.bitcoin) {
         ConnectivityManager().electrumFailure();
       }
+      return FullScanOutcome.failure;
     } finally {
       _currentLoading.sink.add(None());
       _activeFullScanOperations.remove((account.id, addressType));

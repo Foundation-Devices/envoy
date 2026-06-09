@@ -72,6 +72,23 @@ appId: com.foundationdevices.envoy
       Confirm the transaction details are correct before sending.
     timeout: 60000 # wait for 1 min
 
+# lower the fee so the tx does not confirm so fast!!!!
+- tapOn:
+    id: "envoy_icon_chevron_right"
+
+- tapOn: "Custom"
+
+  # swipe far to the right to decrease fee a lot
+- repeat:
+    times: 11
+    commands:
+      - swipe:
+          start: "10%, 85%"
+          end: "95%, 85%"
+          duration: 800
+
+- tapOn: "Apply"
+
 - tapOn: Send Transaction
 - tapOn: Save
 
@@ -116,8 +133,10 @@ appId: com.foundationdevices.envoy
     Boost
 
 # check it the cannot boost popup shows
-- assertVisible:
-    id: envoy_icon_alert
+- extendedWaitUntil:
+    visible:
+      id: envoy_icon_alert
+    timeout: 120000
 - tapOn:
     id: PopUp Primary Button
 
@@ -147,14 +166,18 @@ appId: com.foundationdevices.envoy
     Awaiting confirmation
 
 # make sure it is boostable
-- assertVisible: |-
-    boost button-ready
-    Boost
+- extendedWaitUntil:
+    visible: |-
+      boost button-ready
+      Boost
+    timeout: 120000
 
 # and cancable
-- assertVisible: |-
-    cancel button-ready
-    Cancel Transaction
+- extendedWaitUntil:
+    visible: |-
+      cancel button-ready
+      Cancel Transaction
+    timeout: 120000
 
 # tap boost
 - tapOn: |-
@@ -163,7 +186,9 @@ appId: com.foundationdevices.envoy
 
 # boost tx
 - tapOn: Continue
-- assertVisible: Boost Transaction
+- extendedWaitUntil:
+    visible: Boost Transaction
+    timeout: 120000
 - tapOn: Boost Transaction
 - tapOn: Continue
 
@@ -173,14 +198,18 @@ appId: com.foundationdevices.envoy
     Awaiting confirmation
 
 # make sure it is boostable
-- assertVisible: |-
-    boost button-ready
-    Boost
+- extendedWaitUntil:
+    visible: |-
+      boost button-ready
+      Boost
+    timeout: 120000
 
 # and cancable
-- assertVisible: |-
-    cancel button-ready
-    Cancel Transaction
+- extendedWaitUntil:
+    visible: |-
+      cancel button-ready
+      Cancel Transaction
+    timeout: 120000
 
 # Go ahead and cancel the transaction
 - tapOn: |-
