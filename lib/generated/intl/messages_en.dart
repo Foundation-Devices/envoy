@@ -2830,6 +2830,14 @@ class MessageLookup extends MessageLookupByLibrary {
         "send_keyboard_send_max":
             MessageLookupByLibrary.simpleMessage("Send Max"),
         "send_keyboard_to": MessageLookupByLibrary.simpleMessage("To:"),
+        "send_qrReviewModalCantReadSignedMessage_header":
+            MessageLookupByLibrary.simpleMessage(
+          "We can’t read the Signed Message",
+        ),
+        "send_qrReviewModalCantReadSignedTx_header":
+            MessageLookupByLibrary.simpleMessage(
+          "We can’t read the Signed Transaction",
+        ),
         "send_qrReview_scanSignedTransaction":
             MessageLookupByLibrary.simpleMessage(
           "Scan signed Transaction",
@@ -2976,6 +2984,10 @@ class MessageLookup extends MessageLookupByLibrary {
         ),
         "signMessage_mainSigned_saveSignatureToFile":
             MessageLookupByLibrary.simpleMessage("Save Signature to File"),
+        "signMessage_mainSigned_signatureInvalid":
+            MessageLookupByLibrary.simpleMessage("Invalid signature"),
+        "signMessage_mainSigned_signatureValid":
+            MessageLookupByLibrary.simpleMessage("Valid signature"),
         "signMessage_main_addressDoesNotBelong":
             MessageLookupByLibrary.simpleMessage(
           "Address does not belong to this account.\nPlease enter another address.",
@@ -2991,8 +3003,15 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage(
           "Signature",
         ),
+        "signMessage_qrCamera_importFromFile":
+            MessageLookupByLibrary.simpleMessage(
+          "Import from File",
+        ),
         "signMessage_qr_header": MessageLookupByLibrary.simpleMessage(
           "Scan the QR with Passport",
+        ),
+        "signMessage_qr_importSignature": MessageLookupByLibrary.simpleMessage(
+          "Import Signature",
         ),
         "signMessage_qr_saveToFile": MessageLookupByLibrary.simpleMessage(
           "Save to File",
