@@ -1,0 +1,67 @@
+# SPDX-FileCopyrightText: 2026 Foundation Devices Inc.
+#
+# SPDX-License-Identifier: GPL-3.0-or-later
+
+# (03) activityAlignmentFiatOn
+# Navigation-only flow: ensures fiat is ON and leaves the app sitting on
+# the Activity tab. The actual alignment assertion runs in run_maestro.sh
+# immediately after this flow passes: it dumps the accessibility tree with
+# `maestro hierarchy` and compares the bounds of the first transaction
+# row's columns (scripts/alignment/check_activity_alignment.py). Because
+# that check
+# reads the regular accessibility tree, it needs no IS_MAESTRO_TEST
+# instrumentation and also works on release builds.
+#
+# This flow deliberately ENDS on the Activity tab (no "back to Accounts")
+# so the hierarchy dump sees the rows. The next test, (05), resets to the
+# home state itself by tapping the Accounts tab as its first step.
+appId: com.foundationdevices.envoy
+---
+
+# Make sure fiat is ON (this is the "FiatOn" variant)
+- tapOn:
+    id: hamburger_menu
+- tapOn: |-
+    SETTINGS
+    SETTINGS
+
+- runFlow:
+    when:
+      visible:
+        id: "Show Fiat Toggle-false"
+    commands:
+      # turn it on
+      - tapOn:
+          id: Show Fiat Toggle-false
+      # refresh the settings page
+      - tapOn:
+          id: hamburger_menu
+      - tapOn: |-
+          SETTINGS
+          SETTINGS
+      # confirm it is now ON
+      - assertVisible:
+          id: "Show Fiat Toggle-true"
+
+# back to home
+- tapOn:
+    id: hamburger_menu
+- tapOn:
+    id: hamburger_menu
+
+# open Activity and wait for at least one transaction row (any of the
+# titles getTransactionTitleText can produce, incl. "Sent (Boosted)")
+- tapOn: Activity
+- extendedWaitUntil:
+    visible: "Received|Sent.*|Canceling|Canceled|Boosted"
+    timeout: 15000
+
+# Exchange rates may still be loading when the row appears: until then the
+# fiat line is a LoaderGhost and the secondary_amount_value semantics node
+# does not exist yet, which would make the post-check exit 2. Wait for a
+# rendered fiat value before handing over to the hierarchy dump.
+- extendedWaitUntil:
+    visible:
+      id: secondary_amount_value
+      text: ".*[0-9].*"
+    timeout: 30000

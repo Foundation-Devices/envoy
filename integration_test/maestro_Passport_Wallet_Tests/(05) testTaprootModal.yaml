@@ -6,6 +6,9 @@
 appId: com.foundationdevices.envoy
 ---
 
+# (03) leaves the app on the Activity tab — make sure we start from Accounts
+- tapOn: Accounts
+
 - tapOn:
     id: hamburger_menu
 

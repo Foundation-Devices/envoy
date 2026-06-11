@@ -572,6 +572,37 @@ stop_screen_recording() {
     echo -e "${CYAN}  ▶ Failure video saved: $output_file${NC}"
 }
 
+# ------------------------------------------------------------
+# Hierarchy-based post-checks
+# ------------------------------------------------------------
+# Some flows only navigate; their real assertion runs here, outside
+# Maestro, by dumping the accessibility tree and comparing element bounds.
+# This needs no IS_MAESTRO_TEST instrumentation, so it also works against
+# release builds.
+needs_hierarchy_check() {
+    case "$(basename "$1")" in
+        "(03) activityAlignmentFiatOn.yaml") return 0 ;;
+    esac
+    return 1
+}
+
+run_hierarchy_alignment_check() {
+    local density scale
+    # Hierarchy bounds are physical pixels; the checker scales its
+    # logical-px tolerances by devicePixelRatio = density / 160.
+    density=$($ADB_CMD -s "$DEVICE_ID" shell wm density 2>/dev/null \
+        | sed -n 's/.*Override density: \([0-9]*\).*/\1/p;
+                  s/.*Physical density: \([0-9]*\).*/\1/p' | tail -1)
+    [ -z "$density" ] && density=160
+    scale=$(awk "BEGIN { printf \"%.4f\", $density / 160 }")
+    # Keep the raw dump next to the fail videos so a failure (or a wrong
+    # element match) can be diagnosed offline from the artifact bundle.
+    local hier_file="$FAIL_VIDEOS_DIR/activity_alignment_hierarchy.json"
+    maestro --device "$DEVICE_ID" hierarchy 2>/dev/null > "$hier_file"
+    python3 "$SCRIPT_DIR/alignment/check_activity_alignment.py" \
+        --density-scale "$scale" < "$hier_file"
+}
+
 retry_failed_test() {
     local test_file="$1"
     local is_last_test="$2"
@@ -594,6 +625,15 @@ retry_failed_test() {
     # Re-run the failed test and capture exit code
     RETRY_OUTPUT=$(maestro --device "$DEVICE_ID" test "$test_file" 2>&1)
     local retry_exit=$?
+
+    # Re-run the hierarchy post-check too — without it, a genuinely
+    # misaligned UI would "pass" the retry (which only re-runs the
+    # navigation flow) and be miscounted as flaky.
+    if [ $retry_exit -eq 0 ] && needs_hierarchy_check "$test_file"; then
+        RETRY_CHECK_OUTPUT=$(run_hierarchy_alignment_check 2>&1)
+        retry_exit=$?
+        echo "$RETRY_CHECK_OUTPUT" | sed 's/^/  /'
+    fi
 
     # Stop recording and save video
     stop_screen_recording "$test_name"
@@ -814,6 +854,19 @@ run_single_test() {
 
     OUTPUT=$(maestro --device "$DEVICE_ID" test "$test_file" 2>&1)
     EXIT_CODE=$?
+
+    # Navigation-only flows assert via the view hierarchy after the flow
+    # passes; a check failure fails the test like any Maestro assertion.
+    if [ $EXIT_CODE -eq 0 ] && needs_hierarchy_check "$test_file"; then
+        CHECK_OUTPUT=$(run_hierarchy_alignment_check 2>&1)
+        EXIT_CODE=$?
+        echo "$CHECK_OUTPUT" | sed 's/^/  /'
+        if [ $EXIT_CODE -ne 0 ]; then
+            OUTPUT="$OUTPUT
+Hierarchy alignment check FAILED:
+$CHECK_OUTPUT"
+        fi
+    fi
 
     if [ $EXIT_CODE -eq 0 ]; then
         print_test_success "$test_name"
