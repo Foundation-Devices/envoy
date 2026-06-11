@@ -4,6 +4,7 @@
 
 import 'package:envoy/business/settings.dart';
 import 'package:envoy/generated/l10n.dart';
+import 'package:envoy/ui/home/settings/beta_channels_page.dart';
 import 'package:flutter/material.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:envoy/ui/theme/envoy_colors.dart';
@@ -46,6 +47,14 @@ class _AboutPageState extends ConsumerState<AboutPage> {
     }
   }
 
+  void _openBetaChannels() {
+    showDialog<void>(
+      fullscreenDialog: true,
+      context: context,
+      builder: (context) => const BetaChannelsPage(),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -56,6 +65,7 @@ class _AboutPageState extends ConsumerState<AboutPage> {
         children: <Widget>[
           GestureDetector(
             onTap: _onTripleTapToSkipPrimeSecureCheck,
+            onLongPress: _openBetaChannels,
             child: Padding(
               padding: const EdgeInsets.all(30.0),
               child: Image.asset("assets/logo.png", height: 170),

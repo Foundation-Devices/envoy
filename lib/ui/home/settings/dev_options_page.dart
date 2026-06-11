@@ -155,48 +155,6 @@ class _DevOptionsPageState extends State<DevOptionsPage> {
                 });
               },
             ),
-            SwitchListTile(
-              dense: true,
-              selected: Settings().useBetaFwUpdate,
-              contentPadding: const EdgeInsets.symmetric(
-                horizontal: 16,
-                vertical: 6,
-              ),
-              thumbColor: WidgetStateProperty.resolveWith((states) {
-                return states.contains(WidgetState.selected)
-                    ? surfaceColor
-                    : const Color(0xFF8E9198);
-              }),
-              trackColor: WidgetStateProperty.resolveWith((states) {
-                return states.contains(WidgetState.selected)
-                    ? Colors.white
-                    : const Color(0xFF53555A);
-              }),
-              trackOutlineColor: const WidgetStatePropertyAll(
-                Colors.transparent,
-              ),
-              title: const Text(
-                "Enable beta Firmware updates",
-                style: TextStyle(
-                  color: titleColor,
-                  fontSize: 16,
-                  fontWeight: FontWeight.w500,
-                ),
-              ),
-              subtitle: const Padding(
-                padding: EdgeInsets.only(top: 4),
-                child: Text(
-                  "Include beta firmware updates in passport firmware update checks. Intended for internal team testing only.",
-                  style: TextStyle(color: subtitleColor, fontSize: 13),
-                ),
-              ),
-              value: Settings().useBetaFwUpdate,
-              onChanged: (enabled) async {
-                setState(() {
-                  Settings().setUseBetaPrimePatches(enabled);
-                });
-              },
-            ),
             const SizedBox(height: 18),
             const Padding(
               padding: EdgeInsets.only(left: 4, bottom: 8),

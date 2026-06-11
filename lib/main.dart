@@ -7,6 +7,7 @@ import 'dart:async';
 
 import 'package:envoy/account/accounts_manager.dart';
 import 'package:envoy/ble/bluetooth_manager.dart';
+import 'package:envoy/business/beta_channels.dart';
 import 'package:envoy/business/connectivity_manager.dart';
 import 'package:envoy/business/devices.dart';
 import 'package:envoy/business/envoy_seed.dart';
@@ -128,6 +129,8 @@ Future<void> initSingletons({bool integrationTestsRunning = false}) async {
   MapData.init();
   ConnectivityManager.init();
   StripeSessionMonitor().init();
+
+  unawaited(BetaChannelsManager().refresh());
 }
 
 class EnvoyApp extends StatefulWidget {

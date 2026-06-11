@@ -377,12 +377,16 @@ class Settings extends ChangeNotifier {
   @JsonKey(includeFromJson: false, includeToJson: false)
   bool skipPrimeSecurityCheck = false;
 
-  // Dev option - not persisted
+  // Dev option - not persisted. When non-null, prime firmware update checks
+  // ask the server for the chain on the given beta channel.
   @JsonKey(includeFromJson: false, includeToJson: false)
-  bool useBetaFwUpdate = false;
+  String? selectedBetaChannel;
 
-  void setUseBetaPrimePatches(bool enabled) {
-    useBetaFwUpdate = enabled;
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  bool get useBetaFwUpdate => selectedBetaChannel != null;
+
+  void setSelectedBetaChannel(String? channel) {
+    selectedBetaChannel = channel;
     notifyListeners();
   }
 
