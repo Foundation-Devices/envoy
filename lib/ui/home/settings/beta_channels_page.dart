@@ -165,8 +165,7 @@ class _BetaChannelsPageState extends ConsumerState<BetaChannelsPage> {
                         ),
                     ],
                     onChanged: (value) {
-                      final newChannel =
-                          value == _noneSentinel ? null : value;
+                      final newChannel = value == _noneSentinel ? null : value;
                       Settings().setSelectedBetaChannel(newChannel);
                       EnvoyToast.dismissPreviousToasts(context);
                       EnvoyToast(

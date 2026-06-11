@@ -49,9 +49,8 @@ class _AboutPageState extends ConsumerState<AboutPage> {
   }
 
   void _openBetaChannels() {
-    final devMode = kDebugMode ||
-        kProfileMode ||
-        ref.read(devModeEnabledProvider);
+    final devMode =
+        kDebugMode || kProfileMode || ref.read(devModeEnabledProvider);
     if (!devMode) {
       return;
     }

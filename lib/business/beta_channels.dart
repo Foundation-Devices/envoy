@@ -9,8 +9,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class BetaChannelsManager extends ChangeNotifier {
-  static final BetaChannelsManager _instance =
-      BetaChannelsManager._internal();
+  static final BetaChannelsManager _instance = BetaChannelsManager._internal();
 
   factory BetaChannelsManager() => _instance;
 
