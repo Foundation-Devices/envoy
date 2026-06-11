@@ -19,15 +19,12 @@ class BetaChannelsPage extends ConsumerStatefulWidget {
 class _BetaChannelsPageState extends ConsumerState<BetaChannelsPage> {
   static const _noneSentinel = '__none__';
 
-  bool _refreshing = false;
-
-  Future<void> _refresh() async {
-    setState(() => _refreshing = true);
-    try {
-      await ref.read(betaChannelsProvider.notifier).refresh();
-    } finally {
-      if (mounted) setState(() => _refreshing = false);
-    }
+  @override
+  void initState() {
+    super.initState();
+    // Synchronous prefix of refresh() sets loading=true before first build,
+    // so the page opens directly into the loading state.
+    ref.read(betaChannelsProvider).refresh();
   }
 
   @override
@@ -40,8 +37,20 @@ class _BetaChannelsPageState extends ConsumerState<BetaChannelsPage> {
     final manager = ref.watch(betaChannelsProvider);
     final selected = ref.watch(settingsProvider).selectedBetaChannel;
     final channels = manager.channels;
+    final loading = manager.loading;
 
-    final dropdownValue = selected ?? _noneSentinel;
+    // Fall back to None if the selection has disappeared from the server
+    // (e.g. channel was deleted or renamed) — otherwise DropdownButton's
+    // "exactly one item with value" assert blows up. Also clear the stale
+    // setting so fetchPrimePatches stops sending a dead channel name.
+    final selectionPresent =
+        selected != null && channels.any((c) => c.name == selected);
+    if (selected != null && !loading && !selectionPresent) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        Settings().setSelectedBetaChannel(null);
+      });
+    }
+    final dropdownValue = selectionPresent ? selected : _noneSentinel;
 
     return Theme(
       data: ThemeData.dark(useMaterial3: true).copyWith(
@@ -66,7 +75,7 @@ class _BetaChannelsPageState extends ConsumerState<BetaChannelsPage> {
           actions: [
             IconButton(
               tooltip: "Refresh",
-              icon: _refreshing
+              icon: loading
                   ? const SizedBox(
                       width: 18,
                       height: 18,
@@ -76,7 +85,7 @@ class _BetaChannelsPageState extends ConsumerState<BetaChannelsPage> {
                       ),
                     )
                   : const Icon(Icons.refresh, color: Colors.white),
-              onPressed: _refreshing ? null : _refresh,
+              onPressed: loading ? null : () => manager.refresh(),
             ),
           ],
         ),
@@ -168,6 +177,14 @@ class _BetaChannelsPageState extends ConsumerState<BetaChannelsPage> {
                     color: Color(0xFFE16060),
                     fontSize: 13,
                   ),
+                ),
+              )
+            else if (loading)
+              const Padding(
+                padding: EdgeInsets.all(4),
+                child: Text(
+                  "Loading channels…",
+                  style: TextStyle(color: subtitleColor, fontSize: 13),
                 ),
               )
             else if (channels.isEmpty)
