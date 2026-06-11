@@ -95,7 +95,7 @@ class _BetaChannelsPageState extends ConsumerState<BetaChannelsPage> {
             const Padding(
               padding: EdgeInsets.only(left: 4, bottom: 8),
               child: Text(
-                "Prime firmware beta channel",
+                "Passport Prime firmware beta channel",
                 style: TextStyle(
                   color: titleColor,
                   fontSize: 18,
@@ -106,7 +106,7 @@ class _BetaChannelsPageState extends ConsumerState<BetaChannelsPage> {
             const Padding(
               padding: EdgeInsets.only(left: 4, bottom: 16, right: 4),
               child: Text(
-                "Select a channel to include its beta firmware updates in Prime update checks. Choose \"None\" to disable.",
+                "Select a channel to include its beta firmware updates in Passport Prime update checks. Choose \"None\" to disable.",
                 style: TextStyle(color: subtitleColor, fontSize: 13),
               ),
             ),
