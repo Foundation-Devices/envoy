@@ -1,0 +1,57 @@
+# SPDX-FileCopyrightText: 2026 Foundation Devices Inc.
+#
+# SPDX-License-Identifier: GPL-3.0-or-later
+
+# (03) activityAlignmentFiatOn
+# Navigation-only flow: ensures fiat is ON and leaves the app sitting on
+# the Activity tab. The actual alignment assertion runs in run_maestro.sh
+# immediately after this flow passes: it dumps the accessibility tree with
+# `maestro hierarchy` and compares the bounds of the first transaction
+# row's columns (scripts/alignment/check_activity_alignment.py). Because
+# that check
+# reads the regular accessibility tree, it needs no IS_MAESTRO_TEST
+# instrumentation and also works on release builds.
+#
+# This flow deliberately ENDS on the Activity tab (no "back to Accounts")
+# so the hierarchy dump sees the rows. That is safe: the next test starts
+# from the hamburger menu, which is part of the persistent home app bar
+# and available on this tab too.
+appId: com.foundationdevices.envoy
+---
+
+# Make sure fiat is ON (this is the "FiatOn" variant)
+- tapOn:
+    id: hamburger_menu
+- tapOn: |-
+    SETTINGS
+    SETTINGS
+
+- runFlow:
+    when:
+      visible:
+        id: "Show Fiat Toggle-false"
+    commands:
+      # turn it on
+      - tapOn:
+          id: Show Fiat Toggle-false
+      # refresh the settings page
+      - tapOn:
+          id: hamburger_menu
+      - tapOn: |-
+          SETTINGS
+          SETTINGS
+      # confirm it is now ON
+      - assertVisible:
+          id: "Show Fiat Toggle-true"
+
+# back to home
+- tapOn:
+    id: hamburger_menu
+- tapOn:
+    id: hamburger_menu
+
+# open Activity and wait for at least one transaction row
+- tapOn: Activity
+- extendedWaitUntil:
+    visible: "Received|Sent|Pending|Canceling.*"
+    timeout: 15000
