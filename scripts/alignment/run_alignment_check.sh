@@ -6,15 +6,15 @@
 
 # Standalone Activity-row alignment check (no app instrumentation needed).
 #
-# Drives the app to the Activity tab with a navigation-only Maestro flow,
-# dumps the accessibility tree with `maestro hierarchy`, and compares the
-# bounds of the first row's left/right columns in
-# scripts/check_activity_alignment.py.
+# Drives the app to the Activity tab with the suite's navigation-only flow
+# ("(03) activityAlignmentFiatOn.yaml"), dumps the accessibility tree with
+# `maestro hierarchy`, and compares the bounds of the first row's
+# left/right columns in scripts/alignment/check_activity_alignment.py.
 #
 # Because it only reads the regular accessibility tree, this works against
-# ANY installed build — including release builds, where the MaestroYProbe
-# instrumentation used by "(03) activityAlignmentFiatOn.yaml" is compiled
-# out. It is an opt-in complement to that flow, not part of run_maestro.sh.
+# ANY installed build — including release builds — with no test
+# instrumentation in the app. It is the standalone counterpart of the
+# (03) post-check that run_maestro.sh performs inside the suite.
 #
 # Prerequisites: the app is installed and onboarded with at least one
 # transaction visible in Activity (balance not hidden), adb + maestro on

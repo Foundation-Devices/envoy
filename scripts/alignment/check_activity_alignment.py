@@ -15,11 +15,12 @@ transaction row, and checks that:
      looser tolerance that absorbs the designed EnvoySpacing.xs (4 logical px)
      offset of the fiat line.
 
-Element matching is heuristic (text patterns + geometry) because, unlike the
-MaestroYProbe flow, nothing in the app marks these nodes for us:
+Element matching is heuristic (text patterns + geometry) because nothing in
+the app marks these nodes for us:
 
   * anchor   — the topmost node whose text is a transaction title
-               (Received / Sent / Pending / Canceling / boosted variants);
+               (Received / Sent / Canceling / Canceled / Boosted /
+               "Sent (Boosted)");
   * amount   — the topmost numeric node vertically level with the anchor in
                the right part of the screen;
   * subtitle — has no standalone node (it merges into the row container),
@@ -41,8 +42,10 @@ import json
 import re
 import sys
 
+# The six titles getTransactionTitleText can emit: Received, Sent,
+# Sent (Boosted), Canceling, Canceled, Boosted.
 TITLE_RE = re.compile(
-    r"^(Received|Sent|Pending|Canceling|Boosted)( \(.+\))?$")
+    r"^(Received|Sent|Canceling|Canceled|Boosted)( \(.+\))?$")
 BOUNDS_RE = re.compile(r"\[(-?\d+),(-?\d+)\]\[(-?\d+),(-?\d+)\]")
 
 
@@ -64,7 +67,7 @@ def parse_hierarchy(raw):
     # maestro may print log lines around the JSON; isolate the outermost tree.
     start, end = raw.find("{"), raw.rfind("}")
     if start == -1 or end <= start:
-        sys.exit("error: no JSON found in hierarchy input (exit 2)")
+        fail_locate("any JSON in the hierarchy input")
     return json.loads(raw[start:end + 1])
 
 
