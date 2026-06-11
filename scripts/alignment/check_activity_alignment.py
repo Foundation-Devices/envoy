@@ -67,7 +67,7 @@ def parse_hierarchy(raw):
     # maestro may print log lines around the JSON; isolate the outermost tree.
     start, end = raw.find("{"), raw.rfind("}")
     if start == -1 or end <= start:
-        fail_locate("any JSON in the hierarchy input")
+        fail_locate("any JSON")
     return json.loads(raw[start:end + 1])
 
 
