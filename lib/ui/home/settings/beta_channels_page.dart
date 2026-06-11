@@ -39,11 +39,12 @@ class _BetaChannelsPageState extends ConsumerState<BetaChannelsPage> {
     final channels = manager.channels;
     final loading = manager.loading;
 
-    // Fall back to None if the selection has disappeared from the server
-    // (e.g. channel was deleted or renamed) — otherwise DropdownButton's
-    // "exactly one item with value" assert blows up. Only clear the stale
-    // setting when a *successful* refresh confirms the channel is gone;
-    // a failed fetch (offline, pre-Tor) leaves the selection intact.
+    // The selection may not be in the freshly-fetched channels list (offline,
+    // pre-Tor, or genuinely removed). Render the retained name as a synthetic
+    // item so the dropdown reflects the truth — that the channel is still
+    // active for fetchPrimePatches — instead of misreporting "None". Only a
+    // *successful* refresh that confirms the channel is gone clears the
+    // setting; a failed fetch leaves it alone.
     final selectionPresent =
         selected != null && channels.any((c) => c.name == selected);
     if (selected != null &&
@@ -54,7 +55,7 @@ class _BetaChannelsPageState extends ConsumerState<BetaChannelsPage> {
         Settings().setSelectedBetaChannel(null);
       });
     }
-    final dropdownValue = selectionPresent ? selected : _noneSentinel;
+    final dropdownValue = selected ?? _noneSentinel;
 
     return Theme(
       data: ThemeData.dark(useMaterial3: true).copyWith(
@@ -149,6 +150,19 @@ class _BetaChannelsPageState extends ConsumerState<BetaChannelsPage> {
                           child: _ChannelRow(channel: c),
                         ),
                       ),
+                      if (selected != null && !selectionPresent)
+                        DropdownMenuItem<String>(
+                          value: selected,
+                          child: Text(
+                            selected,
+                            style: const TextStyle(
+                              color: Colors.white,
+                              fontSize: 16,
+                              fontWeight: FontWeight.w500,
+                              fontStyle: FontStyle.italic,
+                            ),
+                          ),
+                        ),
                     ],
                     onChanged: (value) {
                       final newChannel =
