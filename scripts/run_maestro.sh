@@ -961,7 +961,7 @@ run_test_group "Passport Wallet Tests" "$PASSPORT_WALLET_TESTS_DIR"
 #    unconditionally — no flag needed. Pick a branch with KEYOS_MAIN_BRANCH.
 #    Must run BEFORE the prime bridge binds the USB vendor interface, since
 #    flashing drives passport-drive directly and needs exclusive access.
-KEYOS_BRANCH="${KEYOS_MAIN_BRANCH:-dev-v1.3.0}"
+KEYOS_BRANCH="${KEYOS_MAIN_BRANCH:-dev-v1.3.1}"
 # Export so keyos_flash_if_new.sh inherits the exact same branch — the banner
 # below and the actual flash stay in lockstep.
 export KEYOS_MAIN_BRANCH="$KEYOS_BRANCH"
