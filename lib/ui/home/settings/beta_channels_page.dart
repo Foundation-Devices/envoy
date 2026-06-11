@@ -41,11 +41,15 @@ class _BetaChannelsPageState extends ConsumerState<BetaChannelsPage> {
 
     // Fall back to None if the selection has disappeared from the server
     // (e.g. channel was deleted or renamed) — otherwise DropdownButton's
-    // "exactly one item with value" assert blows up. Also clear the stale
-    // setting so fetchPrimePatches stops sending a dead channel name.
+    // "exactly one item with value" assert blows up. Only clear the stale
+    // setting when a *successful* refresh confirms the channel is gone;
+    // a failed fetch (offline, pre-Tor) leaves the selection intact.
     final selectionPresent =
         selected != null && channels.any((c) => c.name == selected);
-    if (selected != null && !loading && !selectionPresent) {
+    if (selected != null &&
+        !loading &&
+        manager.error == null &&
+        !selectionPresent) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
         Settings().setSelectedBetaChannel(null);
       });
