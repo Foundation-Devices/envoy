@@ -36,13 +36,15 @@ class Server {
   }
 
   Future<List<PrimePatch>> fetchPrimePatches(String currentVersion) async {
-    final betaParam = Settings().useBetaFwUpdate ? '&beta=1' : '';
-    if (Settings().useBetaFwUpdate) {
+    final channel = Settings().selectedBetaChannel;
+    final channelParam =
+        channel != null ? '&channel=${Uri.encodeQueryComponent(channel)}' : '';
+    if (channel != null) {
       kPrint(
-          "Fetching beta prime patches, url: '$_serverAddress/prime/patches?version=$currentVersion$betaParam'");
+          "Fetching beta prime patches, url: '$_serverAddress/prime/patches?version=$currentVersion$channelParam'");
     }
     final response = await http!.get(
-      '$_serverAddress/prime/patches?version=$currentVersion$betaParam',
+      '$_serverAddress/prime/patches?version=$currentVersion$channelParam',
     );
 
     if (response.statusCode == 200) {
@@ -63,6 +65,26 @@ class Server {
     } else {
       throw Exception('Failed to fetch update chain');
     }
+  }
+
+  Future<List<BetaChannel>> fetchBetaChannels() async {
+    final response = await http!.get('$_serverAddress/prime/beta-channels');
+
+    if (response.statusCode != 200) {
+      throw Exception(
+        'Failed to fetch beta channels: ${response.statusCode}',
+      );
+    }
+
+    final Map<String, dynamic> json = jsonDecode(response.body);
+    final List<dynamic>? channels = json['channels'];
+    if (channels == null) {
+      return [];
+    }
+
+    return channels
+        .map((c) => BetaChannel.fromJson(c as Map<String, dynamic>))
+        .toList();
   }
 
   Future<Uint8List?> fetchPrimePatchBinary(PrimePatch patch) async {
@@ -195,6 +217,29 @@ class PrimePatch {
       url: json['url'],
       changelog: json['changelog'],
       releaseDate: DateTime.parse((json['release_date'])),
+    );
+  }
+}
+
+class BetaChannel {
+  final String name;
+  final int patchCount;
+  final String latestVersion;
+  final DateTime latestReleaseDate;
+
+  BetaChannel({
+    required this.name,
+    required this.patchCount,
+    required this.latestVersion,
+    required this.latestReleaseDate,
+  });
+
+  factory BetaChannel.fromJson(Map<String, dynamic> json) {
+    return BetaChannel(
+      name: json['name'] as String,
+      patchCount: (json['patch_count'] as num).toInt(),
+      latestVersion: json['latest_version'] as String,
+      latestReleaseDate: DateTime.parse(json['latest_release_date'] as String),
     );
   }
 }
