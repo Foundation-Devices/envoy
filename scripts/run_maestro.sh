@@ -211,7 +211,31 @@ print_test_failure() {
             # selectors as literal text rather than regex meta-chars.
             local search_first
             search_first=$(printf '%s' "$search_term" | head -1 | sed -E 's/^[[:space:]]+//; s/[[:space:]]+$//')
-            line_match=$(grep -nF "$search_first" "$test_file" | head -1)
+
+            # A selector can appear in several repeated blocks — e.g. a flow
+            # that recovers a wallet 5 times and asserts the same popup after
+            # each. `grep | head -1` always blames the first block, so the
+            # reported line points at an iteration that passed instead of the
+            # one that failed. Count how many steps naming this selector
+            # Maestro executed up to (and including) the FAILED line; that
+            # ordinal is the iteration that broke, so pick the matching
+            # occurrence in the YAML rather than the first. Only when we have
+            # a real "... FAILED" marker — otherwise the sed range below would
+            # span the whole output and over-count.
+            local occurrence=1
+            if [ -n "$failed_block" ]; then
+                occurrence=$(printf '%s\n' "$output" \
+                    | sed -n '1,/\.\.\. FAILED$/p' \
+                    | grep -cF "$search_first")
+                [ "$occurrence" -ge 1 ] 2>/dev/null || occurrence=1
+            fi
+            line_match=$(grep -nF "$search_first" "$test_file" | sed -n "${occurrence}p")
+            # Fall back to the first match if the ordinal overshoots the file
+            # (selector text echoed in output more often than it appears in
+            # the YAML).
+            if [ -z "$line_match" ]; then
+                line_match=$(grep -nF "$search_first" "$test_file" | head -1)
+            fi
             if [ -n "$line_match" ]; then
                 line_num="${line_match%%:*}"
                 line_content="${line_match#*:}"
@@ -961,7 +985,7 @@ run_test_group "Passport Wallet Tests" "$PASSPORT_WALLET_TESTS_DIR"
 #    unconditionally — no flag needed. Pick a branch with KEYOS_MAIN_BRANCH.
 #    Must run BEFORE the prime bridge binds the USB vendor interface, since
 #    flashing drives passport-drive directly and needs exclusive access.
-KEYOS_BRANCH="${KEYOS_MAIN_BRANCH:-dev-v1.3.1}"
+KEYOS_BRANCH="${KEYOS_MAIN_BRANCH:-dev-v1.3.0}"
 # Export so keyos_flash_if_new.sh inherits the exact same branch — the banner
 # below and the actual flash stay in lockstep.
 export KEYOS_MAIN_BRANCH="$KEYOS_BRANCH"
