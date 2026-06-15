@@ -32,7 +32,7 @@ set -euo pipefail
 # Config (override via env)
 # --------------------------------------------------------------------
 KEYOS_DEV_DIR="${KEYOS_DEV_DIR:-$HOME/KeyOS-dev}"
-MAIN_BRANCH="${KEYOS_MAIN_BRANCH:-dev-v1.3.0}"
+MAIN_BRANCH="${KEYOS_MAIN_BRANCH:-dev-v1.3.1}"
 PD="$KEYOS_DEV_DIR/target/release/passport-drive"
 
 # Records the commit SHA we last flashed, so we only reflash when origin/<main>
