@@ -6,6 +6,7 @@ import 'package:envoy/business/beta_channels.dart';
 import 'package:envoy/business/server.dart';
 import 'package:envoy/business/settings.dart';
 import 'package:envoy/ui/widgets/toast/envoy_toast.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -18,6 +19,7 @@ class BetaChannelsPage extends ConsumerStatefulWidget {
 
 class _BetaChannelsPageState extends ConsumerState<BetaChannelsPage> {
   static const _noneSentinel = '__none__';
+  static const _publicChannels = {'alpha', 'beta'};
 
   @override
   void initState() {
@@ -36,21 +38,31 @@ class _BetaChannelsPageState extends ConsumerState<BetaChannelsPage> {
 
     final manager = ref.watch(betaChannelsProvider);
     final selected = ref.watch(settingsProvider).selectedBetaChannel;
-    final channels = manager.channels;
+    final devMode =
+        kDebugMode || kProfileMode || ref.watch(devModeEnabledProvider);
+    final allChannels = manager.channels;
+    // Non-dev users can only see and pick from the public channels. Dev mode
+    // exposes the full set.
+    final visibleChannels = devMode
+        ? allChannels
+        : allChannels.where((c) => _publicChannels.contains(c.name)).toList();
     final loading = manager.loading;
 
     // The selection may not be in the freshly-fetched channels list (offline,
     // pre-Tor, or genuinely removed). Render the retained name as a synthetic
     // item so the dropdown reflects the truth — that the channel is still
     // active for fetchPrimePatches — instead of misreporting "None". Only a
-    // *successful* refresh that confirms the channel is gone clears the
-    // setting; a failed fetch leaves it alone.
-    final selectionPresent =
-        selected != null && channels.any((c) => c.name == selected);
+    // *successful* refresh that confirms the channel is gone on the server
+    // clears the setting; a failed fetch (or a channel hidden by the dev-mode
+    // filter) leaves it alone.
+    final selectionOnServer =
+        selected != null && allChannels.any((c) => c.name == selected);
+    final selectionVisible =
+        selected != null && visibleChannels.any((c) => c.name == selected);
     if (selected != null &&
         !loading &&
         manager.error == null &&
-        !selectionPresent) {
+        !selectionOnServer) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
         Settings().setSelectedBetaChannel(null);
       });
@@ -144,13 +156,13 @@ class _BetaChannelsPageState extends ConsumerState<BetaChannelsPage> {
                         value: _noneSentinel,
                         child: Text("None (stable only)"),
                       ),
-                      ...channels.map(
+                      ...visibleChannels.map(
                         (c) => DropdownMenuItem<String>(
                           value: c.name,
                           child: _ChannelRow(channel: c),
                         ),
                       ),
-                      if (selected != null && !selectionPresent)
+                      if (selected != null && !selectionVisible)
                         DropdownMenuItem<String>(
                           value: selected,
                           child: Text(
@@ -204,7 +216,7 @@ class _BetaChannelsPageState extends ConsumerState<BetaChannelsPage> {
                   style: TextStyle(color: subtitleColor, fontSize: 13),
                 ),
               )
-            else if (channels.isEmpty)
+            else if (visibleChannels.isEmpty)
               const Padding(
                 padding: EdgeInsets.all(4),
                 child: Text(
