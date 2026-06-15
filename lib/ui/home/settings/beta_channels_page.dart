@@ -53,16 +53,21 @@ class _BetaChannelsPageState extends ConsumerState<BetaChannelsPage> {
     // item so the dropdown reflects the truth — that the channel is still
     // active for fetchPrimePatches — instead of misreporting "None". Only a
     // *successful* refresh that confirms the channel is gone on the server
-    // clears the setting; a failed fetch (or a channel hidden by the dev-mode
-    // filter) leaves it alone.
+    // clears it on the stale path.
     final selectionOnServer =
         selected != null && allChannels.any((c) => c.name == selected);
     final selectionVisible =
         selected != null && visibleChannels.any((c) => c.name == selected);
-    if (selected != null &&
+    // For non-dev users the policy is independent of server state: any
+    // selection outside the public set must be dropped, otherwise
+    // fetchPrimePatches would keep pulling from a hidden channel.
+    final clearByFilter =
+        selected != null && !devMode && !_publicChannels.contains(selected);
+    final clearByStale = selected != null &&
         !loading &&
         manager.error == null &&
-        !selectionOnServer) {
+        !selectionOnServer;
+    if (clearByFilter || clearByStale) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
         Settings().setSelectedBetaChannel(null);
       });
