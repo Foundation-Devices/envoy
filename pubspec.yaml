@@ -56,7 +56,7 @@ dependencies:
   tor:
     git:
       url: https://github.com/Foundation-Devices/tor.git
-      ref: 203622788b3895b217ed8aac9ce783c089278e64
+      ref: 6f9f5997557487f53d9507633bc068b76524b301
   qr_flutter: ^4.1.0
   dots_indicator: ^4.0.1
   flutter_secure_storage: ^9.2.2
