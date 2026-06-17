@@ -1053,19 +1053,6 @@ if ! "$SCRIPT_DIR/keyos_flash_if_new.sh"; then
     exit 1
 fi
 
-# 1b) Rebuild the passport-drive host tool so it speaks the same usb-debug
-#     protocol as the KeyOS firmware on the device. That protocol changes
-#     occasionally (e.g. SFT-6955 repurposed the tap command from a 5-byte TAP
-#     to an 11-byte SWIPE), and a stale binary silently drops taps while
-#     screenshots still work. cargo no-ops when already up to date, so this is
-#     cheap to run unconditionally.
-echo -e "${BLUE}Rebuilding passport-drive (host tool) to match firmware protocol...${NC}"
-KEYOS_CHANNEL="$(awk -F'"' '/^[[:space:]]*channel[[:space:]]*=/ { print $2; exit }' "$KEYOS_DIR/rust-toolchain.toml" 2>/dev/null)"
-if ! ( cd "$KEYOS_DIR" && RUSTUP_TOOLCHAIN="${KEYOS_CHANNEL:-stable}" cargo build --release -p passport-drive ); then
-    echo -e "${RED}✗ Failed to build passport-drive — Prime taps will not work, aborting${NC}"
-    exit 1
-fi
-
 # 2) Bring up the prime bridge now that any flashing is done.
 start_prime_bridge
 

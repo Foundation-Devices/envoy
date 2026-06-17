@@ -263,6 +263,17 @@ else
     exit 1
 fi
 
+# Rebuild the passport-drive host tool from the flashed branch (we are on
+# $MAIN_BRANCH here) so it speaks the same usb-debug protocol as the firmware
+# we are about to flash. This lives here rather than in run_maestro.sh because
+# when no reflash is needed this script exits before checking out the branch,
+# so the caller can't guarantee the worktree is on the flashed branch.
+log "rebuilding passport-drive host tool to match flashed firmware"
+if ! keyos_run cargo build --release -p passport-drive; then
+    warn "✗ failed to build passport-drive — Prime taps will not work"
+    exit 1
+fi
+
 # --------------------------------------------------------------------
 # 3. Enter SAM-BA over USB, then flash
 # --------------------------------------------------------------------
@@ -310,25 +321,29 @@ sleep "$BOOT_SETTLE_S"
 # Matches the TAP_SETTLE_SECONDS the prime-bridge uses for normal taps.
 UNLOCK_SETTLE_S="${PRIME_UNLOCK_SETTLE_S:-0.8}"
 
+# The unlock steps below are best-effort: the SHA is already recorded, so a
+# flaky swipe/tap must not abort the script under `set -e` (that would strand
+# the device locked with no reflash on the next run). Each driver call falls
+# back to a warning instead of failing.
 log "unlocking: swipe up"
 sleep "$UNLOCK_SETTLE_S"
-"$PD" swipe "$SWIPE_SX" "$SWIPE_SY" "$SWIPE_EX" "$SWIPE_EY"
+"$PD" swipe "$SWIPE_SX" "$SWIPE_SY" "$SWIPE_EX" "$SWIPE_EY" || warn "unlock swipe failed (best-effort)"
 sleep 1
 
 log "entering PIN"
 for (( i = 0; i < ${#PIN}; i++ )); do
     digit="${PIN:$i:1}"
     if ! coord="$(keypad_coord "$digit")"; then
-        warn "no keypad coordinate for digit '$digit'"
-        exit 1
+        warn "no keypad coordinate for digit '$digit' (skipping)"
+        continue
     fi
     sleep "$UNLOCK_SETTLE_S"
     # shellcheck disable=SC2086
-    "$PD" tap $coord
+    "$PD" tap $coord || warn "unlock PIN tap failed (best-effort)"
 done
 
 log "tapping Done"
 sleep "$UNLOCK_SETTLE_S"
-"$PD" tap "$DONE_X" "$DONE_Y"
+"$PD" tap "$DONE_X" "$DONE_Y" || warn "unlock Done tap failed (best-effort)"
 
 log "device updated and unlocked — ready to run tests"
