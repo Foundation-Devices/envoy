@@ -32,7 +32,7 @@ set -euo pipefail
 # Config (override via env)
 # --------------------------------------------------------------------
 KEYOS_DEV_DIR="${KEYOS_DEV_DIR:-$HOME/KeyOS-dev}"
-MAIN_BRANCH="${KEYOS_MAIN_BRANCH:-dev-v1.3.1}"
+MAIN_BRANCH="${KEYOS_MAIN_BRANCH:-dev-v1.3.0}"
 PD="$KEYOS_DEV_DIR/target/release/passport-drive"
 
 # Records the commit SHA we last flashed, so we only reflash when origin/<main>
@@ -41,6 +41,16 @@ PD="$KEYOS_DEV_DIR/target/release/passport-drive"
 STATE_FILE="${KEYOS_FLASHED_SHA_FILE:-$HOME/.cache/keyos-flashed-sha}"
 
 PIN="${PRIME_PIN:-123456}"
+
+# A malformed PIN is a configuration error, not UI flakiness, so validate it up
+# front — before anything is flashed or the flashed-SHA is recorded. Otherwise a
+# stray non-digit (e.g. a copied-in space) would be silently skipped during
+# unlock, leaving the device locked while the SHA is already saved, and the next
+# run would take the saved-SHA fast path and never retry the unlock.
+if [[ ! "$PIN" =~ ^[0-9]+$ ]]; then
+    echo "!! PRIME_PIN must contain only digits 0-9 (got '$PIN')" >&2
+    exit 1
+fi
 
 # Post-update unlock screen geometry (screen is 480x800, origin top-left).
 # The PIN-pad coordinates are taken from the existing onboarding flow
@@ -334,10 +344,8 @@ sleep 1
 log "entering PIN"
 for (( i = 0; i < ${#PIN}; i++ )); do
     digit="${PIN:$i:1}"
-    if ! coord="$(keypad_coord "$digit")"; then
-        warn "no keypad coordinate for digit '$digit' (skipping)"
-        continue
-    fi
+    # PIN is validated to be all digits above, so this lookup always resolves.
+    coord="$(keypad_coord "$digit")"
     sleep "$UNLOCK_SETTLE_S"
     # shellcheck disable=SC2086
     "$PD" tap $coord || warn "unlock PIN tap failed (best-effort)"
