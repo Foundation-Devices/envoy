@@ -287,6 +287,17 @@ if [[ "$booted" -ne 1 ]]; then
     warn "device did not report a version within ${BOOT_TIMEOUT_S}s after flashing"
     exit 1
 fi
+
+# Record the commit we just flashed now that the device is flashed and booted.
+# This is done BEFORE the unlock sequence below: unlocking is best-effort UI
+# convenience and must not gate the bookkeeping — a flaky unlock tap under
+# `set -e` would otherwise abort the script and leave the recorded SHA stale,
+# forcing an endless reflash even though the flash itself succeeded.
+flashed_sha="$(git -C "$KEYOS_DEV_DIR" rev-parse HEAD)"
+mkdir -p "$(dirname "$STATE_FILE")"
+echo "$flashed_sha" > "$STATE_FILE"
+log "recorded flashed commit ${flashed_sha:0:12} -> $STATE_FILE"
+
 # Let the UI settle on the unlock screen before driving it.
 sleep "$BOOT_SETTLE_S"
 
@@ -319,12 +330,5 @@ done
 log "tapping Done"
 sleep "$UNLOCK_SETTLE_S"
 "$PD" tap "$DONE_X" "$DONE_Y"
-
-# Record the commit we just flashed so the next run skips when nothing changed.
-# Only reached on success (set -e aborts earlier on any failure).
-flashed_sha="$(git -C "$KEYOS_DEV_DIR" rev-parse HEAD)"
-mkdir -p "$(dirname "$STATE_FILE")"
-echo "$flashed_sha" > "$STATE_FILE"
-log "recorded flashed commit ${flashed_sha:0:12} -> $STATE_FILE"
 
 log "device updated and unlocked — ready to run tests"

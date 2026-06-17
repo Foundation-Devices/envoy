@@ -218,6 +218,10 @@ appId: com.foundationdevices.envoy
 - tapOn: Proceed with Cancellation
 - tapOn: Continue
 
+- extendedWaitUntil:
+    visible: "Canceling\nAwaiting confirmation"
+    timeout: 300000 # 5 min
+
 - tapOn: |-
     Canceling
     Awaiting confirmation
