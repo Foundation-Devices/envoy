@@ -263,17 +263,6 @@ else
     exit 1
 fi
 
-# Rebuild the passport-drive host tool from the flashed branch (we are on
-# $MAIN_BRANCH here) so it speaks the same usb-debug protocol as the firmware
-# we are about to flash. This lives here rather than in run_maestro.sh because
-# when no reflash is needed this script exits before checking out the branch,
-# so the caller can't guarantee the worktree is on the flashed branch.
-log "rebuilding passport-drive host tool to match flashed firmware"
-if ! keyos_run cargo build --release -p passport-drive; then
-    warn "✗ failed to build passport-drive — Prime taps will not work"
-    exit 1
-fi
-
 # --------------------------------------------------------------------
 # 3. Enter SAM-BA over USB, then flash
 # --------------------------------------------------------------------
@@ -284,6 +273,18 @@ log "rebooting Prime into SAM-BA mode (software, over usb-debug)"
 # flashes, verifies, and reboots the device back into normal mode itself.
 log "flashing (just flash) — waits for SAM-BA, flashes, reboots to normal"
 keyos_run just flash
+
+# Rebuild the passport-drive host tool to match the firmware just flashed.
+# This must come AFTER the flash: reboot-samba above talks to the still-running
+# OLD firmware and must use the existing binary, while the post-flash
+# get-version/unlock below talk to the NEW firmware and need the rebuilt one.
+# Building here (we are on the checked-out flashed branch) also avoids
+# run_maestro.sh's problem of not knowing which branch the worktree is on.
+log "rebuilding passport-drive host tool to match flashed firmware"
+if ! keyos_run cargo build --release -p passport-drive; then
+    warn "✗ failed to build passport-drive — Prime taps will not work"
+    exit 1
+fi
 
 # --------------------------------------------------------------------
 # 4. Wait for the device to come back up in normal mode

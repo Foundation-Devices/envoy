@@ -59,6 +59,7 @@ class _DeviceCardState extends ConsumerState<DeviceCard>
       final accessory = accessories.firstWhereOrNull(
         (accessory) => accessory.peripheralId == widget.device.peripheralId,
       );
+      if (!mounted) return;
       setState(() {
         _accessoryInfo = accessory;
         _loadingAccessoryInfo = false;
