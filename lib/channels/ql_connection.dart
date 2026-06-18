@@ -75,6 +75,7 @@ class QLConnection with EnvoyMessageWriter {
   StreamSubscription? _deviceStatusSubscription;
   Timer? _qlActivityMonitorTimer;
   Timer? _autoReconnectTimer;
+  Timer? _postTransferLivenessTimer;
 
   late final Stream<DeviceStatus> _deviceStatusStream;
   late final Stream<WriteProgress> _writeProgressStream;
@@ -100,6 +101,8 @@ class QLConnection with EnvoyMessageWriter {
   bool _awaitingHeartbeatAfterConnect = false;
   bool _autoReconnectInFlight = false;
   bool _intentionalDisconnectPending = false;
+
+  bool _firmwareTransferInProgress = false;
 
   /// Serial number of the connected Prime device, set synchronously when the
   /// pairing response is received (before the async [getDevice] lookup works).
@@ -194,6 +197,7 @@ class QLConnection with EnvoyMessageWriter {
           qlHandler.heartbeatHandler.lastHeartbeat = null;
           qlHandler.bleAccountHandler.resetSendingState();
           _sendingExRate = false;
+          _abortFirmwareTransferOnDisconnect();
           _emitQLActiveIfChanged();
           if (shouldAutoReconnect) {
             _startAutoReconnect();
@@ -202,6 +206,7 @@ class QLConnection with EnvoyMessageWriter {
           }
         case BluetoothConnectionEventType.connectionError:
           _autoReconnectInFlight = false;
+          _abortFirmwareTransferOnDisconnect();
         default:
       }
       kPrint(
@@ -323,8 +328,38 @@ class QLConnection with EnvoyMessageWriter {
     }
   }
 
+  /// Toggled by the firmware update handler around a chunk transfer so the
+  /// heartbeat-stall watchdog does not force a reconnect mid-transfer.
+  void setFirmwareTransferInProgress(bool inProgress) {
+    _firmwareTransferInProgress = inProgress;
+    _postTransferLivenessTimer?.cancel();
+    if (!inProgress) {
+      _postTransferLivenessTimer = Timer(
+        const Duration(seconds: _heartbeatActiveThreshold),
+        () {
+          if (!_firmwareTransferInProgress && !isQLActive()) {
+            unawaited(_reconnectAfterQLStall());
+          }
+        },
+      );
+    }
+  }
+
+  void _abortFirmwareTransferOnDisconnect() {
+    if (!_firmwareTransferInProgress) {
+      return;
+    }
+    _firmwareTransferInProgress = false;
+    _postTransferLivenessTimer?.cancel();
+    qlHandler.fwUpdateHandler.stopFirmwareTransfer();
+  }
+
   Future<void> _reconnectAfterQLStall() async {
     if (_autoReconnectInFlight) {
+      return;
+    }
+
+    if (_firmwareTransferInProgress) {
       return;
     }
 
@@ -686,6 +721,7 @@ class QLConnection with EnvoyMessageWriter {
     _deviceStatusSubscription?.cancel();
     _qlActivityMonitorTimer?.cancel();
     _autoReconnectTimer?.cancel();
+    _postTransferLivenessTimer?.cancel();
     _qlHandlers.dispose();
     _readController.close();
     _qlActiveController.close();
