@@ -145,10 +145,12 @@ class FwUpdateHandler extends PassportMessageHandler {
             // and track the new send loop.
             kPrint(
                 "Queue was completed, re-launching send loop from offset $offset");
+            qlConnection.setFirmwareTransferInProgress(true);
             try {
               await qlConnection.requestHighConnectionPriority();
             } catch (_) {}
             unawaited(resumed.whenComplete(() async {
+              qlConnection.setFirmwareTransferInProgress(false);
               await qlConnection.requestBalancedConnectionPriority();
             }));
           }
@@ -284,6 +286,7 @@ class FwUpdateHandler extends PassportMessageHandler {
           "Failed to set high connection priority, proceeding with normal priority");
     }
 
+    qlConnection.setFirmwareTransferInProgress(true);
     unawaited(_chunkQueue?.start((index, api.QuantumLinkMessage message) async {
       try {
         kPrint("Sending chunk ${index + 1}/${chunks.length}");
@@ -305,6 +308,7 @@ class FwUpdateHandler extends PassportMessageHandler {
         );
       }
     }).whenComplete(() async {
+      qlConnection.setFirmwareTransferInProgress(false);
       //only for android
       await qlConnection.requestBalancedConnectionPriority();
     }));

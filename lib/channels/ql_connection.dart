@@ -101,6 +101,8 @@ class QLConnection with EnvoyMessageWriter {
   bool _autoReconnectInFlight = false;
   bool _intentionalDisconnectPending = false;
 
+  bool _firmwareTransferInProgress = false;
+
   /// Serial number of the connected Prime device, set synchronously when the
   /// pairing response is received (before the async [getDevice] lookup works).
   String? primeSerial;
@@ -323,8 +325,18 @@ class QLConnection with EnvoyMessageWriter {
     }
   }
 
+  /// Toggled by the firmware update handler around a chunk transfer so the
+  /// heartbeat-stall watchdog does not force a reconnect mid-transfer.
+  void setFirmwareTransferInProgress(bool inProgress) {
+    _firmwareTransferInProgress = inProgress;
+  }
+
   Future<void> _reconnectAfterQLStall() async {
     if (_autoReconnectInFlight) {
+      return;
+    }
+
+    if (_firmwareTransferInProgress) {
       return;
     }
 
