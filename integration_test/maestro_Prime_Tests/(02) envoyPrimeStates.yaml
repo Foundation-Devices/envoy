@@ -172,7 +172,7 @@ appId: com.foundationdevices.envoy
     file: prime_scripts/interactions/prime_tap.js
     env:
       X: "240"
-      Y: "382"
+      Y: "320"
 
 # PRIME: tap "Auto Lock" row (under Settings)
 - runScript:
