@@ -197,6 +197,7 @@ class QLConnection with EnvoyMessageWriter {
           qlHandler.heartbeatHandler.lastHeartbeat = null;
           qlHandler.bleAccountHandler.resetSendingState();
           _sendingExRate = false;
+          _abortFirmwareTransferOnDisconnect();
           _emitQLActiveIfChanged();
           if (shouldAutoReconnect) {
             _startAutoReconnect();
@@ -205,6 +206,7 @@ class QLConnection with EnvoyMessageWriter {
           }
         case BluetoothConnectionEventType.connectionError:
           _autoReconnectInFlight = false;
+          _abortFirmwareTransferOnDisconnect();
         default:
       }
       kPrint(
@@ -341,6 +343,15 @@ class QLConnection with EnvoyMessageWriter {
         },
       );
     }
+  }
+
+  void _abortFirmwareTransferOnDisconnect() {
+    if (!_firmwareTransferInProgress) {
+      return;
+    }
+    _firmwareTransferInProgress = false;
+    _postTransferLivenessTimer?.cancel();
+    qlHandler.fwUpdateHandler.stopFirmwareTransfer();
   }
 
   Future<void> _reconnectAfterQLStall() async {
