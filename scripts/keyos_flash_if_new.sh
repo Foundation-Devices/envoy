@@ -48,7 +48,7 @@ PIN="${PRIME_PIN:-123456}"
 # unlock, leaving the device locked while the SHA is already saved, and the next
 # run would take the saved-SHA fast path and never retry the unlock.
 if [[ ! "$PIN" =~ ^[0-9]+$ ]]; then
-    echo "!! PRIME_PIN must contain only digits 0-9 (got '$PIN')" >&2
+    echo "!! PRIME_PIN must contain only digits 0-9" >&2
     exit 1
 fi
 
