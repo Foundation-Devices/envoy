@@ -75,6 +75,7 @@ class QLConnection with EnvoyMessageWriter {
   StreamSubscription? _deviceStatusSubscription;
   Timer? _qlActivityMonitorTimer;
   Timer? _autoReconnectTimer;
+  Timer? _postTransferLivenessTimer;
 
   late final Stream<DeviceStatus> _deviceStatusStream;
   late final Stream<WriteProgress> _writeProgressStream;
@@ -329,6 +330,17 @@ class QLConnection with EnvoyMessageWriter {
   /// heartbeat-stall watchdog does not force a reconnect mid-transfer.
   void setFirmwareTransferInProgress(bool inProgress) {
     _firmwareTransferInProgress = inProgress;
+    _postTransferLivenessTimer?.cancel();
+    if (!inProgress) {
+      _postTransferLivenessTimer = Timer(
+        const Duration(seconds: _heartbeatActiveThreshold),
+        () {
+          if (!_firmwareTransferInProgress && !isQLActive()) {
+            unawaited(_reconnectAfterQLStall());
+          }
+        },
+      );
+    }
   }
 
   Future<void> _reconnectAfterQLStall() async {
@@ -698,6 +710,7 @@ class QLConnection with EnvoyMessageWriter {
     _deviceStatusSubscription?.cancel();
     _qlActivityMonitorTimer?.cancel();
     _autoReconnectTimer?.cancel();
+    _postTransferLivenessTimer?.cancel();
     _qlHandlers.dispose();
     _readController.close();
     _qlActiveController.close();
