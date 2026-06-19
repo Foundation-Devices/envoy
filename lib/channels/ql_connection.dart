@@ -34,9 +34,9 @@ import 'package:foundation_api/foundation_api.dart' as api;
 ///
 class QLConnection with EnvoyMessageWriter {
   // Threshold for considering the QL connection active based on last heartbeat, in seconds
-  // prime sends heartbeat every 6 seconds,to avoid flapping connection status
-  // we consider connection active if we received heartbeat in the last 8 seconds.
-  static const int _heartbeatActiveThreshold = 8;
+  // Prime sends heartbeat every 6 seconds. Give the app enough slack to avoid
+  // flapping while it is doing work like firmware checks or queued writes.
+  static const int _heartbeatActiveThreshold = 15;
   static const Duration _heartbeatCheckInterval = Duration(seconds: 1);
   static const Duration _autoReconnectInterval = Duration(seconds: 3);
 
@@ -328,8 +328,9 @@ class QLConnection with EnvoyMessageWriter {
     }
   }
 
-  /// Toggled by the firmware update handler around a chunk transfer so the
-  /// heartbeat-stall watchdog does not force a reconnect mid-transfer.
+  /// Toggled by the firmware update handler while a firmware fetch or chunk
+  /// transfer is active so the heartbeat-stall watchdog does not reconnect
+  /// during the exchange.
   void setFirmwareTransferInProgress(bool inProgress) {
     _firmwareTransferInProgress = inProgress;
     _postTransferLivenessTimer?.cancel();
@@ -351,7 +352,7 @@ class QLConnection with EnvoyMessageWriter {
     }
     _firmwareTransferInProgress = false;
     _postTransferLivenessTimer?.cancel();
-    qlHandler.fwUpdateHandler.stopFirmwareTransfer();
+    qlHandler.fwUpdateHandler.pauseFirmwareTransferForDisconnect();
   }
 
   Future<void> _reconnectAfterQLStall() async {
@@ -373,7 +374,7 @@ class QLConnection with EnvoyMessageWriter {
     _autoReconnectInFlight = true;
     var nativeReconnectStarted = false;
     try {
-      if (await isConnected()) {
+      if (await isConnected() && !_firmwareTransferInProgress) {
         kPrint(
           "[$deviceId] QL heartbeat stalled while BLE is connected; forcing BLE reconnect",
         );
