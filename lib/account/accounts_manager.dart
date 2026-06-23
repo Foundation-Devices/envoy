@@ -57,6 +57,13 @@ enum DeviceAccountResult {
   ERROR,
 }
 
+typedef _WalletCandidate = ({
+  EnvoyAccount state,
+  EnvoyAccountHandler handler,
+  NgAccountConfig config,
+  String path,
+});
+
 class NgAccountManager extends ChangeNotifier {
   static const String ACCOUNT_ORDER = "accounts_order";
 
@@ -131,6 +138,7 @@ class NgAccountManager extends ChangeNotifier {
       await walletDirectory.create(recursive: true);
     }
     final dirs = await walletDirectory.list().toList();
+    final List<_WalletCandidate> opened = [];
     for (var dir in dirs) {
       if (dir is Directory) {
         try {
@@ -138,18 +146,43 @@ class NgAccountManager extends ChangeNotifier {
           final accountHandler =
               await EnvoyAccountHandler.openAccount(dbPath: dir.path);
           final state = await accountHandler.state();
-          if (_accountsHandler.any((e) => e.$1.id == state.id)) {
-            EnvoyReport().log("AccountManager",
-                "Skipping duplicate wallet at ${dir.path} for account ${state.id}");
-            accountHandler.dispose();
-            continue;
-          }
-          _accountsHandler.add((state, accountHandler));
-          await accountHandler.sendUpdate();
+          opened.add((
+            state: state,
+            handler: accountHandler,
+            config: accountHandler.config(),
+            path: dir.path,
+          ));
         } catch (e) {
           kPrint("Error opening wallet: $e ${dir.path}");
         }
       }
+    }
+
+    // Keep the canonical wallet per account id and dispose the duplicates.
+    final Map<String, _WalletCandidate> canonicalById = {};
+    for (final candidate in opened) {
+      final existing = canonicalById[candidate.state.id];
+      if (existing == null) {
+        canonicalById[candidate.state.id] = candidate;
+        continue;
+      }
+      final keepNew = _isMoreCompleteWallet(candidate, existing);
+      final winner = keepNew ? candidate : existing;
+      final loser = keepNew ? existing : candidate;
+      canonicalById[candidate.state.id] = winner;
+      EnvoyReport().log(
+          "AccountManager",
+          "Duplicate wallet for account ${candidate.state.id}: keeping "
+              "${winner.path} (seq ${winner.config.lastRemoteSequence}, "
+              "${winner.state.descriptors.length} descriptors), dropping "
+              "${loser.path} (seq ${loser.config.lastRemoteSequence}, "
+              "${loser.state.descriptors.length} descriptors)");
+      loser.handler.dispose();
+    }
+
+    for (final candidate in canonicalById.values) {
+      _accountsHandler.add((candidate.state, candidate.handler));
+      await candidate.handler.sendUpdate();
     }
 
     sortByAccountOrder(_accountsHandler, order, (e) => e.$1.id);
@@ -168,6 +201,41 @@ class NgAccountManager extends ChangeNotifier {
       }));
     }
     removeDuplicateHotWallets();
+  }
+
+  /// Picks the canonical wallet when two directories resolve to the same
+  /// account id. Deterministic and independent of Directory.list() order so
+  /// the wrong copy can't silently win. Returns true if [a] is preferred.
+  bool _isMoreCompleteWallet(_WalletCandidate a, _WalletCandidate b) {
+    // Most descriptors first — dropping one would hide funds.
+    final aDescriptors = a.state.descriptors.length;
+    final bDescriptors = b.state.descriptors.length;
+    if (aDescriptors != bDescriptors) return aDescriptors > bDescriptors;
+
+    // Highest lastRemoteSequence — freshest accepted remote update.
+    final seqCompare =
+        a.config.lastRemoteSequence.compareTo(b.config.lastRemoteSequence);
+    if (seqCompare != 0) return seqCompare > 0;
+
+    if (a.state.archived != b.state.archived) return !a.state.archived;
+
+    final aSynced = DateTime.tryParse(a.state.dateSynced ?? "");
+    final bSynced = DateTime.tryParse(b.state.dateSynced ?? "");
+    if (aSynced != bSynced) {
+      if (aSynced == null) return false;
+      if (bSynced == null) return true;
+      if (!aSynced.isAtSameMomentAs(bSynced)) return aSynced.isAfter(bSynced);
+    }
+
+    if (a.state.transactions.length != b.state.transactions.length) {
+      return a.state.transactions.length > b.state.transactions.length;
+    }
+    if (a.state.balance != b.state.balance) {
+      return a.state.balance > b.state.balance;
+    }
+
+    // Stable, order-independent final tie-break.
+    return a.path.compareTo(b.path) < 0;
   }
 
   Future deriveMissingTypes() async {
