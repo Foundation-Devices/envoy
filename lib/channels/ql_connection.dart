@@ -34,9 +34,9 @@ import 'package:foundation_api/foundation_api.dart' as api;
 ///
 class QLConnection with EnvoyMessageWriter {
   // Threshold for considering the QL connection active based on last heartbeat, in seconds
-  // prime sends heartbeat every 6 seconds,to avoid flapping connection status
-  // we consider connection active if we received heartbeat in the last 8 seconds.
-  static const int _heartbeatActiveThreshold = 8;
+  // Prime sends heartbeat every 6 seconds. Give the app enough slack to avoid
+  // flapping while it is doing work like firmware checks or queued writes.
+  static const int _heartbeatActiveThreshold = 15;
   static const Duration _heartbeatCheckInterval = Duration(seconds: 1);
   static const Duration _autoReconnectInterval = Duration(seconds: 3);
 
@@ -75,6 +75,7 @@ class QLConnection with EnvoyMessageWriter {
   StreamSubscription? _deviceStatusSubscription;
   Timer? _qlActivityMonitorTimer;
   Timer? _autoReconnectTimer;
+  Timer? _postTransferLivenessTimer;
 
   late final Stream<DeviceStatus> _deviceStatusStream;
   late final Stream<WriteProgress> _writeProgressStream;
@@ -100,6 +101,8 @@ class QLConnection with EnvoyMessageWriter {
   bool _awaitingHeartbeatAfterConnect = false;
   bool _autoReconnectInFlight = false;
   bool _intentionalDisconnectPending = false;
+
+  bool _firmwareTransferInProgress = false;
 
   /// Serial number of the connected Prime device, set synchronously when the
   /// pairing response is received (before the async [getDevice] lookup works).
@@ -194,6 +197,7 @@ class QLConnection with EnvoyMessageWriter {
           qlHandler.heartbeatHandler.lastHeartbeat = null;
           qlHandler.bleAccountHandler.resetSendingState();
           _sendingExRate = false;
+          _abortFirmwareTransferOnDisconnect();
           _emitQLActiveIfChanged();
           if (shouldAutoReconnect) {
             _startAutoReconnect();
@@ -202,6 +206,7 @@ class QLConnection with EnvoyMessageWriter {
           }
         case BluetoothConnectionEventType.connectionError:
           _autoReconnectInFlight = false;
+          _abortFirmwareTransferOnDisconnect();
         default:
       }
       kPrint(
@@ -323,8 +328,39 @@ class QLConnection with EnvoyMessageWriter {
     }
   }
 
+  /// Toggled by the firmware update handler while a firmware fetch or chunk
+  /// transfer is active so the heartbeat-stall watchdog does not reconnect
+  /// during the exchange.
+  void setFirmwareTransferInProgress(bool inProgress) {
+    _firmwareTransferInProgress = inProgress;
+    _postTransferLivenessTimer?.cancel();
+    if (!inProgress) {
+      _postTransferLivenessTimer = Timer(
+        const Duration(seconds: _heartbeatActiveThreshold),
+        () {
+          if (!_firmwareTransferInProgress && !isQLActive()) {
+            unawaited(_reconnectAfterQLStall());
+          }
+        },
+      );
+    }
+  }
+
+  void _abortFirmwareTransferOnDisconnect() {
+    if (!_firmwareTransferInProgress) {
+      return;
+    }
+    _firmwareTransferInProgress = false;
+    _postTransferLivenessTimer?.cancel();
+    qlHandler.fwUpdateHandler.pauseFirmwareTransferForDisconnect();
+  }
+
   Future<void> _reconnectAfterQLStall() async {
     if (_autoReconnectInFlight) {
+      return;
+    }
+
+    if (_firmwareTransferInProgress) {
       return;
     }
 
@@ -338,7 +374,7 @@ class QLConnection with EnvoyMessageWriter {
     _autoReconnectInFlight = true;
     var nativeReconnectStarted = false;
     try {
-      if (await isConnected()) {
+      if (await isConnected() && !_firmwareTransferInProgress) {
         kPrint(
           "[$deviceId] QL heartbeat stalled while BLE is connected; forcing BLE reconnect",
         );
@@ -686,6 +722,7 @@ class QLConnection with EnvoyMessageWriter {
     _deviceStatusSubscription?.cancel();
     _qlActivityMonitorTimer?.cancel();
     _autoReconnectTimer?.cancel();
+    _postTransferLivenessTimer?.cancel();
     _qlHandlers.dispose();
     _readController.close();
     _qlActiveController.close();

@@ -121,7 +121,7 @@ jobs:
 
             If you find nothing to flag, still submit one review: an empty `comments` array and a one- or two-line `body` verdict (for example, "Reviewed the diff — no issues found."), never just a reaction or emoji. On a re-review where the new commits introduce no new findings, make the `body` a single line saying so (for example, "Re-reviewed the new commits — no new issues.") with no `comments`, and say nothing about earlier findings.
           claude_args: |
-            --model claude-fable-5
+            --model claude-opus-4-8
             --effort max
             --allowedTools "Read,Grep,Glob,LS,Write,Bash(gh pr diff:*),Bash(gh pr view:*),Bash(gh api:*)"
           # See https://github.com/anthropics/claude-code-action/blob/main/docs/usage.md
