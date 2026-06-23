@@ -182,7 +182,11 @@ class NgAccountManager extends ChangeNotifier {
 
     for (final candidate in canonicalById.values) {
       _accountsHandler.add((candidate.state, candidate.handler));
-      await candidate.handler.sendUpdate();
+      try {
+        await candidate.handler.sendUpdate();
+      } catch (e) {
+        kPrint("Error sending update for wallet ${candidate.path}: $e");
+      }
     }
 
     sortByAccountOrder(_accountsHandler, order, (e) => e.$1.id);
