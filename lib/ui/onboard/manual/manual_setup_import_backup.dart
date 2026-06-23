@@ -437,11 +437,25 @@ Future<bool> hasServerBackupData(String seed) async {
     if (Settings().usingTor) {
       await Tor.instance.isReady();
     }
-    final backUpPayload = await Backup.getBackupV2(
-      seedWords: seed,
-      v2ServerUrl: Settings().backupServerV2Address,
-      proxyPort: Tor.instance.port,
-    );
+    List<(String, String)> backUpPayload;
+    try {
+      backUpPayload = await Backup.getBackupV2(
+        seedWords: seed,
+        v2ServerUrl: Settings().backupServerV2Address,
+        proxyPort: Tor.instance.port,
+      );
+    } on GetBackupException catch (e) {
+      if (e == GetBackupException.backupNotFound ||
+          e == GetBackupException.unauthorized) {
+        backUpPayload = await Backup.getBackup(
+          seedWords: seed,
+          serverUrl: Settings().envoyServerAddress,
+          proxyPort: Tor.instance.port,
+        );
+      } else {
+        rethrow;
+      }
+    }
     final data = EnvoySeed.extractDataFromPayload(backUpPayload);
     return data.isNotEmpty;
   } catch (_) {
