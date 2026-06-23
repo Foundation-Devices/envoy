@@ -277,11 +277,25 @@ class _RecoverFromSeedLoaderState extends State<RecoverFromSeedLoader> {
         if (Settings().usingTor) {
           await Tor.instance.isReady();
         }
-        final backUpPayload = await Backup.getBackupV2(
-          seedWords: seed,
-          v2ServerUrl: Settings().backupServerV2Address,
-          proxyPort: Tor.instance.port,
-        );
+        List<(String, String)> backUpPayload;
+        try {
+          backUpPayload = await Backup.getBackupV2(
+            seedWords: seed,
+            v2ServerUrl: Settings().backupServerV2Address,
+            proxyPort: Tor.instance.port,
+          );
+        } on GetBackupException catch (e) {
+          if (e == GetBackupException.backupNotFound ||
+              e == GetBackupException.unauthorized) {
+            backUpPayload = await Backup.getBackup(
+              seedWords: seed,
+              serverUrl: Settings().envoyServerAddress,
+              proxyPort: Tor.instance.port,
+            );
+          } else {
+            rethrow;
+          }
+        }
         final extracted = EnvoySeed.extractDataFromPayload(backUpPayload);
         data = extracted.isEmpty ? null : extracted;
       } catch (e, st) {
