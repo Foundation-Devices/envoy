@@ -286,7 +286,8 @@ class _RecoverFromSeedLoaderState extends State<RecoverFromSeedLoader> {
           );
         } on GetBackupException catch (e) {
           if (e == GetBackupException.backupNotFound ||
-              e == GetBackupException.unauthorized) {
+              e == GetBackupException.unauthorized ||
+              e == GetBackupException.serverUnreachable) {
             backUpPayload = await Backup.getBackup(
               seedWords: seed,
               serverUrl: Settings().envoyServerAddress,
@@ -446,7 +447,8 @@ Future<bool> hasServerBackupData(String seed) async {
       );
     } on GetBackupException catch (e) {
       if (e == GetBackupException.backupNotFound ||
-          e == GetBackupException.unauthorized) {
+          e == GetBackupException.unauthorized ||
+          e == GetBackupException.serverUnreachable) {
         backUpPayload = await Backup.getBackup(
           seedWords: seed,
           serverUrl: Settings().envoyServerAddress,
