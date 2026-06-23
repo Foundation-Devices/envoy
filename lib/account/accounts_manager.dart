@@ -138,6 +138,12 @@ class NgAccountManager extends ChangeNotifier {
           final accountHandler =
               await EnvoyAccountHandler.openAccount(dbPath: dir.path);
           final state = await accountHandler.state();
+          if (_accountsHandler.any((e) => e.$1.id == state.id)) {
+            EnvoyReport().log("AccountManager",
+                "Skipping duplicate wallet at ${dir.path} for account ${state.id}");
+            accountHandler.dispose();
+            continue;
+          }
           _accountsHandler.add((state, accountHandler));
           await accountHandler.sendUpdate();
         } catch (e) {
