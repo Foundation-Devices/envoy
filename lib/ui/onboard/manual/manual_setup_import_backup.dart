@@ -274,14 +274,18 @@ class _RecoverFromSeedLoaderState extends State<RecoverFromSeedLoader> {
     List<String> seedList = widget.seed.split(" ");
     try {
       try {
-        final backUpPayload = await Backup.getBackup(
+        if (Settings().usingTor) {
+          await Tor.instance.isReady();
+        }
+        final backUpPayload = await Backup.getBackupV2(
           seedWords: seed,
-          serverUrl: Settings().envoyServerAddress,
+          v2ServerUrl: Settings().backupServerV2Address,
           proxyPort: Tor.instance.port,
         );
-
-        data = EnvoySeed.extractDataFromPayload(backUpPayload);
-      } catch (_) {
+        final extracted = EnvoySeed.extractDataFromPayload(backUpPayload);
+        data = extracted.isEmpty ? null : extracted;
+      } catch (e, st) {
+        debugPrintStack(stackTrace: st);
         data = null;
       }
       setState(() {
@@ -416,9 +420,12 @@ Future<void> recoverManually(
 /// Checks if a cloud backup exists on the server for the given seed.
 Future<bool> hasServerBackupData(String seed) async {
   try {
-    final backUpPayload = await Backup.getBackup(
+    if (Settings().usingTor) {
+      await Tor.instance.isReady();
+    }
+    final backUpPayload = await Backup.getBackupV2(
       seedWords: seed,
-      serverUrl: Settings().envoyServerAddress,
+      v2ServerUrl: Settings().backupServerV2Address,
       proxyPort: Tor.instance.port,
     );
     final data = EnvoySeed.extractDataFromPayload(backUpPayload);
