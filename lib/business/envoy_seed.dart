@@ -572,7 +572,8 @@ class EnvoySeed {
           // refused). Treat it like backupNotFound and fall back to v1 — that
           // way we still try the legacy server for the data.
           if (e == GetBackupException.backupNotFound ||
-              e == GetBackupException.unauthorized) {
+              e == GetBackupException.unauthorized ||
+              e == GetBackupException.serverUnreachable) {
             backupPayload = await Backup.getBackup(
               seedWords: seed,
               serverUrl: Settings().envoyServerAddress,
