@@ -118,13 +118,16 @@ class _SelectRegionState extends ConsumerState<SelectRegion> {
   }
 
   Country getCountryByCode(String countryCode) {
-    countryCode = countryCode.split('_').last;
+    // localeName may use '_' or '-' and may omit the region (e.g. "en-US", "en").
+    final parts = countryCode.split(RegExp(r'[_-]'));
+    countryCode = parts.length > 1 ? parts.last : parts.first;
 
     int foundIndex = countries.indexWhere(
       (country) => country.code == countryCode,
     );
-    // 223 is the index of USA, set that if the country cannot be found from the locale
-    foundIndex = foundIndex != -1 ? foundIndex : 223;
+    // Fall back to USA; list is sorted by name so find the index dynamically.
+    foundIndex =
+        foundIndex != -1 ? foundIndex : countries.indexWhere((c) => c.code == 'US');
     Country foundCountry = countries[foundIndex];
     setState(() {
       _initialCountryIndex = foundIndex;
