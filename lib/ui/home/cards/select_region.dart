@@ -126,8 +126,9 @@ class _SelectRegionState extends ConsumerState<SelectRegion> {
       (country) => country.code == countryCode,
     );
     // Fall back to USA; list is sorted by name so find the index dynamically.
-    foundIndex =
-        foundIndex != -1 ? foundIndex : countries.indexWhere((c) => c.code == 'US');
+    foundIndex = foundIndex != -1
+        ? foundIndex
+        : countries.indexWhere((c) => c.code == 'US');
     Country foundCountry = countries[foundIndex];
     setState(() {
       _initialCountryIndex = foundIndex;
