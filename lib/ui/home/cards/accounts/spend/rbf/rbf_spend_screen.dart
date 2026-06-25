@@ -681,7 +681,9 @@ class _RBFSpendScreenState extends ConsumerState<RBFSpendScreen> {
         originalTx.txId,
       ];
       await Future.delayed(const Duration(milliseconds: 200));
-      final _ = ref.refresh(rbfTxStateProvider(bumpedTx.txId));
+      // Re-read boost state for both txids; the original was never refreshed.
+      ref.invalidate(rbfTxStateProvider(bumpedTx.txId));
+      ref.invalidate(rbfTxStateProvider(originalTx.txId));
       await Future.delayed(const Duration(milliseconds: 100));
       if (context.mounted) {
         clearSpendState(ProviderScope.containerOf(context));

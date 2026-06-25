@@ -32,7 +32,7 @@ set -euo pipefail
 # Config (override via env)
 # --------------------------------------------------------------------
 KEYOS_DEV_DIR="${KEYOS_DEV_DIR:-$HOME/KeyOS-dev}"
-MAIN_BRANCH="${KEYOS_MAIN_BRANCH:-dev-v1.3.1}"
+MAIN_BRANCH="${KEYOS_MAIN_BRANCH:-dev-v1.3.0}"
 PD="$KEYOS_DEV_DIR/target/release/passport-drive"
 
 # Records the commit SHA we last flashed, so we only reflash when origin/<main>
@@ -41,6 +41,16 @@ PD="$KEYOS_DEV_DIR/target/release/passport-drive"
 STATE_FILE="${KEYOS_FLASHED_SHA_FILE:-$HOME/.cache/keyos-flashed-sha}"
 
 PIN="${PRIME_PIN:-123456}"
+
+# A malformed PIN is a configuration error, not UI flakiness, so validate it up
+# front — before anything is flashed or the flashed-SHA is recorded. Otherwise a
+# stray non-digit (e.g. a copied-in space) would be silently skipped during
+# unlock, leaving the device locked while the SHA is already saved, and the next
+# run would take the saved-SHA fast path and never retry the unlock.
+if [[ ! "$PIN" =~ ^[0-9]+$ ]]; then
+    echo "!! PRIME_PIN must contain only digits 0-9" >&2
+    exit 1
+fi
 
 # Post-update unlock screen geometry (screen is 480x800, origin top-left).
 # The PIN-pad coordinates are taken from the existing onboarding flow
@@ -274,6 +284,18 @@ log "rebooting Prime into SAM-BA mode (software, over usb-debug)"
 log "flashing (just flash) — waits for SAM-BA, flashes, reboots to normal"
 keyos_run just flash
 
+# Rebuild the passport-drive host tool to match the firmware just flashed.
+# This must come AFTER the flash: reboot-samba above talks to the still-running
+# OLD firmware and must use the existing binary, while the post-flash
+# get-version/unlock below talk to the NEW firmware and need the rebuilt one.
+# Building here (we are on the checked-out flashed branch) also avoids
+# run_maestro.sh's problem of not knowing which branch the worktree is on.
+log "rebuilding passport-drive host tool to match flashed firmware"
+if ! keyos_run cargo build --release -p passport-drive; then
+    warn "✗ failed to build passport-drive — Prime taps will not work"
+    exit 1
+fi
+
 # --------------------------------------------------------------------
 # 4. Wait for the device to come back up in normal mode
 # --------------------------------------------------------------------
@@ -287,6 +309,17 @@ if [[ "$booted" -ne 1 ]]; then
     warn "device did not report a version within ${BOOT_TIMEOUT_S}s after flashing"
     exit 1
 fi
+
+# Record the commit we just flashed now that the device is flashed and booted.
+# This is done BEFORE the unlock sequence below: unlocking is best-effort UI
+# convenience and must not gate the bookkeeping — a flaky unlock tap under
+# `set -e` would otherwise abort the script and leave the recorded SHA stale,
+# forcing an endless reflash even though the flash itself succeeded.
+flashed_sha="$(git -C "$KEYOS_DEV_DIR" rev-parse HEAD)"
+mkdir -p "$(dirname "$STATE_FILE")"
+echo "$flashed_sha" > "$STATE_FILE"
+log "recorded flashed commit ${flashed_sha:0:12} -> $STATE_FILE"
+
 # Let the UI settle on the unlock screen before driving it.
 sleep "$BOOT_SETTLE_S"
 
@@ -299,32 +332,27 @@ sleep "$BOOT_SETTLE_S"
 # Matches the TAP_SETTLE_SECONDS the prime-bridge uses for normal taps.
 UNLOCK_SETTLE_S="${PRIME_UNLOCK_SETTLE_S:-0.8}"
 
+# The unlock steps below are best-effort: the SHA is already recorded, so a
+# flaky swipe/tap must not abort the script under `set -e` (that would strand
+# the device locked with no reflash on the next run). Each driver call falls
+# back to a warning instead of failing.
 log "unlocking: swipe up"
 sleep "$UNLOCK_SETTLE_S"
-"$PD" swipe "$SWIPE_SX" "$SWIPE_SY" "$SWIPE_EX" "$SWIPE_EY"
+"$PD" swipe "$SWIPE_SX" "$SWIPE_SY" "$SWIPE_EX" "$SWIPE_EY" || warn "unlock swipe failed (best-effort)"
 sleep 1
 
 log "entering PIN"
 for (( i = 0; i < ${#PIN}; i++ )); do
     digit="${PIN:$i:1}"
-    if ! coord="$(keypad_coord "$digit")"; then
-        warn "no keypad coordinate for digit '$digit'"
-        exit 1
-    fi
+    # PIN is validated to be all digits above, so this lookup always resolves.
+    coord="$(keypad_coord "$digit")"
     sleep "$UNLOCK_SETTLE_S"
     # shellcheck disable=SC2086
-    "$PD" tap $coord
+    "$PD" tap $coord || warn "unlock PIN tap failed (best-effort)"
 done
 
 log "tapping Done"
 sleep "$UNLOCK_SETTLE_S"
-"$PD" tap "$DONE_X" "$DONE_Y"
-
-# Record the commit we just flashed so the next run skips when nothing changed.
-# Only reached on success (set -e aborts earlier on any failure).
-flashed_sha="$(git -C "$KEYOS_DEV_DIR" rev-parse HEAD)"
-mkdir -p "$(dirname "$STATE_FILE")"
-echo "$flashed_sha" > "$STATE_FILE"
-log "recorded flashed commit ${flashed_sha:0:12} -> $STATE_FILE"
+"$PD" tap "$DONE_X" "$DONE_Y" || warn "unlock Done tap failed (best-effort)"
 
 log "device updated and unlocked — ready to run tests"

@@ -621,7 +621,9 @@ class _CancelTransactionProgressState
         ).toJson(),
       );
       await Future.delayed(const Duration(milliseconds: 100));
-      final _ = ref.refresh(cancelTxStateProvider(cancelTx.transaction.txId));
+      // Re-read cancel state for both txids; the original was cached as null.
+      ref.invalidate(cancelTxStateFutureProvider(cancelTx.transaction.txId));
+      ref.invalidate(cancelTxStateFutureProvider(widget.originalTx.txId));
       await Future.delayed(const Duration(milliseconds: 200));
       ref.read(rbfBroadCastedTxProvider.notifier).state = [
         ...ref.read(rbfBroadCastedTxProvider),

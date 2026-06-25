@@ -152,4 +152,61 @@ appId: com.foundationdevices.envoy
       X: "48"
       Y: "80"
 
+################## NEVER LOCK THE SCREEN after testing !!!
+# PRIME: open menu (bottom-left hamburger on home)
+- runScript:
+    file: prime_scripts/interactions/prime_tap.js
+    env:
+      X: "40"
+      Y: "740"
+
+# wait for Prime to enter menu
+- runScript:
+    file: prime_scripts/helpers/prime_assert_visible.js
+    env:
+      TEXT: "Settings"
+      TIMEOUT_S: "10"
+
+# PRIME: tap "Settings" row (under the General section)
+- runScript:
+    file: prime_scripts/interactions/prime_tap.js
+    env:
+      X: "240"
+      Y: "320"
+
+# PRIME: tap "Auto Lock" row (under Settings)
+- runScript:
+    file: prime_scripts/interactions/prime_tap.js
+    env:
+      X: "240"
+      Y: "354"
+
+# PRIME: tap "Never" option (on the Auto Lock screen)
+- runScript:
+    file: prime_scripts/interactions/prime_tap.js
+    env:
+      X: "240"
+      Y: "681"
+
+# PRIME: tap back chevron (top-left)
+- runScript:
+    file: prime_scripts/interactions/prime_tap.js
+    env:
+      X: "47"
+      Y: "72"
+
+# PRIME: tap back chevron (top-left)
+- runScript:
+    file: prime_scripts/interactions/prime_tap.js
+    env:
+      X: "47"
+      Y: "72"
+
+# PRIME: tap hamburger chevron (top-left)
+- runScript:
+    file: prime_scripts/interactions/prime_tap.js
+    env:
+      X: "47"
+      Y: "72"
+
   # TODO: reconnect again for the next test?

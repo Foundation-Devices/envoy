@@ -41,7 +41,8 @@ class DeviceCard extends ConsumerStatefulWidget {
   ConsumerState<DeviceCard> createState() => _DeviceCardState();
 }
 
-class _DeviceCardState extends ConsumerState<DeviceCard> {
+class _DeviceCardState extends ConsumerState<DeviceCard>
+    with WidgetsBindingObserver {
   // Host OS pairing/connection metadata for this Prime device
   BleDeviceInfo? _accessoryInfo;
   bool _loadingAccessoryInfo = true;
@@ -58,6 +59,7 @@ class _DeviceCardState extends ConsumerState<DeviceCard> {
       final accessory = accessories.firstWhereOrNull(
         (accessory) => accessory.peripheralId == widget.device.peripheralId,
       );
+      if (!mounted) return;
       setState(() {
         _accessoryInfo = accessory;
         _loadingAccessoryInfo = false;
@@ -109,12 +111,22 @@ class _DeviceCardState extends ConsumerState<DeviceCard> {
     });
 
     Devices().addListener(_redraw);
+    WidgetsBinding.instance.addObserver(this);
   }
 
   @override
   void dispose() {
-    super.dispose();
+    WidgetsBinding.instance.removeObserver(this);
     Devices().removeListener(_redraw);
+    super.dispose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    super.didChangeAppLifecycleState(state);
+    if (state == AppLifecycleState.resumed) {
+      loadDevicePairingInfo();
+    }
   }
 
   @override

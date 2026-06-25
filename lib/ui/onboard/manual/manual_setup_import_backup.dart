@@ -274,14 +274,33 @@ class _RecoverFromSeedLoaderState extends State<RecoverFromSeedLoader> {
     List<String> seedList = widget.seed.split(" ");
     try {
       try {
-        final backUpPayload = await Backup.getBackup(
-          seedWords: seed,
-          serverUrl: Settings().envoyServerAddress,
-          proxyPort: Tor.instance.port,
-        );
-
-        data = EnvoySeed.extractDataFromPayload(backUpPayload);
-      } catch (_) {
+        if (Settings().usingTor) {
+          await Tor.instance.isReady();
+        }
+        List<(String, String)> backUpPayload;
+        try {
+          backUpPayload = await Backup.getBackupV2(
+            seedWords: seed,
+            v2ServerUrl: Settings().backupServerV2Address,
+            proxyPort: Tor.instance.port,
+          );
+        } on GetBackupException catch (e) {
+          if (e == GetBackupException.backupNotFound ||
+              e == GetBackupException.unauthorized ||
+              e == GetBackupException.serverUnreachable) {
+            backUpPayload = await Backup.getBackup(
+              seedWords: seed,
+              serverUrl: Settings().envoyServerAddress,
+              proxyPort: Tor.instance.port,
+            );
+          } else {
+            rethrow;
+          }
+        }
+        final extracted = EnvoySeed.extractDataFromPayload(backUpPayload);
+        data = extracted.isEmpty ? null : extracted;
+      } catch (e, st) {
+        debugPrintStack(stackTrace: st);
         data = null;
       }
       setState(() {
@@ -416,11 +435,29 @@ Future<void> recoverManually(
 /// Checks if a cloud backup exists on the server for the given seed.
 Future<bool> hasServerBackupData(String seed) async {
   try {
-    final backUpPayload = await Backup.getBackup(
-      seedWords: seed,
-      serverUrl: Settings().envoyServerAddress,
-      proxyPort: Tor.instance.port,
-    );
+    if (Settings().usingTor) {
+      await Tor.instance.isReady();
+    }
+    List<(String, String)> backUpPayload;
+    try {
+      backUpPayload = await Backup.getBackupV2(
+        seedWords: seed,
+        v2ServerUrl: Settings().backupServerV2Address,
+        proxyPort: Tor.instance.port,
+      );
+    } on GetBackupException catch (e) {
+      if (e == GetBackupException.backupNotFound ||
+          e == GetBackupException.unauthorized ||
+          e == GetBackupException.serverUnreachable) {
+        backUpPayload = await Backup.getBackup(
+          seedWords: seed,
+          serverUrl: Settings().envoyServerAddress,
+          proxyPort: Tor.instance.port,
+        );
+      } else {
+        rethrow;
+      }
+    }
     final data = EnvoySeed.extractDataFromPayload(backUpPayload);
     return data.isNotEmpty;
   } catch (_) {
