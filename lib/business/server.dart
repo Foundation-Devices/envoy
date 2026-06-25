@@ -87,9 +87,13 @@ class Server {
         .toList();
   }
 
+  String _primePatchUrl(PrimePatch patch) =>
+      '${Settings().primeFirmwareServerAddress}/prime-firmware/${patch.version}/release.tar';
+
   Future<Uint8List?> fetchPrimePatchBinary(PrimePatch patch) async {
+    final url = _primePatchUrl(patch);
     try {
-      final response = await http!.get(patch.url);
+      final response = await http!.get(url);
       if (response.statusCode == 200) {
         return Uint8List.fromList(response.bodyBytes);
       } else {
@@ -100,7 +104,7 @@ class Server {
     } catch (e) {
       EnvoyReport().log(
         "Sever",
-        "Error fetching prime patches: $e : ${patch.url}",
+        "Error fetching prime patches: $e : $url",
       );
     }
 
@@ -115,7 +119,7 @@ class Server {
     try {
       final patches = await fetchPrimePatches(currentVersion);
       for (final patch in patches) {
-        final response = await http!.get(patch.url);
+        final response = await http!.get(_primePatchUrl(patch));
         if (response.statusCode == 200) {
           PatchBinary patchBinary = (
             binary: Uint8List.fromList(response.bodyBytes),

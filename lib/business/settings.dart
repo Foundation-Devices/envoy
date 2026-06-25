@@ -323,6 +323,13 @@ class Settings extends ChangeNotifier {
   }
 
   @JsonKey(includeFromJson: false, includeToJson: false)
+  String get primeFirmwareServerAddress {
+    return usingTor
+        ? "http://2i4lfw43nncbqfzcogzeq4fn5kal7z5svzecydka3riyf5xonknwpwad.onion"
+        : "https://firmware.foundation.xyz";
+  }
+
+  @JsonKey(includeFromJson: false, includeToJson: false)
   String get backupServerV2Address {
     switch (environment) {
       case Environment.local:
