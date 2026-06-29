@@ -87,8 +87,10 @@ class Server {
         .toList();
   }
 
-  String _primePatchUrl(PrimePatch patch) =>
-      '${Settings().primeFirmwareServerAddress}/prime-firmware/${patch.version}/release.tar';
+  String _primePatchUrl(PrimePatch patch) {
+    final path = Uri.parse(patch.url).pathSegments.skip(1).join('/');
+    return '${Settings().primeFirmwareServerAddress}/$path';
+  }
 
   Future<Uint8List?> fetchPrimePatchBinary(PrimePatch patch) async {
     final url = _primePatchUrl(patch);
