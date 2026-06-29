@@ -88,9 +88,8 @@ class Server {
   }
 
   String _primePatchUrl(PrimePatch patch) {
-    final channel = Settings().selectedBetaChannel;
-    final channelSegment = channel != null ? '${Uri.encodeComponent(channel)}/' : '';
-    return '${Settings().primeFirmwareServerAddress}/prime-firmware/$channelSegment${patch.version}/release.tar';
+    final path = Uri.parse(patch.url).pathSegments.skip(1).join('/');
+    return '${Settings().primeFirmwareServerAddress}/$path';
   }
 
   Future<Uint8List?> fetchPrimePatchBinary(PrimePatch patch) async {
