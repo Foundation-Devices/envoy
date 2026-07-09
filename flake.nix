@@ -30,11 +30,19 @@
 
         inherit (nixpkgs) lib;
 
+        # Keep Flutter explicit even though the package comes from pinned nixpkgs.
+        # Bump this alongside flake.lock when intentionally updating Flutter.
+        flutterVersion = "3.44.2";
+        flutterPinned =
+          assert lib.assertMsg (pkgs.flutter.version == flutterVersion)
+            "Expected Flutter ${flutterVersion}, but nixpkgs provides ${pkgs.flutter.version}. Update flutterVersion or pin nixpkgs to a matching revision.";
+          pkgs.flutter;
+
         # Android SDK configuration
         androidComposition = pkgs.androidenv.composeAndroidPackages {
           cmdLineToolsVersion = "8.0";
           toolsVersion = "26.1.1";
-          platformToolsVersion = "34.0.5";
+          platformToolsVersion = "35.0.2";
           buildToolsVersions = [
             "30.0.3"
             "33.0.1"
@@ -66,6 +74,7 @@
           ndkVersions = [
             "25.1.8937393"
             "27.0.12077973"
+            "28.2.13676358"
           ];
           useGoogleAPIs = false;
           useGoogleTVAddOns = false;
@@ -179,7 +188,7 @@
             rust-bindgen
 
             # Flutter
-            flutter
+            flutterPinned
             dart
             android-tools
             flutter_rust_bridge_codegen
@@ -294,19 +303,19 @@
         devShells.default = pkgs.mkShell {
           inherit buildInputs;
           shellHook = ''
+            # Flutter setup
+            export FLUTTER_ROOT="${flutterPinned}"
+            export PATH="$FLUTTER_ROOT/bin:$PATH"
+
+            # Remove rustup from PATH to use Nix Rust
+            export PATH=$(echo $PATH | tr ':' '\n' | grep -v ".cargo/bin" | tr '\n' ':')
+
             echo "Envoy Development Environment"
             echo "==========================================="
             echo "Rust: $(rustc --version)"
             echo "Flutter: $(flutter --version | head -1)"
             echo "Dart: $(dart --version)"
             echo "Java: $(java --version)"
-
-            # Flutter setup
-            export FLUTTER_ROOT="${pkgs.flutter}"
-            export PATH="$FLUTTER_ROOT/bin:$PATH"
-
-            # Remove rustup from PATH to use Nix Rust
-            export PATH=$(echo $PATH | tr ':' '\n' | grep -v ".cargo/bin" | tr '\n' ':')
 
             # darwin xcode
             ${lib.optionalString pkgs.stdenv.isDarwin "unset DEVELOPER_DIR && unset SDKROOT"}
