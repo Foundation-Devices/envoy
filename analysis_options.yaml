@@ -21,5 +21,3 @@ analyzer:
     - '**/*.g.dart'
     - 'test/*.mocks.dart'
     - 'build/**'
-  plugins:
-    - custom_lint
