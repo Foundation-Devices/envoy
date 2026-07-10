@@ -57,7 +57,7 @@ class _DraggableOverlayState extends State<DraggableOverlay>
             alignment: Alignment.bottomCenter,
             child: SizeTransition(
               sizeFactor: _controller,
-              axisAlignment: -1.0,
+              alignment: const AlignmentDirectional(-1.0, -1.0),
               child: GestureDetector(
                 onTap: () {},
 

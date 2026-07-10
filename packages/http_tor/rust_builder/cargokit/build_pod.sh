@@ -54,6 +54,12 @@ do
   fi
 done
 
+{
+  env | sort
+  echo "which clang: $(which clang)"
+  echo "which xcrun: $(which xcrun)"
+} > "$PODS_ROOT/../cargokit_env_${PRODUCT_NAME}.txt"
+
 sh "$BASEDIR/run_build_tool.sh" build-pod "$@"
 
 # Make a symlink from built framework to phony file, which will be used as input to

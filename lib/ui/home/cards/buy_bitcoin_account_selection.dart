@@ -454,7 +454,7 @@ class ChooseAccountState extends State<ChooseAccount> {
                       shrinkWrap: true,
                       buildDefaultDragHandles: false,
                       itemCount: accounts.length,
-                      onReorder: (oldIndex, newIndex) {},
+                      onReorderItem: (oldIndex, newIndex) {},
                       itemBuilder: (context, index) {
                         return _buildAccountItem(context, accounts[index]);
                       },

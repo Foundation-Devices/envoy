@@ -140,8 +140,7 @@ class _DevicesListState extends ConsumerState<DevicesList> {
                       ),
                     );
                   },
-                  onReorder: (oldIndex, newIndex) {
-                    if (oldIndex < newIndex) newIndex -= 1;
+                  onReorderItem: (oldIndex, newIndex) {
                     setState(() {
                       final serial = _devicesOrder.removeAt(oldIndex);
                       _devicesOrder.insert(newIndex, serial);
