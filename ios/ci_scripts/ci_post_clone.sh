@@ -7,7 +7,9 @@ FLUTTER_DIR="$HOME/flutter"
 IOS_RUST_TARGET="aarch64-apple-ios"
 
 # The default execution directory of this script is the ci_scripts directory.
-cd "$CI_WORKSPACE"
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+REPO_ROOT="${CI_WORKSPACE:-$(cd "$SCRIPT_DIR/../.." && pwd)}"
+cd "$REPO_ROOT"
 
 RUST_TOOLCHAIN="$(awk -F '"' '/^channel =/ { print $2; exit }' rust-toolchain.toml)"
 if [[ -z "$RUST_TOOLCHAIN" ]]; then
