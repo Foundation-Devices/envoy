@@ -476,7 +476,6 @@ Future prunePendingTransactions(
     }
   }
   for (var (pendingTx as RampTransaction) in ramp) {
-
     transactions
         .where(
       (tx) => tx.outputs.any((output) => output.address == pendingTx.address),
