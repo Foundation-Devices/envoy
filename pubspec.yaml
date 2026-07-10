@@ -117,9 +117,6 @@ dependencies:
   async: ^2.11.0
 
 dependency_overrides:
-  # Tor's Arti 2.5.0 release requires path_provider 2.1.6, which needs Dart
-  # 3.10. Envoy v2.3.1 uses Dart 3.9 and only needs APIs available in 2.1.5.
-  path_provider: 2.1.5
   watcher: ^1.1.0
   freezed_annotation: 3.1.0
 

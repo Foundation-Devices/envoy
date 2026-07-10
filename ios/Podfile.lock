@@ -1,36 +1,17 @@
 PODS:
-  - file_picker (0.0.1):
-    - Flutter
   - file_saver (0.0.1):
     - Flutter
   - Flutter (1.0.0)
   - flutter_secure_storage (6.0.0):
     - Flutter
-  - in_app_purchase_storekit (0.0.1):
-    - Flutter
-    - FlutterMacOS
-  - integration_test (0.0.1):
-    - Flutter
-  - local_auth_darwin (0.0.1):
-    - Flutter
-    - FlutterMacOS
   - MTBBarcodeScanner (5.0.11)
   - ObjectBox (4.4.1)
   - objectbox_flutter_libs (0.0.1):
     - Flutter
     - ObjectBox (= 4.4.1)
-  - package_info_plus (0.4.5):
-    - Flutter
-  - path_provider_foundation (0.0.1):
-    - Flutter
-    - FlutterMacOS
-  - permission_handler_apple (9.3.0):
-    - Flutter
   - qr_code_scanner_plus (0.2.6):
     - Flutter
     - MTBBarcodeScanner
-  - rive_native (0.0.1):
-    - Flutter
   - rust_lib_backup (0.0.1):
     - Flutter
   - rust_lib_foundation_api (0.0.1):
@@ -43,51 +24,19 @@ PODS:
     - Flutter
   - rust_lib_ur (0.0.1):
     - Flutter
-  - share_plus (0.0.1):
-    - Flutter
-  - shared_preferences_foundation (0.0.1):
-    - Flutter
-    - FlutterMacOS
-  - sqflite_darwin (0.0.4):
-    - Flutter
-    - FlutterMacOS
-  - tor (0.0.1):
-    - Flutter
-  - url_launcher_ios (0.0.1):
-    - Flutter
-  - video_player_avfoundation (0.0.1):
-    - Flutter
-    - FlutterMacOS
-  - wakelock_plus (0.0.1):
-    - Flutter
 
 DEPENDENCIES:
-  - file_picker (from `.symlinks/plugins/file_picker/ios`)
   - file_saver (from `.symlinks/plugins/file_saver/ios`)
   - Flutter (from `Flutter`)
   - flutter_secure_storage (from `.symlinks/plugins/flutter_secure_storage/ios`)
-  - in_app_purchase_storekit (from `.symlinks/plugins/in_app_purchase_storekit/darwin`)
-  - integration_test (from `.symlinks/plugins/integration_test/ios`)
-  - local_auth_darwin (from `.symlinks/plugins/local_auth_darwin/darwin`)
   - objectbox_flutter_libs (from `.symlinks/plugins/objectbox_flutter_libs/ios`)
-  - package_info_plus (from `.symlinks/plugins/package_info_plus/ios`)
-  - path_provider_foundation (from `.symlinks/plugins/path_provider_foundation/darwin`)
-  - permission_handler_apple (from `.symlinks/plugins/permission_handler_apple/ios`)
   - qr_code_scanner_plus (from `.symlinks/plugins/qr_code_scanner_plus/ios`)
-  - rive_native (from `.symlinks/plugins/rive_native/ios`)
   - rust_lib_backup (from `.symlinks/plugins/rust_lib_backup/ios`)
   - rust_lib_foundation_api (from `.symlinks/plugins/rust_lib_foundation_api/ios`)
   - rust_lib_http_tor (from `.symlinks/plugins/rust_lib_http_tor/ios`)
   - rust_lib_ngwallet (from `.symlinks/plugins/rust_lib_ngwallet/ios`)
   - rust_lib_shards (from `.symlinks/plugins/rust_lib_shards/ios`)
   - rust_lib_ur (from `.symlinks/plugins/rust_lib_ur/ios`)
-  - share_plus (from `.symlinks/plugins/share_plus/ios`)
-  - shared_preferences_foundation (from `.symlinks/plugins/shared_preferences_foundation/darwin`)
-  - sqflite_darwin (from `.symlinks/plugins/sqflite_darwin/darwin`)
-  - tor (from `.symlinks/plugins/tor/ios`)
-  - url_launcher_ios (from `.symlinks/plugins/url_launcher_ios/ios`)
-  - video_player_avfoundation (from `.symlinks/plugins/video_player_avfoundation/darwin`)
-  - wakelock_plus (from `.symlinks/plugins/wakelock_plus/ios`)
 
 SPEC REPOS:
   trunk:
@@ -95,32 +44,16 @@ SPEC REPOS:
     - ObjectBox
 
 EXTERNAL SOURCES:
-  file_picker:
-    :path: ".symlinks/plugins/file_picker/ios"
   file_saver:
     :path: ".symlinks/plugins/file_saver/ios"
   Flutter:
     :path: Flutter
   flutter_secure_storage:
     :path: ".symlinks/plugins/flutter_secure_storage/ios"
-  in_app_purchase_storekit:
-    :path: ".symlinks/plugins/in_app_purchase_storekit/darwin"
-  integration_test:
-    :path: ".symlinks/plugins/integration_test/ios"
-  local_auth_darwin:
-    :path: ".symlinks/plugins/local_auth_darwin/darwin"
   objectbox_flutter_libs:
     :path: ".symlinks/plugins/objectbox_flutter_libs/ios"
-  package_info_plus:
-    :path: ".symlinks/plugins/package_info_plus/ios"
-  path_provider_foundation:
-    :path: ".symlinks/plugins/path_provider_foundation/darwin"
-  permission_handler_apple:
-    :path: ".symlinks/plugins/permission_handler_apple/ios"
   qr_code_scanner_plus:
     :path: ".symlinks/plugins/qr_code_scanner_plus/ios"
-  rive_native:
-    :path: ".symlinks/plugins/rive_native/ios"
   rust_lib_backup:
     :path: ".symlinks/plugins/rust_lib_backup/ios"
   rust_lib_foundation_api:
@@ -133,51 +66,22 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/rust_lib_shards/ios"
   rust_lib_ur:
     :path: ".symlinks/plugins/rust_lib_ur/ios"
-  share_plus:
-    :path: ".symlinks/plugins/share_plus/ios"
-  shared_preferences_foundation:
-    :path: ".symlinks/plugins/shared_preferences_foundation/darwin"
-  sqflite_darwin:
-    :path: ".symlinks/plugins/sqflite_darwin/darwin"
-  tor:
-    :path: ".symlinks/plugins/tor/ios"
-  url_launcher_ios:
-    :path: ".symlinks/plugins/url_launcher_ios/ios"
-  video_player_avfoundation:
-    :path: ".symlinks/plugins/video_player_avfoundation/darwin"
-  wakelock_plus:
-    :path: ".symlinks/plugins/wakelock_plus/ios"
 
 SPEC CHECKSUMS:
-  file_picker: 9e4c55a49b5bec4a3cc3c01410ce11348811c551
   file_saver: 503e386464dbe118f630e17b4c2e1190fa0cf808
   Flutter: cabc95a1d2626b1b06e7179b784ebcf0c0cde467
   flutter_secure_storage: d33dac7ae2ea08509be337e775f6b59f1ff45f12
-  in_app_purchase_storekit: 2342c0a5da86593124d08dd13d920f39a52b273a
-  integration_test: 252f60fa39af5e17c3aa9899d35d908a0721b573
-  local_auth_darwin: 63c73d6d28cc3e239be2b6aa460ea6e317cd5100
   MTBBarcodeScanner: f453b33c4b7dfe545d8c6484ed744d55671788cb
   ObjectBox: 7da4aceb5013d041bfafdbc6d744a26918b09757
   objectbox_flutter_libs: 7a6ea1d74b43f5d970e6571d1b79e4b181b33d81
-  package_info_plus: c0502532a26c7662a62a356cebe2692ec5fe4ec4
-  path_provider_foundation: 0b743cbb62d8e47eab856f09262bb8c1ddcfe6ba
-  permission_handler_apple: 9878588469a2b0d0fc1e048d9f43605f92e6cec2
   qr_code_scanner_plus: 3bfe4deb7f28996a63a2a580819d49dae80d5ed3
-  rive_native: 9b0b40deb7105b079e2e4253aef7d0b030d5dfbe
   rust_lib_backup: 4524262f94017bf154f4311366f58b2942301b66
   rust_lib_foundation_api: b926bd066994ff2c0354873b5335f7287ac62945
   rust_lib_http_tor: 0fcda57f1a6c6046f5f62488ef5bce90aa30694a
   rust_lib_ngwallet: 3a8d019b362008e31221ba4b2263988fcc0bf802
   rust_lib_shards: 8e23064d2ebd38e6a70dc5a2fd05747544c14005
   rust_lib_ur: b8ae26f3fe44408cb5bd20c0bf244cd0a0413a6d
-  share_plus: 8b6f8b3447e494cca5317c8c3073de39b3600d1f
-  shared_preferences_foundation: 5086985c1d43c5ba4d5e69a4e8083a389e2909e6
-  sqflite_darwin: 5a7236e3b501866c1c9befc6771dfd73ffb8702d
-  tor: 4f0e95b8667e4aabda0c14aa5165cb3e46afe62c
-  url_launcher_ios: bb13df5870e8c4234ca12609d04010a21be43dfa
-  video_player_avfoundation: 7993f492ae0bd77edaea24d9dc051d8bb2cd7c86
-  wakelock_plus: 76957ab028e12bfa4e66813c99e46637f367fc7e
 
-PODFILE CHECKSUM: 0ca84cefa7f2127eeb30c78f8bacb271e71f39b5
+PODFILE CHECKSUM: d92327d674138e43099bf33ff1dfb3b19d4df51a
 
 COCOAPODS: 1.16.2

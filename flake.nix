@@ -179,6 +179,21 @@
           exit 1
         '';
 
+        flutter-wrapper = pkgs.writeShellScriptBin "flutter" ''
+          if [ "$(uname -s)" = "Darwin" ]; then
+            export FLUTTER_ROOT="${flutterPinned}"
+            export PATH="${flutterPinned}/bin:${rustToolchain}/bin:${rustup-shim}/bin:${pkgs.rsync}/bin:/opt/homebrew/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:$PATH"
+
+            # Keep Xcode/SwiftPM on Apple's compiler toolchain while still using
+            # the Nix-provided Flutter, Rust, and GNU rsync binaries.
+            unset NIX_CFLAGS_COMPILE NIX_CFLAGS_COMPILE_FOR_TARGET
+            unset NIX_LDFLAGS NIX_LDFLAGS_FOR_TARGET
+            unset CC CXX LD AR AS NM RANLIB STRIP OBJCOPY OBJDUMP SIZE
+          fi
+
+          exec ${flutterPinned}/bin/flutter "$@"
+        '';
+
         buildInputs =
           with pkgs;
           [
@@ -188,6 +203,7 @@
             rust-bindgen
 
             # Flutter
+            flutter-wrapper
             flutterPinned
             dart
             android-tools
@@ -205,6 +221,9 @@
             go
             unzip
             nodejs
+            # Flutter's iOS build uses rsync --chmod before codesigning frameworks.
+            # GNU rsync honors it; Apple's openrsync can leave Nix-store copies read-only.
+            rsync
 
             # Localazy CLI
             localazy-cli
@@ -305,7 +324,7 @@
           shellHook = ''
             # Flutter setup
             export FLUTTER_ROOT="${flutterPinned}"
-            export PATH="$FLUTTER_ROOT/bin:$PATH"
+            export PATH="${flutter-wrapper}/bin:$FLUTTER_ROOT/bin:$PATH"
 
             # Remove rustup from PATH to use Nix Rust
             export PATH=$(echo $PATH | tr ':' '\n' | grep -v ".cargo/bin" | tr '\n' ':')
