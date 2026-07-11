@@ -9,7 +9,7 @@ import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/components/pop_up.dart';
 import 'package:envoy/ui/onboard/wallet_setup_success.dart';
 import 'package:envoy/ui/theme/envoy_icons.dart';
-import 'package:file_picker/file_picker.dart';
+import 'package:file_selector/file_selector.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:path_provider/path_provider.dart';
@@ -32,11 +32,11 @@ Future showRestoreFailedDialog(BuildContext context) async {
 
 Future<bool> openBackupFile(BuildContext buildContext, {String? seed}) async {
   var success = false;
-  var result = await FilePicker.platform.pickFiles();
-  if (result != null) {
+  final file = await openFile();
+  if (file != null) {
     try {
       success = await EnvoySeed().restoreData(
-        filePath: result.files.single.path!,
+        filePath: file.path,
         seed: seed,
       );
     } catch (e) {

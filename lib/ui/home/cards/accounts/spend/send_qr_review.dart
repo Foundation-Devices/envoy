@@ -4,7 +4,6 @@
 
 import 'dart:async';
 import 'dart:convert';
-import 'dart:io';
 import 'dart:typed_data';
 import 'package:envoy/business/uniform_resource.dart';
 import 'package:envoy/generated/l10n.dart';
@@ -12,7 +11,7 @@ import 'package:envoy/ui/components/envoy_scaffold.dart';
 import 'package:envoy/ui/components/pop_up.dart';
 import 'package:envoy/ui/theme/envoy_icons.dart';
 import 'package:envoy/util/console.dart';
-import 'package:file_picker/file_picker.dart';
+import 'package:file_selector/file_selector.dart';
 import 'package:envoy/ui/home/cards/accounts/accounts_state.dart';
 import 'package:envoy/ui/home/cards/accounts/spend/staging_tx_details.dart';
 import 'package:envoy/ui/home/cards/accounts/spend/state/spend_state.dart';
@@ -227,19 +226,12 @@ class _SendQrReviewState extends ConsumerState<SendQrReview> {
   ) async {
     Uint8List? psbtBytes;
     try {
-      final result = await FilePicker.platform.pickFiles(withData: true);
-      if (result == null) {
+      final file = await openFile();
+      if (file == null) {
         // Cancelled — leave the camera running.
         return;
       }
-      final file = result.files.single;
-      Uint8List? raw = file.bytes;
-      if (raw == null && file.path != null) {
-        raw = await File(file.path!).readAsBytes();
-      }
-      if (raw != null) {
-        psbtBytes = _normalizePsbtBytes(raw);
-      }
+      psbtBytes = _normalizePsbtBytes(await file.readAsBytes());
     } catch (e) {
       kPrint(e);
       psbtBytes = null;
