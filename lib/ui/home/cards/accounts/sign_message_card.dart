@@ -24,7 +24,7 @@ import 'package:envoy/ui/widgets/scanner/decoders/generic_qr_decoder.dart';
 import 'package:envoy/ui/widgets/scanner/qr_scanner.dart';
 import 'package:envoy/util/console.dart';
 import 'package:envoy/ui/components/pop_up.dart';
-import 'package:file_picker/file_picker.dart';
+import 'package:file_selector/file_selector.dart';
 import 'package:file_saver/file_saver.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -378,17 +378,12 @@ class _SignMessageCardState extends ConsumerState<SignMessageCard> {
   Future<void> _importSignatureFromFile() async {
     String? content;
     try {
-      final result = await FilePicker.platform.pickFiles(withData: true);
-      if (result == null) {
+      final file = await openFile();
+      if (file == null) {
         // Cancelled — leave the camera running.
         return;
       }
-      final file = result.files.single;
-      if (file.bytes != null) {
-        content = utf8.decode(file.bytes!);
-      } else if (file.path != null) {
-        content = await File(file.path!).readAsString();
-      }
+      content = utf8.decode(await file.readAsBytes());
     } catch (e) {
       kPrint(e);
       content = null;

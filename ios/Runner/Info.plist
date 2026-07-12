@@ -71,7 +71,7 @@
 	<key>NSBluetoothAlwaysUsageDescription</key>
 	<string>Our app uses bluetooth to find, connect and transfer data between different devices</string>
 	<key>NSBluetoothWhileInUseUsageDescription</key>
-	<string></string>
+	<string>Envoy uses Bluetooth to find, connect to, and transfer data with your Passport device.</string>
 	<key>NSCameraUsageDescription</key>
 	<string>Envoy needs camera access to scan QR codes</string>
 	<key>NSFaceIDUsageDescription</key>

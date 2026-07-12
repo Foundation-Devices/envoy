@@ -5,9 +5,12 @@ set -euo pipefail
 FLUTTER_VERSION="3.44.2"
 FLUTTER_DIR="$HOME/flutter"
 IOS_RUST_TARGET="aarch64-apple-ios"
+CARGOKIT_TOOLCHAIN="stable"
 
 # The default execution directory of this script is the ci_scripts directory.
-cd "$CI_WORKSPACE"
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+REPO_ROOT="${CI_WORKSPACE:-$(cd "$SCRIPT_DIR/../.." && pwd)}"
+cd "$REPO_ROOT"
 
 RUST_TOOLCHAIN="$(awk -F '"' '/^channel =/ { print $2; exit }' rust-toolchain.toml)"
 if [[ -z "$RUST_TOOLCHAIN" ]]; then
@@ -35,14 +38,19 @@ brew install cocoapods automake libtool curl
 
 # Install Rust and honor the repo-pinned toolchain for Cargokit during archive.
 if [[ ! -x "$HOME/.cargo/bin/rustup" ]]; then
-  curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y --default-toolchain "$RUST_TOOLCHAIN"
+  curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y --profile minimal --default-toolchain "$RUST_TOOLCHAIN"
 fi
 export PATH="$HOME/.cargo/bin:$PATH"
 
-rustup toolchain install "$RUST_TOOLCHAIN"
+rustup toolchain install "$RUST_TOOLCHAIN" --profile minimal
 rustup default "$RUST_TOOLCHAIN"
 rustup component add rust-src --toolchain "$RUST_TOOLCHAIN"
 rustup target add "$IOS_RUST_TARGET" --toolchain "$RUST_TOOLCHAIN"
+
+# Cargokit currently invokes `rustup run stable cargo ...` for Rust pod builds,
+# so preinstall the stable alias once to avoid parallel archive phases racing.
+rustup toolchain install "$CARGOKIT_TOOLCHAIN" --profile minimal
+rustup target add "$IOS_RUST_TARGET" --toolchain "$CARGOKIT_TOOLCHAIN"
 
 # Install CocoaPods dependencies.
 pod install --project-directory=ios
