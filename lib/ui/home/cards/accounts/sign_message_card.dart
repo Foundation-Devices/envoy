@@ -22,6 +22,7 @@ import 'package:envoy/ui/theme/new_envoy_color.dart';
 import 'package:envoy/ui/widgets/envoy_qr_widget.dart';
 import 'package:envoy/ui/widgets/scanner/decoders/generic_qr_decoder.dart';
 import 'package:envoy/ui/widgets/scanner/qr_scanner.dart';
+import 'package:envoy/util/bug_report_helper.dart';
 import 'package:envoy/util/console.dart';
 import 'package:envoy/ui/components/pop_up.dart';
 import 'package:file_selector/file_selector.dart';
@@ -36,6 +37,34 @@ import 'package:envoy/ui/components/checkbox.dart';
 import 'package:envoy/ui/home/cards/accounts/address_explorer_card.dart';
 
 const MethodChannel _envoyPlatform = MethodChannel('envoy');
+
+String buildAddressDerivationPath({
+  required AddressType addressType,
+  required Network network,
+  required int accountIndex,
+  required int addressIndex,
+  required bool isChange,
+}) {
+  final purpose = switch (addressType) {
+    AddressType.p2Pkh => 44,
+    AddressType.p2Sh => 45,
+    AddressType.p2Wpkh => 84,
+    AddressType.p2Wsh => 48,
+    AddressType.p2Tr => 86,
+    AddressType.p2ShWpkh => 49,
+    AddressType.p2ShWsh => 48,
+  };
+  final coinType = network == Network.bitcoin ? 0 : 1;
+  final changeIndex = isChange ? 1 : 0;
+
+  return "m/$purpose'/$coinType'/$accountIndex'/$changeIndex/$addressIndex";
+}
+
+String buildSignMessageQrPayload({
+  required String derivationPath,
+  required String message,
+}) =>
+    'signmessage $derivationPath ascii:$message';
 
 Future<void> _saveSignedTextToFile({
   required String text,
@@ -149,33 +178,16 @@ class _SignMessageCardState extends ConsumerState<SignMessageCard> {
 
   // --- Address Resolution ---
 
-  String _getPurpose(AddressType addressType) {
-    switch (addressType) {
-      case AddressType.p2Pkh:
-        return "44'";
-      case AddressType.p2Sh:
-        return "45'";
-      case AddressType.p2Wpkh:
-        return "84'";
-      case AddressType.p2Wsh:
-        return "48'";
-      case AddressType.p2Tr:
-        return "86'";
-      case AddressType.p2ShWpkh:
-        return "49'";
-      case AddressType.p2ShWsh:
-        return "48'";
-    }
-  }
-
   String _buildDerivationPath(int index, bool isChange) {
     final account =
         ref.read(accountStateProvider(widget.account.id)) ?? widget.account;
-    final addressType = account.preferredAddressType;
-    final purpose = _getPurpose(addressType);
-    final coinType = account.network == Network.bitcoin ? "0'" : "1'";
-    final changeIndex = isChange ? 1 : 0;
-    return "m/$purpose/$coinType/0'/$changeIndex/$index";
+    return buildAddressDerivationPath(
+      addressType: account.preferredAddressType,
+      network: account.network,
+      accountIndex: account.index,
+      addressIndex: index,
+      isChange: isChange,
+    );
   }
 
   Future<void> _resolveAddress(String address) async {
@@ -322,7 +334,10 @@ class _SignMessageCardState extends ConsumerState<SignMessageCard> {
     if (message.isEmpty || _resolvedDerivationPath == null) return;
 
     setState(() {
-      _qrData = "signmessage $_resolvedDerivationPath ascii:$message";
+      _qrData = buildSignMessageQrPayload(
+        derivationPath: _resolvedDerivationPath!,
+        message: message,
+      );
       _pageState = _InputPageState.qr;
     });
   }
@@ -485,8 +500,8 @@ class _SignMessageCardState extends ConsumerState<SignMessageCard> {
         address: address,
         signature: trimmedSignature,
       );
-    } catch (e) {
-      kPrint(e);
+    } catch (e, stack) {
+      EnvoyReport().log("SignMessage", "$e", stackTrace: stack);
       isValid = false;
     }
 
