@@ -24,7 +24,6 @@ import 'package:ngwallet/ngwallet.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 import 'package:envoy/ui/theme/envoy_colors.dart';
 import 'package:envoy/ui/theme/envoy_typography.dart';
-import 'package:envoy/business/region_manager.dart';
 import 'package:envoy/ui/state/home_page_state.dart';
 
 class SettingsPage extends ConsumerStatefulWidget {
@@ -39,19 +38,9 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
   bool _advancedVisible = false;
   bool _warningsReset = false;
 
-  bool buyDisabledByCountry = true;
-
   final LocalAuthentication auth = LocalAuthentication();
 
   final s = Settings();
-
-  @override
-  void initState() {
-    super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) async {
-      buyDisabledByCountry = await AllowedRegions.checkBuyDisabled();
-    });
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -360,22 +349,6 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
                     },
                   ),
                 ),
-                !buyDisabledByCountry
-                    ? ListTile(
-                        dense: true,
-                        contentPadding: const EdgeInsets.all(0),
-                        title: Wrap(
-                          children: [
-                            SettingText(S().settings_advanced_enableBuyRamp),
-                          ],
-                        ),
-                        trailing: SettingToggle(
-                          s.isAllowedBuyInEnvoy,
-                          s.setAllowBuyInEnvoy,
-                          semanticsLabel: "Buy Toggle",
-                        ),
-                      )
-                    : const SizedBox.shrink(),
                 ListTile(
                   dense: true,
                   onTap: () {
