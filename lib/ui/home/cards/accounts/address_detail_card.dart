@@ -171,28 +171,19 @@ class _AddressDetailCardState extends ConsumerState<AddressDetailCard> {
   String _getDerivationPath() {
     final addressIndex = widget.addressInfo.index;
     final changeIndex = widget.addressInfo.isChange ? 1 : 0;
+    final coinType = widget.account.network == Network.bitcoin ? "0'" : "1'";
 
-    // Determine purpose based on preferred address type
-    final addressType = widget.account.preferredAddressType;
-    String purpose;
-    switch (addressType) {
-      case AddressType.p2Pkh:
-        purpose = "44'";
-      case AddressType.p2Sh:
-        purpose = "45'";
-      case AddressType.p2Wpkh:
-        purpose = "84'";
-      case AddressType.p2Wsh:
-        purpose = "48'";
-      case AddressType.p2Tr:
-        purpose = "86'";
-      case AddressType.p2ShWpkh:
-        purpose = "49'";
-      case AddressType.p2ShWsh:
-        purpose = "48'";
-    }
+    final purpose = switch (widget.account.preferredAddressType) {
+      AddressType.p2Pkh => "44'",
+      AddressType.p2Sh => "45'",
+      AddressType.p2Wpkh => "84'",
+      AddressType.p2Wsh => "48'",
+      AddressType.p2Tr => "86'",
+      AddressType.p2ShWpkh => "49'",
+      AddressType.p2ShWsh => "48'",
+    };
 
-    return "m/$purpose/0'/0'/$changeIndex/$addressIndex";
+    return "m/$purpose/$coinType/${widget.account.index}'/$changeIndex/$addressIndex";
   }
 
   void _copyAddressToClipboard(BuildContext context, String address) async {
