@@ -118,8 +118,11 @@ class _AddressEntryState extends ConsumerState<AddressEntry> {
                         controller: widget.controller,
                         style: EnvoyTypography.body,
                         keyboardType: TextInputType.multiline,
+                        textInputAction: TextInputAction.done,
                         minLines: 1,
                         maxLines: null,
+                        onFieldSubmitted: (_) =>
+                            FocusScope.of(context).unfocus(),
                         onChanged: (value) async {
                           widget.onAddressChanged?.call(value);
                           setState(() {});
