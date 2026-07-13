@@ -223,10 +223,24 @@ final walletTransactionsProvider =
   return result;
 });
 
+final visibleActivityAccountsProvider = Provider<List<EnvoyAccount>>((ref) {
+  final accounts = ref.watch(accountsProvider);
+  final activePassphraseAccountIds = ref
+      .watch(primePassphraseAccountsProvider)
+      .map((account) => account.id)
+      .toSet();
+
+  return accounts.where((account) {
+    return !account.seedHasPassphrase ||
+        activePassphraseAccountIds.contains(account.id);
+  }).toList();
+});
+
 final allTxProvider = Provider<List<EnvoyTransaction>>((ref) {
   final allTransactions = <EnvoyTransaction>[];
+  final accounts = ref.watch(visibleActivityAccountsProvider);
 
-  for (var account in NgAccountManager().accounts) {
+  for (final account in accounts) {
     final transactions = ref.watch(transactionsProvider(account.id));
     allTransactions.addAll(transactions);
   }
