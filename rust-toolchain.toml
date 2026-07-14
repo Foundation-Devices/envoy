@@ -4,6 +4,6 @@
 
 
 [toolchain]
-channel = "1.90.0"
+channel = "1.91.0"
 components = ["rustfmt", "rust-src", "cargo", "clippy", "rust-analyzer"]
 targets = ["aarch64-apple-ios", "aarch64-apple-darwin", "aarch64-linux-android", "x86_64-linux-android"]
