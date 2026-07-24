@@ -26,7 +26,7 @@ appId: com.foundationdevices.envoy
 - swipe:
      start: "50%, 5%"
      end: "50%, 5%"
-     duration: 3000
+     duration: 1000
 
 - assertVisible: EMAIL # just check for the button
 
