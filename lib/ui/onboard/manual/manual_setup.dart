@@ -42,15 +42,19 @@ class SeedIntroScreen extends StatelessWidget {
                   children: [
                     Align(
                       alignment: Alignment.centerLeft,
-                      child: GestureDetector(
-                        onTap: () {
-                          context.pop();
-                        },
-                        child: const Padding(
-                          padding: EdgeInsets.all(EnvoySpacing.medium1),
-                          child: Icon(
-                            Icons.arrow_back_ios_rounded,
-                            size: EnvoySpacing.medium2,
+                      child: Semantics(
+                        identifier: "seed_intro_back_button",
+                        button: true,
+                        child: GestureDetector(
+                          onTap: () {
+                            context.pop();
+                          },
+                          child: const Padding(
+                            padding: EdgeInsets.all(EnvoySpacing.medium1),
+                            child: Icon(
+                              Icons.arrow_back_ios_rounded,
+                              size: EnvoySpacing.medium2,
+                            ),
                           ),
                         ),
                       ),

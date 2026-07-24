@@ -35,8 +35,13 @@ copy:
     flutter pub run intl_utils:generate
 
 maestroqa:
-    ./scripts/run_maestro.sh --build
+    GRADLE_OPTS=-Dorg.gradle.jvmargs=-Xmx8g ./scripts/run_maestro.sh --build
+
+maestroqa-android:
+    GRADLE_OPTS=-Dorg.gradle.jvmargs=-Xmx8g ./scripts/run_maestro.sh --build --android-only
+
+maestroqa-prime:
+    GRADLE_OPTS=-Dorg.gradle.jvmargs=-Xmx8g ./scripts/run_maestro.sh --build --prime-only
 
 maestroqaios:
     ./scripts/run_ios_maestro.sh --build
-
