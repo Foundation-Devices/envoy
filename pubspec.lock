@@ -741,38 +741,6 @@ packages:
       relative: true
     source: path
     version: "1.0.0+1"
-  in_app_purchase:
-    dependency: "direct main"
-    description:
-      name: in_app_purchase
-      sha256: "0e9510b80b0074e89ab0a8e0fc901439b779dc9ae575ab8d419253c6e1627716"
-      url: "https://pub.dev"
-    source: hosted
-    version: "3.3.0"
-  in_app_purchase_android:
-    dependency: transitive
-    description:
-      name: in_app_purchase_android
-      sha256: eb8f551039481d1b265f12fa54f5ab5dd4f13ec5444a468b85a3793517a37fda
-      url: "https://pub.dev"
-    source: hosted
-    version: "0.5.1"
-  in_app_purchase_platform_interface:
-    dependency: transitive
-    description:
-      name: in_app_purchase_platform_interface
-      sha256: "0b0076cac8ce4fa7048f01e76af8b123aeb6a7c4e0dea2a5206d6664454f3e36"
-      url: "https://pub.dev"
-    source: hosted
-    version: "1.4.1"
-  in_app_purchase_storekit:
-    dependency: transitive
-    description:
-      name: in_app_purchase_storekit
-      sha256: "47d63717270133fcfa1ff8e144f6aaf9d498fa3884de43e24909737da55aedd8"
-      url: "https://pub.dev"
-    source: hosted
-    version: "0.4.10+1"
   integration_test:
     dependency: "direct dev"
     description: flutter
