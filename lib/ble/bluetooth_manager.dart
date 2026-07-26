@@ -141,29 +141,26 @@ class BluetoothManager extends WidgetsBindingObserver {
     return _messageRouter;
   }
 
-  Future getPermissions() async {
+  static Future<List<Permission>> _permissionsForAndroidApi() async {
+    final apiLevel = await BluetoothChannel().getAPILevel();
+    return apiLevel < 31
+        ? const [Permission.locationWhenInUse]
+        : const [
+            Permission.bluetoothScan,
+            Permission.bluetoothConnect,
+          ];
+  }
+
+  Future<Map<Permission, PermissionStatus>> getPermissions() async {
     if (Platform.isAndroid) {
-      // return;
+      final apiLevel = await BluetoothChannel().getAPILevel();
       kPrint(
-        "Getting permissions... ${await BluetoothChannel().getAPILevel()}",
+        "Getting permissions... $apiLevel",
       );
-      // Envoy will be getting the BT addresses via QR
-      // so we don't need location permission for scanning on Android 10 and below
-      if (await BluetoothChannel().getAPILevel() <= 31) {
-        await [
-          Permission.bluetooth,
-          Permission.bluetoothScan,
-          Permission.bluetoothConnect,
-          Permission.locationWhenInUse,
-        ].request();
-      } else {
-        await [
-          Permission.bluetooth,
-          Permission.bluetoothScan,
-          Permission.bluetoothConnect,
-        ].request();
-      }
+      return await (await _permissionsForAndroidApi()).request();
     }
+
+    return const <Permission, PermissionStatus>{};
   }
 
   @override
@@ -184,20 +181,12 @@ class BluetoothManager extends WidgetsBindingObserver {
   // Check if Bluetooth permissions are denied
   // IOS uses AccessoryKit so no need to check for permissions
   static Future<bool> isBluetoothDenied() async {
-    bool isDenied = false;
-    if (Platform.isAndroid) {
-      final apiLevel = await BluetoothChannel().getAPILevel();
-      if (apiLevel <= 31) {
-        isDenied = await Permission.bluetooth.isDenied ||
-            await Permission.bluetoothConnect.isDenied ||
-            await Permission.bluetoothScan.isDenied ||
-            await Permission.locationWhenInUse.isDenied;
-      } else {
-        isDenied = await Permission.bluetooth.isDenied ||
-            await Permission.bluetoothConnect.isDenied ||
-            await Permission.bluetoothScan.isDenied;
-      }
-    }
-    return isDenied;
+    if (!Platform.isAndroid) return false;
+
+    final List<Permission> permissions = await _permissionsForAndroidApi();
+    final statuses = await Future.wait(
+      permissions.map((permission) => permission.status),
+    );
+    return statuses.any((status) => !status.isGranted);
   }
 }
