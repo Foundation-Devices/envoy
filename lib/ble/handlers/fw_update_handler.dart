@@ -48,6 +48,7 @@ class FwUpdateHandler extends PassportMessageHandler {
   String newVersion = "";
   String currentVersion = "";
   int totalPatchBytes = 0;
+  List<PrimePatch> _availablePatches = const [];
 
   // Transfer rate estimator
   // reset this every time a new transfer starts
@@ -120,6 +121,8 @@ class FwUpdateHandler extends PassportMessageHandler {
   Set<PrimeFwUpdateStep> get completedUpdateStates => _completedUpdateStates;
 
   String get estimatedUpdateTime => _formatEstimatedUpdateTime(totalPatchBytes);
+
+  List<PrimePatch> get availablePatches => _availablePatches;
 
   @override
   bool canHandle(api.QuantumLinkMessage message) {
@@ -200,6 +203,7 @@ class FwUpdateHandler extends PassportMessageHandler {
     }
 
     if (patches.isEmpty) {
+      _availablePatches = const [];
       EnvoyReport()
           .log("fw_update_handler", "No updates available — notifying device");
       await sendFirmwareFetchEvent(api.FirmwareFetchEvent.updateNotAvailable());
@@ -375,6 +379,7 @@ class FwUpdateHandler extends PassportMessageHandler {
         EnvoyStepState.LOADING,
       );
       if (patches.isEmpty) {
+        _availablePatches = const [];
         _updateFetchState(stepUpdate, EnvoyStepState.FINISHED);
         qlConnection.writeMessage(
           api.QuantumLinkMessage.firmwareUpdateCheckResponse(
@@ -418,6 +423,7 @@ class FwUpdateHandler extends PassportMessageHandler {
   }
 
   api.FirmwareUpdateAvailable updateAvailableMessage(List<PrimePatch> patches) {
+    _availablePatches = List.unmodifiable(patches);
     final latest = patches.last;
     totalPatchBytes = _getTotalPatchBytes(patches);
     EnvoyReport().log(

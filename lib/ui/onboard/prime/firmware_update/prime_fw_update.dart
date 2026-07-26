@@ -13,6 +13,7 @@ import 'package:envoy/ui/components/envoy_scaffold.dart';
 import 'package:envoy/ui/components/pop_up.dart';
 import 'package:envoy/ui/envoy_button.dart';
 import 'package:envoy/ui/onboard/onboard_page_wrapper.dart';
+import 'package:envoy/ui/onboard/prime/firmware_update/prime_changelog.dart';
 import 'package:envoy/ui/onboard/prime/firmware_update/prime_fw_update_state.dart';
 import 'package:envoy/ui/onboard/prime/prime_routes.dart';
 import 'package:envoy/ui/onboard/prime/state/ble_onboarding_state.dart';
@@ -497,10 +498,12 @@ class _OnboardPrimeFwUpdateState extends ConsumerState<OnboardPrimeFwUpdate> {
             S().firmware_updateAvailable_whatsNew("KeyOS v$newVersion"),
             type: EnvoyButtonTypes.secondary,
             onTap: () {
-              launchUrl(
-                Uri.parse(
-                  "https://github.com/Foundation-Devices/KeyOS-Releases/releases/tag/$newVersion",
-                ),
+              showPrimeChangelogDialog(
+                context: context,
+                newVersion: newVersion,
+                changelogs:
+                    fwHandler?.availablePatches.toList(growable: false) ??
+                        const [],
               );
             },
           ),
