@@ -141,7 +141,7 @@ class BluetoothManager extends WidgetsBindingObserver {
     return _messageRouter;
   }
 
-  static Future<List<Permission>> _permissionsForAndroidApi() async{
+  static Future<List<Permission>> _permissionsForAndroidApi() async {
     final apiLevel = await BluetoothChannel().getAPILevel();
     return apiLevel < 31
         ? const [Permission.locationWhenInUse]
@@ -157,7 +157,7 @@ class BluetoothManager extends WidgetsBindingObserver {
       kPrint(
         "Getting permissions... $apiLevel",
       );
-     return await (await _permissionsForAndroidApi()).request();
+      return await (await _permissionsForAndroidApi()).request();
     }
   }
 
