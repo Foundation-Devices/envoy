@@ -159,6 +159,8 @@ class BluetoothManager extends WidgetsBindingObserver {
       );
       return await (await _permissionsForAndroidApi()).request();
     }
+
+    return const <Permission, PermissionStatus>{};
   }
 
   @override
