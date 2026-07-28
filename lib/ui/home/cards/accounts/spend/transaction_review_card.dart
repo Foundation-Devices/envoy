@@ -204,8 +204,6 @@ class _TransactionReviewCardState extends ConsumerState<TransactionReviewCard> {
           shape: RoundedRectangleBorder(
             borderRadius:
                 const BorderRadius.all(Radius.circular(EnvoySpacing.medium2)),
-            // border: Border.all(
-            //     color: EnvoyColors.border2, width: 1, style: BorderStyle.solid),
           ),
           child: Container(
             decoration: BoxDecoration(
