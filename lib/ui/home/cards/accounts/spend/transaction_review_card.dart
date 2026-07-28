@@ -120,17 +120,20 @@ class _TransactionReviewCardState extends ConsumerState<TransactionReviewCard> {
           elevation: 8,
           shape: RoundedRectangleBorder(
             borderRadius:
-            const BorderRadius.all(Radius.circular(EnvoySpacing.medium2)),
+                const BorderRadius.all(Radius.circular(EnvoySpacing.medium2)),
           ),
           child: Container(
             decoration: BoxDecoration(
               borderRadius:
                   const BorderRadius.all(Radius.circular(EnvoySpacing.medium2)),
               border: Border.all(
-                  color: EnvoyColors.border2, width: 1, style: BorderStyle.solid),
+                  color: EnvoyColors.border2,
+                  width: 1,
+                  style: BorderStyle.solid),
             ),
             child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: EnvoySpacing.small),
+              padding:
+                  const EdgeInsets.symmetric(horizontal: EnvoySpacing.small),
               child: Column(
                 children: [
                   infoState(
@@ -176,7 +179,8 @@ class _TransactionReviewCardState extends ConsumerState<TransactionReviewCard> {
                                 displayFiatAmount: displayFiatFeeAmount,
                                 millionaireMode: false,
                                 amountWidgetStyle: AmountWidgetStyle.normal,
-                                semanticSuffix: "Fee-${transaction.fee.toInt()}"),
+                                semanticSuffix:
+                                    "Fee-${transaction.fee.toInt()}"),
                             if (widget.onFeeTap != null)
                               const Padding(
                                 padding: EdgeInsets.only(left: EnvoySpacing.xs),
@@ -199,7 +203,7 @@ class _TransactionReviewCardState extends ConsumerState<TransactionReviewCard> {
           elevation: 8,
           shape: RoundedRectangleBorder(
             borderRadius:
-            const BorderRadius.all(Radius.circular(EnvoySpacing.medium2)),
+                const BorderRadius.all(Radius.circular(EnvoySpacing.medium2)),
             // border: Border.all(
             //     color: EnvoyColors.border2, width: 1, style: BorderStyle.solid),
           ),
@@ -208,10 +212,13 @@ class _TransactionReviewCardState extends ConsumerState<TransactionReviewCard> {
               borderRadius:
                   const BorderRadius.all(Radius.circular(EnvoySpacing.medium2)),
               border: Border.all(
-                  color: EnvoyColors.border2, width: 1, style: BorderStyle.solid),
+                  color: EnvoyColors.border2,
+                  width: 1,
+                  style: BorderStyle.solid),
             ),
             child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: EnvoySpacing.small),
+              padding:
+                  const EdgeInsets.symmetric(horizontal: EnvoySpacing.small),
               child: infoState(
                   EnvoyIcons.receipt,
                   S().coincontrol_tx_detail_total,

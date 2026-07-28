@@ -970,9 +970,7 @@ class _TransactionReviewScreenState
                 ),
                 subtitle: Padding(
                   padding: const EdgeInsets.symmetric(
-                    vertical: EnvoySpacing.small,
-                    horizontal: 8
-                  ),
+                      vertical: EnvoySpacing.small, horizontal: 8),
                   child: Text(
                     subHeading,
                     textAlign: TextAlign.center,
