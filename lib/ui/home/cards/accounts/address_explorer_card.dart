@@ -23,6 +23,7 @@ import 'package:envoy/util/envoy_storage.dart';
 import 'package:envoy/ui/widgets/scanner/qr_scanner.dart';
 import 'package:envoy/ui/widgets/scanner/decoders/generic_qr_decoder.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:ngwallet/ngwallet.dart';
@@ -684,8 +685,7 @@ class _AddressSearchEntryState extends State<AddressSearchEntry> {
 
                 // Paste button
                 if (widget.controller.text.isEmpty)
-                  SizedBox(
-                    width: 48,
+                  InkWell(
                     child: Padding(
                       padding: EdgeInsets.symmetric(vertical: _verticalPadding),
                       child: const EnvoyIcon(
@@ -694,8 +694,19 @@ class _AddressSearchEntryState extends State<AddressSearchEntry> {
                         color: EnvoyColors.accentPrimary,
                       ),
                     ),
+                    onTap: () async {
+                      ClipboardData? cdata =
+                          await Clipboard.getData(Clipboard.kTextPlain);
+                      String? text = cdata?.text;
+                      if (text != null) {
+                        final raw = text.replaceAll(' ', '');
+                        setState(() {
+                          widget.controller.text = _formatAddressChunked(raw);
+                        });
+                        widget.onChanged(raw);
+                      }
+                    },
                   ),
-
                 // Separator before QR
                 if (widget.controller.text.isEmpty)
                   Padding(
