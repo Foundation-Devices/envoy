@@ -114,98 +114,118 @@ class _TransactionReviewCardState extends ConsumerState<TransactionReviewCard> {
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
-        Container(
-          decoration: BoxDecoration(
+        Card(
+          shadowColor: EnvoyColors.border1,
+          color: EnvoyColors.solidWhite,
+          elevation: 8,
+          shape: RoundedRectangleBorder(
             borderRadius:
-                const BorderRadius.all(Radius.circular(EnvoySpacing.medium2)),
-            border: Border.all(
-                color: EnvoyColors.border2, width: 1, style: BorderStyle.solid),
+            const BorderRadius.all(Radius.circular(EnvoySpacing.medium2)),
           ),
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: EnvoySpacing.small),
-            child: Column(
-              children: [
-                infoState(
-                    EnvoyIcons.utxo,
-                    S().send_build_amount,
-                    EnvoyAmount(
-                        unit: formatUnit,
-                        account: widget.account,
-                        amountSats: widget.transaction.amount.toInt().abs(),
-                        displayFiatAmount: displayFiatSendAmount,
-                        millionaireMode: false,
-                        amountWidgetStyle: AmountWidgetStyle.normal,
-                        semanticSuffix:
-                            "Amount-${widget.transaction.amount.toInt().abs()}")),
-                _divider(),
-                infoState(
-                    EnvoyIcons.wallet_coin,
-                    S().coincontrol_tx_detail_destination,
-                    AddressWidget(
-                      address: address,
-                      short: false,
-                      sideChunks: 2 + ((address.length / 4)).round(),
-                    )),
-                _divider(),
-                GestureDetector(
-                  behavior: HitTestBehavior.opaque,
-                  onTap: () {
-                    if (widget.onFeeTap == null) return;
-                    widget.onFeeTap!();
-                  },
-                  child: infoState(
-                      EnvoyIcons.fee,
-                      "${S().coincontrol_tx_detail_fee} - ${selectedFeeLabel(ref)}",
-                      subtitle: spendTimeEstimationProvider,
-                      Row(
-                        mainAxisSize: MainAxisSize.min,
-                        mainAxisAlignment: MainAxisAlignment.end,
-                        children: [
-                          EnvoyAmount(
-                              unit: formatUnit,
-                              account: widget.account,
-                              amountSats: transaction.fee.toInt(),
-                              displayFiatAmount: displayFiatFeeAmount,
-                              millionaireMode: false,
-                              amountWidgetStyle: AmountWidgetStyle.normal,
-                              semanticSuffix: "Fee-${transaction.fee.toInt()}"),
-                          if (widget.onFeeTap != null)
-                            const Padding(
-                              padding: EdgeInsets.only(left: EnvoySpacing.xs),
-                              child: EnvoyIcon(EnvoyIcons.chevron_right),
-                            ),
-                        ],
+          child: Container(
+            decoration: BoxDecoration(
+              borderRadius:
+                  const BorderRadius.all(Radius.circular(EnvoySpacing.medium2)),
+              border: Border.all(
+                  color: EnvoyColors.border2, width: 1, style: BorderStyle.solid),
+            ),
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: EnvoySpacing.small),
+              child: Column(
+                children: [
+                  infoState(
+                      EnvoyIcons.utxo,
+                      S().send_build_amount,
+                      EnvoyAmount(
+                          unit: formatUnit,
+                          account: widget.account,
+                          amountSats: widget.transaction.amount.toInt().abs(),
+                          displayFiatAmount: displayFiatSendAmount,
+                          millionaireMode: false,
+                          amountWidgetStyle: AmountWidgetStyle.normal,
+                          semanticSuffix:
+                              "Amount-${widget.transaction.amount.toInt().abs()}")),
+                  _divider(),
+                  infoState(
+                      EnvoyIcons.wallet_coin,
+                      S().coincontrol_tx_detail_destination,
+                      AddressWidget(
+                        address: address,
+                        short: false,
+                        sideChunks: 2 + ((address.length / 4)).round(),
                       )),
-                ),
-              ],
+                  _divider(),
+                  GestureDetector(
+                    behavior: HitTestBehavior.opaque,
+                    onTap: () {
+                      if (widget.onFeeTap == null) return;
+                      widget.onFeeTap!();
+                    },
+                    child: infoState(
+                        EnvoyIcons.fee,
+                        "${S().coincontrol_tx_detail_fee} - ${selectedFeeLabel(ref)}",
+                        subtitle: spendTimeEstimationProvider,
+                        Row(
+                          mainAxisSize: MainAxisSize.min,
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          children: [
+                            EnvoyAmount(
+                                unit: formatUnit,
+                                account: widget.account,
+                                amountSats: transaction.fee.toInt(),
+                                displayFiatAmount: displayFiatFeeAmount,
+                                millionaireMode: false,
+                                amountWidgetStyle: AmountWidgetStyle.normal,
+                                semanticSuffix: "Fee-${transaction.fee.toInt()}"),
+                            if (widget.onFeeTap != null)
+                              const Padding(
+                                padding: EdgeInsets.only(left: EnvoySpacing.xs),
+                                child: EnvoyIcon(EnvoyIcons.chevron_right),
+                              ),
+                          ],
+                        )),
+                  ),
+                ],
+              ),
             ),
           ),
         ),
         SizedBox(
           height: EnvoySpacing.medium1,
         ),
-        Container(
-          decoration: BoxDecoration(
+        Card(
+          shadowColor: EnvoyColors.border1,
+          color: EnvoyColors.solidWhite,
+          elevation: 8,
+          shape: RoundedRectangleBorder(
             borderRadius:
-                const BorderRadius.all(Radius.circular(EnvoySpacing.medium2)),
-            border: Border.all(
-                color: EnvoyColors.border2, width: 1, style: BorderStyle.solid),
+            const BorderRadius.all(Radius.circular(EnvoySpacing.medium2)),
+            // border: Border.all(
+            //     color: EnvoyColors.border2, width: 1, style: BorderStyle.solid),
           ),
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: EnvoySpacing.small),
-            child: infoState(
-                EnvoyIcons.receipt,
-                S().coincontrol_tx_detail_total,
-                EnvoyAmount(
-                    account: widget.account,
-                    unit: formatUnit,
-                    amountSats: transaction.amount.toInt().abs() +
-                        transaction.fee.toInt(),
-                    displayFiatAmount: displayFiatTotalAmount,
-                    millionaireMode: false,
-                    amountWidgetStyle: AmountWidgetStyle.normal,
-                    semanticSuffix:
-                        "Total-${transaction.amount.toInt().abs() + transaction.fee.toInt()}")),
+          child: Container(
+            decoration: BoxDecoration(
+              borderRadius:
+                  const BorderRadius.all(Radius.circular(EnvoySpacing.medium2)),
+              border: Border.all(
+                  color: EnvoyColors.border2, width: 1, style: BorderStyle.solid),
+            ),
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: EnvoySpacing.small),
+              child: infoState(
+                  EnvoyIcons.receipt,
+                  S().coincontrol_tx_detail_total,
+                  EnvoyAmount(
+                      account: widget.account,
+                      unit: formatUnit,
+                      amountSats: transaction.amount.toInt().abs() +
+                          transaction.fee.toInt(),
+                      displayFiatAmount: displayFiatTotalAmount,
+                      millionaireMode: false,
+                      amountWidgetStyle: AmountWidgetStyle.normal,
+                      semanticSuffix:
+                          "Total-${transaction.amount.toInt().abs() + transaction.fee.toInt()}")),
+            ),
           ),
         ),
       ],
