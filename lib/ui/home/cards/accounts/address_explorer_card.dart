@@ -6,6 +6,7 @@ import 'package:envoy/account/accounts_manager.dart';
 import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/components/amount_widget.dart';
 import 'package:envoy/ui/components/brandmark.dart';
+import 'package:envoy/ui/components/envoy_loaders.dart';
 import 'package:envoy/ui/components/filter_chip.dart';
 import 'package:envoy/ui/envoy_button.dart';
 import 'package:envoy/ui/home/home_state.dart';
@@ -28,8 +29,6 @@ import 'package:go_router/go_router.dart';
 import 'package:ngwallet/ngwallet.dart';
 import 'package:envoy/ui/routes/accounts_router.dart';
 import 'package:envoy/ui/components/pop_up.dart';
-
-import '../../../components/envoy_loaders.dart';
 
 /// Represents address information with usage and balance data
 class AddressInfo {
@@ -588,7 +587,7 @@ class AddressSearchEntry extends StatefulWidget {
 }
 
 class _AddressSearchEntryState extends State<AddressSearchEntry> {
-  final double _verticalPadding = EnvoySpacing.medium1;
+  final double _verticalPadding = EnvoySpacing.medium2;
 
   @override
   Widget build(BuildContext context) {
@@ -606,13 +605,8 @@ class _AddressSearchEntryState extends State<AddressSearchEntry> {
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
                 if (widget.icon != null)
-                  GestureDetector(
-                    behavior: HitTestBehavior.opaque,
-                    onTap: () {
-                      if (widget.onIconTap != null) {
-                        widget.onIconTap!();
-                      }
-                    },
+                  InkWell(
+                    borderRadius: BorderRadius.circular(EnvoySpacing.large3),
                     child: Padding(
                       padding: EdgeInsets.only(
                         top: _verticalPadding,
@@ -625,6 +619,11 @@ class _AddressSearchEntryState extends State<AddressSearchEntry> {
                         color: widget.iconColor ?? EnvoyColors.textTertiary,
                       ),
                     ),
+                    onTap: () {
+                      if (widget.onIconTap != null) {
+                        widget.onIconTap!();
+                      }
+                    },
                   ),
 
                 Padding(
@@ -708,7 +707,6 @@ class _AddressSearchEntryState extends State<AddressSearchEntry> {
                       }
                     },
                   ),
-
                 // Separator before QR
                 if (widget.controller.text.isEmpty)
                   Padding(
