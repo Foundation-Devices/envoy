@@ -475,30 +475,13 @@ class _OnboardPrimeFwUpdateState extends ConsumerState<OnboardPrimeFwUpdate> {
             ),
           ],
         ),
-
-        // Expanded(
-        //     child: Container(
-        //   width: double.infinity,
-        //   padding: const EdgeInsets.symmetric(vertical: EnvoySpacing.small)
-        //       .add(const EdgeInsets.only(
-        //     top: EnvoySpacing.medium2,
-        //   )),
-        //   child: const Placeholder(),
-        // )),
-        // OnboardingButton(
-        //     label: "Try to send",
-        //     type: EnvoyButtonTypes.primary,
-        //     fontWeight: FontWeight.w600,
-        //     onTap: (){
-        //       BluetoothManager().sendOnboardingState(OnboardingState.receivingUpdate);
-        //     }),
         Padding(
           padding: const EdgeInsets.only(bottom: EnvoySpacing.medium2),
           child: EnvoyButton(
             S().firmware_updateAvailable_whatsNew("KeyOS v$newVersion"),
             type: EnvoyButtonTypes.secondary,
             onTap: () {
-              showPrimeChangelogDialog(
+              showPrimeChangelogSheet(
                 context: context,
                 newVersion: newVersion,
                 changelogs:
