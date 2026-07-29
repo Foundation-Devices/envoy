@@ -61,9 +61,10 @@ class UpdatesManager {
           patches.where((p) => !isPreRelease(p.version)).toList();
 
       if (stablePatches.isNotEmpty) {
+        // Store the final stable destination of the sequential patch chain.
         await EnvoyStorage().addNewFirmware(
           DeviceType.passportPrime.index,
-          stablePatches.first.version,
+          stablePatches.last.version,
           "",
           currentVersion: sanitized,
         );
