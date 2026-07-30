@@ -55,7 +55,9 @@ String _mergePatchChangelogs(List<PrimePatch> patches) {
     if (changelog.isEmpty) {
       continue;
     }
-    sections.add("\n\n### ${patch.version} \n---\n$changelog");
+    sections.add(
+      sections.isEmpty ? changelog : "\n---\n### ${patch.version}\n---\n$changelog",
+    );
   }
 
   return sections.join("\n\n");
