@@ -56,7 +56,7 @@ dependencies:
   tor:
     git:
       url: https://github.com/Foundation-Devices/tor.git
-      ref: 6f9f5997557487f53d9507633bc068b76524b301
+      ref: 437577ae14d23ff377f48b31c07c3948b101f406
   qr_flutter: ^4.1.0
   dots_indicator: ^4.0.1
   flutter_secure_storage: ^9.2.2
@@ -118,6 +118,9 @@ dependencies:
   async: ^2.11.0
 
 dependency_overrides:
+  # Tor's Arti 2.5.0 release requires path_provider 2.1.6, which needs Dart
+  # 3.10. Envoy v2.3.1 uses Dart 3.9 and only needs APIs available in 2.1.5.
+  path_provider: 2.1.5
   watcher: ^1.1.0
 
 dev_dependencies:
