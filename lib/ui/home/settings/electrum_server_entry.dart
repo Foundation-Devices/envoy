@@ -226,7 +226,7 @@ class _ElectrumServerEntryState extends ConsumerState<ElectrumServerEntry> {
         );
 
         if (validated.serverVersion != null && validated.genesisHash != null) {
-          _handleFeaturesSuccess(validated);
+          _handleFeaturesSuccess(validated, viaTor: useTor);
           return;
         }
 
@@ -265,7 +265,7 @@ class _ElectrumServerEntryState extends ConsumerState<ElectrumServerEntry> {
         final isValid =
             features.serverVersion != null && features.genesisHash != null;
         if (isValid) {
-          _handleFeaturesSuccess(features);
+          _handleFeaturesSuccess(features, viaTor: useTor);
           return;
         } else if (attempt == maxRetries) {
           ConnectivityManager().electrumFailure();
@@ -298,8 +298,8 @@ class _ElectrumServerEntryState extends ConsumerState<ElectrumServerEntry> {
     }
   }
 
-  void _handleFeaturesSuccess(ServerFeatures features) {
-    ConnectivityManager().electrumSuccess();
+  void _handleFeaturesSuccess(ServerFeatures features, {required bool viaTor}) {
+    ConnectivityManager().electrumSuccess(viaTor: viaTor);
     if (mounted) {
       setState(() {
         _state = ElectrumServerEntryState.valid;
@@ -336,13 +336,14 @@ class _ElectrumServerEntryState extends ConsumerState<ElectrumServerEntry> {
 
   Future<void> _checkEsploraServer(String address) async {
     try {
+      final viaTor = Tor.instance.enabled;
       final response = await HttpTor().get(('$address/blocks/tip/height'));
       if (response.statusCode == 200) {
         final responseBody = response.body;
         final blockHeight = int.tryParse(responseBody);
 
         if (blockHeight != null) {
-          ConnectivityManager().electrumSuccess();
+          ConnectivityManager().electrumSuccess(viaTor: viaTor);
           if (mounted) {
             setState(() {
               _state = ElectrumServerEntryState.valid;

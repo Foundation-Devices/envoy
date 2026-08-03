@@ -29,10 +29,6 @@ PODS:
   - qr_code_scanner_plus (0.2.6):
     - Flutter
     - MTBBarcodeScanner
-  - Ramp (4.0.1)
-  - ramp_flutter (1.0.1):
-    - Flutter
-    - Ramp
   - rive_native (0.0.1):
     - Flutter
   - rust_lib_backup (0.0.1):
@@ -78,8 +74,6 @@ DEPENDENCIES:
   - path_provider_foundation (from `.symlinks/plugins/path_provider_foundation/darwin`)
   - permission_handler_apple (from `.symlinks/plugins/permission_handler_apple/ios`)
   - qr_code_scanner_plus (from `.symlinks/plugins/qr_code_scanner_plus/ios`)
-  - Ramp (from `https://github.com/RampNetwork/ramp-sdk-ios`, tag `4.0.1`)
-  - ramp_flutter (from `.symlinks/plugins/ramp_flutter/ios`)
   - rive_native (from `.symlinks/plugins/rive_native/ios`)
   - rust_lib_backup (from `.symlinks/plugins/rust_lib_backup/ios`)
   - rust_lib_foundation_api (from `.symlinks/plugins/rust_lib_foundation_api/ios`)
@@ -125,11 +119,6 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/permission_handler_apple/ios"
   qr_code_scanner_plus:
     :path: ".symlinks/plugins/qr_code_scanner_plus/ios"
-  Ramp:
-    :git: https://github.com/RampNetwork/ramp-sdk-ios
-    :tag: 4.0.1
-  ramp_flutter:
-    :path: ".symlinks/plugins/ramp_flutter/ios"
   rive_native:
     :path: ".symlinks/plugins/rive_native/ios"
   rust_lib_backup:
@@ -159,11 +148,6 @@ EXTERNAL SOURCES:
   wakelock_plus:
     :path: ".symlinks/plugins/wakelock_plus/ios"
 
-CHECKOUT OPTIONS:
-  Ramp:
-    :git: https://github.com/RampNetwork/ramp-sdk-ios
-    :tag: 4.0.1
-
 SPEC CHECKSUMS:
   file_picker: 9e4c55a49b5bec4a3cc3c01410ce11348811c551
   file_saver: 503e386464dbe118f630e17b4c2e1190fa0cf808
@@ -179,8 +163,6 @@ SPEC CHECKSUMS:
   path_provider_foundation: 0b743cbb62d8e47eab856f09262bb8c1ddcfe6ba
   permission_handler_apple: 9878588469a2b0d0fc1e048d9f43605f92e6cec2
   qr_code_scanner_plus: 3bfe4deb7f28996a63a2a580819d49dae80d5ed3
-  Ramp: 3f843fb75cac12ad40842afa3226bae36dc93521
-  ramp_flutter: 7c2b108417cd4899c0f4aae2040a646e82b8f660
   rive_native: 9b0b40deb7105b079e2e4253aef7d0b030d5dfbe
   rust_lib_backup: 4524262f94017bf154f4311366f58b2942301b66
   rust_lib_foundation_api: b926bd066994ff2c0354873b5335f7287ac62945
