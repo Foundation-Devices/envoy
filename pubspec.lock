@@ -1732,8 +1732,8 @@ packages:
     dependency: "direct main"
     description:
       path: "."
-      ref: "437577ae14d23ff377f48b31c07c3948b101f406"
-      resolved-ref: "437577ae14d23ff377f48b31c07c3948b101f406"
+      ref: b2482791b8514ef88d3dd9f169c0d410b3abb89c
+      resolved-ref: b2482791b8514ef88d3dd9f169c0d410b3abb89c
       url: "https://github.com/Foundation-Devices/tor.git"
     source: git
     version: "0.2.0"

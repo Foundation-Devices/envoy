@@ -460,7 +460,7 @@ class SyncManager {
       }
       // Let ConnectivityManager know that we've successfully synced
       if (account.network == Network.bitcoin) {
-        ConnectivityManager().electrumSuccess();
+        ConnectivityManager().electrumSuccess(viaTor: port != null);
       }
       return FullScanOutcome.success;
     } catch (e, stack) {
@@ -523,7 +523,7 @@ class SyncManager {
           }
 
           if (account.network == Network.bitcoin) {
-            ConnectivityManager().electrumSuccess();
+            ConnectivityManager().electrumSuccess(viaTor: port != null);
           }
         } catch (e, stack) {
           debugPrintStack(stackTrace: stack);
