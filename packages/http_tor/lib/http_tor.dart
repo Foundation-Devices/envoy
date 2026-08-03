@@ -15,6 +15,8 @@ export 'src/rust/api/http.dart';
 
 import 'dart:convert';
 
+import 'src/request_route.dart';
+
 class GetFileRequest {
   String path;
   String uri;
@@ -167,22 +169,38 @@ class HttpTor {
     Uint8List? body,
     Map<String, String>? headers,
   }) async {
-    await tor.isReady();
-    int torPort = tor.port;
-    return scheduler
-        .run(
-          () => _makeRequest(verb, uri, torPort, body: body, headers: headers),
-        )
-        .result
-        .then(
-          (response) => response,
-          onError: (e) {
-            if (e is TimeoutException) {
-              throw TimeoutException("Timed out $uri, torPort: $torPort");
-            }
-            throw Exception(e.message);
-          },
+    final requiresTor = tor.enabled;
+    if (requiresTor) {
+      await tor.isReady();
+    }
+
+    var resolvedPort = -1;
+
+    try {
+      return await scheduler.run(() async {
+        // A restart may have happened while this request waited in the queue.
+        // Resolve the route immediately before starting network I/O.
+        if (requiresTor && tor.port == -1) {
+          await tor.isReady();
+        }
+
+        resolvedPort = resolveScheduledProxyPort(
+          requiresTor: requiresTor,
+          currentTorPort: tor.port,
         );
+        return _makeRequest(
+          verb,
+          uri,
+          resolvedPort,
+          body: body,
+          headers: headers,
+        );
+      }).result;
+    } on TimeoutException {
+      throw TimeoutException("Timed out $uri, torPort: $resolvedPort");
+    } catch (e) {
+      throw Exception(e.toString());
+    }
   }
 
   static Future<http.Response> _makeRequest(
