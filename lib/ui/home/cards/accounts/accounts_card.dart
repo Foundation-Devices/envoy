@@ -5,8 +5,6 @@
 import 'dart:ui';
 
 import 'package:envoy/account/accounts_manager.dart';
-import 'package:envoy/business/region_manager.dart';
-import 'package:envoy/business/settings.dart';
 import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/components/label_switch.dart';
 import 'package:envoy/ui/components/linear_gradient.dart';
@@ -18,7 +16,6 @@ import 'package:envoy/ui/home/cards/accounts/empty_accounts_card.dart';
 import 'package:envoy/ui/home/cards/devices/devices_card.dart';
 import 'package:envoy/ui/onboard/onboarding_page.dart';
 import 'package:envoy/ui/routes/accounts_router.dart';
-import 'package:envoy/ui/shield.dart';
 import 'package:envoy/ui/state/accounts_state.dart';
 import 'package:envoy/ui/state/home_page_state.dart';
 import 'package:envoy/ui/theme/envoy_colors.dart';
@@ -45,165 +42,85 @@ class AccountsCard extends ConsumerStatefulWidget {
 // Unfortunately it seems to only work with TabView
 class _AccountsCardState extends ConsumerState<AccountsCard>
     with AutomaticKeepAliveClientMixin<AccountsCard> {
-  bool? _buyDisabled;
-
   @override
   Widget build(BuildContext context) {
     super.build(context);
 
     ref.watch(passphraseEventHandlerProvider);
 
-    final mainNetAccounts = ref.watch(mainnetAccountsProvider(null));
-    final allowBuyInEnvoy = ref.watch(allowBuyInEnvoyProvider);
     final showDefaultAccounts = ref.watch(showDefaultAccountProvider);
     final hasPassphraseAccounts =
         ref.watch(primePassphraseAccountsProvider).isNotEmpty;
 
-    return Stack(
+    return Column(
+      mainAxisSize: MainAxisSize.min,
       children: [
-        Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            AnimatedSize(
-              duration: const Duration(milliseconds: 300),
-              curve: Curves.easeInOut,
-              alignment: Alignment.topCenter,
-              clipBehavior: Clip.none,
-              child: AnimatedSwitcher(
-                duration: const Duration(milliseconds: 300),
-                switchInCurve: Curves.easeOut,
-                switchOutCurve: Curves.easeIn,
-                transitionBuilder: (child, animation) {
-                  return FadeTransition(
-                    opacity: animation,
-                    child: SlideTransition(
-                      position: Tween<Offset>(
-                        begin: const Offset(0, -0.5),
-                        end: Offset.zero,
-                      ).animate(CurvedAnimation(
-                        parent: animation,
-                        curve: Curves.easeOut,
-                      )),
-                      child: child,
-                    ),
-                  );
-                },
-                child: hasPassphraseAccounts
-                    ? Padding(
-                        key: const ValueKey('passphrase-pill'),
-                        padding: const EdgeInsets.only(
-                            left: 20, right: 20, top: EnvoySpacing.medium2),
-                        child: LabelSwitch(
-                          initialValue: showDefaultAccounts,
-                          onChanged: (bool newValue) {
-                            ref
-                                .read(showDefaultAccountProvider.notifier)
-                                .state = newValue;
-                          },
-                          trueOption: LabelSwitchOption(
-                            label: S().accounts_switchDefault,
-                          ),
-                          falseOption: LabelSwitchOption(
-                            label: S().accounts_switchPassphrase,
-                            icon: EnvoyIcons.passphrase_shield,
-                          ),
-                        ),
-                      )
-                    : const SizedBox.shrink(key: ValueKey('empty')),
-              ),
-            ),
-            Flexible(
-              child: AnimatedSwitcher(
-                duration: const Duration(milliseconds: 300),
-                layoutBuilder:
-                    (Widget? currentChild, List<Widget> previousChildren) {
-                  return Stack(
-                    alignment: Alignment.topCenter,
-                    children: <Widget>[
-                      ...previousChildren,
-                      if (currentChild != null) currentChild,
-                    ],
-                  );
-                },
-                child: showDefaultAccounts
-                    ? const DefaultAccountsList(key: ValueKey('default'))
-                    : const PassphraseAccountsList(key: ValueKey('passphrase')),
-              ),
-            ),
-          ],
-        ),
-        Padding(
-          padding: const EdgeInsets.only(bottom: 10),
-          child: FutureBuilder(
-            future: AllowedRegions.checkBuyDisabled(),
-            builder: (context, snapshot) {
-              if (snapshot.hasError) {
-                return const SizedBox.shrink();
-              }
-              bool countryRestricted = snapshot.data != null && snapshot.data!;
-              //if there are no mainnet accounts or the future is still loading, disable the button
-              bool disabled = mainNetAccounts.isEmpty || _buyDisabled == null;
-
-              _buyDisabled = snapshot.data;
-
-              if (countryRestricted || !allowBuyInEnvoy) {
-                return const SizedBox.shrink();
-              }
-              return GestureDetector(
-                onTap: () async {
-                  if (countryRestricted || disabled) {
-                    return;
-                  }
-                  context.go(
-                    await EnvoyStorage().getCountry() != null
-                        ? ROUTE_BUY_BITCOIN
-                        : ROUTE_SELECT_REGION,
-                  );
-                },
-                child: Align(
-                  alignment: Alignment.bottomCenter,
-                  child: Semantics(
-                    identifier: "QR Shield Buy",
-                    button: true,
-                    container: true,
-                    excludeSemantics: true,
-                    child: QrShield(
-                      arcSizeRatio: 15.0,
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: EnvoySpacing.large3,
-                          vertical: EnvoySpacing.small,
-                        ),
-                        child: Column(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            EnvoyIcon(
-                              EnvoyIcons.btc,
-                              color: disabled
-                                  ? EnvoyColors.textTertiary
-                                  : EnvoyColors.accentPrimary,
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.only(
-                                bottom: EnvoySpacing.xs,
-                              ),
-                              child: Text(
-                                S().component_minishield_buy,
-                                style: EnvoyTypography.label.copyWith(
-                                  color: disabled
-                                      ? EnvoyColors.textTertiary
-                                      : EnvoyColors.accentPrimary,
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                  ),
+        AnimatedSize(
+          duration: const Duration(milliseconds: 300),
+          curve: Curves.easeInOut,
+          alignment: Alignment.topCenter,
+          clipBehavior: Clip.none,
+          child: AnimatedSwitcher(
+            duration: const Duration(milliseconds: 300),
+            switchInCurve: Curves.easeOut,
+            switchOutCurve: Curves.easeIn,
+            transitionBuilder: (child, animation) {
+              return FadeTransition(
+                opacity: animation,
+                child: SlideTransition(
+                  position: Tween<Offset>(
+                    begin: const Offset(0, -0.5),
+                    end: Offset.zero,
+                  ).animate(CurvedAnimation(
+                    parent: animation,
+                    curve: Curves.easeOut,
+                  )),
+                  child: child,
                 ),
               );
             },
+            child: hasPassphraseAccounts
+                ? Padding(
+                    key: const ValueKey('passphrase-pill'),
+                    padding: const EdgeInsets.only(
+                      left: 20,
+                      right: 20,
+                      top: EnvoySpacing.medium2,
+                    ),
+                    child: LabelSwitch(
+                      initialValue: showDefaultAccounts,
+                      onChanged: (bool newValue) {
+                        ref.read(showDefaultAccountProvider.notifier).state =
+                            newValue;
+                      },
+                      trueOption: LabelSwitchOption(
+                        label: S().accounts_switchDefault,
+                      ),
+                      falseOption: LabelSwitchOption(
+                        label: S().accounts_switchPassphrase,
+                        icon: EnvoyIcons.passphrase_shield,
+                      ),
+                    ),
+                  )
+                : const SizedBox.shrink(key: ValueKey('empty')),
+          ),
+        ),
+        Flexible(
+          child: AnimatedSwitcher(
+            duration: const Duration(milliseconds: 300),
+            layoutBuilder:
+                (Widget? currentChild, List<Widget> previousChildren) {
+              return Stack(
+                alignment: Alignment.topCenter,
+                children: <Widget>[
+                  ...previousChildren,
+                  if (currentChild != null) currentChild,
+                ],
+              );
+            },
+            child: showDefaultAccounts
+                ? const DefaultAccountsList(key: ValueKey('default'))
+                : const PassphraseAccountsList(key: ValueKey('passphrase')),
           ),
         ),
       ],

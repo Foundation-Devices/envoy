@@ -27,7 +27,6 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  ramp_flutter: ^4.0.1
   flutter_platform_widgets: ^9.0.0
   flutter_localizations:
     sdk: flutter

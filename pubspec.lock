@@ -1313,14 +1313,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "4.1.0"
-  ramp_flutter:
-    dependency: "direct main"
-    description:
-      name: ramp_flutter
-      sha256: ec99cedeb0d565c9ca0c93f134c2e3a1e314085ff10bef80bed1b0c5515ba647
-      url: "https://pub.dev"
-    source: hosted
-    version: "4.0.1"
   rive:
     dependency: "direct main"
     description:
