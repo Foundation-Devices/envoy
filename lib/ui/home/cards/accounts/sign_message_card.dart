@@ -175,7 +175,7 @@ class _SignMessageCardState extends ConsumerState<SignMessageCard> {
     final purpose = _getPurpose(addressType);
     final coinType = account.network == Network.bitcoin ? "0'" : "1'";
     final changeIndex = isChange ? 1 : 0;
-    return "m/$purpose/$coinType/0'/$changeIndex/$index";
+    return "m/$purpose/$coinType/${account.index}'/$changeIndex/$index";
   }
 
   Future<void> _resolveAddress(String address) async {
