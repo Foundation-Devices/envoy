@@ -84,7 +84,7 @@
 
         rustToolchain = fenix.packages.${system}.fromToolchainFile {
           file = ./rust-toolchain.toml;
-          sha256 = "sha256-SJwZ8g0zF2WrKDVmHrVG3pD2RGoQeo24MEXnNx5FyuI=";
+          sha256 = "sha256-2eWc3xVTKqg5wKSHGwt1XoM/kUBC6y3MWfKg74Zn+fY=";
         };
 
         # Localazy CLI wrapper using npx
@@ -309,8 +309,9 @@
             export PATH=$(echo $PATH | tr ':' '\n' | grep -v ".cargo/bin" | tr '\n' ':')
 
             # darwin xcode
-            ${lib.optionalString pkgs.stdenv.isDarwin "unset DEVELOPER_DIR && unset SDKROOT"}
+            ${lib.optionalString pkgs.stdenv.isDarwin "unset DEVELOPER_DIR DEVELOPER_DIR_FOR_TARGET SDKROOT SDKROOT_FOR_TARGET"}
             ${lib.optionalString pkgs.stdenv.isDarwin "export DEVELOPER_DIR=\"$(xcode-select -p)\""}
+            ${lib.optionalString pkgs.stdenv.isDarwin "export CARGO_TARGET_AARCH64_APPLE_DARWIN_LINKER=/usr/bin/clang"}
 
             # Android SDK and NDK configuration
             export ANDROID_SDK_ROOT="${androidComposition.androidsdk}/libexec/android-sdk"
