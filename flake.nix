@@ -43,7 +43,7 @@
             owner = "fzyzcjy";
             repo = "flutter_rust_bridge";
             tag = "v${version}";
-            hash = "sha256-2jbI7kZAKM0+xKhTYCxJRI2KQl/5v0Kgn4G5DqTbTVw=";
+            hash = "sha256-Us+LwT6tjBcTl2xclVsiLauSlIO8w+PiokpiDB+h1fI=";
             fetchSubmodules = true;
           };
           cargoDeps = pkgs.rustPlatform.fetchCargoVendor {
