@@ -4,6 +4,7 @@
 
 import 'package:envoy/ble/quantum_link_router.dart';
 import 'package:envoy/util/console.dart';
+import 'package:envoy/util/ntp.dart';
 import 'package:foundation_api/foundation_api.dart' as api;
 
 /// Handler for heartbeat messages over Quantum Link.
@@ -19,19 +20,22 @@ class HeartbeatHandler extends PassportMessageHandler {
 
   @override
   Future<void> handleMessage(api.QuantumLinkMessage message) async {
-    if (message case api.QuantumLinkMessage_Heartbeat _) {
+    if (message
+        case api.QuantumLinkMessage_Heartbeat(field0: final heartbeat)) {
       kPrint("Received heartbeat, sending heartbeat response");
       lastHeartbeat = DateTime.now();
       qlConnection.onHeartbeatReceived();
-      await _sendHeartbeatResponse();
+      final success = await qlConnection.writeMessage(
+        api.QuantumLinkMessage.heartbeat(
+          api.Heartbeat(
+            requestId: heartbeat.requestId,
+            timestampMs: BigInt.from(
+              NTPUtil().dateTime.millisecondsSinceEpoch,
+            ),
+          ),
+        ),
+      );
+      kPrint("Heartbeat response write result: $success");
     }
-  }
-
-  Future<void> _sendHeartbeatResponse() async {
-    final heartbeat = api.Heartbeat();
-    final success = await qlConnection.writeMessage(
-      api.QuantumLinkMessage.heartbeat(heartbeat),
-    );
-    kPrint("Heartbeat response sent successfully: $success");
   }
 }

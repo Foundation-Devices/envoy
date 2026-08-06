@@ -547,6 +547,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   int? dco_decode_opt_box_autoadd_u_8(dynamic raw);
 
   @protected
+  U8Array16? dco_decode_opt_u_8_array_16(dynamic raw);
+
+  @protected
   PairingRequest dco_decode_pairing_request(dynamic raw);
 
   @protected
@@ -638,6 +641,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   int dco_decode_u_8(dynamic raw);
+
+  @protected
+  U8Array16 dco_decode_u_8_array_16(dynamic raw);
 
   @protected
   U8Array32 dco_decode_u_8_array_32(dynamic raw);
@@ -1197,6 +1203,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   int? sse_decode_opt_box_autoadd_u_8(SseDeserializer deserializer);
 
   @protected
+  U8Array16? sse_decode_opt_u_8_array_16(SseDeserializer deserializer);
+
+  @protected
   PairingRequest sse_decode_pairing_request(SseDeserializer deserializer);
 
   @protected
@@ -1296,6 +1305,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   int sse_decode_u_8(SseDeserializer deserializer);
+
+  @protected
+  U8Array16 sse_decode_u_8_array_16(SseDeserializer deserializer);
 
   @protected
   U8Array32 sse_decode_u_8_array_32(SseDeserializer deserializer);
@@ -1861,6 +1873,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   void sse_encode_opt_box_autoadd_u_8(int? self, SseSerializer serializer);
 
   @protected
+  void sse_encode_opt_u_8_array_16(U8Array16? self, SseSerializer serializer);
+
+  @protected
   void sse_encode_pairing_request(
       PairingRequest self, SseSerializer serializer);
 
@@ -1969,6 +1984,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   void sse_encode_u_8(int self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_u_8_array_16(U8Array16 self, SseSerializer serializer);
 
   @protected
   void sse_encode_u_8_array_32(U8Array32 self, SseSerializer serializer);
