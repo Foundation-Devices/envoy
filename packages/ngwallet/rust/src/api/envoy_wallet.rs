@@ -1097,7 +1097,7 @@ impl EnvoyAccountHandler {
         do_not_spend: HashMap<String, bool>,
     ) {
         notes.iter().for_each(|(tx_id, note)| {
-            info!("Setting note for tx_id: {} with note: {}", tx_id, note);
+            info!("Migrating transaction note");
             self.ng_account
                 .lock()
                 .expect("couldnt lock ngaccount")

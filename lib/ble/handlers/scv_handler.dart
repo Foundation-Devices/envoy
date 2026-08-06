@@ -109,7 +109,7 @@ class ScvHandler extends PassportMessageHandler {
       } else if (check is api.SecurityCheck_ChallengeRequest) {
         kPrint("received unexpected security challenge request");
       } else if (check is api.SecurityCheck_VerificationResult) {
-        kPrint("received invalid security message $message");
+        kPrint("received invalid security verification message");
       }
     } else if (message case api.QuantumLinkMessage_PairingResponse _) {}
   }

@@ -9,7 +9,7 @@ void kPrint(
   Object? message, {
   StackTrace? stackTrace,
 }) {
-  if (!kReleaseMode || !kProfileMode) {
+  if (!kReleaseMode) {
     // ignore: avoid_print
     print(message);
     // If a stackTrace is provided, print the stack trace

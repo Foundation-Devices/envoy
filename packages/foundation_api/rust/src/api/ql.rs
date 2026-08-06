@@ -161,8 +161,7 @@ pub async fn encode(
     sender: &QuantumLinkIdentity,
     recipient: &XIDDocument,
 ) -> Vec<Vec<u8>> {
-    debug!("SENDER: {:?}", sender.xid_document);
-    debug!("RECEIVER: {:?}", recipient);
+    debug!("Encoding Quantum Link message");
 
     let envelope = QuantumLink::seal(
         message,
@@ -190,8 +189,7 @@ pub async fn encode_to_magic_backup_file(
     use std::fs::File;
     use std::io::Write;
 
-    debug!("SENDER: {:?}", sender.xid_document);
-    debug!("RECEIVER: {:?}", recipient);
+    debug!("Encoding Quantum Link magic backup file");
 
     let mut file = File::create(path)?;
 
@@ -233,8 +231,7 @@ pub async fn encode_to_update_file(
     use std::fs::File;
     use std::io::Write;
 
-    debug!("SENDER: {:?}", sender.xid_document);
-    debug!("RECEIVER: {:?}", recipient);
+    debug!("Encoding Quantum Link update file");
 
     let mut file = File::create(path)?;
 
@@ -290,8 +287,8 @@ pub async fn encode_to_chunks(
     recipient: &XIDDocument,
     chunk_size: usize,
 ) -> anyhow::Result<Vec<QuantumLinkMessage>> {
-    debug!("SENDER: {:?}", sender.xid_document);
-    debug!("RECEIVER: {:?}", recipient);
+    debug!("Encoding Quantum Link chunks");
+    let _ = (sender, recipient);
 
     if payload.is_empty() {
         return Ok(Vec::new());
@@ -326,7 +323,6 @@ pub async fn encode_to_chunks(
 pub async fn generate_ql_identity() -> QuantumLinkIdentity {
     debug!("Generating identity");
     let identity = QuantumLinkIdentity::generate();
-    debug!("{:?}", identity);
     identity
 }
 
@@ -458,9 +454,7 @@ mod tests {
 
     #[tokio::test]
     async fn test_generate_identity() -> Result<()> {
-        let identity = QuantumLinkIdentity::generate();
-        println!("{:?}", identity);
-
+        let _identity = QuantumLinkIdentity::generate();
         Ok(())
     }
     #[tokio::test]

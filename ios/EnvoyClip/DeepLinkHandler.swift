@@ -40,7 +40,7 @@ class DeepLinkHandler: ObservableObject {
     func saveStateForFullApp() {
         guard let defaults = UserDefaults(suiteName: appGroupID) else { return }
         
-        print("saving to shared UserDefaults \(originalURL?.absoluteString ?? "nil")")
+        print("Saving App Clip handoff URL to shared UserDefaults")
               
         defaults.set(originalURL?.absoluteString, forKey: "appClip_deepLinkURL")
         defaults.set(Date(), forKey: "appClip_timestamp")
