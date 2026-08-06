@@ -13,6 +13,7 @@ import 'package:envoy/ui/components/envoy_scaffold.dart';
 import 'package:envoy/ui/components/pop_up.dart';
 import 'package:envoy/ui/envoy_button.dart';
 import 'package:envoy/ui/onboard/onboard_page_wrapper.dart';
+import 'package:envoy/ui/onboard/prime/firmware_update/prime_changelog.dart';
 import 'package:envoy/ui/onboard/prime/firmware_update/prime_fw_update_state.dart';
 import 'package:envoy/ui/onboard/prime/prime_routes.dart';
 import 'package:envoy/ui/onboard/prime/state/ble_onboarding_state.dart';
@@ -474,33 +475,18 @@ class _OnboardPrimeFwUpdateState extends ConsumerState<OnboardPrimeFwUpdate> {
             ),
           ],
         ),
-
-        // Expanded(
-        //     child: Container(
-        //   width: double.infinity,
-        //   padding: const EdgeInsets.symmetric(vertical: EnvoySpacing.small)
-        //       .add(const EdgeInsets.only(
-        //     top: EnvoySpacing.medium2,
-        //   )),
-        //   child: const Placeholder(),
-        // )),
-        // OnboardingButton(
-        //     label: "Try to send",
-        //     type: EnvoyButtonTypes.primary,
-        //     fontWeight: FontWeight.w600,
-        //     onTap: (){
-        //       BluetoothManager().sendOnboardingState(OnboardingState.receivingUpdate);
-        //     }),
         Padding(
           padding: const EdgeInsets.only(bottom: EnvoySpacing.medium2),
           child: EnvoyButton(
             S().firmware_updateAvailable_whatsNew("KeyOS v$newVersion"),
             type: EnvoyButtonTypes.secondary,
             onTap: () {
-              launchUrl(
-                Uri.parse(
-                  "https://github.com/Foundation-Devices/KeyOS-Releases/releases/tag/$newVersion",
-                ),
+              showPrimeChangelogSheet(
+                context: context,
+                newVersion: newVersion,
+                changelogs:
+                    fwHandler?.availablePatches.toList(growable: false) ??
+                        const [],
               );
             },
           ),
