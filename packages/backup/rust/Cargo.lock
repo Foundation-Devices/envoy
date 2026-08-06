@@ -175,6 +175,19 @@ dependencies = [
 ]
 
 [[package]]
+name = "backup-client"
+version = "0.1.0"
+source = "git+https://github.com/Foundation-Devices/backup-client?rev=b27e822ac938c092c1048ea0750a1276f18512bc#b27e822ac938c092c1048ea0750a1276f18512bc"
+dependencies = [
+ "getrandom 0.2.17",
+ "hex",
+ "libcrux-ml-dsa",
+ "serde",
+ "sha2 0.10.9",
+ "thiserror 2.0.18",
+]
+
+[[package]]
 name = "base64"
 version = "0.13.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
