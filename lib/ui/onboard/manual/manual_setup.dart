@@ -14,7 +14,6 @@ import 'package:envoy/ui/theme/envoy_spacing.dart';
 import 'package:envoy/ui/theme/envoy_typography.dart';
 import 'package:envoy/ui/widgets/scanner/decoders/seed_decoder.dart';
 import 'package:envoy/ui/widgets/scanner/qr_scanner.dart';
-import 'package:envoy/util/console.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:ngwallet/ngwallet.dart';
@@ -207,7 +206,6 @@ class SeedIntroScreen extends StatelessWidget {
                                     return;
                                   }
 
-                                  kPrint("isValid $isValid $seedWords");
                                   Future.delayed(Duration.zero, () {
                                     if (context.mounted) {
                                       checkSeed(context, result);

@@ -383,7 +383,7 @@ class NgAccountManager extends ChangeNotifier {
     final matches = regex.allMatches(descriptor);
     try {
       if (matches.isEmpty) {
-        EnvoyReport().log("NGAccounts", "Invalid fingerprint $descriptor");
+        EnvoyReport().log("NGAccounts", "Descriptor has no fingerprint");
         return null;
       }
       return matches.map((m) => m.group(1)).first;

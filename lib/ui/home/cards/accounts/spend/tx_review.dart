@@ -197,7 +197,7 @@ class _TxReviewState extends ConsumerState<TxReview> {
         _primeTransferMode = true;
       });
 
-      kPrint("Sending to prime $psbt");
+      kPrint("Sending PSBT to Prime (${psbt.length} bytes)");
       final bool isConnected = ref.read(primeQLActivityProvider(device));
       if (isConnected == false) {
         EnvoyReport().log("TxReview",
@@ -658,7 +658,7 @@ class _TransactionReviewScreenState
         kPrint("Got the Broadcast Transaction");
         try {
           final signedPsbt = message.field0;
-          kPrint("Signed Psbt $signedPsbt");
+          kPrint("Received signed PSBT from Prime");
 
           //TODO: fix quantum link with Uint8List psbt
           await ref

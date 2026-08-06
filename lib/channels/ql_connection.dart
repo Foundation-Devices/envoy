@@ -709,7 +709,7 @@ class QLConnection with EnvoyMessageWriter {
     );
     kPrint("Encoded Message $timestampSeconds");
 
-    kPrint("Encoding message: $envoyMessage");
+    kPrint("Encoding message type: ${message.runtimeType}");
     return await api.encode(
       message: envoyMessage,
       sender: _qlIdentity!,
@@ -831,7 +831,7 @@ class QLConnection with EnvoyMessageWriter {
     // List<api.EnvoyMessage> envoyMessages = messages.map((message) =>
     //     api.EnvoyMessage(message: message, timestamp: timestampSeconds)).toList();
     // kPrint("Encoded Message $timestampSeconds");
-    kPrint("Encoding message: $message to file: $filePath");
+    kPrint("Encoding magic backup file");
     return await api.encodeToMagicBackupFile(
       payload: message,
       sender: _qlIdentity!,
