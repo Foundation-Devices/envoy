@@ -14,9 +14,6 @@ import 'package:http_tor/http_tor.dart';
 import 'package:envoy/business/blog_post.dart';
 
 class FeedManager {
-  static const vimeoToken = "141c53cdd50a0285e03885dc6f444f9a";
-  static const vimeoAccountId = "210701027";
-
   static const _clearnetFeed = 'https://foundation.xyz/feed';
   static const _onionFeed =
       'http://wmkivkyzuekkp54zhnt6jdn776xxymxs6oevzcgvbjoe5ovp2og2nlqd.onion/feed/';
@@ -40,7 +37,7 @@ class FeedManager {
     _restoreVideos();
     _restoreBlogs();
 
-    _addVideosFromVimeo();
+    _addVideosFromServer();
 
     final feedUrl = Settings().usingTor ? _onionFeed : _clearnetFeed;
 
@@ -53,43 +50,30 @@ class FeedManager {
     });
   }
 
-  Future<Response> getVimeoData({int videosPerPage = 100, int page = 1}) async {
-    String videoPerPageString = "?per_page=$videosPerPage";
-    String pageString = "&page=$page";
-
-    return await HttpTor().get(
-      "https://api.vimeo.com/users/$vimeoAccountId/videos$videoPerPageString$pageString",
-      headers: {'authorization': "bearer $vimeoToken"},
-    );
+  Future<Response> getVideoData() async {
+    return await HttpTor().get("${Settings().envoyServerAddress}/videos");
   }
 
-  Future<void> _addVideosFromVimeo() async {
+  Future<void> _addVideosFromServer() async {
     try {
-      List<Video> currentVideos = [];
-
-      final response = await getVimeoData();
-
-      final data = json.decode(response.body);
-      final videos = (data['data'] as List);
-
-      final lastPage = data["paging"]["last"];
-      var lastNum = int.parse(lastPage[lastPage.length - 1]);
-
-      currentVideos.addAll(_parseVideos(videos));
-
-      if (lastNum > 1) {
-        for (var i = 2; i <= lastNum; i++) {
-          var response = await getVimeoData(page: i);
-
-          final data = json.decode(response.body);
-          final videos = (data['data'] as List);
-
-          currentVideos.addAll(_parseVideos(videos));
-        }
+      final response = await getVideoData();
+      if (response.statusCode < 200 || response.statusCode >= 300) {
+        throw Exception(
+          "Video server returned HTTP ${response.statusCode}",
+        );
       }
-      updateVideos(currentVideos);
+
+      final data = json.decode(response.body) as Map<String, dynamic>;
+      final videos = data["videos"];
+      if (videos is! List) {
+        throw const FormatException(
+          "Video server response does not contain a videos list",
+        );
+      }
+
+      updateVideos(_parseVideos(videos));
     } catch (e) {
-      kPrint("Error fetching Vimeo videos: $e");
+      kPrint("Error fetching videos: $e");
       EnvoyReport().log("Feed Manager", e.toString());
     }
   }
@@ -98,58 +82,50 @@ class FeedManager {
     List<Video> currentVideos = [];
 
     for (var video in videos) {
-      var downloads = video["download"];
+      final playback = video["playback"] as Map<String, dynamic>;
+      final contentMap = <int, String>{
+        (playback["height"] as num).toInt(): playback["url"] as String,
+      };
 
-      Map<int, String> contentMap = {};
+      final serverTags = video["tags"] as List<dynamic>;
+      final tagNames = serverTags
+          .map(
+            (tag) => (tag as Map<String, dynamic>)["name"] as String,
+          )
+          .toList();
 
-      for (var content in downloads) {
-        contentMap[content['height']] = content["link"];
-      }
-
-      String orderString = "";
-
-      List<String>? tags = [];
-
-      var vimeoTags = video["tags"];
-
-      if (vimeoTags.length >= 1) {
-        Map<String, dynamic>? orderTag = vimeoTags.singleWhere(
-          (element) => element["name"].toString().contains("Order"),
-          orElse: () => null,
-        );
-
-        orderString = orderTag?["tag"] ?? "";
-      }
-
-      tags.add(orderString);
-
-      int? order = orderString.isEmpty
+      final orderString = tagNames.firstWhere(
+        (tag) => tag.contains("Order"),
+        orElse: () => "",
+      );
+      final order = orderString.isEmpty
           ? null
-          : int.tryParse(orderString.split('-').last);
+          : int.tryParse(orderString.split("-").last);
 
-      // Extract additional tags
-      List<String> filterTags = ["Envoy", "Passport", "PassportPrime"];
-
-      for (var tag in vimeoTags) {
-        String tagName = tag["name"].toString();
-        if (filterTags.any((relevantTag) => tagName.contains(relevantTag))) {
-          tags.add(tagName);
-        }
-      }
+      final tags = <String>[
+        if (orderString.isNotEmpty) orderString,
+        ...tagNames.where(
+          (tag) => const [
+            "Envoy",
+            "Passport",
+            "PassportPrime",
+          ].any(tag.contains),
+        ),
+      ];
 
       currentVideos.add(
         Video(
-          video["name"],
-          video["description"],
-          video["duration"],
-          DateTime.parse(video["release_time"]),
+          video["title"] as String,
+          video["description"] as String?,
+          (video["duration"] as num).toInt(),
+          DateTime.parse(video["release_time"] as String),
           contentMap,
-          video["player_embed_url"],
-          video["link"],
+          video["player_url"] as String,
+          video["public_url"] as String,
           null,
           order,
           tags,
-          thumbnailUrl: (video["pictures"])["sizes"][3]["link"],
+          thumbnailUrl: video["thumbnail_url"] as String?,
         ),
       );
     }
