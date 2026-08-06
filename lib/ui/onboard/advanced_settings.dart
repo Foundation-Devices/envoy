@@ -121,7 +121,7 @@ class _AdvancedSettingsOptionsState
                     alignment: Alignment.topCenter,
                     child: Padding(
                       padding: const EdgeInsets.only(
-                        bottom: EnvoySpacing.medium1,
+                        bottom: EnvoySpacing.xs,
                       ),
                       child: FadingEdgeScrollView.fromSingleChildScrollView(
                         gradientFractionOnStart: 0.03,
@@ -132,14 +132,15 @@ class _AdvancedSettingsOptionsState
                           child: Material(
                             color: Colors.transparent,
                             child: Padding(
-                              padding: const EdgeInsets.all(
-                                EnvoySpacing.medium1,
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: EnvoySpacing.medium1,
+                                vertical: EnvoySpacing.small,
                               ),
                               child: Column(
                                 children: [
                                   Padding(
                                     padding: const EdgeInsets.only(
-                                      top: EnvoySpacing.medium1,
+                                      top: EnvoySpacing.small + 4,
                                     ),
                                     child: SettingsHeader(
                                       //TODO: copy update
@@ -212,7 +213,7 @@ class _AdvancedSettingsOptionsState
                                         ),
                                         contentPadding:
                                             const EdgeInsets.symmetric(
-                                          vertical: EnvoySpacing.medium1,
+                                          vertical: EnvoySpacing.small,
                                         ),
                                       ),
                                       Text(
