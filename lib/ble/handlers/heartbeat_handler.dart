@@ -4,7 +4,6 @@
 
 import 'package:envoy/ble/quantum_link_router.dart';
 import 'package:envoy/util/console.dart';
-import 'package:envoy/util/ntp.dart';
 import 'package:foundation_api/foundation_api.dart' as api;
 
 /// Handler for heartbeat messages over Quantum Link.
@@ -30,7 +29,7 @@ class HeartbeatHandler extends PassportMessageHandler {
           api.Heartbeat(
             requestId: heartbeat.requestId,
             timestampMs: BigInt.from(
-              NTPUtil().dateTime.millisecondsSinceEpoch,
+              DateTime.now().millisecondsSinceEpoch,
             ),
           ),
         ),
