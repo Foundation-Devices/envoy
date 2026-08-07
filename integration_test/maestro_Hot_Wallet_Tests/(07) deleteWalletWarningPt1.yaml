@@ -24,6 +24,7 @@ appId: com.foundationdevices.envoy
 - assertVisible: Keep Your Seed Private
 
 # go back to home
-- tapOn: Back
+- tapOn:
+    id: seed_intro_back_button
 - tapOn:
     id: hamburger_menu

@@ -45,6 +45,7 @@ APP_ID="com.foundationdevices.envoy"
 DEVICE_ID=""
 TEST_ARG=""
 BUILD_APP=false
+TEST_SCOPE="all"
 KEBAB_PID=""
 PRIME_PID=""
 
@@ -318,6 +319,22 @@ while [[ $# -gt 0 ]]; do
             BUILD_APP=true
             shift
             ;;
+        --android-only)
+            if [ "$TEST_SCOPE" = "prime" ]; then
+                echo "Error: --android-only and --prime-only cannot be combined"
+                exit 1
+            fi
+            TEST_SCOPE="android"
+            shift
+            ;;
+        --prime-only)
+            if [ "$TEST_SCOPE" = "android" ]; then
+                echo "Error: --android-only and --prime-only cannot be combined"
+                exit 1
+            fi
+            TEST_SCOPE="prime"
+            shift
+            ;;
         *)
             TEST_ARG="$1"
             shift
@@ -383,7 +400,7 @@ echo -e "${GREEN}✓${NC} ANDROID_HOME: $ANDROID_HOME"
 # OCR the Prime screen. On Linux that's tesseract; if it's missing we try to
 # install it best-effort with apt-get. Non-Debian distros are left to the
 # user with a clear message.
-if [ "$PLATFORM" = "linux" ] && ! command -v tesseract >/dev/null 2>&1; then
+if [ "$TEST_SCOPE" != "android" ] && [ "$PLATFORM" = "linux" ] && ! command -v tesseract >/dev/null 2>&1; then
     echo -e "${YELLOW}Tesseract not installed — Prime OCR helpers need it.${NC}"
     if command -v apt-get >/dev/null 2>&1; then
         echo -e "${YELLOW}Installing tesseract-ocr (sudo)...${NC}"
@@ -405,9 +422,13 @@ fi
 
 echo -e "${GREEN}✓${NC} Maestro found: $(command -v maestro)"
 echo -e "${GREEN}✓${NC} Platform: $PLATFORM"
-echo -e "${GREEN}✓${NC} Hot Wallet tests: $HOT_WALLET_TESTS_DIR"
-echo -e "${GREEN}✓${NC} Passport Wallet tests: $PASSPORT_WALLET_TESTS_DIR"
-echo -e "${GREEN}✓${NC} Prime tests: $PRIME_TESTS_DIR"
+if [ "$TEST_SCOPE" != "prime" ]; then
+    echo -e "${GREEN}✓${NC} Hot Wallet tests: $HOT_WALLET_TESTS_DIR"
+    echo -e "${GREEN}✓${NC} Passport Wallet tests: $PASSPORT_WALLET_TESTS_DIR"
+fi
+if [ "$TEST_SCOPE" != "android" ]; then
+    echo -e "${GREEN}✓${NC} Prime tests: $PRIME_TESTS_DIR"
+fi
 
 # ------------------------------------------------------------
 # Kill ALL Maestro processes
@@ -479,9 +500,20 @@ if [ "$BUILD_APP" = true ]; then
 
     echo -e "${GREEN}✓${NC} APK installed"
 
+    # Android may automatically restore app data as part of installation,
+    # which can send the Hot Wallet setup into a recovery flow instead of a
+    # clean wallet-creation flow. Clear any restored state before permissions
+    # are configured and the app is launched.
+    echo -e "${YELLOW}Clearing automatically restored app data...${NC}"
+    $ADB_CMD -s "$DEVICE_ID" shell pm clear "$APP_ID" >/dev/null || {
+        echo -e "${RED}✗ Failed to clear restored app data${NC}"
+        exit 1
+    }
+    echo -e "${GREEN}✓${NC} Restored app data cleared"
+
     # Android can persist runtime permission grants across uninstall/reinstall
-    # for the same signature. Revoke explicitly so the runtime dialogs that
-    # the Maestro flows interact with always appear on a fresh install.
+    # for the same signature. Revoke explicitly so flows that exercise runtime
+    # dialogs start from a clean state.
     echo -e "${YELLOW}Revoking runtime permissions for clean dialog state...${NC}"
     for perm in \
         android.permission.CAMERA \
@@ -493,6 +525,23 @@ if [ "$BUILD_APP" = true ]; then
         $ADB_CMD -s "$DEVICE_ID" shell pm revoke "$APP_ID" "$perm" 2>/dev/null || true
     done
     echo -e "${GREEN}✓${NC} Runtime permissions revoked"
+
+    # The phone-only groups do not test nearby-device permissions, and Maestro
+    # cannot inspect the native permission-controller window on every Android
+    # device. Grant the BLE/location permissions before launch whenever the Hot
+    # Wallet setup runs. Prime-only runs keep the clean permission state and
+    # handle their own onboarding prompts.
+    if [ "$TEST_SCOPE" != "prime" ]; then
+        echo -e "${YELLOW}Granting phone-suite device permissions...${NC}"
+        for perm in \
+            android.permission.ACCESS_FINE_LOCATION \
+            android.permission.ACCESS_COARSE_LOCATION \
+            android.permission.BLUETOOTH_SCAN \
+            android.permission.BLUETOOTH_CONNECT; do
+            $ADB_CMD -s "$DEVICE_ID" shell pm grant "$APP_ID" "$perm" 2>/dev/null || true
+        done
+        echo -e "${GREEN}✓${NC} Phone-suite device permissions granted"
+    fi
 
     # Launch app after clean install and wait for cold start to finish
     echo -e "${YELLOW}Launching app (cold start after clean install)...${NC}"
@@ -849,9 +898,10 @@ trap on_interrupt INT TERM
 # Wipe stable-path artifacts from the *previous* run before anything new
 # happens this run. Screenshots etc. survive their own run for inspection;
 # the cleanup is here rather than in the exit trap.
-cleanup_prime_tmp
-
-start_kebab_bridge
+if [ "$TEST_SCOPE" != "android" ]; then
+    cleanup_prime_tmp
+    start_kebab_bridge
+fi
 
 # ------------------------------------------------------------
 # Test Runner
@@ -953,38 +1003,42 @@ run_test_group() {
 # leave the steppers energized for that stretch. The Prime group's pre-
 # wake (below) re-energizes when it's actually needed.
 # ------------------------------------------------------------
-echo -e "${YELLOW}Pre-positioning Kebab at FaceTesterPos2...${NC}"
-if curl -s -o /dev/null --max-time 5 http://localhost:7555/wake; then
-    if curl -s -o /dev/null --max-time 10 http://localhost:7555/face_tester_2; then
-        echo -e "${GREEN}✓${NC} Kebab parked at FaceTesterPos2"
+if [ "$TEST_SCOPE" != "android" ]; then
+    echo -e "${YELLOW}Pre-positioning Kebab at FaceTesterPos2...${NC}"
+    if curl -s -o /dev/null --max-time 5 http://localhost:7555/wake; then
+        if curl -s -o /dev/null --max-time 10 http://localhost:7555/face_tester_2; then
+            echo -e "${GREEN}✓${NC} Kebab parked at FaceTesterPos2"
+        else
+            echo -e "${YELLOW}⚠ face_tester_2 failed — rig may be at home${NC}"
+        fi
+        if curl -s -o /dev/null --max-time 5 http://localhost:7555/disable_motors; then
+            echo -e "${GREEN}✓${NC} Kebab motors disabled for non-Prime groups"
+        else
+            echo -e "${YELLOW}⚠ disable_motors failed — motors may stay energized${NC}"
+        fi
     else
-        echo -e "${YELLOW}⚠ face_tester_2 failed — rig may be at home${NC}"
+        echo -e "${YELLOW}⚠ Kebab wake request failed — continuing${NC}"
     fi
-    if curl -s -o /dev/null --max-time 5 http://localhost:7555/disable_motors; then
-        echo -e "${GREEN}✓${NC} Kebab motors disabled for non-Prime groups"
-    else
-        echo -e "${YELLOW}⚠ disable_motors failed — motors may stay energized${NC}"
-    fi
-else
-    echo -e "${YELLOW}⚠ Kebab wake request failed — continuing${NC}"
 fi
 
-# --- Group 1: Hot Wallet Tests ---
-run_test_group "Hot Wallet Tests" "$HOT_WALLET_TESTS_DIR"
+if [ "$TEST_SCOPE" != "prime" ]; then
+    # --- Group 1: Hot Wallet Tests ---
+    run_test_group "Hot Wallet Tests" "$HOT_WALLET_TESTS_DIR"
 
-# --- Group 2: Passport Wallet Tests ---
-run_test_group "Passport Wallet Tests" "$PASSPORT_WALLET_TESTS_DIR"
+    # --- Group 2: Passport Wallet Tests ---
+    run_test_group "Passport Wallet Tests" "$PASSPORT_WALLET_TESTS_DIR"
+fi
 
 # --- Group 3: Prime Tests (cross-device, Android + Prime via passport-drive) ---
-# Prime setup happens here, AFTER the phone-only groups above — so a run that
-# only touches Hot Wallet / Passport Wallet never pays for (or depends on) the
-# Prime rig.
+# In the full suite, Prime setup happens AFTER the phone-only groups above.
+# Android-only runs skip this entire block and do not depend on the Prime rig.
 #
 # 1) Reflash KeyOS if the chosen branch moved since the last flash. This is a
 #    no-op (fast SHA check, exit 0) when nothing changed, so it's safe to run
 #    unconditionally — no flag needed. Pick a branch with KEYOS_MAIN_BRANCH.
 #    Must run BEFORE the prime bridge binds the USB vendor interface, since
 #    flashing drives passport-drive directly and needs exclusive access.
+if [ "$TEST_SCOPE" != "android" ]; then
 KEYOS_BRANCH="${KEYOS_MAIN_BRANCH:-dev-v1.3.0}"
 # Export so keyos_flash_if_new.sh inherits the exact same branch — the banner
 # below and the actual flash stay in lockstep.
@@ -1079,6 +1133,7 @@ fi
 run_test_group "Prime Tests" "$PRIME_TESTS_DIR"
 
 sleep_kebab_motors
+fi
 
 # ------------------------------------------------------------
 # Summary

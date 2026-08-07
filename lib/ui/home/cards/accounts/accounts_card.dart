@@ -309,16 +309,13 @@ class _DefaultAccountsListState extends ConsumerState<DefaultAccountsList> {
             _onReOrderStart = true;
           });
         },
-        onReorder: (oldIndex, newIndex) async {
+        onReorderItem: (oldIndex, newIndex) async {
           final order = List<String>.from(_accountsOrder);
           final currentVisibleAccountsId = accounts.map((e) => e.id).toList();
           final List<String> toReorder = order
               .where((element) => currentVisibleAccountsId.contains(element))
               .toList();
           setState(() {
-            if (oldIndex < newIndex) {
-              newIndex -= 1;
-            }
             final String item = toReorder.removeAt(oldIndex);
             toReorder.insert(newIndex, item);
             //After moving visible accounts, add the rest of the accounts to the end of the list
