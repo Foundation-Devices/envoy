@@ -15,7 +15,6 @@ import 'package:envoy/ui/widgets/envoy_step_item.dart';
 import 'package:envoy/util/bug_report_helper.dart';
 import 'package:envoy/util/console.dart';
 import 'package:envoy/util/list_utils.dart';
-import 'package:envoy/util/ntp.dart';
 import 'package:envoy/util/stream_replay_cache.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
@@ -688,7 +687,7 @@ class QLConnection with EnvoyMessageWriter {
   Future<List<Uint8List>> encodeMessage({
     required api.QuantumLinkMessage message,
   }) async {
-    DateTime dateTime = DateTime.now();
+    final DateTime dateTime = DateTime.now();
     if (_recipientXid == null) {
       throw Exception(
         "Recipient XID not set for encoding message for device $deviceId",
@@ -699,7 +698,6 @@ class QLConnection with EnvoyMessageWriter {
         "Sender XID not set for encoding message for device $deviceId",
       );
     }
-    dateTime = NTPUtil().dateTime;
     final timestampSeconds = (dateTime.millisecondsSinceEpoch ~/ 1000);
     kPrint("Encoding Message timestamp: $timestampSeconds");
 
@@ -709,7 +707,7 @@ class QLConnection with EnvoyMessageWriter {
     );
     kPrint("Encoded Message $timestampSeconds");
 
-    kPrint("Encoding message: $envoyMessage");
+    kPrint("Encoding message type: ${message.runtimeType}");
     return await api.encode(
       message: envoyMessage,
       sender: _qlIdentity!,
@@ -814,7 +812,7 @@ class QLConnection with EnvoyMessageWriter {
     required String filePath,
     required int chunkSize,
   }) async {
-    final DateTime dateTime = NTPUtil().dateTime;
+    final DateTime dateTime = DateTime.now();
     if (_recipientXid == null) {
       throw Exception(
         "Recipient XID not set for encoding message for device $deviceId",
@@ -831,7 +829,7 @@ class QLConnection with EnvoyMessageWriter {
     // List<api.EnvoyMessage> envoyMessages = messages.map((message) =>
     //     api.EnvoyMessage(message: message, timestamp: timestampSeconds)).toList();
     // kPrint("Encoded Message $timestampSeconds");
-    kPrint("Encoding message: $message to file: $filePath");
+    kPrint("Encoding magic backup file");
     return await api.encodeToMagicBackupFile(
       payload: message,
       sender: _qlIdentity!,

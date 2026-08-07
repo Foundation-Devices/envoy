@@ -1993,6 +1993,8 @@ const _: fn() = || {
     }
     {
         let Heartbeat = None::<foundation_api::api::status::Heartbeat>.unwrap();
+        let _: Option<[u8; 16]> = Heartbeat.request_id;
+        let _: Option<u64> = Heartbeat.timestamp_ms;
     }
     match None::<foundation_api::api::backup::MagicBackupRequestV2>.unwrap() {
         foundation_api::api::backup::MagicBackupRequestV2::Create(field0) => {
@@ -2965,7 +2967,12 @@ impl SseDecode for foundation_api::api::backup::GetMagicBackupV2 {
 impl SseDecode for foundation_api::api::status::Heartbeat {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
-        return foundation_api::api::status::Heartbeat {};
+        let mut var_requestId = <Option<[u8; 16]>>::sse_decode(deserializer);
+        let mut var_timestampMs = <Option<u64>>::sse_decode(deserializer);
+        return foundation_api::api::status::Heartbeat {
+            request_id: var_requestId,
+            timestamp_ms: var_timestampMs,
+        };
     }
 }
 
@@ -3196,6 +3203,17 @@ impl SseDecode for Option<u8> {
     fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
         if (<bool>::sse_decode(deserializer)) {
             return Some(<u8>::sse_decode(deserializer));
+        } else {
+            return None;
+        }
+    }
+}
+
+impl SseDecode for Option<[u8; 16]> {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        if (<bool>::sse_decode(deserializer)) {
+            return Some(<[u8; 16]>::sse_decode(deserializer));
         } else {
             return None;
         }
@@ -3871,6 +3889,14 @@ impl SseDecode for u8 {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
         deserializer.cursor.read_u8().unwrap()
+    }
+}
+
+impl SseDecode for [u8; 16] {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        let mut inner = <Vec<u8>>::sse_decode(deserializer);
+        return flutter_rust_bridge::for_generated::from_vec_to_array(inner);
     }
 }
 
@@ -4905,7 +4931,11 @@ impl flutter_rust_bridge::IntoIntoDart<FrbWrapper<foundation_api::api::backup::G
 // Codec=Dco (DartCObject based), see doc to use other codecs
 impl flutter_rust_bridge::IntoDart for FrbWrapper<foundation_api::api::status::Heartbeat> {
     fn into_dart(self) -> flutter_rust_bridge::for_generated::DartAbi {
-        Vec::<u8>::new().into_dart()
+        [
+            self.0.request_id.into_into_dart().into_dart(),
+            self.0.timestamp_ms.into_into_dart().into_dart(),
+        ]
+        .into_dart()
     }
 }
 impl flutter_rust_bridge::for_generated::IntoDartExceptPrimitive
@@ -6353,7 +6383,10 @@ impl SseEncode for foundation_api::api::backup::GetMagicBackupV2 {
 
 impl SseEncode for foundation_api::api::status::Heartbeat {
     // Codec=Sse (Serialization based), see doc to use other codecs
-    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {}
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        <Option<[u8; 16]>>::sse_encode(self.request_id, serializer);
+        <Option<u64>>::sse_encode(self.timestamp_ms, serializer);
+    }
 }
 
 impl SseEncode for i32 {
@@ -6565,6 +6598,16 @@ impl SseEncode for Option<u8> {
         <bool>::sse_encode(self.is_some(), serializer);
         if let Some(value) = self {
             <u8>::sse_encode(value, serializer);
+        }
+    }
+}
+
+impl SseEncode for Option<[u8; 16]> {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        <bool>::sse_encode(self.is_some(), serializer);
+        if let Some(value) = self {
+            <[u8; 16]>::sse_encode(value, serializer);
         }
     }
 }
@@ -7101,6 +7144,19 @@ impl SseEncode for u8 {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
         serializer.cursor.write_u8(self).unwrap();
+    }
+}
+
+impl SseEncode for [u8; 16] {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        <Vec<u8>>::sse_encode(
+            {
+                let boxed: Box<[_]> = Box::new(self);
+                boxed.into_vec()
+            },
+            serializer,
+        );
     }
 }
 

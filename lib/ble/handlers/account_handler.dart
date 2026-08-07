@@ -148,7 +148,7 @@ class BleAccountHandler extends PassportMessageHandler {
       remoteUpdate: payload,
     );
     kPrint(
-      "Got config ${config.id} ${config.descriptors.map((e) => e.external_)}",
+      "Got config ${config.id} with ${config.descriptors.length} descriptors",
     );
 
     // When a seed is imported from a Core to Prime, the serialized account

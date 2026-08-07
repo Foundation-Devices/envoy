@@ -36,7 +36,6 @@ class PrimeQlPayloadDecoder extends ScannerDecoder {
   Future<void> onDetectBarCode(Barcode barCode) async {
     final String code = barCode.code?.toLowerCase() ?? "";
     if (code.startsWith("ur:") == true) {
-      kPrint(code);
       try {
         // Refresh decoder if needed (after reset due to error)
         if (_needsDecoderRefresh && refreshDecoder != null) {
@@ -47,7 +46,7 @@ class PrimeQlPayloadDecoder extends ScannerDecoder {
         progressCallBack?.call(decoderStatus.progress);
         if (decoderStatus.payload != null && !successfullyDecoded) {
           progressCallBack?.call(1);
-          kPrint("Got the xidDoc ${decoderStatus.payload}");
+          kPrint("Decoded Prime Quantum Link payload");
           onScan(decoderStatus.payload!);
           successfullyDecoded = true;
         }

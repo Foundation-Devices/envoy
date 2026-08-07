@@ -19,19 +19,22 @@ class HeartbeatHandler extends PassportMessageHandler {
 
   @override
   Future<void> handleMessage(api.QuantumLinkMessage message) async {
-    if (message case api.QuantumLinkMessage_Heartbeat _) {
+    if (message
+        case api.QuantumLinkMessage_Heartbeat(field0: final heartbeat)) {
       kPrint("Received heartbeat, sending heartbeat response");
       lastHeartbeat = DateTime.now();
       qlConnection.onHeartbeatReceived();
-      await _sendHeartbeatResponse();
+      final success = await qlConnection.writeMessage(
+        api.QuantumLinkMessage.heartbeat(
+          api.Heartbeat(
+            requestId: heartbeat.requestId,
+            timestampMs: BigInt.from(
+              DateTime.now().millisecondsSinceEpoch,
+            ),
+          ),
+        ),
+      );
+      kPrint("Heartbeat response write result: $success");
     }
-  }
-
-  Future<void> _sendHeartbeatResponse() async {
-    final heartbeat = api.Heartbeat();
-    final success = await qlConnection.writeMessage(
-      api.QuantumLinkMessage.heartbeat(heartbeat),
-    );
-    kPrint("Heartbeat response sent successfully: $success");
   }
 }

@@ -192,7 +192,7 @@ Future<OnrampSessionInfo?> createOnrampSession(
       return session;
     } else {
       kPrint('❌ Failed to create Onramp session: ${response.statusCode}');
-      kPrint('Response body: ${response.body}');
+      kPrint('Stripe returned an error response');
       return null;
     }
   } catch (e) {
@@ -342,7 +342,7 @@ Future<void> checkAllOnrampSessionStatuses() async {
           );
         } else {
           kPrint(
-            'Failed to check session $sessionId: ${response.statusCode} ${response.body}',
+            'Failed to check session $sessionId: ${response.statusCode}',
           );
         }
       }

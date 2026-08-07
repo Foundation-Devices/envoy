@@ -93,5 +93,5 @@ fn test_decrypt_backup() {
 
     let decrypted = Backup::decrypt_backup(contents, StaticSecret::from(entropy_32));
 
-    println!("{:?}", decrypted.unwrap());
+    assert!(decrypted.is_ok());
 }

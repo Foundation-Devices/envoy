@@ -64,7 +64,7 @@ class BleMagicBackupHandler extends PassportMessageHandler {
     switch (event) {
       case api.CreateMagicBackupEvent_Start():
         final payload = event.field0;
-        kPrint("Magic Backup Start Event: $payload");
+        kPrint("Magic Backup Start Event");
         final device = qlConnection.getDevice();
         if (device != null) {
           unawaited(

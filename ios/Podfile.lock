@@ -12,7 +12,6 @@ PODS:
   - qr_code_scanner_plus (0.2.6):
     - Flutter
     - MTBBarcodeScanner
-  - Ramp (4.0.1)
   - rust_lib_backup (0.0.1):
     - Flutter
   - rust_lib_foundation_api (0.0.1):
@@ -32,7 +31,6 @@ DEPENDENCIES:
   - flutter_secure_storage (from `.symlinks/plugins/flutter_secure_storage/ios`)
   - objectbox_flutter_libs (from `.symlinks/plugins/objectbox_flutter_libs/ios`)
   - qr_code_scanner_plus (from `.symlinks/plugins/qr_code_scanner_plus/ios`)
-  - Ramp (from `https://github.com/RampNetwork/ramp-sdk-ios`, tag `4.0.1`)
   - rust_lib_backup (from `.symlinks/plugins/rust_lib_backup/ios`)
   - rust_lib_foundation_api (from `.symlinks/plugins/rust_lib_foundation_api/ios`)
   - rust_lib_http_tor (from `.symlinks/plugins/rust_lib_http_tor/ios`)
@@ -56,9 +54,6 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/objectbox_flutter_libs/ios"
   qr_code_scanner_plus:
     :path: ".symlinks/plugins/qr_code_scanner_plus/ios"
-  Ramp:
-    :git: https://github.com/RampNetwork/ramp-sdk-ios
-    :tag: 4.0.1
   rust_lib_backup:
     :path: ".symlinks/plugins/rust_lib_backup/ios"
   rust_lib_foundation_api:
@@ -72,11 +67,6 @@ EXTERNAL SOURCES:
   rust_lib_ur:
     :path: ".symlinks/plugins/rust_lib_ur/ios"
 
-CHECKOUT OPTIONS:
-  Ramp:
-    :git: https://github.com/RampNetwork/ramp-sdk-ios
-    :tag: 4.0.1
-
 SPEC CHECKSUMS:
   file_saver: 503e386464dbe118f630e17b4c2e1190fa0cf808
   Flutter: cabc95a1d2626b1b06e7179b784ebcf0c0cde467
@@ -85,7 +75,6 @@ SPEC CHECKSUMS:
   ObjectBox: 7da4aceb5013d041bfafdbc6d744a26918b09757
   objectbox_flutter_libs: 7a6ea1d74b43f5d970e6571d1b79e4b181b33d81
   qr_code_scanner_plus: 3bfe4deb7f28996a63a2a580819d49dae80d5ed3
-  Ramp: 3f843fb75cac12ad40842afa3226bae36dc93521
   rust_lib_backup: 4524262f94017bf154f4311366f58b2942301b66
   rust_lib_foundation_api: b926bd066994ff2c0354873b5335f7287ac62945
   rust_lib_http_tor: 0fcda57f1a6c6046f5f62488ef5bce90aa30694a
@@ -93,6 +82,6 @@ SPEC CHECKSUMS:
   rust_lib_shards: 8e23064d2ebd38e6a70dc5a2fd05747544c14005
   rust_lib_ur: b8ae26f3fe44408cb5bd20c0bf244cd0a0413a6d
 
-PODFILE CHECKSUM: 251b3d30b5269b66df64f85d8688b22b7c3f604f
+PODFILE CHECKSUM: 8845154ce41a6397c9f84189b2f9772c23669cf7
 
 COCOAPODS: 1.16.2

@@ -110,7 +110,7 @@ class ScvServer {
     } else {
       EnvoyReport().log(
         "scv",
-        "Failed to get challenge,status: ${response.statusCode},body: ${response.body}",
+        "Failed to get challenge,status: ${response.statusCode}",
       );
       throw Exception('Failed to get challenge');
     }
@@ -145,7 +145,7 @@ class ScvServer {
     } else {
       EnvoyReport().log(
         "scv",
-        "Failed to validate challenge,status: ${response.statusCode},body: ${response.body}",
+        "Failed to validate challenge,status: ${response.statusCode}",
       );
       return false;
     }
@@ -184,8 +184,7 @@ class ScvServer {
       }
       final data = Uint8List.fromList(response.bodyBytes);
 
-      final dataStr = data.map((d) => d.toString()).join(",");
-      kPrint("security challenge payload $dataStr");
+      kPrint("Received security challenge payload");
 
       return ChallengeRequest(data: data);
     } catch (e) {
@@ -205,10 +204,8 @@ class ScvServer {
     }
 
     final uri = '$primeSecurityCheckBaseUrl/verify';
-    final dataStr = data.map((d) => d.toString()).join(",");
-
     try {
-      kPrint("isProofVerified payload $dataStr");
+      kPrint("Received proof verification payload");
       final response = await http.postBytes(
         uri,
         body: data.toList(),
@@ -219,7 +216,7 @@ class ScvServer {
       if (response.statusCode == 200) {
         List<int> rawVerificationMessage = response.bodyBytes;
         kPrint("response status data 32: ${rawVerificationMessage[32]}");
-        kPrint("rawVerificationMessage $rawVerificationMessage");
+        kPrint("Received raw verification message");
         // Error code is the 33rd byte in the response
         final errorCode = rawVerificationMessage.length > 32
             ? rawVerificationMessage[32]
