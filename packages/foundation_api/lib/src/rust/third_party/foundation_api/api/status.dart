@@ -4,6 +4,7 @@
 // ignore_for_file: invalid_use_of_internal_member, unused_import, unnecessary_import
 
 import '../../../frb_generated.dart';
+import '../../../lib.dart';
 import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated.dart';
 
 class DeviceNameUpdate {
@@ -64,15 +65,24 @@ class EnvoyStatus {
 }
 
 class Heartbeat {
-  const Heartbeat();
+  final U8Array16? requestId;
+  final BigInt? timestampMs;
+
+  const Heartbeat({
+    this.requestId,
+    this.timestampMs,
+  });
 
   @override
-  int get hashCode => 0;
+  int get hashCode => requestId.hashCode ^ timestampMs.hashCode;
 
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      other is Heartbeat && runtimeType == other.runtimeType;
+      other is Heartbeat &&
+          runtimeType == other.runtimeType &&
+          requestId == other.requestId &&
+          timestampMs == other.timestampMs;
 }
 
 class TimezoneRequest {

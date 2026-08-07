@@ -1,0 +1,50 @@
+# SPDX-FileCopyrightText: 2026 Foundation Devices Inc.
+#
+# SPDX-License-Identifier: GPL-3.0-or-later
+
+# (01) createMobileWallet
+appId: com.foundationdevices.envoy
+---
+
+- tapOn: |-
+    Create a 
+    Mobile Wallet
+
+- extendedWaitUntil:
+    visible: Continue
+    timeout: 60000
+
+- tapOn: Continue
+
+# Let the first Continue button leave the hierarchy before waiting for the
+# backup-info screen, which uses the same button label.
+- swipe:
+    start: "50%, 5%"
+    end: "50%, 5%"
+    duration: 3000
+
+- extendedWaitUntil:
+    visible: Continue
+    timeout: 300000
+
+- tapOn: Continue
+
+- extendedWaitUntil:
+    visible: "How to Recover.*"
+    timeout: 60000
+
+- tapOn: Continue
+
+- extendedWaitUntil:
+    visible: "Envoy is set up and ready for your Bitcoin.*"
+    timeout: 60000
+
+- tapOn: Continue
+
+- extendedWaitUntil:
+    visible:
+      id: hamburger_menu
+    timeout: 60000
+
+- assertVisible:
+    id: hamburger_menu

@@ -8,7 +8,6 @@ import Foundation
 import file_saver
 import file_selector_macos
 import flutter_secure_storage_macos
-import in_app_purchase_storekit
 import local_auth_darwin
 import objectbox_flutter_libs
 import package_info_plus
@@ -24,7 +23,6 @@ func RegisterGeneratedPlugins(registry: FlutterPluginRegistry) {
   FileSaverPlugin.register(with: registry.registrar(forPlugin: "FileSaverPlugin"))
   FileSelectorPlugin.register(with: registry.registrar(forPlugin: "FileSelectorPlugin"))
   FlutterSecureStoragePlugin.register(with: registry.registrar(forPlugin: "FlutterSecureStoragePlugin"))
-  InAppPurchasePlugin.register(with: registry.registrar(forPlugin: "InAppPurchasePlugin"))
   LocalAuthPlugin.register(with: registry.registrar(forPlugin: "LocalAuthPlugin"))
   ObjectboxFlutterLibsPlugin.register(with: registry.registrar(forPlugin: "ObjectboxFlutterLibsPlugin"))
   FPPPackageInfoPlusPlugin.register(with: registry.registrar(forPlugin: "FPPPackageInfoPlusPlugin"))

@@ -6,13 +6,14 @@ use anyhow::bail;
 use anyhow::Context;
 use anyhow::Result;
 use btp::{chunk, Chunk, MasterDechunker};
+use chrono::Utc;
 use flutter_rust_bridge::frb;
 use foundation_api::backup::BackupChunk;
 use foundation_api::backup::BackupMetadata;
 use foundation_api::backup::RestoreMagicBackupEvent;
 use foundation_api::backup::SeedFingerprint;
 use foundation_api::bc_envelope::prelude::CBOREncodable;
-use foundation_api::bc_envelope::Envelope;
+use foundation_api::bc_envelope::{Envelope, EventBehavior, Expression};
 use foundation_api::bc_xid::XIDDocument;
 use foundation_api::dcbor;
 use foundation_api::dcbor::{CBORCase, CBOR};
@@ -20,7 +21,10 @@ use foundation_api::firmware::{FirmwareChunk, FirmwareFetchEvent};
 use foundation_api::message::{
     EnvoyMessage, PassportMessage, QuantumLinkMessage, PROTOCOL_VERSION,
 };
-use foundation_api::quantum_link::{ARIDCache, QuantumLink, QuantumLinkIdentity};
+use foundation_api::quantum_link::{
+    ARIDCache, QlError, QuantumLink, QuantumLinkIdentity, ReplayCheck, EXPIRATION_DURATION,
+};
+use gstp::SealedEvent;
 use log::debug;
 
 #[frb(opaque)]
@@ -141,12 +145,33 @@ pub async fn decode(
             };
             debug!("Unsealing envelope...");
 
-            let (passport_message, _) = PassportMessage::unseal_passport_message_with_replay_check(
+            let now = Utc::now();
+            let event: SealedEvent<Expression> = SealedEvent::try_from_envelope(
                 &envelope,
-                &quantum_link_identity.clone().private_keys.unwrap(),
-                &mut arid_cache.inner,
+                None,
+                None,
+                quantum_link_identity.private_keys.as_ref().unwrap(),
             )
             .context("failed to unseal passport message")?;
+            let expires_at = event.date().ok_or(QlError::MissingDate)?.datetime();
+            let passport_message = PassportMessage::decode(event.content())?;
+
+            if !matches!(&passport_message.message, QuantumLinkMessage::Heartbeat(_)) {
+                if now >= expires_at {
+                    return Err(QlError::Expired.into());
+                }
+                if expires_at > now + EXPIRATION_DURATION {
+                    return Err(QlError::FutureDated.into());
+                }
+                match arid_cache
+                    .inner
+                    .check_and_store(&event.id(), expires_at, now)
+                {
+                    ReplayCheck::Fresh => {}
+                    ReplayCheck::Replay => return Err(QlError::ReplayAttack.into()),
+                    ReplayCheck::Expired => return Err(QlError::Expired.into()),
+                }
+            }
 
             Ok(DecoderStatus {
                 progress: 1.0,
@@ -322,8 +347,7 @@ pub async fn encode_to_chunks(
 
 pub async fn generate_ql_identity() -> QuantumLinkIdentity {
     debug!("Generating identity");
-    let identity = QuantumLinkIdentity::generate();
-    identity
+    QuantumLinkIdentity::generate()
 }
 
 #[frb(opaque)]

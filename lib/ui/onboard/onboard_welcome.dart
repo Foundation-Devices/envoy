@@ -590,7 +590,7 @@ class _LegacyFirmwareAlertState extends State<LegacyFirmwareAlert>
                 ),
                 SizeTransition(
                   sizeFactor: _heightAnimation,
-                  axisAlignment: -1.0, // slide down from top
+                  alignment: const AlignmentDirectional(-1.0, -1.0),
                   child: Padding(
                     padding: const EdgeInsets.symmetric(
                         horizontal: EnvoySpacing.medium3,

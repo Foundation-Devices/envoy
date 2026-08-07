@@ -4,7 +4,6 @@
 
 import 'package:envoy/ble/quantum_link_router.dart';
 import 'package:envoy/util/console.dart';
-import 'package:envoy/util/ntp.dart';
 import 'package:flutter/services.dart';
 import 'package:foundation_api/foundation_api.dart' as api;
 
@@ -28,7 +27,7 @@ class TimeZoneHandler extends PassportMessageHandler {
   }
 
   Future<void> _sendTimezoneResponse() async {
-    final DateTime dateTime = NTPUtil().dateTime;
+    final DateTime dateTime = DateTime.now();
     final zone = await _platform.invokeMethod('get_time_zone');
 
     final timezoneResponse = api.TimezoneResponse(
