@@ -347,8 +347,7 @@ pub async fn encode_to_chunks(
 
 pub async fn generate_ql_identity() -> QuantumLinkIdentity {
     debug!("Generating identity");
-    let identity = QuantumLinkIdentity::generate();
-    identity
+    QuantumLinkIdentity::generate()
 }
 
 #[frb(opaque)]

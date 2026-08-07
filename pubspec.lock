@@ -1001,6 +1001,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "5.6.4"
+  motor:
+    dependency: transitive
+    description:
+      name: motor
+      sha256: cbd49f21b00e568c2b1a55f134ed803614a107782f4fea7769693bca32940c58
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.1.0"
   mqtt_client:
     dependency: transitive
     description:
