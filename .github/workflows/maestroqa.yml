@@ -14,13 +14,11 @@ on:
           - android
           - ios
           - both
-  schedule:
-    - cron: '0 1 * * *'  # Run daily at 1 AM UTC (after Beef QA)
 env:
   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 jobs:
   maestro-qa-android:
-    if: ${{ github.event_name == 'schedule' || github.event.inputs.platform == 'android' || github.event.inputs.platform == 'both' }}
+    if: ${{ github.event.inputs.platform == 'android' || github.event.inputs.platform == 'both' }}
     runs-on: [ self-hosted, macOS, ARM64 ]
 
     steps:
