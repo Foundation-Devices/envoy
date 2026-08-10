@@ -5,8 +5,6 @@ name: Android build (Nix)
 on:
   workflow_call:
   workflow_dispatch:
-  schedule:
-    - cron: '0 2 * * *'  # Run daily at 2 AM UTC
 jobs:
   nix-android-build:
     runs-on: [ self-hosted, Linux, X64 ]
@@ -61,3 +59,12 @@ jobs:
         with:
           name: app-release.aab
           path: build/app/outputs/bundle/release/app-release.aab
+
+      - name: Upload AAB to Google Play internal track
+        uses: r0adkll/upload-google-play@v1.1.5
+        with:
+          serviceAccountJsonPlainText: ${{ secrets.PLAY_STORE_SERVICE_ACCOUNT_JSON }}
+          packageName: com.foundationdevices.envoy
+          releaseFiles: build/app/outputs/bundle/release/app-release.aab
+          tracks: internal
+          status: completed
