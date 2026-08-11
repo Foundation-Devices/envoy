@@ -302,7 +302,7 @@ class FwUpdateHandler extends PassportMessageHandler {
     if (qlConnection.senderXid == null || qlConnection.recipientXid == null) {
       EnvoyReport().log(
         "fw_update_handler",
-        "Cannot send firmware payload: missing identities,qlIdentity: ${qlConnection.senderXid},recipientXid ${qlConnection.senderXid}",
+        "Cannot send firmware payload: missing Quantum Link identity",
       );
       _finishFirmwareFetchRequest(requestId);
       return;

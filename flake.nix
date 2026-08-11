@@ -37,6 +37,20 @@
           assert lib.assertMsg (pkgs.flutter.version == flutterVersion)
             "Expected Flutter ${flutterVersion}, but nixpkgs provides ${pkgs.flutter.version}. Update flutterVersion or pin nixpkgs to a matching revision.";
           pkgs.flutter;
+        flutterRustBridgeCodegen = pkgs.flutter_rust_bridge_codegen.overrideAttrs (_: rec {
+          version = "2.11.1";
+          src = pkgs.fetchFromGitHub {
+            owner = "fzyzcjy";
+            repo = "flutter_rust_bridge";
+            tag = "v${version}";
+            hash = "sha256-Us+LwT6tjBcTl2xclVsiLauSlIO8w+PiokpiDB+h1fI=";
+            fetchSubmodules = true;
+          };
+          cargoDeps = pkgs.rustPlatform.fetchCargoVendor {
+            inherit src;
+            hash = "sha256-pxEwcLiRB95UBfXb+JgS8duEXiZUApH/C8Exus5TkfU=";
+          };
+        });
 
         # Android SDK configuration
         androidComposition = pkgs.androidenv.composeAndroidPackages {
@@ -201,13 +215,14 @@
             rustToolchain
             rustup-shim # fake rustup for Cargokit (see shim definition above)
             rust-bindgen
+            cargo-expand
 
             # Flutter
             flutter-wrapper
             flutterPinned
             dart
             android-tools
-            flutter_rust_bridge_codegen
+            flutterRustBridgeCodegen
             jdk17
 
             # Development tools
@@ -337,8 +352,9 @@
             echo "Java: $(java --version)"
 
             # darwin xcode
-            ${lib.optionalString pkgs.stdenv.isDarwin "unset DEVELOPER_DIR && unset SDKROOT"}
+            ${lib.optionalString pkgs.stdenv.isDarwin "unset DEVELOPER_DIR DEVELOPER_DIR_FOR_TARGET SDKROOT SDKROOT_FOR_TARGET"}
             ${lib.optionalString pkgs.stdenv.isDarwin "export DEVELOPER_DIR=\"$(xcode-select -p)\""}
+            ${lib.optionalString pkgs.stdenv.isDarwin "export CARGO_TARGET_AARCH64_APPLE_DARWIN_LINKER=/usr/bin/clang"}
 
             # Android SDK and NDK configuration
             export ANDROID_SDK_ROOT="${androidComposition.androidsdk}/libexec/android-sdk"

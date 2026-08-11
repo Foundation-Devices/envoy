@@ -30,7 +30,6 @@ import 'package:envoy/ui/widgets/envoy_page_transition.dart';
 import 'package:envoy/util/bug_report_helper.dart';
 import 'package:envoy/util/console.dart';
 import 'package:envoy/util/envoy_storage.dart';
-import 'package:envoy/util/ntp.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
@@ -101,7 +100,6 @@ Future<void> initSingletons({bool integrationTestsRunning = false}) async {
     kPrint("Restoring accounts");
     await NgAccountManager().restore();
   }
-  await NTPUtil.init();
   await EnvoyScheduler.init();
   await ExchangeRate.init();
 

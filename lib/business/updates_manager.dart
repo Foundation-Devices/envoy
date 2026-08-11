@@ -61,7 +61,8 @@ class UpdatesManager {
           patches.where((p) => !isPreRelease(p.version)).toList();
 
       if (stablePatches.isNotEmpty) {
-        // Store the final stable destination of the sequential patch chain.
+        // Store the chain tip — the badge advertises where the device ends
+        // up, not the first hop of the patch sequence.
         await EnvoyStorage().addNewFirmware(
           DeviceType.passportPrime.index,
           stablePatches.last.version,
