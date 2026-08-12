@@ -177,6 +177,34 @@ final testnetAccountsProvider =
   return filteredEnvoyAccounts;
 });
 
+final transferDestinationAccountsProvider = Provider.autoDispose
+    .family<List<EnvoyAccount>, EnvoyAccount>((ref, transferAccount) {
+  final accounts = switch (transferAccount.network) {
+    Network.bitcoin => ref.watch(mainnetAccountsProvider(null)),
+    Network.signet => ref.watch(signetAccountsProvider(null)),
+    Network.testnet4 => ref.watch(testnetAccountsProvider(null)),
+    _ => <EnvoyAccount>[],
+  };
+  final visiblePassphraseAccountIds = ref
+      .watch(primePassphraseAccountsProvider)
+      .map((account) => account.id)
+      .toSet();
+
+  if (transferAccount.seedHasPassphrase &&
+      !visiblePassphraseAccountIds.contains(transferAccount.id)) {
+    return [];
+  }
+
+  return accounts.where((account) {
+    if (account.id == transferAccount.id) {
+      return false;
+    }
+
+    return !account.seedHasPassphrase ||
+        visiblePassphraseAccountIds.contains(account.id);
+  }).toList();
+});
+
 final mainnetAccountsCountProvider = Provider<int>((ref) {
   final accounts = ref.watch(mainnetAccountsProvider(null));
   return accounts.length;

@@ -42,6 +42,7 @@ class _SelectAccountTransferState extends ConsumerState<SelectAccountTransfer> {
   GestureTapCallback? onTap;
   String? selectedAccAddress;
   bool _canPop = true;
+  bool _closingTransfer = false;
   final Map<String, String?> accountAddressCache = {};
   bool isRampOpen = false;
 
@@ -54,10 +55,8 @@ class _SelectAccountTransferState extends ConsumerState<SelectAccountTransfer> {
     Future.microtask(() async {
       ref.read(backupPageProvider.notifier).state = false;
 
-      final network = widget.transferAccount.network;
-
-      // Get accounts based on the transfer account's network
-      final filteredAccounts = _getAccountsByNetwork(network, ref);
+      final filteredAccounts =
+          ref.read(transferDestinationAccountsProvider(widget.transferAccount));
 
       final account = filteredAccounts.firstOrNull;
       if (account == null) return;
@@ -79,15 +78,6 @@ class _SelectAccountTransferState extends ConsumerState<SelectAccountTransfer> {
         debugPrint('Failed to get address: $e');
       }
     });
-  }
-
-  List<EnvoyAccount> _getAccountsByNetwork(Network network, WidgetRef ref) {
-    return switch (network) {
-      Network.signet => ref.read(signetAccountsProvider(null)),
-      Network.testnet4 => ref.read(testnetAccountsProvider(null)),
-      Network.bitcoin => ref.read(mainnetAccountsProvider(null)),
-      _ => <EnvoyAccount>[],
-    };
   }
 
   @override
@@ -116,13 +106,64 @@ class _SelectAccountTransferState extends ConsumerState<SelectAccountTransfer> {
     }
   }
 
+  void _closeTransfer() {
+    if (!mounted || _closingTransfer) {
+      return;
+    }
+    _closingTransfer = true;
+    accountChooserKey.currentState?.dismissImmediately();
+    accountAddressCache.clear();
+    setState(() {
+      selectedAccount = null;
+      selectedAccAddress = null;
+    });
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted && context.canPop()) {
+        context.pop();
+      }
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
-    final network = widget.transferAccount.network;
+    final destinationAccountsProvider =
+        transferDestinationAccountsProvider(widget.transferAccount);
+    final filteredAccounts = ref.watch(destinationAccountsProvider);
+    final chooserAccounts = [widget.transferAccount, ...filteredAccounts];
 
-    final filteredAccounts = _getAccountsByNetwork(network, ref);
+    ref.listen(destinationAccountsProvider, (previous, next) {
+      final nextAccountIds = next.map((account) => account.id).toSet();
+      final destinationsChanged = previous?.length != next.length ||
+          (previous?.any(
+                (account) => !nextAccountIds.contains(account.id),
+              ) ??
+              false);
+      if (destinationsChanged) {
+        accountChooserKey.currentState?.dismissImmediately();
+        accountChooserKey = GlobalKey();
+        for (final account in previous ?? const <EnvoyAccount>[]) {
+          if (!nextAccountIds.contains(account.id)) {
+            accountAddressCache.remove(account.id);
+          }
+        }
+      }
 
-    if ((selectedAccount == null)) {
+      final selected = selectedAccount;
+      if (selected != null && nextAccountIds.contains(selected.id)) {
+        return;
+      }
+
+      if (next.isEmpty) {
+        _closeTransfer();
+        return;
+      }
+
+      updateSelectedAccount(next.first);
+    });
+
+    final selectedIsVisible = selectedAccount != null &&
+        filteredAccounts.any((account) => account.id == selectedAccount!.id);
+    if (!selectedIsVisible) {
       return const Center(child: CircularProgressIndicator());
     } else {
       return PopScope(
@@ -179,11 +220,10 @@ class _SelectAccountTransferState extends ConsumerState<SelectAccountTransfer> {
                       StackedAccountChooser(
                         key: accountChooserKey,
                         transferAccount: widget.transferAccount,
-                        account: // do not pass transfer acc as a selected acc !!!
-                            selectedAccount?.id == widget.transferAccount.id
-                                ? filteredAccounts.last
-                                : selectedAccount ?? filteredAccounts.first,
-                        accounts: filteredAccounts,
+                        account: selectedAccount!,
+                        // Include the source account so the chooser can animate
+                        // it between the "from" and expanded account lists.
+                        accounts: chooserAccounts,
                         onOverlayChanges: (bool visible) {
                           setState(() {
                             _canPop = !visible;

@@ -313,9 +313,9 @@ class _AccountCardState extends ConsumerState<AccountCard>
                     text: S().receive_tx_list_transfer,
                     enabled: !scanInProgress &&
                         !isAccountLoading &&
-                        ref.watch(accountsCountByNetworkProvider(
-                                account.network)) >=
-                            2,
+                        ref
+                            .watch(transferDestinationAccountsProvider(account))
+                            .isNotEmpty,
                     onTap: () {
                       context.go(ROUTE_ACCOUNT_TRANSFER, extra: account.id);
                     },
