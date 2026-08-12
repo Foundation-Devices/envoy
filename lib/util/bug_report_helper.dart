@@ -21,7 +21,11 @@ class EnvoyReport extends ChangeNotifier {
   }
 
   // The maximum number of logs to keep in the database
-  static const int _logCapacity = 1000;
+  static const int _logCapacity = 1500;
+  static const String _redactedExtendedKey = "[REDACTED EXTENDED KEY]";
+  static final RegExp _extendedKeyPattern = RegExp(
+    r'(?:xprv|tprv|xpub|tpub)[1-9A-HJ-NP-Za-km-z]{107}',
+  );
   Database? _db;
   final StoreRef<int, Map<String, Object?>> _logsStore =
       intMapStoreFactory.store("logs");
@@ -31,6 +35,16 @@ class EnvoyReport extends ChangeNotifier {
     final appDocumentDir = await getApplicationDocumentsDirectory();
     _db = await dbFactory.openDatabase(join(appDocumentDir.path, "logs.db"),
         version: 2);
+    try {
+      await _cleanupStoredLogs();
+    } catch (e) {
+      kPrint("EnvoyReport: Failed to clean stored logs: $e");
+    }
+    try {
+      await _deleteStaleExport();
+    } catch (e) {
+      kPrint("EnvoyReport: Failed to delete stale log export: $e");
+    }
     FlutterError.onError = (FlutterErrorDetails details) {
       if (kDebugMode) {
         FlutterError.dumpErrorToConsole(details);
@@ -48,20 +62,47 @@ class EnvoyReport extends ChangeNotifier {
     }
   }
 
+  Future<void> _cleanupStoredLogs() async {
+    if (_db == null) {
+      return;
+    }
+
+    final records = await _logsStore.find(_db!);
+    for (final record in records) {
+      final redacted = _redactReport(record.value);
+      if (!mapEquals(record.value, redacted)) {
+        await _logsStore.record(record.key).put(_db!, redacted);
+      }
+    }
+    // Always compact so a failed or interrupted previous cleanup is retried
+    // even when the current logical records are already redacted.
+    await _db?.compact();
+  }
+
+  Future<void> _deleteStaleExport() async {
+    final tempDir = await getTemporaryDirectory();
+    final path = join(tempDir.path, "logs.txt");
+    final type = await FileSystemEntity.type(path, followLinks: false);
+    if (type == FileSystemEntityType.file) {
+      await File(path).delete();
+    }
+  }
+
   Future<void> writeReport(FlutterErrorDetails? details) async {
     await _ensureDbInitialized();
 
     Map<String, String?> report = {};
     if (details != null) {
-      report["exception"] = details.exceptionAsString();
-      report["lib"] = details.library;
+      report["exception"] = _redact(details.exceptionAsString());
+      report["lib"] = _redactNullable(details.library);
       if (details.stack != null) {
         report["stackTrace"] =
-            getStackTraceElements(details.stack!, 12).join("\n");
-        report["buildId"] = getBuildId(details.stack!);
+            _redact(getStackTraceElements(details.stack!, 12).join("\n"));
+        report["buildId"] = _redactNullable(getBuildId(details.stack!));
       } else {
-        report["stackTrace"] =
-            details.toString().replaceAll("◤", "").replaceAll("◢", "");
+        report["stackTrace"] = _redact(
+          details.toString().replaceAll("◤", "").replaceAll("◢", ""),
+        );
       }
       report["time"] = DateTime.now().toIso8601String();
     }
@@ -74,16 +115,19 @@ class EnvoyReport extends ChangeNotifier {
   Future<void> log(String category, String message,
       {StackTrace? stackTrace, int limitTrace = 50}) async {
     await _ensureDbInitialized();
-    kPrint("EnvoyReport: $category: $message");
+    final redactedCategory = _redact(category);
+    final redactedMessage = _redact(message);
+    kPrint("EnvoyReport: $redactedCategory: $redactedMessage");
     if (_db != null) {
       Map<String, String?> report = {
-        "category": category,
-        "message": message,
+        "category": redactedCategory,
+        "message": redactedMessage,
         "time": DateTime.now().toIso8601String()
       };
       if (stackTrace != null) {
-        report["stackTrace"] =
-            getStackTraceElements(stackTrace, limitTrace).join("\n");
+        report["stackTrace"] = _redact(
+          getStackTraceElements(stackTrace, limitTrace).join("\n"),
+        );
       }
       _logsStore.add(_db!, report);
       notifyListeners();
@@ -107,8 +151,22 @@ class EnvoyReport extends ChangeNotifier {
           sortOrders: [SortOrder(Field.key, false)],
         ));
 
-    var logs = log.map((e) => e.value).toList();
+    var logs = log.map((e) => _redactReport(e.value)).toList();
     return logs;
+  }
+
+  static String _redact(String value) {
+    return value.replaceAll(_extendedKeyPattern, _redactedExtendedKey);
+  }
+
+  static String? _redactNullable(String? value) {
+    return value == null ? null : _redact(value);
+  }
+
+  static Map<String, Object?> _redactReport(Map<String, Object?> report) {
+    return report.map(
+      (key, value) => MapEntry(key, value is String ? _redact(value) : value),
+    );
   }
 
   /// filter out the stack trace lines that are not useful for debugging.

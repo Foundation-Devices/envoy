@@ -487,7 +487,9 @@ class MigrationManager {
       //probably hot wallet that does have descriptors
       if (fingerprint == null || descriptor == null) {
         throw Exception(
-          "Failed to get fingerprint for account ${legacyAccount.name} ${legacyAccount.wallet.externalDescriptor} ${legacyAccount.wallet.internalDescriptor}",
+          "Failed to get fingerprint for account ${legacyAccount.name} "
+          "(account ${legacyAccount.number}, "
+          "${legacyAccount.wallet.network.toLowerCase()})",
         );
       }
 
@@ -607,7 +609,8 @@ class MigrationManager {
         EnvoyReport().log(
           "Migration",
           "Will treat as single accounts ::  ${accounts.map((item) => item.name)}"
-              " ${accounts.map((item) => "${item.wallet.internalDescriptor}:${item.extractFingerprint()}")} ",
+              " ${accounts.map((item) => "${item.wallet.type}:${item.extractFingerprint()}")} "
+              "${accounts.first.wallet.network.toLowerCase()} ",
         );
         final Map<AddressType, LegacyAccount> unifiedSet = {};
         for (var account in accounts) {

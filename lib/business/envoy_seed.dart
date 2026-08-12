@@ -426,7 +426,8 @@ class EnvoySeed {
         final fingerprint = state.xfp;
         if (fingerprint.isEmpty) {
           throw Exception(
-            "Failed to get fingerprint for account ${state.name} ${state.descriptors.map((e) => "${e.external_} | ${e.internal}")}",
+            "Failed to get fingerprint for account ${state.name} "
+            "(id ${state.id}, account ${state.index}, ${state.network})",
           );
         }
         final dirWithId = NgAccountManager.getAccountDirectory(
