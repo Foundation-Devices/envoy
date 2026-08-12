@@ -22,9 +22,9 @@ class EnvoyReport extends ChangeNotifier {
 
   // The maximum number of logs to keep in the database
   static const int _logCapacity = 1500;
-  static const String _redactedPrivateKey = "[REDACTED PRIVATE KEY]";
-  static final RegExp _extendedPrivateKeyPattern = RegExp(
-    r'(?:xprv|tprv)[1-9A-HJ-NP-Za-km-z]{107}',
+  static const String _redactedExtendedKey = "[REDACTED EXTENDED KEY]";
+  static final RegExp _extendedKeyPattern = RegExp(
+    r'(?:xprv|tprv|xpub|tpub)[1-9A-HJ-NP-Za-km-z]{107}',
   );
   Database? _db;
   final StoreRef<int, Map<String, Object?>> _logsStore =
@@ -68,17 +68,15 @@ class EnvoyReport extends ChangeNotifier {
     }
 
     final records = await _logsStore.find(_db!);
-    bool changed = false;
     for (final record in records) {
       final redacted = _redactReport(record.value);
       if (!mapEquals(record.value, redacted)) {
         await _logsStore.record(record.key).put(_db!, redacted);
-        changed = true;
       }
     }
-    if (changed) {
-      await _db!.compact();
-    }
+    // Always compact so a failed or interrupted previous cleanup is retried
+    // even when the current logical records are already redacted.
+    await _db?.compact();
   }
 
   Future<void> _deleteStaleExport() async {
@@ -158,7 +156,7 @@ class EnvoyReport extends ChangeNotifier {
   }
 
   static String _redact(String value) {
-    return value.replaceAll(_extendedPrivateKeyPattern, _redactedPrivateKey);
+    return value.replaceAll(_extendedKeyPattern, _redactedExtendedKey);
   }
 
   static String? _redactNullable(String? value) {
