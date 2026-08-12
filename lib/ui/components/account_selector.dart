@@ -221,6 +221,24 @@ class StackedAccountChooserState extends State<StackedAccountChooser> {
   void dismiss() {
     accountChooserKey.currentState?.dismiss();
   }
+
+  void dismissImmediately() {
+    final wasVisible = _overlayVisible || _entry?.mounted == true;
+    if (_entry?.mounted == true) {
+      _entry!.remove();
+    }
+    _entry = null;
+
+    if (mounted) {
+      setState(() {
+        _overlayVisible = false;
+        _status = AnimationStatus.dismissed;
+      });
+    }
+    if (wasVisible) {
+      widget.onOverlayChanges(false);
+    }
+  }
 }
 
 // Overlay widget for the account chooser.

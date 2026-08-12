@@ -84,9 +84,10 @@ class _AddressEntryState extends ConsumerState<AddressEntry> {
                 children: [
                   GestureDetector(
                     onTap: () {
-                      if (ref.read(accountsCountByNetworkProvider(
-                              widget.account.network)) >=
-                          2) {
+                      if (ref
+                          .read(transferDestinationAccountsProvider(
+                              widget.account))
+                          .isNotEmpty) {
                         context.go(ROUTE_ACCOUNT_TRANSFER,
                             extra: widget.account.id);
                       }
