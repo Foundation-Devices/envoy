@@ -29,6 +29,7 @@ class BluetoothChannel: NSObject, CBCentralManagerDelegate, FlutterStreamHandler
     private let methodChannelName = "envoy/bluetooth"
     private let bleStreamName = "envoy/bluetooth/stream"
     private let bleScanStreamName = "envoy/bluetooth/scan/stream"
+    private var binaryMessenger: FlutterBinaryMessenger?
 
     var centralManager: CBCentralManager?
     var methodChannel: FlutterMethodChannel?
@@ -36,7 +37,6 @@ class BluetoothChannel: NSObject, CBCentralManagerDelegate, FlutterStreamHandler
     var scanEventSink: FlutterEventSink? = nil
     var setupResult: FlutterResult? = nil
     let session = ASAccessorySession()
-    private var pickerFilter: (name: String, image: UIImage)?
 
     // Connected QLConnection instances, keyed by UUID string
     private var devices: [String: QLConnection] = [:]
@@ -80,19 +80,18 @@ class BluetoothChannel: NSObject, CBCentralManagerDelegate, FlutterStreamHandler
 
     // MARK: - Initialization
 
-    init(flutterController: FlutterViewController) {
+    init(binaryMessenger: FlutterBinaryMessenger) {
+        self.binaryMessenger = binaryMessenger
         super.init()
 
         print("\(Self.TAG) Device name: \(UIDevice.current.name)")
 
-        self.flutterController = flutterController
-
         // Set up event channel for streaming Bluetooth state
-        FlutterEventChannel(name: bleStreamName, binaryMessenger: flutterController.binaryMessenger)
+        FlutterEventChannel(name: bleStreamName, binaryMessenger: binaryMessenger)
             .setStreamHandler(self)
 
         // Set up scan event channel
-        FlutterEventChannel(name: bleScanStreamName, binaryMessenger: flutterController.binaryMessenger)
+        FlutterEventChannel(name: bleScanStreamName, binaryMessenger: binaryMessenger)
             .setStreamHandler(ScanStreamHandler(bluetoothChannel: self))
 
         print("\(Self.TAG) Initialized BLE channels")
@@ -100,7 +99,7 @@ class BluetoothChannel: NSObject, CBCentralManagerDelegate, FlutterStreamHandler
         // Set up method channel for shared operations
         self.methodChannel = FlutterMethodChannel(
             name: methodChannelName,
-            binaryMessenger: flutterController.binaryMessenger)
+            binaryMessenger: binaryMessenger)
 
         self.methodChannel?.setMethodCallHandler({
             [weak self] (call: FlutterMethodCall, result: @escaping FlutterResult) -> Void in
@@ -142,6 +141,10 @@ class BluetoothChannel: NSObject, CBCentralManagerDelegate, FlutterStreamHandler
         setupBluetoothManager()
     }
 
+    func attachFlutterController(_ controller: FlutterViewController?) {
+        flutterController = controller
+    }
+
     // MARK: - QLConnectionDelegate
 
     func onDeviceDisconnected(device: QLConnection) {
@@ -168,7 +171,7 @@ class BluetoothChannel: NSObject, CBCentralManagerDelegate, FlutterStreamHandler
         }
 
         print("\(Self.TAG) Creating QLConnection for: \(deviceId)")
-        guard let messenger = flutterController?.binaryMessenger else {
+        guard let messenger = binaryMessenger else {
             print("\(Self.TAG) Flutter binary messenger not available for device: \(deviceId)")
             return nil
         }
@@ -408,7 +411,6 @@ class BluetoothChannel: NSObject, CBCentralManagerDelegate, FlutterStreamHandler
         eventSink = nil
         scanEventSink = nil
         setupResult = nil
-        clearPickerFilter()
 
         // Clear accessory references
         pairedAccessories.removeAll()
@@ -540,28 +542,21 @@ class BluetoothChannel: NSObject, CBCentralManagerDelegate, FlutterStreamHandler
         let isMidnight = (arguments["c"] as? Int ?? 1) == 1
         let qrDeviceName = (arguments["n"] as? String)?
             .trimmingCharacters(in: .whitespacesAndNewlines)
-        let nameSubstring =
-            qrDeviceName?.localizedCaseInsensitiveContains("Passport Prime") == true
-            ? "Passport Prime"
-            : "Passport"
+        let pickerDisplayName = (qrDeviceName?.isEmpty == false ? qrDeviceName : nil)
+            ?? "Passport Prime"
         let passportDescriptor = ASDiscoveryDescriptor()
+        // GAP names changed across Prime firmware versions and can also be
+        // customized by the user. Use the Prime BLE service UUID to identify
+        // compatible devices; QuantumLink authenticates the selected device.
         passportDescriptor.bluetoothServiceUUID = primeUUID
-        passportDescriptor.bluetoothNameSubstring = nameSubstring
 
         //Maybe tweak this if multiple primes present
         passportDescriptor.bluetoothRange = ASDiscoveryDescriptor.Range.default
         let productImage = UIImage(named:isMidnight ?  "prime_dark_midnight_bronze" : "prime_light_arctic_copper") ?? UIImage()
 
-        clearPickerFilter()
-        if #available(iOS 26.1, *), let qrDeviceName, !qrDeviceName.isEmpty {
-            pickerFilter = (qrDeviceName, productImage)
-            let settings = ASPickerDisplaySettings.default
-            settings.options.insert(.filterDiscoveryResults)
-            session.pickerDisplaySettings = settings
-        }
-
         let passportDisplayItem = ASPickerDisplayItem(
-            name: "Passport Prime",
+            // The QR name is a display hint only, never a discovery filter.
+            name: pickerDisplayName,
             productImage: productImage,
             descriptor: passportDescriptor
         )
@@ -575,7 +570,6 @@ class BluetoothChannel: NSObject, CBCentralManagerDelegate, FlutterStreamHandler
                 result(nil)
                 setupResult = nil
             }
-            clearPickerFilter()
         }
     }
 
@@ -586,14 +580,6 @@ class BluetoothChannel: NSObject, CBCentralManagerDelegate, FlutterStreamHandler
         for item in session.accessories {
             print("Found accessory: \(item.debugDescription)")
         }
-        if #available(iOS 26.1, *),
-           event.eventType == .accessoryDiscovered,
-           let accessory = event.accessory as? ASDiscoveredAccessory
-        {
-            showDiscoveredAccessoryIfNeeded(accessory)
-            return
-        }
-
         switch event.eventType {
         case .accessoryAdded, .accessoryChanged:
             guard let accessory = event.accessory else { return }
@@ -612,38 +598,8 @@ class BluetoothChannel: NSObject, CBCentralManagerDelegate, FlutterStreamHandler
                 result(nil)
                 setupResult = nil
             }
-            clearPickerFilter()
         default:
             print("Received accessory event type: \(event.eventType)")
-        }
-    }
-
-    private func clearPickerFilter() {
-        pickerFilter = nil
-        if #available(iOS 26.0, *) {
-            session.pickerDisplaySettings = nil
-        }
-    }
-
-    @available(iOS 26.1, *)
-    private func showDiscoveredAccessoryIfNeeded(_ accessory: ASDiscoveredAccessory) {
-        guard let pickerFilter,
-              let localName = accessory.bluetoothAdvertisementData?[CBAdvertisementDataLocalNameKey]
-                as? String,
-              localName.caseInsensitiveCompare(pickerFilter.name) == .orderedSame
-        else {
-            return
-        }
-
-        let item = ASDiscoveredDisplayItem(
-            name: "Passport Prime",
-            productImage: pickerFilter.image,
-            accessory: accessory
-        )
-        session.updatePicker(showing: [item]) { error in
-            if let error {
-                print("Failed to update accessory picker: \(error.localizedDescription)")
-            }
         }
     }
 
@@ -679,7 +635,6 @@ class BluetoothChannel: NSObject, CBCentralManagerDelegate, FlutterStreamHandler
             result(deviceId)
             setupResult = nil
         }
-        clearPickerFilter()
 
         // If accessory has Bluetooth identifier, try to connect via CoreBluetooth
         if let bluetoothId = accessory.bluetoothIdentifier,
