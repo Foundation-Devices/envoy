@@ -12,6 +12,7 @@ import 'package:envoy/ui/theme/envoy_icons.dart';
 import 'package:envoy/ui/theme/envoy_spacing.dart';
 import 'package:envoy/ui/theme/envoy_typography.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:persistent_bottom_nav_bar/persistent_bottom_nav_bar.dart';
@@ -202,6 +203,7 @@ class EnvoyBottomNavigationState extends ConsumerState<EnvoyBottomNavigation> {
                   return;
                 }
               }
+              HapticFeedback.selectionClick();
               _selectedIndex = index;
               widget.onIndexChanged?.call(_selectedIndex);
             });
