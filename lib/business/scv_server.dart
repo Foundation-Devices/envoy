@@ -31,7 +31,13 @@ enum ScvVerificationResult {
   verificationFailed,
 }
 
-class ScvServer {
+abstract interface class PrimeSecurityCheckService {
+  Future<ChallengeRequest?> getPrimeChallenge();
+
+  Future<ScvVerificationResult> verifyProof(Uint8List data);
+}
+
+class ScvServer implements PrimeSecurityCheckService {
   static HttpTor http = HttpTor();
   static String serverAddress = "https://validate.foundation.xyz";
   static String primeSecurityCheckUrl = "https://security-check.foundation.xyz";
@@ -166,7 +172,6 @@ class ScvServer {
     } else {
       await InternetAddress.lookup(uri.host)
           .timeout(const Duration(seconds: 15));
-      return true;
     }
     final response = await http
         .get('$primeSecurityCheckBaseUrl/challenge')
@@ -174,6 +179,7 @@ class ScvServer {
     return response.statusCode == 200;
   }
 
+  @override
   Future<ChallengeRequest?> getPrimeChallenge() async {
     try {
       final response = await http.get('$primeSecurityCheckBaseUrl/challenge');
@@ -198,6 +204,7 @@ class ScvServer {
   }
 
   /// Verifies the proof and returns a detailed result
+  @override
   Future<ScvVerificationResult> verifyProof(Uint8List data) async {
     if (Settings().skipPrimeSecurityCheck) {
       return ScvVerificationResult.success;

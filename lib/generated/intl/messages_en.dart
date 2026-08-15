@@ -2218,6 +2218,14 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage(
           "Envoy failed to connect to Foundation Servers. Please make sure you are connected to the internet.",
         ),
+        "onboarding_connectionIntroErrorChallenge_content":
+            MessageLookupByLibrary.simpleMessage(
+          "Passport could not complete the security check. Make sure it is nearby and that your phone's date and time are set automatically, then try again.",
+        ),
+        "onboarding_connectionIntroErrorChallenge_securityCheckPending":
+            MessageLookupByLibrary.simpleMessage(
+          "Security Check Interrupted",
+        ),
         "onboarding_connectionIntroErrorInternet_content":
             MessageLookupByLibrary.simpleMessage(
           "Unable to communicate with the security server. Check your internet connection and try again.",

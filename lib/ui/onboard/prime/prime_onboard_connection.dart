@@ -250,6 +250,8 @@ class _PrimeOnboardParingState extends ConsumerState<PrimeOnboardParing> {
     BuildContext context,
   ) {
     final isNetworkError = deviceCheck.errorType == ScvErrorType.networkError;
+    final isChallengeError =
+        deviceCheck.errorType == ScvErrorType.challengeError;
 
     final onboardingQlConnection = ref.watch(onboardingDeviceProvider);
 
@@ -259,7 +261,9 @@ class _PrimeOnboardParingState extends ConsumerState<PrimeOnboardParing> {
         Text(
           isNetworkError
               ? S().onboarding_connectionIntroErrorInternet_content
-              : S().onboarding_connectionIntroError_content,
+              : isChallengeError
+                  ? S().onboarding_connectionIntroErrorChallenge_content
+                  : S().onboarding_connectionIntroError_content,
           style: EnvoyTypography.body.copyWith(
             color: EnvoyColors.copperLight500,
           ),
@@ -279,6 +283,8 @@ class _PrimeOnboardParingState extends ConsumerState<PrimeOnboardParing> {
                   } else {
                     return;
                   }
+                } else {
+                  await onboardingQlConnection?.disconnect();
                 }
               } catch (e, stack) {
                 EnvoyReport().log(

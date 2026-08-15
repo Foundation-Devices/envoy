@@ -252,7 +252,6 @@ class _OnboardPrimeBluetoothState extends ConsumerState<OnboardPrimeBluetooth>
       });
       String message = "";
       if (e is PlatformException) {
-        //only for Android
         if (e.code == "BLUETOOTH_DISABLED") {
           final bool? allowed = await BluetoothChannel().requestEnableBle();
           if (allowed == true) {
@@ -260,6 +259,8 @@ class _OnboardPrimeBluetoothState extends ConsumerState<OnboardPrimeBluetooth>
           } else {
             message = "Unable to connect to device, Error code ${e.code}";
           }
+        } else {
+          message = S().onboarding_modalBluetoothUnableConnect_content;
         }
       }
       if (mounted) {
@@ -268,7 +269,7 @@ class _OnboardPrimeBluetoothState extends ConsumerState<OnboardPrimeBluetooth>
         });
 
         //handle specific errors
-        if (e is BleSetupTimeoutException) {
+        if (e is BleSetupException) {
           message = S().onboarding_modalBluetoothUnableConnect_content;
         }
 

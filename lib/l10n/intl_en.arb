@@ -744,6 +744,8 @@
   "onboarding_connectionChecking_SecurityPassed": "Security Check Passed",
   "onboarding_connectionChecking_forUpdates": "Checking for Updates",
   "onboarding_connectionIntroError2_content": "Envoy failed to connect to Foundation Servers. Please make sure you are connected to the internet.",
+  "onboarding_connectionIntroErrorChallenge_content": "Passport could not complete the security check. Make sure it is nearby and that your phone's date and time are set automatically, then try again.",
+  "onboarding_connectionIntroErrorChallenge_securityCheckPending": "Security Check Interrupted",
   "onboarding_connectionIntroErrorInternet_content": "Unable to communicate with the security server. Check your internet connection and try again.",
   "onboarding_connectionIntroErrorInternet_securityCheckPending": "Security Check Pending",
   "onboarding_connectionIntroError_content": "This device may not be genuine or may have been tampered with during shipping. Contact support for assistance.",

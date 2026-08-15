@@ -13,8 +13,13 @@ import 'package:foundation_api/foundation_api.dart' as api;
 /// Handler for incoming `api.QuantumLinkMessage`.
 /// Implement `canHandle` and `handle`.
 abstract class PassportMessageHandler {
-  final QLConnection qlConnection;
-  PassportMessageHandler(this.qlConnection);
+  final EnvoyMessageWriter messageWriter;
+  PassportMessageHandler(this.messageWriter);
+
+  /// The concrete connection used by handlers that need connection-specific
+  /// state. Handlers that only write messages should use [messageWriter] so
+  /// they can be tested without constructing platform channels.
+  QLConnection get qlConnection => messageWriter as QLConnection;
 
   Future<void> handleMessage(api.QuantumLinkMessage message);
 
