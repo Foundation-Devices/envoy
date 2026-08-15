@@ -699,13 +699,11 @@ class QLConnection with EnvoyMessageWriter {
       );
     }
     final timestampSeconds = (dateTime.millisecondsSinceEpoch ~/ 1000);
-    kPrint("Encoding Message timestamp: $timestampSeconds");
 
     api.EnvoyMessage envoyMessage = api.EnvoyMessage(
       message: message,
       timestamp: timestampSeconds,
     );
-    kPrint("Encoded Message $timestampSeconds");
 
     kPrint("Encoding message type: ${message.runtimeType}");
     return await api.encode(

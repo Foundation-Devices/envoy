@@ -7368,6 +7368,26 @@ class S {
     );
   }
 
+  /// `Passport could not complete the security check. Make sure it is nearby and that your phone's date and time are set automatically, then try again.`
+  String get onboarding_connectionIntroErrorChallenge_content {
+    return Intl.message(
+      "Passport could not complete the security check. Make sure it is nearby and that your phone's date and time are set automatically, then try again.",
+      name: 'onboarding_connectionIntroErrorChallenge_content',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Security Check Interrupted`
+  String get onboarding_connectionIntroErrorChallenge_securityCheckPending {
+    return Intl.message(
+      'Security Check Interrupted',
+      name: 'onboarding_connectionIntroErrorChallenge_securityCheckPending',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Unable to communicate with the security server. Check your internet connection and try again.`
   String get onboarding_connectionIntroErrorInternet_content {
     return Intl.message(

@@ -14,10 +14,17 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:path_provider/path_provider.dart';
 
-class BleSetupTimeoutException implements Exception {
+class BleSetupException implements Exception {
   final String message;
 
-  BleSetupTimeoutException(this.message);
+  BleSetupException(this.message);
+
+  @override
+  String toString() => 'BleSetupException: $message';
+}
+
+class BleSetupTimeoutException extends BleSetupException {
+  BleSetupTimeoutException(super.message);
 
   @override
   String toString() => 'BleSetupTimeoutException: $message';
@@ -214,7 +221,9 @@ class BluetoothChannel {
         },
       );
       if (iosDeviceId == null || iosDeviceId.isEmpty) {
-        throw BleSetupTimeoutException("Accessory setup cancelled");
+        throw BleSetupException(
+          "Accessory picker closed without selecting a device",
+        );
       }
       resolvedDeviceId = iosDeviceId;
       kPrint(

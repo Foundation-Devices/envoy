@@ -130,6 +130,7 @@ final deviceSecurityProvider = Provider<SecurityStepModel>((ref) {
     return SecurityStepModel(
       stepName: lastState.message,
       state: lastState.step,
+      errorType: lastState.errorType,
     );
   }
   return asyncState.when(
@@ -148,9 +149,10 @@ final deviceSecurityProvider = Provider<SecurityStepModel>((ref) {
     },
     error: (err, stack) {
       return SecurityStepModel(
-        stepName: S().onboarding_connectionIntroError_securityCheckFailed,
+        stepName:
+            S().onboarding_connectionIntroErrorChallenge_securityCheckPending,
         state: EnvoyStepState.ERROR,
-        errorType: ScvErrorType.verificationFailed,
+        errorType: ScvErrorType.challengeError,
       );
     },
   );
