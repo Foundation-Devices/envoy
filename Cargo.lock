@@ -1418,7 +1418,7 @@ dependencies = [
 [[package]]
 name = "foundation-arena"
 version = "0.1.0"
-source = "git+https://github.com/Foundation-Devices/foundation-rs.git?tag=0.6.0#99b00a3d62043391416b5ea438a50e598b1fb1dd"
+source = "git+https://github.com/Foundation-Devices/foundation-rs.git?tag=0.6.1#32c1aece5435b97a3e0816d7d5359a7bd5207a20"
 
 [[package]]
 name = "foundation-ur"
@@ -1437,7 +1437,7 @@ dependencies = [
 [[package]]
 name = "foundation-urtypes"
 version = "0.5.0"
-source = "git+https://github.com/Foundation-Devices/foundation-rs.git?tag=0.6.0#99b00a3d62043391416b5ea438a50e598b1fb1dd"
+source = "git+https://github.com/Foundation-Devices/foundation-rs.git?tag=0.6.1#32c1aece5435b97a3e0816d7d5359a7bd5207a20"
 dependencies = [
  "faster-hex",
  "foundation-arena",
@@ -2558,7 +2558,7 @@ dependencies = [
 [[package]]
 name = "ngwallet"
 version = "1.1.1"
-source = "git+https://github.com/Foundation-Devices/ngwallet?tag=3.6.2#57cc17af1e0d0442954f32b5dfa1e355e5403d42"
+source = "git+https://github.com/Foundation-Devices/ngwallet?tag=3.10.1#94d45d8d343d96ee17897730d3330556fdd52e52"
 dependencies = [
  "anyhow",
  "bdk_core",
