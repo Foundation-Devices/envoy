@@ -6,7 +6,7 @@ use anyhow::bail;
 use anyhow::Context;
 use anyhow::Result;
 use btp::{chunk, Chunk, MasterDechunker};
-use chrono::Utc;
+use chrono::{DateTime, Utc};
 use flutter_rust_bridge::frb;
 use foundation_api::backup::BackupChunk;
 use foundation_api::backup::BackupMetadata;
@@ -25,7 +25,38 @@ use foundation_api::quantum_link::{
     ARIDCache, QlError, QuantumLink, QuantumLinkIdentity, ReplayCheck, EXPIRATION_DURATION,
 };
 use gstp::SealedEvent;
-use log::debug;
+use log::{debug, info};
+use std::time::Duration;
+
+const FUTURE_CLOCK_SKEW_TOLERANCE: Duration = Duration::from_secs(5);
+
+fn validate_message_expiration(
+    expires_at: DateTime<Utc>,
+    now: DateTime<Utc>,
+    message_type: &str,
+) -> std::result::Result<(), QlError> {
+    if now >= expires_at {
+        return Err(QlError::Expired);
+    }
+
+    let latest_without_skew = now + EXPIRATION_DURATION;
+    if expires_at > latest_without_skew {
+        let clock_lead_ms = (expires_at - latest_without_skew).num_milliseconds();
+        if expires_at > latest_without_skew + FUTURE_CLOCK_SKEW_TOLERANCE {
+            info!(
+                "QL_CLOCK_SKEW rejected message_type={message_type} clock_lead_ms={clock_lead_ms} tolerance_ms={}",
+                FUTURE_CLOCK_SKEW_TOLERANCE.as_millis()
+            );
+            return Err(QlError::FutureDated);
+        }
+        info!(
+            "QL_CLOCK_SKEW accepted message_type={message_type} clock_lead_ms={clock_lead_ms} tolerance_ms={}",
+            FUTURE_CLOCK_SKEW_TOLERANCE.as_millis()
+        );
+    }
+
+    Ok(())
+}
 
 #[frb(opaque)]
 pub struct EnvoyMasterDechunker {
@@ -157,12 +188,12 @@ pub async fn decode(
             let passport_message = PassportMessage::decode(event.content())?;
 
             if !matches!(&passport_message.message, QuantumLinkMessage::Heartbeat(_)) {
-                if now >= expires_at {
-                    return Err(QlError::Expired.into());
-                }
-                if expires_at > now + EXPIRATION_DURATION {
-                    return Err(QlError::FutureDated.into());
-                }
+                let message_type = match &passport_message.message {
+                    QuantumLinkMessage::PairingResponse(_) => "PairingResponse",
+                    QuantumLinkMessage::DeviceNameUpdate(_) => "DeviceNameUpdate",
+                    _ => "Other",
+                };
+                validate_message_expiration(expires_at, now, message_type)?;
                 match arid_cache
                     .inner
                     .check_and_store(&event.id(), expires_at, now)
@@ -475,6 +506,36 @@ mod tests {
     use foundation_api::bc_envelope::prelude::UREncodable;
     use foundation_api::bc_envelope::EnvelopeEncodable;
     use foundation_api::dcbor::CBORTaggedDecodable;
+
+    #[test]
+    fn test_message_expiration_accepts_future_clock_skew_at_tolerance() {
+        let now = Utc::now();
+        let expires_at = now + EXPIRATION_DURATION + FUTURE_CLOCK_SKEW_TOLERANCE;
+
+        assert!(validate_message_expiration(expires_at, now, "test").is_ok());
+    }
+
+    #[test]
+    fn test_message_expiration_rejects_future_clock_skew_over_tolerance() {
+        let now = Utc::now();
+        let expires_at =
+            now + EXPIRATION_DURATION + FUTURE_CLOCK_SKEW_TOLERANCE + Duration::from_millis(1);
+
+        assert!(matches!(
+            validate_message_expiration(expires_at, now, "test"),
+            Err(QlError::FutureDated)
+        ));
+    }
+
+    #[test]
+    fn test_message_expiration_still_rejects_expired_message() {
+        let now = Utc::now();
+
+        assert!(matches!(
+            validate_message_expiration(now, now, "test"),
+            Err(QlError::Expired)
+        ));
+    }
 
     #[tokio::test]
     async fn test_generate_identity() -> Result<()> {
