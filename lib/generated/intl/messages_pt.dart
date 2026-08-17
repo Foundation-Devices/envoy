@@ -396,12 +396,6 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage(
           "Para onde deverá ser enviada a Bitcoin?",
         ),
-        "buy_bitcoin_accountSelection_modal_heading":
-            MessageLookupByLibrary.simpleMessage("A sair da Envoy"),
-        "buy_bitcoin_accountSelection_modal_subheading":
-            MessageLookupByLibrary.simpleMessage(
-          "Estás prestes a deixar a Envoy para o serviço do nosso parceiro para comprar Bitcoin. A Foundation nunca terá acesso a nenhuma informação de compra.",
-        ),
         "buy_bitcoin_accountSelection_subheading":
             MessageLookupByLibrary.simpleMessage(
           "O teu Bitcoin vai ser enviado para este endereço:",
@@ -429,32 +423,10 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage(
           "Caixas Automáticas",
         ),
-        "buy_bitcoin_buyOptions_card_commingSoon":
-            MessageLookupByLibrary.simpleMessage("Brevemente na tua área."),
-        "buy_bitcoin_buyOptions_card_disabledInSettings":
-            MessageLookupByLibrary.simpleMessage("Desactivado nas definições."),
-        "buy_bitcoin_buyOptions_card_inEnvoy_heading":
-            MessageLookupByLibrary.simpleMessage("Comprar na Envoy"),
-        "buy_bitcoin_buyOptions_card_inEnvoy_subheading":
-            MessageLookupByLibrary.simpleMessage(
-          "Compra Bitcoin em segundos, directamente para as contas do teu Passport ou carteira móvel.",
-        ),
         "buy_bitcoin_buyOptions_card_peerToPeer":
             MessageLookupByLibrary.simpleMessage("Entre Particulares"),
         "buy_bitcoin_buyOptions_card_vouchers":
             MessageLookupByLibrary.simpleMessage("Vales"),
-        "buy_bitcoin_buyOptions_inEnvoy_heading":
-            MessageLookupByLibrary.simpleMessage(
-          "Como é que gostarias de comprar?",
-        ),
-        "buy_bitcoin_buyOptions_inEnvoy_modal_subheading":
-            MessageLookupByLibrary.simpleMessage(
-          "Informação partilhada com a Ramp aquando a compra de Bitcoin utilizando este método. Esta informação nunca é partilhada com a Foundation.",
-        ),
-        "buy_bitcoin_buyOptions_inEnvoy_subheading":
-            MessageLookupByLibrary.simpleMessage(
-          "Compra com cartão de crédito, Apple Pay, Google Pay ou transferência bancária, diretamente nas tuas contas do Passport ou carteira móvel.",
-        ),
         "buy_bitcoin_buyOptions_modal_address":
             MessageLookupByLibrary.simpleMessage("Endereço"),
         "buy_bitcoin_buyOptions_modal_bankingInfo":
@@ -531,13 +503,6 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage(
           "EDITAR A REGIÃO",
         ),
-        "buy_bitcoin_exit_modal_heading": MessageLookupByLibrary.simpleMessage(
-          "Cancelar o Processo de Compra",
-        ),
-        "buy_bitcoin_exit_modal_subheading":
-            MessageLookupByLibrary.simpleMessage(
-          "Estás prestes a cancelar o processo de compra. Tens a certeza?",
-        ),
         "buy_bitcoin_mapLoadingError_header":
             MessageLookupByLibrary.simpleMessage(
           "Não foi possível carregar o mapa",
@@ -546,25 +511,6 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage(
           "A Envoy não consegue actualmente carregar os dados do mapa. Verifica a tua ligação ou tenta novamente mais tarde.",
         ),
-        "buy_bitcoin_purchaseComplete_heading":
-            MessageLookupByLibrary.simpleMessage("Compra Concluída"),
-        "buy_bitcoin_purchaseComplete_subheading":
-            MessageLookupByLibrary.simpleMessage(
-          "O término da compra pode demorar algum tempo dependendo do método de pagamento e congestionamento da rede.",
-        ),
-        "buy_bitcoin_purchaseError_contactRamp":
-            MessageLookupByLibrary.simpleMessage(
-          "Por favor entra em contacto com a Ramp para assistência técnica.",
-        ),
-        "buy_bitcoin_purchaseError_contactStripe":
-            MessageLookupByLibrary.simpleMessage(
-                "Contacta a Stripe para apoio."),
-        "buy_bitcoin_purchaseError_heading":
-            MessageLookupByLibrary.simpleMessage(
-          "Algo Correu Mal",
-        ),
-        "buy_bitcoin_purchaseError_purchaseID":
-            MessageLookupByLibrary.simpleMessage("ID de Compra:"),
         "buy_defineLocation_selectState": MessageLookupByLibrary.simpleMessage(
           "Seleccionar Estado",
         ),
@@ -830,12 +776,6 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage(
           "Pendente",
         ),
-        "coindetails_overlay_stripeFee": MessageLookupByLibrary.simpleMessage(
-          "Taxas Stripe",
-        ),
-        "coindetails_overlay_stripeID": MessageLookupByLibrary.simpleMessage(
-          "ID Stripe",
-        ),
         "coindetails_overlay_tag":
             MessageLookupByLibrary.simpleMessage("Etiqueta"),
         "coindetails_overlay_transactionID":
@@ -917,9 +857,6 @@ class MessageLookup extends MessageLookupByLibrary {
         "componet_disconnect": MessageLookupByLibrary.simpleMessage("Desligar"),
         "contactRampForSupport": MessageLookupByLibrary.simpleMessage(
           "Contacta a Ramp para assistência",
-        ),
-        "contactStripeForSupport": MessageLookupByLibrary.simpleMessage(
-          "Contactar a Stripe para apoio",
         ),
         "copyToClipboard_address": MessageLookupByLibrary.simpleMessage(
           "O teu endereço será copiado para a área de transferência e poderá ficar visível para outras aplicações no teu telemóvel.",
@@ -2767,12 +2704,6 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage(
           "Compras incompletas com as seguintes identificações Ramp foram removidas da atividade após 5 dias.",
         ),
-        "replaceByFee_modal_deletedInactiveTX_stripe_heading":
-            MessageLookupByLibrary.simpleMessage("Transacções Removidas"),
-        "replaceByFee_modal_deletedInactiveTX_stripe_subheading":
-            MessageLookupByLibrary.simpleMessage(
-          "Compras incompletas com estes IDs Stripe foram removidas da actividade após 5 dias.",
-        ),
         "replaceByFee_newFee_modal_heading":
             MessageLookupByLibrary.simpleMessage(
           "Nova Taxa de Transacção",
@@ -3131,10 +3062,6 @@ class MessageLookup extends MessageLookupByLibrary {
         "stalls_before_sending_tx_scanning_subheading":
             MessageLookupByLibrary.simpleMessage(
                 "Isto pode demorar uns segundos"),
-        "stripe_note": MessageLookupByLibrary.simpleMessage("Compra Stripe"),
-        "stripe_pendingVoucher": MessageLookupByLibrary.simpleMessage(
-          "Compra Stripe Pendente",
-        ),
         "tagDetails_EditTagName": MessageLookupByLibrary.simpleMessage(
           "Editar Nome da Etiqueta",
         ),
