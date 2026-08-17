@@ -26,6 +26,7 @@ import 'package:envoy/ui/migrations/migration_manager.dart';
 import 'package:envoy/ui/routes/route_state.dart';
 import 'package:envoy/ui/routes/routes.dart';
 import 'package:envoy/ui/theme/envoy_colors.dart';
+import 'package:envoy/ui/widgets/app_scale_clamp.dart';
 import 'package:envoy/ui/widgets/envoy_page_transition.dart';
 import 'package:envoy/util/bug_report_helper.dart';
 import 'package:envoy/util/console.dart';
@@ -192,6 +193,8 @@ class _EnvoyAppState extends State<EnvoyApp> {
     return ProviderScope(
       child: DevBannerWrapper(
         child: MaterialApp.router(
+          builder: (context, child) =>
+              AppScaleClamp(child: child ?? const SizedBox.shrink()),
           localizationsDelegates: const [
             S.delegate,
             GlobalMaterialLocalizations.delegate,

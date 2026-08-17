@@ -16,6 +16,7 @@ import 'package:envoy/ui/theme/envoy_colors.dart';
 import 'package:envoy/ui/theme/envoy_icons.dart';
 import 'package:envoy/ui/theme/envoy_spacing.dart';
 import 'package:envoy/ui/theme/envoy_typography.dart';
+import 'package:envoy/ui/widgets/app_scale_clamp.dart';
 import 'package:envoy/ui/widgets/blur_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -58,6 +59,8 @@ class AuthenticateApp extends StatelessWidget {
     );
 
     return MaterialApp.router(
+      builder: (context, child) =>
+          AppScaleClamp(child: child ?? const SizedBox.shrink()),
       debugShowCheckedModeBanner: false,
       localizationsDelegates: const [
         S.delegate,

@@ -10,6 +10,7 @@ import 'package:envoy/ui/onboard/onboarding_page.dart';
 import 'package:envoy/ui/theme/envoy_colors.dart';
 import 'package:envoy/ui/theme/envoy_spacing.dart';
 import 'package:envoy/ui/theme/envoy_typography.dart';
+import 'package:envoy/ui/widgets/expandable_page_view.dart';
 import 'package:envoy/util/easing.dart';
 import 'package:envoy/util/haptics.dart';
 import 'package:flutter/material.dart';
@@ -39,7 +40,6 @@ class _VerifySeedPuzzleWidgetState extends State<VerifySeedPuzzleWidget>
 
   @override
   Widget build(BuildContext context) {
-    final isSmallScreen = MediaQuery.sizeOf(context).width < 360;
     if (_puzzleOptions.isEmpty) {
       return Container();
     }
@@ -100,59 +100,45 @@ class _VerifySeedPuzzleWidgetState extends State<VerifySeedPuzzleWidget>
           ),
         ),
         SliverToBoxAdapter(
-          child: SizedBox(
-            height: isSmallScreen ? 280 : 400,
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Expanded(
-                  child: PageView(
-                    physics: const BouncingScrollPhysics(
-                      parent: NeverScrollableScrollPhysics(),
-                    ),
-                    controller: _pageController,
-                    pageSnapping: true,
-                    padEnds: true,
-                    children: _puzzleOptions.mapIndexed((index, e) {
-                      return Padding(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: EnvoySpacing.medium2,
-                        ),
-                        child: PuzzleWidget(
-                          puzzle: e,
-                          onCorrectAnswer: () async {
-                            bool isLastQuestion =
-                                (_puzzleOptions.indexOf(e) + 1) ==
-                                    _puzzleOptions.length;
-                            if (isLastQuestion) {
-                              setState(() {
-                                _finishedAnswers = true;
-                              });
-                              return;
-                            }
-
-                            await Future.delayed(
-                              const Duration(milliseconds: 600),
-                            );
-                            setState(() {
-                              _pageIndex++;
-                            });
-                            await _pageController.animateToPage(
-                              _puzzleOptions.indexOf(e) + 1,
-                              duration: const Duration(milliseconds: 320),
-                              curve: EnvoyEasing.defaultEasing,
-                            );
-                          },
-                          onWrongAnswer: () {
-                            widget.onVerificationFinished(false);
-                          },
-                        ),
-                      );
-                    }).toList(),
-                  ),
+          child: ExpandablePageView(
+            controller: _pageController,
+            estimatedPageSize: 320,
+            physics: const NeverScrollableScrollPhysics(),
+            pageSnapping: true,
+            padEnds: true,
+            children: _puzzleOptions.mapIndexed((index, e) {
+              return Padding(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: EnvoySpacing.medium2,
                 ),
-              ],
-            ),
+                child: PuzzleWidget(
+                  puzzle: e,
+                  onCorrectAnswer: () async {
+                    bool isLastQuestion = (_puzzleOptions.indexOf(e) + 1) ==
+                        _puzzleOptions.length;
+                    if (isLastQuestion) {
+                      setState(() {
+                        _finishedAnswers = true;
+                      });
+                      return;
+                    }
+
+                    await Future.delayed(const Duration(milliseconds: 600));
+                    setState(() {
+                      _pageIndex++;
+                    });
+                    await _pageController.animateToPage(
+                      _puzzleOptions.indexOf(e) + 1,
+                      duration: const Duration(milliseconds: 320),
+                      curve: EnvoyEasing.defaultEasing,
+                    );
+                  },
+                  onWrongAnswer: () {
+                    widget.onVerificationFinished(false);
+                  },
+                ),
+              );
+            }).toList(),
           ),
         ),
         SliverFillRemaining(
@@ -266,89 +252,97 @@ class PuzzleWidget extends StatefulWidget {
 }
 
 class _PuzzleWidgetState extends State<PuzzleWidget> {
+  static const double _compactOptionBreakpoint = 140;
+  static const double _optionHeight = 48;
+
   String? chosenAnswer;
 
   @override
   Widget build(BuildContext context) {
     final options = widget.puzzle.options;
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        const SizedBox(height: EnvoySpacing.medium3),
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          mainAxisAlignment: MainAxisAlignment.start,
+    return Center(
+      child: ConstrainedBox(
+        constraints: const BoxConstraints(maxWidth: 620),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
           children: [
+            const SizedBox(height: EnvoySpacing.medium3),
             _answerField(context),
             const SizedBox(height: EnvoySpacing.medium3),
             chosenAnswer != null
                 ? _buildAnswerStatus(chosenAnswer == widget.puzzle.answerString)
                 : const SizedBox(height: 20),
+            const SizedBox(height: EnvoySpacing.medium2),
+            LayoutBuilder(
+              builder: (context, constraints) {
+                const spacing = EnvoySpacing.medium1;
+                final optionWidth = (constraints.maxWidth - spacing) / 2.2;
+                final optionHorizontalPadding =
+                    optionWidth < _compactOptionBreakpoint
+                        ? EnvoySpacing.xs
+                        : EnvoySpacing.small;
+
+                return Wrap(
+                  alignment: WrapAlignment.center,
+                  spacing: spacing,
+                  runSpacing: EnvoySpacing.small,
+                  children: options.mapIndexed((index, option) {
+                    return SizedBox(
+                      width: optionWidth,
+                      height: _optionHeight,
+                      child: GestureDetector(
+                        behavior: HitTestBehavior.opaque,
+                        onTap: () => _selectOption(option),
+                        child: Container(
+                          key: ValueKey(
+                            "seed_verification_option_pill_$index",
+                          ),
+                          padding: EdgeInsets.symmetric(
+                            horizontal: optionHorizontalPadding,
+                            vertical: 6,
+                          ),
+                          alignment: Alignment.center,
+                          decoration: BoxDecoration(
+                            color: Colors.grey[300],
+                            borderRadius: BorderRadius.circular(16),
+                          ),
+                          child: FittedBox(
+                            fit: BoxFit.scaleDown,
+                            child: Text(
+                              option,
+                              key: ValueKey("seed_verification_option_$index"),
+                              maxLines: 1,
+                              softWrap: false,
+                              style: EnvoyTypography.button.copyWith(
+                                color: EnvoyColors.textPrimary,
+                              ),
+                              textAlign: TextAlign.center,
+                            ),
+                          ),
+                        ),
+                      ),
+                    );
+                  }).toList(),
+                );
+              },
+            ),
+            const SizedBox(height: EnvoySpacing.medium1),
           ],
         ),
-        const SizedBox(height: EnvoySpacing.medium1),
-        Flexible(
-          child: GridView.builder(
-            physics: const NeverScrollableScrollPhysics(),
-            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: 2,
-              childAspectRatio: 2,
-              crossAxisSpacing: 20.0,
-            ),
-            itemBuilder: (context, index) {
-              TextStyle textTheme = EnvoyTypography.button.copyWith(
-                color: EnvoyColors.textPrimary,
-              );
-              return GestureDetector(
-                onTap: () {
-                  setState(() {
-                    chosenAnswer = options[index];
-                  });
-                  if (chosenAnswer == widget.puzzle.answerString) {
-                    widget.onCorrectAnswer();
-                    Haptics.lightImpact();
-                  } else {
-                    widget.onWrongAnswer();
-                  }
-                },
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: [
-                    Container(
-                      margin: const EdgeInsets.symmetric(vertical: 0),
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 8,
-                        vertical: 6,
-                      ),
-                      alignment: Alignment.center,
-                      constraints: const BoxConstraints(
-                        maxWidth: 300,
-                        maxHeight: 40,
-                      ),
-                      decoration: BoxDecoration(
-                        color: Colors.grey[300],
-                        borderRadius: BorderRadius.circular(16),
-                      ),
-                      child: Text(
-                        options[index],
-                        overflow: TextOverflow.fade,
-                        textScaler: MediaQuery.of(context).textScaler.clamp(
-                              maxScaleFactor: 1.2,
-                              minScaleFactor: .8,
-                            ),
-                        style: textTheme,
-                        textAlign: TextAlign.center,
-                      ),
-                    ),
-                  ],
-                ),
-              );
-            },
-            itemCount: options.length,
-          ),
-        ),
-      ],
+      ),
     );
+  }
+
+  void _selectOption(String option) {
+    setState(() {
+      chosenAnswer = option;
+    });
+    if (chosenAnswer == widget.puzzle.answerString) {
+      widget.onCorrectAnswer();
+      Haptics.lightImpact();
+    } else {
+      widget.onWrongAnswer();
+    }
   }
 
   Widget _buildAnswerStatus(bool? correctSelection) {
@@ -426,9 +420,6 @@ class _PuzzleWidgetState extends State<PuzzleWidget> {
         children: [
           Text(
             " ${widget.puzzle.seedIndex + 1}. ",
-            textScaler: MediaQuery.of(
-              context,
-            ).textScaler.clamp(maxScaleFactor: 1.2, minScaleFactor: .8),
             style: textTheme,
           ),
           Expanded(
@@ -437,9 +428,6 @@ class _PuzzleWidgetState extends State<PuzzleWidget> {
               children: [
                 Text(
                   chosenAnswer ?? "",
-                  textScaler: MediaQuery.of(
-                    context,
-                  ).textScaler.clamp(maxScaleFactor: 1.2, minScaleFactor: .8),
                   style: textTheme,
                 ),
               ],
