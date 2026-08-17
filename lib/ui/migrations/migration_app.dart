@@ -13,6 +13,7 @@ import 'package:envoy/ui/lock/authenticate_page.dart';
 import 'package:envoy/ui/migrations/migration_manager.dart';
 import 'package:envoy/ui/theme/envoy_colors.dart';
 import 'package:envoy/ui/theme/envoy_typography.dart';
+import 'package:envoy/ui/widgets/app_scale_clamp.dart';
 import 'package:envoy/util/bug_report_helper.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
@@ -56,6 +57,8 @@ class _MigrationAppState extends State<MigrationApp> {
 
     return ProviderScope(
       child: MaterialApp(
+        builder: (context, child) =>
+            AppScaleClamp(child: child ?? const SizedBox.shrink()),
         themeMode: ThemeMode.dark,
         debugShowCheckedModeBanner: false,
         localizationsDelegates: const [
