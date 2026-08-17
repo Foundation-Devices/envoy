@@ -2,11 +2,8 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-import 'package:envoy/business/region_manager.dart';
-import 'package:envoy/business/settings.dart';
 import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/components/button.dart';
-import 'package:envoy/ui/components/icon_tab.dart';
 import 'package:envoy/ui/components/icon_toolbar.dart';
 import 'package:envoy/ui/components/map_widget.dart';
 import 'package:envoy/ui/home/home_page.dart';
@@ -20,13 +17,12 @@ import 'package:envoy/ui/theme/envoy_icons.dart';
 import 'package:envoy/ui/theme/envoy_spacing.dart';
 import 'package:envoy/ui/theme/envoy_typography.dart';
 import 'package:envoy/ui/widgets/blur_dialog.dart';
-import 'package:envoy/util/envoy_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-enum BuyBitcoinCardState { buyInEnvoy, peerToPeer, vouchers, atms, none }
+enum BuyBitcoinCardState { peerToPeer, vouchers, atms, none }
 
 void showBuyBitcoinOptions(WidgetRef ref) {
   ref.read(homeShellOptionsProvider.notifier).state = HomeShellOptions(
@@ -59,28 +55,12 @@ class BuyBitcoinCard extends ConsumerStatefulWidget {
   ConsumerState<BuyBitcoinCard> createState() => _BuyBitcoinCardState();
 }
 
-class _BuyBitcoinCardState extends ConsumerState<BuyBitcoinCard>
-    with SingleTickerProviderStateMixin {
-  BuyBitcoinCardState currentState =
-      BuyBitcoinCardState.none; //BuyBitcoinCardState.buyInEnvoy;
-  late AnimationController animationController;
-  late Animation<Alignment> animation;
-  bool regionCanBuy = false;
+class _BuyBitcoinCardState extends ConsumerState<BuyBitcoinCard> {
+  BuyBitcoinCardState currentState = BuyBitcoinCardState.none;
 
   @override
   void initState() {
     super.initState();
-    animationController = AnimationController(
-      vsync: this,
-      duration: const Duration(milliseconds: 200),
-    );
-    animation = Tween(
-      begin: const Alignment(0.0, 1.0),
-      end: const Alignment(0.0, 0.65),
-    ).animate(
-      CurvedAnimation(parent: animationController, curve: Curves.easeInOut),
-    );
-
     Future.delayed(const Duration()).then((value) {
       ref.read(homePageTitleProvider.notifier).state = "";
       ref.read(navigatingToEditRegionProvider.notifier).state = false;
@@ -91,7 +71,6 @@ class _BuyBitcoinCardState extends ConsumerState<BuyBitcoinCard>
       if (path == ROUTE_BUY_BITCOIN) {
         ref.read(buyBTCPageProvider.notifier).state = true;
       }
-      _checkSelectedRegion();
     });
   }
 
@@ -99,31 +78,6 @@ class _BuyBitcoinCardState extends ConsumerState<BuyBitcoinCard>
     setState(() {
       currentState = newState;
     });
-  }
-
-  Future<void> _checkSelectedRegion() async {
-    var region = await EnvoyStorage().getCountry();
-    if (region != null) {
-      bool newRegionCanBuy = await AllowedRegions.isRegionAllowed(
-        region.code,
-        region.division,
-      );
-      if (!newRegionCanBuy) {
-        setState(() {
-          currentState = BuyBitcoinCardState.none;
-        });
-      }
-      if (newRegionCanBuy != regionCanBuy) {
-        setState(() {
-          regionCanBuy = newRegionCanBuy;
-        });
-      }
-    }
-    if (!Settings().allowBuyInEnvoy) {
-      setState(() {
-        currentState = BuyBitcoinCardState.none;
-      });
-    }
   }
 
   void onNativeBackPressed(bool didPop) {
@@ -186,29 +140,6 @@ class _BuyBitcoinCardState extends ConsumerState<BuyBitcoinCard>
                         S().buy_bitcoin_buyOptions_atms_heading,
                         style: EnvoyTypography.subheading,
                         textAlign: TextAlign.center,
-                      ),
-                      const SizedBox(height: EnvoySpacing.medium2),
-                      IconTab(
-                        label: S().buy_bitcoin_buyOptions_card_inEnvoy_heading,
-                        isLocked: true,
-                        //!Settings().isAllowedBuyInEnvoy() || !regionCanBuy,
-                        icon: EnvoyIcons.btc,
-                        bigTab: true,
-                        isSelected:
-                            currentState == BuyBitcoinCardState.buyInEnvoy,
-                        description:
-                            S().buy_bitcoin_buyOptions_card_inEnvoy_subheading,
-                        lockedInfoText:
-                            // !Settings().isAllowedBuyInEnvoy()
-                            //     ? S().buy_bitcoin_buyOptions_card_disabledInSettings
-                            //     :
-                            S().buy_bitcoin_buyOptions_card_commingSoon,
-                        onSelect: (selected) {
-                          // if (regionCanBuy && Settings().allowBuyInEnvoy) {
-                          //   _updateState(BuyBitcoinCardState.buyInEnvoy);
-                          // }
-                        },
-                        //poweredByIcons: const [EnvoyIcons.stripe_text],
                       ),
                       const SizedBox(height: EnvoySpacing.medium2),
                       IconToolbar(
@@ -284,8 +215,6 @@ class _BuyBitcoinCardState extends ConsumerState<BuyBitcoinCard>
                     ref.read(homePageOptionsVisibilityProvider.notifier).state =
                         false;
                     switch (currentState) {
-                      case BuyBitcoinCardState.buyInEnvoy:
-                        context.go(ROUTE_SELECT_ACCOUNT);
                       case BuyBitcoinCardState.peerToPeer:
                         ref.read(homeShellOptionsProvider.notifier).state =
                             null;
@@ -326,8 +255,6 @@ String additionalInfo(BuyBitcoinCardState state) {
       return S().buy_bitcoin_buyOptions_atms_subheading;
     case BuyBitcoinCardState.none:
       return S().buy_bitcoin_buyOptions_notSupported_subheading;
-    case BuyBitcoinCardState.buyInEnvoy:
-      return S().buy_bitcoin_buyOptions_inEnvoy_subheading;
   }
 }
 
@@ -374,15 +301,6 @@ void showAdditionalInfoDialog(BuyBitcoinCardState state, BuildContext context) {
       emailRequired = InfoState.unknown;
       identificationRequired = InfoState.unknown;
 
-    case BuyBitcoinCardState.buyInEnvoy:
-      icon = EnvoyIcons.btc;
-      title = S().buy_bitcoin_buyOptions_card_inEnvoy_heading;
-      description = S().buy_bitcoin_buyOptions_inEnvoy_modal_subheading;
-      addressRequired = InfoState.required;
-      bankingInfoRequired = InfoState.required;
-      emailRequired = InfoState.required;
-      identificationRequired = InfoState.required;
-      poweredByIcons = [EnvoyIcons.ramp];
     case BuyBitcoinCardState.none:
   }
 

@@ -46,10 +46,6 @@ final showTaprootAccountsProvider = Provider((ref) {
   return ref.watch(settingsProvider).taprootEnabled();
 });
 
-final allowBuyInEnvoyProvider = Provider((ref) {
-  return ref.watch(settingsProvider).isAllowedBuyInEnvoy();
-});
-
 final devModeEnabledProvider = StateProvider<bool>((ref) {
   return false;
 });
@@ -480,20 +476,6 @@ class Settings extends ChangeNotifier {
   Future<void> setPersonalBlockExplorerAddress(String address) async {
     personalBlockExplorerAddress = address;
     usingDefaultBlockExplorer = false;
-    notifyListeners();
-    store();
-  }
-
-  @JsonKey(defaultValue: true)
-  bool allowBuyInEnvoy = true;
-
-  bool isAllowedBuyInEnvoy() {
-    return allowBuyInEnvoy;
-  }
-
-  Future<void> setAllowBuyInEnvoy(bool allowBuy) async {
-    allowBuyInEnvoy = allowBuy;
-
     notifyListeners();
     store();
   }

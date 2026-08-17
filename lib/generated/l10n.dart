@@ -1161,26 +1161,6 @@ class S {
     );
   }
 
-  /// `Leaving Envoy`
-  String get buy_bitcoin_accountSelection_modal_heading {
-    return Intl.message(
-      'Leaving Envoy',
-      name: 'buy_bitcoin_accountSelection_modal_heading',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `You are about to leave Envoy for our partner service to purchase Bitcoin. Foundation never learns any purchase information.`
-  String get buy_bitcoin_accountSelection_modal_subheading {
-    return Intl.message(
-      'You are about to leave Envoy for our partner service to purchase Bitcoin. Foundation never learns any purchase information.',
-      name: 'buy_bitcoin_accountSelection_modal_subheading',
-      desc: '',
-      args: [],
-    );
-  }
-
   /// `Your Bitcoin will be sent to this address:`
   String get buy_bitcoin_accountSelection_subheading {
     return Intl.message(
@@ -1261,46 +1241,6 @@ class S {
     );
   }
 
-  /// `Coming soon in your area.`
-  String get buy_bitcoin_buyOptions_card_commingSoon {
-    return Intl.message(
-      'Coming soon in your area.',
-      name: 'buy_bitcoin_buyOptions_card_commingSoon',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Disabled in settings.`
-  String get buy_bitcoin_buyOptions_card_disabledInSettings {
-    return Intl.message(
-      'Disabled in settings.',
-      name: 'buy_bitcoin_buyOptions_card_disabledInSettings',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Buy in Envoy`
-  String get buy_bitcoin_buyOptions_card_inEnvoy_heading {
-    return Intl.message(
-      'Buy in Envoy',
-      name: 'buy_bitcoin_buyOptions_card_inEnvoy_heading',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Buy Bitcoin in seconds, directly to your Passport accounts or mobile wallet.`
-  String get buy_bitcoin_buyOptions_card_inEnvoy_subheading {
-    return Intl.message(
-      'Buy Bitcoin in seconds, directly to your Passport accounts or mobile wallet.',
-      name: 'buy_bitcoin_buyOptions_card_inEnvoy_subheading',
-      desc: '',
-      args: [],
-    );
-  }
-
   /// `Peer to Peer`
   String get buy_bitcoin_buyOptions_card_peerToPeer {
     return Intl.message(
@@ -1316,36 +1256,6 @@ class S {
     return Intl.message(
       'Vouchers',
       name: 'buy_bitcoin_buyOptions_card_vouchers',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `How would you like to buy?`
-  String get buy_bitcoin_buyOptions_inEnvoy_heading {
-    return Intl.message(
-      'How would you like to buy?',
-      name: 'buy_bitcoin_buyOptions_inEnvoy_heading',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Info shared with Ramp when you purchase Bitcoin using this method. This info is never shared with Foundation.`
-  String get buy_bitcoin_buyOptions_inEnvoy_modal_subheading {
-    return Intl.message(
-      'Info shared with Ramp when you purchase Bitcoin using this method. This info is never shared with Foundation.',
-      name: 'buy_bitcoin_buyOptions_inEnvoy_modal_subheading',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Buy with credit card, Apple Pay, Google Pay or bank transfer, directly into your Passport accounts or mobile wallet.`
-  String get buy_bitcoin_buyOptions_inEnvoy_subheading {
-    return Intl.message(
-      'Buy with credit card, Apple Pay, Google Pay or bank transfer, directly into your Passport accounts or mobile wallet.',
-      name: 'buy_bitcoin_buyOptions_inEnvoy_subheading',
       desc: '',
       args: [],
     );
@@ -1593,26 +1503,6 @@ class S {
     );
   }
 
-  /// `Cancel Buying Process`
-  String get buy_bitcoin_exit_modal_heading {
-    return Intl.message(
-      'Cancel Buying Process',
-      name: 'buy_bitcoin_exit_modal_heading',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `You are about to cancel the buying process. Are you sure?`
-  String get buy_bitcoin_exit_modal_subheading {
-    return Intl.message(
-      'You are about to cancel the buying process. Are you sure?',
-      name: 'buy_bitcoin_exit_modal_subheading',
-      desc: '',
-      args: [],
-    );
-  }
-
   /// `Couldn't load map`
   String get buy_bitcoin_mapLoadingError_header {
     return Intl.message(
@@ -1628,66 +1518,6 @@ class S {
     return Intl.message(
       'Envoy is currently unable to load map data. Check your connection or try again later.',
       name: 'buy_bitcoin_mapLoadingError_subheader',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Purchase Complete`
-  String get buy_bitcoin_purchaseComplete_heading {
-    return Intl.message(
-      'Purchase Complete',
-      name: 'buy_bitcoin_purchaseComplete_heading',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Finalization may take some time depending on payment method and network congestion.`
-  String get buy_bitcoin_purchaseComplete_subheading {
-    return Intl.message(
-      'Finalization may take some time depending on payment method and network congestion.',
-      name: 'buy_bitcoin_purchaseComplete_subheading',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Please contact Ramp for support.`
-  String get buy_bitcoin_purchaseError_contactRamp {
-    return Intl.message(
-      'Please contact Ramp for support.',
-      name: 'buy_bitcoin_purchaseError_contactRamp',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Please contact Stripe for support.`
-  String get buy_bitcoin_purchaseError_contactStripe {
-    return Intl.message(
-      'Please contact Stripe for support.',
-      name: 'buy_bitcoin_purchaseError_contactStripe',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Something Went Wrong`
-  String get buy_bitcoin_purchaseError_heading {
-    return Intl.message(
-      'Something Went Wrong',
-      name: 'buy_bitcoin_purchaseError_heading',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Purchase ID:`
-  String get buy_bitcoin_purchaseError_purchaseID {
-    return Intl.message(
-      'Purchase ID:',
-      name: 'buy_bitcoin_purchaseError_purchaseID',
       desc: '',
       args: [],
     );
@@ -2598,26 +2428,6 @@ class S {
     );
   }
 
-  /// `Stripe Fees`
-  String get coindetails_overlay_stripeFee {
-    return Intl.message(
-      'Stripe Fees',
-      name: 'coindetails_overlay_stripeFee',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Stripe ID`
-  String get coindetails_overlay_stripeID {
-    return Intl.message(
-      'Stripe ID',
-      name: 'coindetails_overlay_stripeID',
-      desc: '',
-      args: [],
-    );
-  }
-
   /// `Tag`
   String get coindetails_overlay_tag {
     return Intl.message(
@@ -2993,16 +2803,6 @@ class S {
     return Intl.message(
       'Contact Ramp for support',
       name: 'contactRampForSupport',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Contact Stripe for support`
-  String get contactStripeForSupport {
-    return Intl.message(
-      'Contact Stripe for support',
-      name: 'contactStripeForSupport',
       desc: '',
       args: [],
     );
@@ -8968,26 +8768,6 @@ class S {
     );
   }
 
-  /// `Transactions Removed`
-  String get replaceByFee_modal_deletedInactiveTX_stripe_heading {
-    return Intl.message(
-      'Transactions Removed',
-      name: 'replaceByFee_modal_deletedInactiveTX_stripe_heading',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Incomplete purchases with the following Stripe IDs were removed from activity after 5 days.`
-  String get replaceByFee_modal_deletedInactiveTX_stripe_subheading {
-    return Intl.message(
-      'Incomplete purchases with the following Stripe IDs were removed from activity after 5 days.',
-      name: 'replaceByFee_modal_deletedInactiveTX_stripe_subheading',
-      desc: '',
-      args: [],
-    );
-  }
-
   /// `New Transaction Fee `
   String get replaceByFee_newFee_modal_heading {
     return Intl.message(
@@ -10162,26 +9942,6 @@ class S {
     return Intl.message(
       'This might take a few seconds',
       name: 'stalls_before_sending_tx_scanning_subheading',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Stripe Purchase`
-  String get stripe_note {
-    return Intl.message(
-      'Stripe Purchase',
-      name: 'stripe_note',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Pending Stripe Purchase`
-  String get stripe_pendingVoucher {
-    return Intl.message(
-      'Pending Stripe Purchase',
-      name: 'stripe_pendingVoucher',
       desc: '',
       args: [],
     );

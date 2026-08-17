@@ -23,7 +23,6 @@ import 'package:envoy/ui/home/cards/accounts/spend/send_qr_review.dart';
 import 'package:envoy/ui/home/cards/accounts/spend/state/spend_state.dart';
 import 'package:envoy/ui/home/cards/accounts/spend/tx_review.dart';
 import 'package:envoy/ui/home/cards/buy_bitcoin.dart';
-import 'package:envoy/ui/home/cards/buy_bitcoin_account_selection.dart';
 import 'package:envoy/ui/home/cards/peer_to_peer_options.dart';
 import 'package:envoy/ui/home/cards/select_region.dart';
 import 'package:envoy/ui/home/home_state.dart';
@@ -54,9 +53,6 @@ const ROUTE_BUY_BITCOIN = '$ROUTE_SELECT_REGION/$_BUY_BITCOIN';
 
 const _PEER_TO_PEER = 'peer';
 const ROUTE_PEER_TO_PEER = '$ROUTE_BUY_BITCOIN/$_PEER_TO_PEER';
-
-const _SELECT_ACCOUNT = 'select';
-const ROUTE_SELECT_ACCOUNT = '$ROUTE_BUY_BITCOIN/$_SELECT_ACCOUNT';
 
 const _ACCOUNT_TRANSFER = 'transfer';
 const ROUTE_ACCOUNT_TRANSFER = '$ROUTE_ACCOUNT_DETAIL/$_ACCOUNT_TRANSFER';
@@ -473,15 +469,6 @@ final accountsRouter = StatefulShellBranch(
                   pageBuilder: (context, state) {
                     return wrapWithEnvoyPageAnimation(
                       child: const PeerToPeerCard(),
-                    );
-                  },
-                ),
-                GoRoute(
-                  path: _SELECT_ACCOUNT,
-                  name: ROUTE_SELECT_ACCOUNT,
-                  pageBuilder: (context, state) {
-                    return wrapWithEnvoyPageAnimation(
-                      child: const SelectAccount(),
                     );
                   },
                 ),

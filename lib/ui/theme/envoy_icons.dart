@@ -93,8 +93,6 @@ enum EnvoyIcons {
   quantum,
   envelope,
   qr_scan,
-  stripe,
-  stripe_text,
   refresh,
   prime_front,
   wallet_coin,

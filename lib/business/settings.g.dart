@@ -32,8 +32,7 @@ Settings _$SettingsFromJson(Map<String, dynamic> json) => Settings()
   ..usingDefaultBlockExplorer =
       json['usingDefaultBlockExplorer'] as bool? ?? true
   ..personalBlockExplorerAddress =
-      json['personalBlockExplorerAddress'] as String? ?? ''
-  ..allowBuyInEnvoy = json['allowBuyInEnvoy'] as bool? ?? true;
+      json['personalBlockExplorerAddress'] as String? ?? '';
 
 Map<String, dynamic> _$SettingsToJson(Settings instance) => <String, dynamic>{
       'displayUnit': _$DisplayUnitEnumMap[instance.displayUnit]!,
@@ -54,7 +53,6 @@ Map<String, dynamic> _$SettingsToJson(Settings instance) => <String, dynamic>{
       'enableTaprootSetting': instance.enableTaprootSetting,
       'usingDefaultBlockExplorer': instance.usingDefaultBlockExplorer,
       'personalBlockExplorerAddress': instance.personalBlockExplorerAddress,
-      'allowBuyInEnvoy': instance.allowBuyInEnvoy,
     };
 
 const _$DisplayUnitEnumMap = {

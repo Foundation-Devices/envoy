@@ -16,6 +16,7 @@ import 'package:envoy/ui/routes/routes.dart';
 import 'package:envoy/ui/state/home_page_state.dart';
 import 'package:envoy/util/envoy_storage.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:rive/rive.dart' as rive;
@@ -152,6 +153,8 @@ class _HomeAppBarState extends ConsumerState<HomeAppBar> {
                   ref.read(homePageBackgroundProvider.notifier).state =
                       HomePageBackgroundState.hidden;
                   ref.read(homePageTitleProvider.notifier).state = "";
+                  await Future.delayed(const Duration(milliseconds: 180));
+                  HapticFeedback.lightImpact();
                 }
               } else {
                 if (state == HamburgerState.idle) {
@@ -159,9 +162,10 @@ class _HomeAppBarState extends ConsumerState<HomeAppBar> {
                       HomePageBackgroundState.menu;
                   ref.read(homePageTitleProvider.notifier).state =
                       S().menu_heading.toUpperCase();
+                  await Future.delayed(const Duration(milliseconds: 180));
+                  HapticFeedback.lightImpact();
                 } else if (state == HamburgerState.back) {
-                  if (path == ROUTE_SELECT_ACCOUNT ||
-                      path == ROUTE_PEER_TO_PEER) {
+                  if (path == ROUTE_PEER_TO_PEER) {
                     showBuyBitcoinOptions(ref);
                     context.go(ROUTE_BUY_BITCOIN);
                   }
@@ -334,8 +338,6 @@ class _HomeAppBarState extends ConsumerState<HomeAppBar> {
       case ROUTE_PEER_TO_PEER:
         return S().header_buyBitcoin;
       case ROUTE_SELECT_REGION:
-        return S().header_buyBitcoin;
-      case ROUTE_SELECT_ACCOUNT:
         return S().header_buyBitcoin;
       case ROUTE_ACCOUNT_TRANSFER:
         return S().bottomNav_transfer;

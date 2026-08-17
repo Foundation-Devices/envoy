@@ -8,7 +8,6 @@ import 'package:envoy/business/btcpay_voucher.dart';
 import 'package:envoy/business/exchange_rate.dart';
 import 'package:envoy/business/notifications.dart';
 import 'package:envoy/business/settings.dart';
-import 'package:envoy/business/stripe.dart';
 import 'package:envoy/ui/home/cards/accounts/accounts_state.dart';
 import 'package:envoy/ui/home/cards/accounts/detail/filter_state.dart';
 import 'package:envoy/ui/home/cards/accounts/detail/transaction/cancel_transaction.dart';
@@ -414,10 +413,7 @@ Future prunePendingTransactions(
 
   List<EnvoyTransaction> ramp = newTxList.whereType<RampTransaction>().toList();
 
-  List<EnvoyTransaction> stripe =
-      newTxList.whereType<StripeTransaction>().toList();
-
-  if (azteco.isEmpty && btcPay.isEmpty && ramp.isEmpty && stripe.isEmpty) {
+  if (azteco.isEmpty && btcPay.isEmpty && ramp.isEmpty) {
     return;
   }
 
@@ -509,43 +505,6 @@ Future prunePendingTransactions(
       );
       EnvoyStorage().deleteTxNote(pendingTx.address);
       EnvoyStorage().deletePendingTx(pendingTx.txId);
-    });
-  }
-
-  for (var (pendingTx as StripeTransaction) in stripe) {
-    if (pendingTx.stripeFee == null) {
-      OnrampSessionInfo? onrampSessionInfo =
-          await EnvoyStorage().getStoredOnrampSession(pendingTx.txId);
-
-      double totalFeeInCurrency = (onrampSessionInfo?.transactionFee ?? 0.0) +
-          (onrampSessionInfo?.networkFee ?? 0.0);
-
-      if (onrampSessionInfo?.sourceCurrency ==
-          Settings().selectedFiat?.toLowerCase()) {
-        final stripeFee = ExchangeRate().convertFiatStringToSats(
-          totalFeeInCurrency.toString(),
-        );
-
-        EnvoyStorage().updatePendingTx(pendingTx.txId, stripeFee: stripeFee);
-      }
-    }
-    transactions
-        .where(
-      (tx) => tx.outputs.any((output) => output.address == pendingTx.address),
-    )
-        .forEach((actualStripeTx) {
-      kPrint("Pruning Stripe tx: ${actualStripeTx.txId}");
-      EnvoyAccount? account = NgAccountManager().getAccountById(
-        actualStripeTx.accountId,
-      );
-
-      account?.handler?.setNote(
-        note: pendingTx.note ?? "",
-        txId: actualStripeTx.txId,
-      );
-      EnvoyStorage().deleteTxNote(pendingTx.address);
-      EnvoyStorage().deletePendingTx(pendingTx.txId);
-      EnvoyStorage().deleteOnrampSession(pendingTx.txId);
     });
   }
 
