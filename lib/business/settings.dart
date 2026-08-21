@@ -4,6 +4,7 @@
 
 // ignore_for_file: constant_identifier_names
 
+import 'dart:async';
 import 'dart:math';
 import 'package:envoy/account/accounts_manager.dart';
 import 'package:envoy/business/connectivity_manager.dart';
@@ -356,6 +357,8 @@ class Settings extends ChangeNotifier {
 
   set syncToCloud(bool syncToCloud) {
     syncToCloudSetting = syncToCloud;
+    unawaited(store());
+    notifyListeners();
   }
 
   Future setSyncToCloud(bool syncToCloud) async {
