@@ -937,7 +937,7 @@ class EnvoySeed {
     _platform.invokeMethod('show_settings');
   }
 
-  Future<void> enableMagicBackup({b}) async {
+  Future<void> enableMagicBackup() async {
     final seed = await get();
     if (seed == null) {
       throw StateError("Magic Backup seed is unavailable");
