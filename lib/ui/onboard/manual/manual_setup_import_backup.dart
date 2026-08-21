@@ -394,7 +394,7 @@ Future<void> tryMagicRecover(
   if (success) {
     Settings().setSyncToCloud(true);
     Settings().updateAccountsViewSettings();
-    EnvoySeed().copySeedToNonSecure();
+    await EnvoySeed().enableMagicBackup();
     navigator.push(
       MaterialPageRoute(
         builder: (context) {

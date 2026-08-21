@@ -358,9 +358,9 @@ class Settings extends ChangeNotifier {
     syncToCloudSetting = syncToCloud;
   }
 
-  void setSyncToCloud(bool syncToCloud) {
+  Future setSyncToCloud(bool syncToCloud) async {
     syncToCloudSetting = syncToCloud;
-    store();
+    await store();
     notifyListeners();
   }
 

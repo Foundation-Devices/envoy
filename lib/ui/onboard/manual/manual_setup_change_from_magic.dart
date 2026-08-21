@@ -50,15 +50,34 @@ class _MagicBackupDeactivatedState
 
   Widget mainWidget(BuildContext context) {
     if (_loading) {
-      return const Center(
-        child: SizedBox(
-          height: 180,
-          width: 180,
-          child: CircularProgressIndicator(
-            color: EnvoyColors.tealLight,
-            backgroundColor: EnvoyColors.surface4,
-            strokeWidth: 15,
-            strokeCap: StrokeCap.round,
+      return Padding(
+        padding: const EdgeInsets.symmetric(
+          vertical: EnvoySpacing.medium1,
+        ),
+        child: Center(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              SizedBox(height: EnvoySpacing.xl),
+              SizedBox(
+                height: 180,
+                width: 180,
+                child: CircularProgressIndicator(
+                  color: EnvoyColors.tealLight,
+                  backgroundColor: EnvoyColors.surface4,
+                  strokeWidth: 15,
+                  strokeCap: StrokeCap.round,
+                ),
+              ),
+              SizedBox(
+                height: EnvoySpacing.medium3,
+              ),
+              Text(
+                S().send_keyboard_address_loading,
+                textAlign: TextAlign.center,
+                style: EnvoyTypography.heading,
+              ),
+            ],
           ),
         ),
       );

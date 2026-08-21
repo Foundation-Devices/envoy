@@ -23,6 +23,7 @@ const int SECRET_LENGTH_BYTES = 16;
 class PrimeShard {
   static final PrimeShard _instance = PrimeShard._internal();
   static const _platform = MethodChannel('envoy');
+  static const _magicBackupPlatform = MethodChannel('envoy/magic_backup');
 
   // iOS only: path to prime.secret inside the iCloud Documents container.
   // Cached once during init(); null on Android (uses appSupportDir instead).
@@ -34,8 +35,9 @@ class PrimeShard {
       if (Platform.isIOS) {
         // Resolves the iCloud Documents path and migrates prime.secret
         // from previous locations if this is a first launch after upgrade.
-        _iosSharedPath =
-            await _platform.invokeMethod<String>('get_shard_path_icloud');
+        _iosSharedPath = await _magicBackupPlatform.invokeMethod<String>(
+          'get_shard_path_icloud',
+        );
       }
     } catch (e) {
       EnvoyReport().log("PrimeShard", "Error initializing ShardsLib: $e");
@@ -76,7 +78,8 @@ class PrimeShard {
       filePath: getPrimeSecretPath(),
     );
     if (!Platform.isLinux) {
-      _platform.invokeMethod('data_changed');
+      final platform = Platform.isIOS ? _magicBackupPlatform : _platform;
+      platform.invokeMethod('data_changed');
     }
   }
 

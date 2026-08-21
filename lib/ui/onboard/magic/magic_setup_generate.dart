@@ -151,6 +151,9 @@ class _MagicSetupGenerateState extends ConsumerState<MagicSetupGenerate> {
     });
 
     Settings().setSyncToCloud(true);
+    if (walletGenerated) {
+      await EnvoySeed().enableMagicBackup();
+    }
     await EnvoySeed().backupData();
     _updateProgress();
 

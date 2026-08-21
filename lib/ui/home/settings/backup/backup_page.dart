@@ -136,7 +136,7 @@ class _BackupPageState extends ConsumerState<BackupPage>
     final primeDevices = Devices().getPrimeDevices;
 
     var lastEnvoyServerBackup = EnvoySeed().getLastBackupTime();
-    var lastCloudBackup = EnvoySeed().getNonSecureLastBackupTimestamp();
+    var lastCloudBackup = EnvoySeed().getDeviceBackupTimestamp();
 
     final Locale activeLocale = Localizations.localeOf(context);
 
@@ -177,7 +177,12 @@ class _BackupPageState extends ConsumerState<BackupPage>
                         icon: EnvoyIcons.phone,
                         switchValue: s.syncToCloud,
                         onSwitch: (value) {
-                          if (value) {
+                          //wallet not derived
+                          if (!EnvoySeed().walletDerived()) {
+                            setState(() {
+                              Settings().syncToCloud = value;
+                            });
+                          } else if (value) {
                             showEnablingBackupDialog(context);
                           } else {
                             if (hasAnyPrimeBackupEnabled) {
@@ -190,7 +195,7 @@ class _BackupPageState extends ConsumerState<BackupPage>
                           }
                         },
                       ),
-                      if (s.syncToCloud)
+                      if (s.syncToCloud && EnvoySeed().walletDerived())
                         Padding(
                           padding: const EdgeInsets.only(
                             left: EnvoySpacing.medium1,
@@ -268,105 +273,107 @@ class _BackupPageState extends ConsumerState<BackupPage>
                         );
                       }),
                       const SizedBox(height: EnvoySpacing.medium1),
-                      ExpansionTile(
-                        tilePadding: const EdgeInsets.all(0),
-                        onExpansionChanged: (value) {
-                          setState(() {
-                            _advancedVisible = value;
-                          });
-                        },
-                        title: Row(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          children: [
-                            Text(
-                              S().backups_advancedBackups,
-                              style: EnvoyTypography.body.copyWith(
-                                color: Colors.white,
+                      if (EnvoySeed().walletDerived())
+                        ExpansionTile(
+                          tilePadding: const EdgeInsets.all(0),
+                          onExpansionChanged: (value) {
+                            setState(() {
+                              _advancedVisible = value;
+                            });
+                          },
+                          title: Row(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            children: [
+                              Text(
+                                S().backups_advancedBackups,
+                                style: EnvoyTypography.body.copyWith(
+                                  color: Colors.white,
+                                ),
+                              ),
+                              AnimatedRotation(
+                                duration: const Duration(milliseconds: 200),
+                                turns: _advancedVisible ? 0.0 : 0.5,
+                                child: const Icon(
+                                  Icons.keyboard_arrow_up_sharp,
+                                  color: Colors.white,
+                                ),
+                              ),
+                            ],
+                          ),
+                          trailing: const SizedBox(),
+                          controlAffinity: ListTileControlAffinity.platform,
+                          childrenPadding: const EdgeInsets.only(left: 8),
+                          children: <Widget>[
+                            ListTile(
+                              dense: true,
+                              onTap: () {},
+                              contentPadding: const EdgeInsets.all(0),
+                              title: SettingText(
+                                S().backups_viewMobileWalletSeed,
+                                onTap: () {
+                                  showEnvoyDialog(
+                                    context: context,
+                                    dialog: const ExportSeedModal(),
+                                  );
+                                },
                               ),
                             ),
-                            AnimatedRotation(
-                              duration: const Duration(milliseconds: 200),
-                              turns: _advancedVisible ? 0.0 : 0.5,
-                              child: const Icon(
-                                Icons.keyboard_arrow_up_sharp,
-                                color: Colors.white,
+                            ListTile(
+                              dense: true,
+                              onTap: () {},
+                              contentPadding: const EdgeInsets.all(0),
+                              title: SettingText(
+                                S().backups_downloadSettingsMetadataBackupFile,
+                                onTap: () {
+                                  showEnvoyDialog(
+                                    context: context,
+                                    dialog: const ExportBackupModal(),
+                                  );
+                                },
+                              ),
+                            ),
+                            ListTile(
+                              dense: true,
+                              trailing: _isExportInProgress
+                                  ? SizedBox.square(
+                                      dimension: 12,
+                                      child: const CircularProgressIndicator(
+                                        strokeWidth: 1,
+                                      ),
+                                    )
+                                  : null,
+                              contentPadding: const EdgeInsets.all(0),
+                              title: SettingText(
+                                S().backups_downloadBIP329BackupFile,
+                                onTap: () async {
+                                  if (!_isExportInProgress) {
+                                    setState(() {
+                                      _isExportInProgress = true;
+                                    });
+                                    try {
+                                      await NgAccountManager()
+                                          .exportBIP329(ref);
+                                      setState(() {
+                                        _isExportInProgress = false;
+                                      });
+                                    } catch (_) {
+                                      setState(() {
+                                        _isExportInProgress = false;
+                                      });
+                                    }
+                                  }
+                                },
                               ),
                             ),
                           ],
                         ),
-                        trailing: const SizedBox(),
-                        controlAffinity: ListTileControlAffinity.platform,
-                        childrenPadding: const EdgeInsets.only(left: 8),
-                        children: <Widget>[
-                          ListTile(
-                            dense: true,
-                            onTap: () {},
-                            contentPadding: const EdgeInsets.all(0),
-                            title: SettingText(
-                              S().backups_viewMobileWalletSeed,
-                              onTap: () {
-                                showEnvoyDialog(
-                                  context: context,
-                                  dialog: const ExportSeedModal(),
-                                );
-                              },
-                            ),
-                          ),
-                          ListTile(
-                            dense: true,
-                            onTap: () {},
-                            contentPadding: const EdgeInsets.all(0),
-                            title: SettingText(
-                              S().backups_downloadSettingsMetadataBackupFile,
-                              onTap: () {
-                                showEnvoyDialog(
-                                  context: context,
-                                  dialog: const ExportBackupModal(),
-                                );
-                              },
-                            ),
-                          ),
-                          ListTile(
-                            dense: true,
-                            trailing: _isExportInProgress
-                                ? SizedBox.square(
-                                    dimension: 12,
-                                    child: const CircularProgressIndicator(
-                                      strokeWidth: 1,
-                                    ),
-                                  )
-                                : null,
-                            contentPadding: const EdgeInsets.all(0),
-                            title: SettingText(
-                              S().backups_downloadBIP329BackupFile,
-                              onTap: () async {
-                                if (!_isExportInProgress) {
-                                  setState(() {
-                                    _isExportInProgress = true;
-                                  });
-                                  try {
-                                    await NgAccountManager().exportBIP329(ref);
-                                    setState(() {
-                                      _isExportInProgress = false;
-                                    });
-                                  } catch (_) {
-                                    setState(() {
-                                      _isExportInProgress = false;
-                                    });
-                                  }
-                                }
-                              },
-                            ),
-                          ),
-                        ],
-                      ),
                     ],
                   ),
                 ),
               ),
               Column(
                 children: [
-                  if (s.syncToCloud)
+                  if (s.syncToCloud && EnvoySeed().walletDerived())
                     Padding(
                       padding: EdgeInsets.symmetric(
                         horizontal: EnvoySpacing.large1,
@@ -383,23 +390,24 @@ class _BackupPageState extends ConsumerState<BackupPage>
                       ),
                     ),
                   const SizedBox(height: EnvoySpacing.medium1),
-                  EnvoyButton(
-                    s.syncToCloud
-                        ? S().backups_erase_wallets_and_backups
-                        : S().backups_erase_mobile_wallet,
-                    textStyle: TextStyle(
-                      color: hasAnyPrimeBackupEnabled
-                          ? EnvoyColors.textTertiary
-                          : EnvoyColors.danger,
-                      fontWeight: FontWeight.w900,
+                  if (EnvoySeed().walletDerived())
+                    EnvoyButton(
+                      s.syncToCloud
+                          ? S().backups_erase_wallets_and_backups
+                          : S().backups_erase_mobile_wallet,
+                      textStyle: TextStyle(
+                        color: hasAnyPrimeBackupEnabled
+                            ? EnvoyColors.textTertiary
+                            : EnvoyColors.danger,
+                        fontWeight: FontWeight.w900,
+                      ),
+                      type: EnvoyButtonTypes.tertiary,
+                      onTap: () {
+                        if (hasAnyPrimeBackupEnabled) return;
+                        globalState.state = GlobalState.nuclearDelete;
+                        showEraseWalletsAndBackupsWarning(context);
+                      },
                     ),
-                    type: EnvoyButtonTypes.tertiary,
-                    onTap: () {
-                      if (hasAnyPrimeBackupEnabled) return;
-                      globalState.state = GlobalState.nuclearDelete;
-                      showEraseWalletsAndBackupsWarning(context);
-                    },
-                  ),
                   SizedBox(height: bottomPhoneOffset! + EnvoySpacing.small),
                 ],
               ),

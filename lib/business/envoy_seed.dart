@@ -17,6 +17,7 @@ import 'package:envoy/business/blog_post.dart';
 import 'package:envoy/business/devices.dart';
 import 'package:envoy/business/exchange_rate.dart';
 import 'package:envoy/business/local_storage.dart';
+import 'package:envoy/business/magic_backup_storage.dart';
 import 'package:envoy/business/notifications.dart';
 import 'package:envoy/business/settings.dart';
 import 'package:envoy/business/updates_manager.dart';
@@ -36,15 +37,10 @@ import 'package:ngwallet/ngwallet.dart';
 import 'package:tor/tor.dart';
 import 'package:uuid/uuid.dart';
 
-const String SEED_KEY = "seed";
 const String WALLET_DERIVED_PREFS = "wallet_derived";
 const String TAPROOT_WALLET_DERIVED_PREFS = "taproot_wallet_derived";
-const String SEED_CLEAR_FLAG = "seed_cleared";
 
 const String LAST_BACKUP_PREFS = "last_backup";
-const String LOCAL_SECRET_FILE_NAME = "local.secret";
-const String LOCAL_SECRET_LAST_BACKUP_TIMESTAMP_FILE_NAME =
-    "$LOCAL_SECRET_FILE_NAME.backup_timestamp";
 
 const int SECRET_LENGTH_BYTES = 16;
 const magicBackupVersion = 2;
@@ -63,27 +59,27 @@ class EnvoySeed {
     } catch (e, stack) {
       EnvoyReport().log("EnvoySeed", "$e", stackTrace: stack);
     }
-    // After a fresh install of Envoy following an Envoy erase,
-    // the keychain may still retain the seed for a brief period.
-    // To ensure the seed is fully removed, set the flag during the erase flow
-    // to delete the seed upon the next installation.
-    // if hot wallets exist, don't clear the seed
     try {
-      final hotWalletsExist = NgAccountManager().hotAccountsExist();
-      if (await LocalStorage().readSecure(SEED_CLEAR_FLAG) == "1" &&
-          !hotWalletsExist) {
-        try {
-          await LocalStorage().deleteSecure(SEED_KEY);
-          await LocalStorage().deleteFile(LOCAL_SECRET_FILE_NAME);
-          await LocalStorage().secureStorage.deleteAll();
-        } finally {
-          await clearDeleteFlag();
+      if (Platform.isIOS) {
+        final storedBackupEnabled =
+            await MagicBackupStorage().restoreIOSBackupEnabled(
+          fallbackBackupEnabled: Settings().syncToCloud,
+        );
+        if (storedBackupEnabled != null &&
+            storedBackupEnabled != Settings().syncToCloud) {
+          Settings().setSyncToCloud(storedBackupEnabled);
         }
-      } else if (hotWalletsExist) {
-        await clearDeleteFlag();
+      } else {
+        await MagicBackupStorage().upgradeV1Seed(
+          backupEnabled: Settings().syncToCloud,
+        );
       }
-    } catch (er) {
-      EnvoyReport().log("EnvoySeed Init", er.toString());
+    } catch (error, stack) {
+      EnvoyReport().log(
+        "EnvoySeed Init",
+        "Magic Backup storage initialization failed: $error",
+        stackTrace: stack,
+      );
     }
     return singleton;
   }
@@ -151,8 +147,6 @@ class EnvoySeed {
     Network? network,
     bool requireScan = true,
   }) async {
-    await clearDeleteFlag();
-
     if (await NgAccountManager().checkIfWalletFromSeedExists(
       seed,
       passphrase: passphrase,
@@ -309,10 +303,11 @@ class EnvoySeed {
   }
 
   Future<void> store(String seed) async {
-    if (Settings().syncToCloud) {
-      await _saveNonSecure(seed, LOCAL_SECRET_FILE_NAME);
-    }
-    await LocalStorage().saveSecure(SEED_KEY, seed);
+    final backupEnabled = Settings().syncToCloud;
+    await MagicBackupStorage().storeSeed(
+      seed,
+      backupEnabled: backupEnabled,
+    );
   }
 
   Future<void> backupData({bool cloud = true}) async {
@@ -336,6 +331,7 @@ class EnvoySeed {
 
     //add accounts
     backupData = await processBackupData(backupData, cloud);
+    await EnvoyReport().log("Magic Backup", "creating data backup");
     return Backup.performBackupV2(
       payload: backupData,
       seedWords: seed,
@@ -353,6 +349,10 @@ class EnvoySeed {
       } else if (cloud && !success) {
         backupCompletedStream.sink.add(false);
       }
+      await EnvoyReport().log(
+        "Magic Backup",
+        "data backup completed: $success",
+      );
     });
   }
 
@@ -457,6 +457,7 @@ class EnvoySeed {
   }
 
   Future<bool> delete() async {
+    await EnvoyReport().log("Magic Backup", "deleting wallet seed");
     final seed = await get();
 
     bool isDeleted = false;
@@ -489,21 +490,9 @@ class EnvoySeed {
       }
     }
 
+    await MagicBackupStorage().deleteAllSeedData();
     await NgAccountManager().deleteHotWalletAccounts();
-
-    try {
-      await removeSeedFromNonSecure();
-      EnvoyReport().log("QA", "Removed seed from regular storage!");
-    } on Exception catch (e) {
-      EnvoyReport().log(
-        "QA",
-        "Couldn't remove seed from regular storage: ${e.toString()}",
-      );
-    }
-
-    await removeSeedFromSecure();
-    EnvoyReport().log("QA", "Removed seed from secure storage!");
-    await LocalStorage().saveSecure(SEED_CLEAR_FLAG, "1");
+    await EnvoyReport().log("Magic Backup", "wallet seed deleted");
     isDeleted = true;
 
     //add minor delay to allow the seed to be removed from secure storage (specifically on iOS)
@@ -516,7 +505,11 @@ class EnvoySeed {
     if (seed == null) {
       return false;
     }
+    await EnvoyReport().log("Magic Backup", "disabling Magic Backup");
     Settings().setSyncToCloud(false);
+    // Stop exporting the seed through device backup even if the server
+    // deletion below has to be retried.
+    await MagicBackupStorage().disableBackup();
     if (Settings().torEnabled()) {
       await Tor.instance.isReady();
     }
@@ -536,6 +529,7 @@ class EnvoySeed {
     } catch (_) {
       // v1 cleanup is best-effort
     }
+    await EnvoyReport().log("Magic Backup", "Magic Backup disabled");
     return v2Status == 202;
   }
 
@@ -544,6 +538,10 @@ class EnvoySeed {
     String? filePath,
     String? passphrase,
   }) async {
+    await EnvoyReport().log(
+      "Magic Backup",
+      filePath == null ? "starting cloud recovery" : "starting file recovery",
+    );
     // Try to get seed from device
     try {
       if (seed == null) {
@@ -567,6 +565,7 @@ class EnvoySeed {
             v2ServerUrl: Settings().backupServerV2Address,
             proxyPort: Tor.instance.port,
           );
+          await EnvoyReport().log("Magic Backup", "downloaded v2 backup");
         } on GetBackupException catch (e) {
           // Unauthorized means the v2 server has a backup blob but no sibling
           // pubkey and the client-supplied pubkey didn't match (or healing was
@@ -580,6 +579,7 @@ class EnvoySeed {
               serverUrl: Settings().envoyServerAddress,
               proxyPort: Tor.instance.port,
             );
+            await EnvoyReport().log("Magic Backup", "downloaded v1 backup");
           } else {
             rethrow;
           }
@@ -589,6 +589,10 @@ class EnvoySeed {
           extractDataFromPayload(backupPayload),
           passphrase,
           isMagicBackup: true,
+        );
+        await EnvoyReport().log(
+          "Magic Backup",
+          "cloud recovery completed: $status",
         );
         return status;
       } catch (e, st) {
@@ -601,10 +605,15 @@ class EnvoySeed {
           seedWords: seed,
           filePath: filePath,
         );
+        await EnvoyReport().log("Magic Backup", "read backup file");
         bool success = await processRecoveryData(
           seed,
           extractDataFromPayload(data),
           passphrase,
+        );
+        await EnvoyReport().log(
+          "Magic Backup",
+          "file recovery completed: $success",
         );
         return success;
       } catch (e, st) {
@@ -636,6 +645,10 @@ class EnvoySeed {
 
           await EnvoyStorage().insertMediaItems(videos);
           await EnvoyStorage().insertMediaItems(blogs);
+          await EnvoyReport().log(
+            "Magic Backup",
+            "restored backup database",
+          );
         }
 
         final bool hasExistingSetup = Devices().devices.isNotEmpty &&
@@ -656,7 +669,24 @@ class EnvoySeed {
       } catch (e) {
         EnvoyReport().log("EnvoySeed", "Error restoring database: $e");
       }
-      Settings().setSyncToCloud(isMagicBackup);
+      //respect backup from previous installation
+      var backupEnabled = isMagicBackup;
+      try {
+        backupEnabled =
+            await MagicBackupStorage().getBackupEnabled() ?? isMagicBackup;
+      } catch (error, stack) {
+        backupEnabled = false;
+        EnvoyReport().log(
+          "Magic Backup",
+          "native backup setting unavailable; defaulting to disabled",
+          stackTrace: stack,
+        );
+      }
+      Settings().setSyncToCloud(backupEnabled);
+      await EnvoyReport().log(
+        "Magic Backup",
+        "set backup enabled: $backupEnabled",
+      );
 
       // if the data does not contains v2 backup at root (NgAccountManager.accountsPrefKey) at root,
       // Data is from older backups,so we need to restore legacy wallets
@@ -674,6 +704,10 @@ class EnvoySeed {
           );
           await restoreLegacyWallet(legacyWallets);
           isLegacy = true;
+          await EnvoyReport().log(
+            "Magic Backup",
+            "restored v1 accounts",
+          );
         } catch (e) {
           EnvoyReport().log(
             "EnvoySeed",
@@ -698,6 +732,10 @@ class EnvoySeed {
         // Restore wallets previously censored in censorHotWalletDescriptors,
         // magic backup wont have any xprv keys, only seed
         if (data.containsKey(NgAccountManager.accountsPrefKey)) {
+          await EnvoyReport().log(
+            "Magic Backup",
+            "restoring v2 accounts",
+          );
           await restoreAccounts(data, seed, passphrase);
         }
       }
@@ -884,31 +922,9 @@ class EnvoySeed {
   }
 
   Future<String?> get() async {
-    String? secure = await _getSecure();
-    String? nonSecure = await _getNonSecure();
-
-    kPrint(
-      "Retrieved seed from secure: ${secure != null}, non-secure: ${nonSecure != null}",
+    return MagicBackupStorage().retrieveSeed(
+      backupEnabled: Settings().syncToCloud,
     );
-    if (secure != null && nonSecure != null) {
-      return secure;
-
-      // TODO: show a warning to user
-      // If we're syncing then the two being different is something to be handled
-      // if (secure != nonSecure) {
-      //   throw Exception("Different seed in secure and non-secure!");
-      // }
-    }
-
-    if (secure != null) {
-      return secure;
-    }
-
-    if (nonSecure != null) {
-      return nonSecure;
-    }
-
-    return null;
   }
 
   EnvoyAccount? getWallet() {
@@ -917,80 +933,25 @@ class EnvoySeed {
         );
   }
 
-  Future<String?> _getSecure() async {
-    if (!await LocalStorage().containsSecure(SEED_KEY)) {
-      return null;
-    }
-
-    return await LocalStorage().readSecure(SEED_KEY);
-  }
-
-  Future<File> _saveNonSecure(String data, String name) async {
-    final file = await LocalStorage().saveFile(name, data);
-    if (!Platform.isLinux) {
-      _platform.invokeMethod('data_changed');
-    }
-    return file;
-  }
-
-  Future<String?> _restoreNonSecure(String name) async {
-    if (!await LocalStorage().fileExists(name)) {
-      return null;
-    }
-
-    return await LocalStorage().readFile(name);
-  }
-
   void showSettingsMenu() {
     _platform.invokeMethod('show_settings');
   }
 
-  // When manual user decides to enable Auto-Backup
-  void copySeedToNonSecure() {
-    _getSecure().then((seed) {
-      store(seed!);
-    });
-  }
-
-  Future<void> removeSeedFromNonSecure() async {
-    await LocalStorage().deleteFile(LOCAL_SECRET_FILE_NAME);
-    if (!Platform.isLinux) {
-      _platform.invokeMethod('data_changed');
+  Future<void> enableMagicBackup({b}) async {
+    final seed = await get();
+    if (seed == null) {
+      throw StateError("Magic Backup seed is unavailable");
     }
+    await store(seed);
+    await EnvoyReport().log("Magic Backup", "Magic Backup enabled");
   }
 
-  Future<void> removeSeedFromSecure() async {
-    await LocalStorage().deleteSecure(SEED_KEY);
-    //delete all entries from secure storage fixes issue where old seeds were
-    //not deleted properly
-    await LocalStorage().secureStorage.deleteAll();
+  Future<void> removeSeed() async {
+    await MagicBackupStorage().deleteAllSeedData();
   }
 
-  Future<String?> _getNonSecure() async {
-    return await _restoreNonSecure(LOCAL_SECRET_FILE_NAME);
-  }
-
-  Future<DateTime?> getNonSecureLastBackupTimestamp() async {
-    if (!await LocalStorage().fileExists(
-      LOCAL_SECRET_LAST_BACKUP_TIMESTAMP_FILE_NAME,
-    )) {
-      return null;
-    }
-
-    String timestampString = await LocalStorage().readFile(
-      LOCAL_SECRET_LAST_BACKUP_TIMESTAMP_FILE_NAME,
-    );
-    int timestamp = int.parse(
-      timestampString.replaceAll(".", "").substring(0, 13),
-    );
-    return DateTime.fromMillisecondsSinceEpoch(timestamp);
-  }
-
-  //deletes the secure store "delete" flag
-  static Future clearDeleteFlag() async {
-    if (await LocalStorage().readSecure(SEED_CLEAR_FLAG) != null) {
-      await LocalStorage().deleteSecure(SEED_CLEAR_FLAG);
-    }
+  Future<DateTime?> getDeviceBackupTimestamp() async {
+    return MagicBackupStorage().getLastBackupTimestamp();
   }
 
   Future restoreAccounts(
@@ -1001,6 +962,7 @@ class EnvoySeed {
     try {
       //store seed before restoring accounts
       await store(seed);
+      await EnvoyReport().log("Magic Backup", "stored recovered seed");
       List<dynamic> accounts = jsonDecode(
         data[NgAccountManager.accountsPrefKey]!,
       );
@@ -1093,6 +1055,7 @@ class EnvoySeed {
           requireScan: true,
         );
       }
+      await EnvoyReport().log("Magic Backup", "restored v2 accounts");
     } catch (e, stack) {
       EnvoyReport().log(
         "EnvoySeed",

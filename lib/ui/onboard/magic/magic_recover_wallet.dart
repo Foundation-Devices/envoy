@@ -193,6 +193,10 @@ class _MagicRecoverWalletState extends ConsumerState<MagicRecoverWallet> {
     }
     //remove seed that recovered from qr
     if (EnvoySeed().walletDerived()) {
+      await EnvoyReport().log(
+        "Magic Backup",
+        "recovery screen requested wallet seed deletion",
+      );
       try {
         EnvoySeed().delete();
       } catch (exception) {
