@@ -126,9 +126,11 @@ class MainActivity : FlutterFragmentActivity(), EventChannel.StreamHandler {
 
         EventChannel(flutterEngine.dartExecutor.binaryMessenger, SD_CARD_EVENT_CHANNEL)
             .setStreamHandler(this)
+        NativeLogStream.register(applicationContext, flutterEngine.dartExecutor.binaryMessenger)
 
         // Initialize BluetoothChannel
         bluetoothChannel = BluetoothChannel(this, this, flutterEngine.dartExecutor.binaryMessenger)
+        MagicBackup.register(applicationContext, flutterEngine.dartExecutor.binaryMessenger)
 
         MethodChannel(
             flutterEngine.dartExecutor.binaryMessenger,

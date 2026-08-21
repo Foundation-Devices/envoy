@@ -158,20 +158,26 @@ class LocalStorage {
   //configuration changed to support iOS Keychain synchronizable across different
   //devices
   void _performKeychainMigration() async {
+    const obsoleteSeedClearedKey = "seed_cleared";
     final storage = FlutterSecureStorage();
+    await storage.delete(key: obsoleteSeedClearedKey);
+    await secureStorage.delete(key: obsoleteSeedClearedKey);
     final allValues = await storage.readAll();
     //already migrated or nothing to migrate
     if (allValues.isEmpty) {
       return;
     }
-    for (var key in allValues.keys) {
+    final keysToMigrate = allValues.keys.where(
+      (key) => key != obsoleteSeedClearedKey,
+    );
+    for (var key in keysToMigrate) {
       if (allValues[key] != null) {
         await secureStorage.write(key: key, value: allValues[key]);
       }
     }
     // Verify all values migrated successfully to new storage configuration
     bool allMigrated = true;
-    for (var key in allValues.keys) {
+    for (var key in keysToMigrate) {
       final migratedValue = await secureStorage.read(key: key);
       if (migratedValue != allValues[key]) {
         allMigrated = false;
@@ -181,7 +187,11 @@ class LocalStorage {
     }
     // Delete all from old storage if migration successful
     if (allMigrated) {
-      await storage.deleteAll();
+      for (var key in keysToMigrate) {
+        await storage.delete(key: key);
+      }
+      await storage.delete(key: obsoleteSeedClearedKey);
+      await secureStorage.delete(key: obsoleteSeedClearedKey);
       kPrint("Old keychain storage cleared after successful migration");
     }
   }

@@ -103,7 +103,7 @@ Future<void> initSingletons({bool integrationTestsRunning = false}) async {
   await EnvoyScheduler.init();
   await ExchangeRate.init();
 
-  EnvoyReport().init();
+  await EnvoyReport().init();
   await Tor.init(enabled: Settings().torEnabled());
   await HttpTor.init(Tor.instance, EnvoyScheduler().parallel);
   UpdatesManager.init();
