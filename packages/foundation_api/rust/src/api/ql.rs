@@ -6,12 +6,12 @@ use anyhow::bail;
 use anyhow::Context;
 use anyhow::Result;
 use btp::{chunk, Chunk, MasterDechunker};
-use chrono::{DateTime, Utc};
 use flutter_rust_bridge::frb;
 use foundation_api::backup::BackupChunk;
 use foundation_api::backup::BackupMetadata;
 use foundation_api::backup::RestoreMagicBackupEvent;
 use foundation_api::backup::SeedFingerprint;
+use foundation_api::bc_components::ARID;
 use foundation_api::bc_envelope::prelude::CBOREncodable;
 use foundation_api::bc_envelope::{Envelope, EventBehavior, Expression};
 use foundation_api::bc_xid::XIDDocument;
@@ -21,42 +21,12 @@ use foundation_api::firmware::{FirmwareChunk, FirmwareFetchEvent};
 use foundation_api::message::{
     EnvoyMessage, PassportMessage, QuantumLinkMessage, PROTOCOL_VERSION,
 };
-use foundation_api::quantum_link::{
-    ARIDCache, QlError, QuantumLink, QuantumLinkIdentity, ReplayCheck, EXPIRATION_DURATION,
-};
+use foundation_api::quantum_link::{QlError, QuantumLink, QuantumLinkIdentity};
 use gstp::SealedEvent;
-use log::{debug, info};
-use std::time::Duration;
+use log::debug;
+use std::collections::VecDeque;
 
-const FUTURE_CLOCK_SKEW_TOLERANCE: Duration = Duration::from_secs(5);
-
-fn validate_message_expiration(
-    expires_at: DateTime<Utc>,
-    now: DateTime<Utc>,
-    message_type: &str,
-) -> std::result::Result<(), QlError> {
-    if now >= expires_at {
-        return Err(QlError::Expired);
-    }
-
-    let latest_without_skew = now + EXPIRATION_DURATION;
-    if expires_at > latest_without_skew {
-        let clock_lead_ms = (expires_at - latest_without_skew).num_milliseconds();
-        if expires_at > latest_without_skew + FUTURE_CLOCK_SKEW_TOLERANCE {
-            info!(
-                "QL_CLOCK_SKEW rejected message_type={message_type} clock_lead_ms={clock_lead_ms} tolerance_ms={}",
-                FUTURE_CLOCK_SKEW_TOLERANCE.as_millis()
-            );
-            return Err(QlError::FutureDated);
-        }
-        info!(
-            "QL_CLOCK_SKEW accepted message_type={message_type} clock_lead_ms={clock_lead_ms} tolerance_ms={}",
-            FUTURE_CLOCK_SKEW_TOLERANCE.as_millis()
-        );
-    }
-
-    Ok(())
-}
+const ARID_CACHE_CAPACITY: usize = 200;
 
 #[frb(opaque)]
 pub struct EnvoyMasterDechunker {
@@ -76,12 +46,26 @@ pub struct DecoderStatus {
 
 #[frb(opaque)]
 pub struct EnvoyARIDCache {
-    inner: ARIDCache,
+    entries: VecDeque<ARID>,
+}
+
+impl EnvoyARIDCache {
+    fn check_and_store(&mut self, arid: &ARID) -> bool {
+        if self.entries.contains(arid) {
+            return false;
+        }
+
+        if self.entries.len() >= ARID_CACHE_CAPACITY {
+            self.entries.pop_front();
+        }
+        self.entries.push_back(*arid);
+        true
+    }
 }
 
 pub fn get_arid_cache() -> EnvoyARIDCache {
     EnvoyARIDCache {
-        inner: ARIDCache::default(),
+        entries: VecDeque::with_capacity(ARID_CACHE_CAPACITY),
     }
 }
 
@@ -176,7 +160,6 @@ pub async fn decode(
             };
             debug!("Unsealing envelope...");
 
-            let now = Utc::now();
             let event: SealedEvent<Expression> = SealedEvent::try_from_envelope(
                 &envelope,
                 None,
@@ -184,26 +167,10 @@ pub async fn decode(
                 quantum_link_identity.private_keys.as_ref().unwrap(),
             )
             .context("failed to unseal passport message")?;
-            let expires_at = event.date().ok_or(QlError::MissingDate)?.datetime();
             let passport_message = PassportMessage::decode(event.content())?;
-
-            if !matches!(&passport_message.message, QuantumLinkMessage::Heartbeat(_)) {
-                let message_type = match &passport_message.message {
-                    QuantumLinkMessage::PairingResponse(_) => "PairingResponse",
-                    QuantumLinkMessage::DeviceNameUpdate(_) => "DeviceNameUpdate",
-                    _ => "Other",
-                };
-                validate_message_expiration(expires_at, now, message_type)?;
-                match arid_cache
-                    .inner
-                    .check_and_store(&event.id(), expires_at, now)
-                {
-                    ReplayCheck::Fresh => {}
-                    ReplayCheck::Replay => return Err(QlError::ReplayAttack.into()),
-                    ReplayCheck::Expired => return Err(QlError::Expired.into()),
-                }
+            if !arid_cache.check_and_store(&event.id()) {
+                return Err(QlError::ReplayAttack.into());
             }
-
             Ok(DecoderStatus {
                 progress: 1.0,
                 payload: Some(passport_message),
@@ -503,38 +470,32 @@ fn split_backup_into_chunks(backup: &[u8], chunk_size: usize) -> Vec<QuantumLink
 mod tests {
     use super::*;
     use anyhow::Result;
-    use foundation_api::bc_envelope::prelude::UREncodable;
-    use foundation_api::bc_envelope::EnvelopeEncodable;
-    use foundation_api::dcbor::CBORTaggedDecodable;
 
     #[test]
-    fn test_message_expiration_accepts_future_clock_skew_at_tolerance() {
-        let now = Utc::now();
-        let expires_at = now + EXPIRATION_DURATION + FUTURE_CLOCK_SKEW_TOLERANCE;
+    fn test_arid_cache_rejects_replay() {
+        let mut cache = get_arid_cache();
+        let arid = ARID::new();
 
-        assert!(validate_message_expiration(expires_at, now, "test").is_ok());
+        assert!(cache.check_and_store(&arid));
+        assert!(!cache.check_and_store(&arid));
     }
 
     #[test]
-    fn test_message_expiration_rejects_future_clock_skew_over_tolerance() {
-        let now = Utc::now();
-        let expires_at =
-            now + EXPIRATION_DURATION + FUTURE_CLOCK_SKEW_TOLERANCE + Duration::from_millis(1);
+    fn test_arid_cache_keeps_most_recent_200_messages() {
+        let mut cache = get_arid_cache();
+        let oldest = ARID::new();
+        assert!(cache.check_and_store(&oldest));
 
-        assert!(matches!(
-            validate_message_expiration(expires_at, now, "test"),
-            Err(QlError::FutureDated)
-        ));
-    }
+        for _ in 1..ARID_CACHE_CAPACITY {
+            assert!(cache.check_and_store(&ARID::new()));
+        }
+        assert_eq!(cache.entries.len(), ARID_CACHE_CAPACITY);
+        assert!(!cache.check_and_store(&oldest));
 
-    #[test]
-    fn test_message_expiration_still_rejects_expired_message() {
-        let now = Utc::now();
-
-        assert!(matches!(
-            validate_message_expiration(now, now, "test"),
-            Err(QlError::Expired)
-        ));
+        assert!(cache.check_and_store(&ARID::new()));
+        assert_eq!(cache.entries.len(), ARID_CACHE_CAPACITY);
+        assert!(cache.check_and_store(&oldest));
+        assert_eq!(cache.entries.len(), ARID_CACHE_CAPACITY);
     }
 
     #[tokio::test]

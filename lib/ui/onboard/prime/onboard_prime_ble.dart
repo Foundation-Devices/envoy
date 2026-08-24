@@ -425,6 +425,7 @@ class _OnboardPrimeBluetoothState extends ConsumerState<OnboardPrimeBluetooth>
   }
 
   Widget quantumLinkIntro(BuildContext context) {
+    print("bleConnectState ${bleConnectState}");
     return Column(
       children: [
         Expanded(
