@@ -1,5 +1,5 @@
-// coverage:ignore-file
 // GENERATED CODE - DO NOT MODIFY BY HAND
+// coverage:ignore-file
 // ignore_for_file: type=lint
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
@@ -9,215 +9,283 @@ part of 'backup.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// dart format off
 T _$identity<T>(T value) => value;
-
-final _privateConstructorUsedError = UnsupportedError(
-    'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#adding-getters-and-methods-to-our-models');
 
 /// @nodoc
 mixin _$BackupShardResponse {
-  @optionalTypeArgs
-  TResult when<TResult extends Object?>({
-    required TResult Function() success,
-    required TResult Function(String error) error,
-  }) =>
-      throw _privateConstructorUsedError;
-  @optionalTypeArgs
-  TResult? whenOrNull<TResult extends Object?>({
-    TResult? Function()? success,
-    TResult? Function(String error)? error,
-  }) =>
-      throw _privateConstructorUsedError;
-  @optionalTypeArgs
-  TResult maybeWhen<TResult extends Object?>({
-    TResult Function()? success,
-    TResult Function(String error)? error,
-    required TResult orElse(),
-  }) =>
-      throw _privateConstructorUsedError;
-  @optionalTypeArgs
-  TResult map<TResult extends Object?>({
-    required TResult Function(BackupShardResponse_Success value) success,
-    required TResult Function(BackupShardResponse_Error value) error,
-  }) =>
-      throw _privateConstructorUsedError;
-  @optionalTypeArgs
-  TResult? mapOrNull<TResult extends Object?>({
-    TResult? Function(BackupShardResponse_Success value)? success,
-    TResult? Function(BackupShardResponse_Error value)? error,
-  }) =>
-      throw _privateConstructorUsedError;
-  @optionalTypeArgs
-  TResult maybeMap<TResult extends Object?>({
-    TResult Function(BackupShardResponse_Success value)? success,
-    TResult Function(BackupShardResponse_Error value)? error,
-    required TResult orElse(),
-  }) =>
-      throw _privateConstructorUsedError;
-}
-
-/// @nodoc
-abstract class $BackupShardResponseCopyWith<$Res> {
-  factory $BackupShardResponseCopyWith(
-          BackupShardResponse value, $Res Function(BackupShardResponse) then) =
-      _$BackupShardResponseCopyWithImpl<$Res, BackupShardResponse>;
-}
-
-/// @nodoc
-class _$BackupShardResponseCopyWithImpl<$Res, $Val extends BackupShardResponse>
-    implements $BackupShardResponseCopyWith<$Res> {
-  _$BackupShardResponseCopyWithImpl(this._value, this._then);
-
-  // ignore: unused_field
-  final $Val _value;
-  // ignore: unused_field
-  final $Res Function($Val) _then;
-
-  /// Create a copy of BackupShardResponse
-  /// with the given fields replaced by the non-null parameter values.
-}
-
-/// @nodoc
-abstract class _$$BackupShardResponse_SuccessImplCopyWith<$Res> {
-  factory _$$BackupShardResponse_SuccessImplCopyWith(
-          _$BackupShardResponse_SuccessImpl value,
-          $Res Function(_$BackupShardResponse_SuccessImpl) then) =
-      __$$BackupShardResponse_SuccessImplCopyWithImpl<$Res>;
-}
-
-/// @nodoc
-class __$$BackupShardResponse_SuccessImplCopyWithImpl<$Res>
-    extends _$BackupShardResponseCopyWithImpl<$Res,
-        _$BackupShardResponse_SuccessImpl>
-    implements _$$BackupShardResponse_SuccessImplCopyWith<$Res> {
-  __$$BackupShardResponse_SuccessImplCopyWithImpl(
-      _$BackupShardResponse_SuccessImpl _value,
-      $Res Function(_$BackupShardResponse_SuccessImpl) _then)
-      : super(_value, _then);
-
-  /// Create a copy of BackupShardResponse
-  /// with the given fields replaced by the non-null parameter values.
-}
-
-/// @nodoc
-
-class _$BackupShardResponse_SuccessImpl extends BackupShardResponse_Success {
-  const _$BackupShardResponse_SuccessImpl() : super._();
-
-  @override
-  String toString() {
-    return 'BackupShardResponse.success()';
-  }
-
   @override
   bool operator ==(Object other) {
     return identical(this, other) ||
-        (other.runtimeType == runtimeType &&
-            other is _$BackupShardResponse_SuccessImpl);
+        (other.runtimeType == runtimeType && other is BackupShardResponse);
   }
 
   @override
   int get hashCode => runtimeType.hashCode;
 
   @override
-  @optionalTypeArgs
-  TResult when<TResult extends Object?>({
-    required TResult Function() success,
-    required TResult Function(String error) error,
-  }) {
-    return success();
+  String toString() {
+    return 'BackupShardResponse()';
   }
+}
 
-  @override
-  @optionalTypeArgs
-  TResult? whenOrNull<TResult extends Object?>({
-    TResult? Function()? success,
-    TResult? Function(String error)? error,
-  }) {
-    return success?.call();
-  }
+/// @nodoc
+class $BackupShardResponseCopyWith<$Res> {
+  $BackupShardResponseCopyWith(
+      BackupShardResponse _, $Res Function(BackupShardResponse) __);
+}
 
-  @override
-  @optionalTypeArgs
-  TResult maybeWhen<TResult extends Object?>({
-    TResult Function()? success,
-    TResult Function(String error)? error,
-    required TResult orElse(),
-  }) {
-    if (success != null) {
-      return success();
-    }
-    return orElse();
-  }
+/// Adds pattern-matching-related methods to [BackupShardResponse].
+extension BackupShardResponsePatterns on BackupShardResponse {
+  /// A variant of `map` that fallback to returning `orElse`.
+  ///
+  /// It is equivalent to doing:
+  /// ```dart
+  /// switch (sealedClass) {
+  ///   case final Subclass value:
+  ///     return ...;
+  ///   case _:
+  ///     return orElse();
+  /// }
+  /// ```
 
-  @override
-  @optionalTypeArgs
-  TResult map<TResult extends Object?>({
-    required TResult Function(BackupShardResponse_Success value) success,
-    required TResult Function(BackupShardResponse_Error value) error,
-  }) {
-    return success(this);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult? mapOrNull<TResult extends Object?>({
-    TResult? Function(BackupShardResponse_Success value)? success,
-    TResult? Function(BackupShardResponse_Error value)? error,
-  }) {
-    return success?.call(this);
-  }
-
-  @override
   @optionalTypeArgs
   TResult maybeMap<TResult extends Object?>({
     TResult Function(BackupShardResponse_Success value)? success,
     TResult Function(BackupShardResponse_Error value)? error,
     required TResult orElse(),
   }) {
-    if (success != null) {
-      return success(this);
+    final _that = this;
+    switch (_that) {
+      case BackupShardResponse_Success() when success != null:
+        return success(_that);
+      case BackupShardResponse_Error() when error != null:
+        return error(_that);
+      case _:
+        return orElse();
     }
-    return orElse();
+  }
+
+  /// A `switch`-like method, using callbacks.
+  ///
+  /// Callbacks receives the raw object, upcasted.
+  /// It is equivalent to doing:
+  /// ```dart
+  /// switch (sealedClass) {
+  ///   case final Subclass value:
+  ///     return ...;
+  ///   case final Subclass2 value:
+  ///     return ...;
+  /// }
+  /// ```
+
+  @optionalTypeArgs
+  TResult map<TResult extends Object?>({
+    required TResult Function(BackupShardResponse_Success value) success,
+    required TResult Function(BackupShardResponse_Error value) error,
+  }) {
+    final _that = this;
+    switch (_that) {
+      case BackupShardResponse_Success():
+        return success(_that);
+      case BackupShardResponse_Error():
+        return error(_that);
+    }
+  }
+
+  /// A variant of `map` that fallback to returning `null`.
+  ///
+  /// It is equivalent to doing:
+  /// ```dart
+  /// switch (sealedClass) {
+  ///   case final Subclass value:
+  ///     return ...;
+  ///   case _:
+  ///     return null;
+  /// }
+  /// ```
+
+  @optionalTypeArgs
+  TResult? mapOrNull<TResult extends Object?>({
+    TResult? Function(BackupShardResponse_Success value)? success,
+    TResult? Function(BackupShardResponse_Error value)? error,
+  }) {
+    final _that = this;
+    switch (_that) {
+      case BackupShardResponse_Success() when success != null:
+        return success(_that);
+      case BackupShardResponse_Error() when error != null:
+        return error(_that);
+      case _:
+        return null;
+    }
+  }
+
+  /// A variant of `when` that fallback to an `orElse` callback.
+  ///
+  /// It is equivalent to doing:
+  /// ```dart
+  /// switch (sealedClass) {
+  ///   case Subclass(:final field):
+  ///     return ...;
+  ///   case _:
+  ///     return orElse();
+  /// }
+  /// ```
+
+  @optionalTypeArgs
+  TResult maybeWhen<TResult extends Object?>({
+    TResult Function()? success,
+    TResult Function(String error)? error,
+    required TResult orElse(),
+  }) {
+    final _that = this;
+    switch (_that) {
+      case BackupShardResponse_Success() when success != null:
+        return success();
+      case BackupShardResponse_Error() when error != null:
+        return error(_that.error);
+      case _:
+        return orElse();
+    }
+  }
+
+  /// A `switch`-like method, using callbacks.
+  ///
+  /// As opposed to `map`, this offers destructuring.
+  /// It is equivalent to doing:
+  /// ```dart
+  /// switch (sealedClass) {
+  ///   case Subclass(:final field):
+  ///     return ...;
+  ///   case Subclass2(:final field2):
+  ///     return ...;
+  /// }
+  /// ```
+
+  @optionalTypeArgs
+  TResult when<TResult extends Object?>({
+    required TResult Function() success,
+    required TResult Function(String error) error,
+  }) {
+    final _that = this;
+    switch (_that) {
+      case BackupShardResponse_Success():
+        return success();
+      case BackupShardResponse_Error():
+        return error(_that.error);
+    }
+  }
+
+  /// A variant of `when` that fallback to returning `null`
+  ///
+  /// It is equivalent to doing:
+  /// ```dart
+  /// switch (sealedClass) {
+  ///   case Subclass(:final field):
+  ///     return ...;
+  ///   case _:
+  ///     return null;
+  /// }
+  /// ```
+
+  @optionalTypeArgs
+  TResult? whenOrNull<TResult extends Object?>({
+    TResult? Function()? success,
+    TResult? Function(String error)? error,
+  }) {
+    final _that = this;
+    switch (_that) {
+      case BackupShardResponse_Success() when success != null:
+        return success();
+      case BackupShardResponse_Error() when error != null:
+        return error(_that.error);
+      case _:
+        return null;
+    }
   }
 }
 
-abstract class BackupShardResponse_Success extends BackupShardResponse {
-  const factory BackupShardResponse_Success() =
-      _$BackupShardResponse_SuccessImpl;
-  const BackupShardResponse_Success._() : super._();
+/// @nodoc
+
+class BackupShardResponse_Success extends BackupShardResponse {
+  const BackupShardResponse_Success() : super._();
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is BackupShardResponse_Success);
+  }
+
+  @override
+  int get hashCode => runtimeType.hashCode;
+
+  @override
+  String toString() {
+    return 'BackupShardResponse.success()';
+  }
 }
 
 /// @nodoc
-abstract class _$$BackupShardResponse_ErrorImplCopyWith<$Res> {
-  factory _$$BackupShardResponse_ErrorImplCopyWith(
-          _$BackupShardResponse_ErrorImpl value,
-          $Res Function(_$BackupShardResponse_ErrorImpl) then) =
-      __$$BackupShardResponse_ErrorImplCopyWithImpl<$Res>;
+
+class BackupShardResponse_Error extends BackupShardResponse {
+  const BackupShardResponse_Error({required this.error}) : super._();
+
+  final String error;
+
+  /// Create a copy of BackupShardResponse
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @pragma('vm:prefer-inline')
+  $BackupShardResponse_ErrorCopyWith<BackupShardResponse_Error> get copyWith =>
+      _$BackupShardResponse_ErrorCopyWithImpl<BackupShardResponse_Error>(
+          this, _$identity);
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is BackupShardResponse_Error &&
+            (identical(other.error, error) || other.error == error));
+  }
+
+  @override
+  int get hashCode => Object.hash(runtimeType, error);
+
+  @override
+  String toString() {
+    return 'BackupShardResponse.error(error: $error)';
+  }
+}
+
+/// @nodoc
+abstract mixin class $BackupShardResponse_ErrorCopyWith<$Res>
+    implements $BackupShardResponseCopyWith<$Res> {
+  factory $BackupShardResponse_ErrorCopyWith(BackupShardResponse_Error value,
+          $Res Function(BackupShardResponse_Error) _then) =
+      _$BackupShardResponse_ErrorCopyWithImpl;
   @useResult
   $Res call({String error});
 }
 
 /// @nodoc
-class __$$BackupShardResponse_ErrorImplCopyWithImpl<$Res>
-    extends _$BackupShardResponseCopyWithImpl<$Res,
-        _$BackupShardResponse_ErrorImpl>
-    implements _$$BackupShardResponse_ErrorImplCopyWith<$Res> {
-  __$$BackupShardResponse_ErrorImplCopyWithImpl(
-      _$BackupShardResponse_ErrorImpl _value,
-      $Res Function(_$BackupShardResponse_ErrorImpl) _then)
-      : super(_value, _then);
+class _$BackupShardResponse_ErrorCopyWithImpl<$Res>
+    implements $BackupShardResponse_ErrorCopyWith<$Res> {
+  _$BackupShardResponse_ErrorCopyWithImpl(this._self, this._then);
+
+  final BackupShardResponse_Error _self;
+  final $Res Function(BackupShardResponse_Error) _then;
 
   /// Create a copy of BackupShardResponse
   /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
-  @override
   $Res call({
     Object? error = null,
   }) {
-    return _then(_$BackupShardResponse_ErrorImpl(
+    return _then(BackupShardResponse_Error(
       error: null == error
-          ? _value.error
+          ? _self.error
           : error // ignore: cast_nullable_to_non_nullable
               as String,
     ));
@@ -225,210 +293,265 @@ class __$$BackupShardResponse_ErrorImplCopyWithImpl<$Res>
 }
 
 /// @nodoc
-
-class _$BackupShardResponse_ErrorImpl extends BackupShardResponse_Error {
-  const _$BackupShardResponse_ErrorImpl({required this.error}) : super._();
-
-  @override
-  final String error;
-
-  @override
-  String toString() {
-    return 'BackupShardResponse.error(error: $error)';
-  }
+mixin _$CreateMagicBackupEvent {
+  Object get field0;
 
   @override
   bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$BackupShardResponse_ErrorImpl &&
-            (identical(other.error, error) || other.error == error));
+            other is CreateMagicBackupEvent &&
+            const DeepCollectionEquality().equals(other.field0, field0));
   }
 
   @override
-  int get hashCode => Object.hash(runtimeType, error);
-
-  /// Create a copy of BackupShardResponse
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  @override
-  @pragma('vm:prefer-inline')
-  _$$BackupShardResponse_ErrorImplCopyWith<_$BackupShardResponse_ErrorImpl>
-      get copyWith => __$$BackupShardResponse_ErrorImplCopyWithImpl<
-          _$BackupShardResponse_ErrorImpl>(this, _$identity);
+  int get hashCode =>
+      Object.hash(runtimeType, const DeepCollectionEquality().hash(field0));
 
   @override
-  @optionalTypeArgs
-  TResult when<TResult extends Object?>({
-    required TResult Function() success,
-    required TResult Function(String error) error,
-  }) {
-    return error(this.error);
+  String toString() {
+    return 'CreateMagicBackupEvent(field0: $field0)';
   }
-
-  @override
-  @optionalTypeArgs
-  TResult? whenOrNull<TResult extends Object?>({
-    TResult? Function()? success,
-    TResult? Function(String error)? error,
-  }) {
-    return error?.call(this.error);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult maybeWhen<TResult extends Object?>({
-    TResult Function()? success,
-    TResult Function(String error)? error,
-    required TResult orElse(),
-  }) {
-    if (error != null) {
-      return error(this.error);
-    }
-    return orElse();
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult map<TResult extends Object?>({
-    required TResult Function(BackupShardResponse_Success value) success,
-    required TResult Function(BackupShardResponse_Error value) error,
-  }) {
-    return error(this);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult? mapOrNull<TResult extends Object?>({
-    TResult? Function(BackupShardResponse_Success value)? success,
-    TResult? Function(BackupShardResponse_Error value)? error,
-  }) {
-    return error?.call(this);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult maybeMap<TResult extends Object?>({
-    TResult Function(BackupShardResponse_Success value)? success,
-    TResult Function(BackupShardResponse_Error value)? error,
-    required TResult orElse(),
-  }) {
-    if (error != null) {
-      return error(this);
-    }
-    return orElse();
-  }
-}
-
-abstract class BackupShardResponse_Error extends BackupShardResponse {
-  const factory BackupShardResponse_Error({required final String error}) =
-      _$BackupShardResponse_ErrorImpl;
-  const BackupShardResponse_Error._() : super._();
-
-  String get error;
-
-  /// Create a copy of BackupShardResponse
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  _$$BackupShardResponse_ErrorImplCopyWith<_$BackupShardResponse_ErrorImpl>
-      get copyWith => throw _privateConstructorUsedError;
 }
 
 /// @nodoc
-mixin _$CreateMagicBackupEvent {
-  Object get field0 => throw _privateConstructorUsedError;
-  @optionalTypeArgs
-  TResult when<TResult extends Object?>({
-    required TResult Function(StartMagicBackup field0) start,
-    required TResult Function(BackupChunk field0) chunk,
-  }) =>
-      throw _privateConstructorUsedError;
-  @optionalTypeArgs
-  TResult? whenOrNull<TResult extends Object?>({
-    TResult? Function(StartMagicBackup field0)? start,
-    TResult? Function(BackupChunk field0)? chunk,
-  }) =>
-      throw _privateConstructorUsedError;
-  @optionalTypeArgs
-  TResult maybeWhen<TResult extends Object?>({
-    TResult Function(StartMagicBackup field0)? start,
-    TResult Function(BackupChunk field0)? chunk,
-    required TResult orElse(),
-  }) =>
-      throw _privateConstructorUsedError;
-  @optionalTypeArgs
-  TResult map<TResult extends Object?>({
-    required TResult Function(CreateMagicBackupEvent_Start value) start,
-    required TResult Function(CreateMagicBackupEvent_Chunk value) chunk,
-  }) =>
-      throw _privateConstructorUsedError;
-  @optionalTypeArgs
-  TResult? mapOrNull<TResult extends Object?>({
-    TResult? Function(CreateMagicBackupEvent_Start value)? start,
-    TResult? Function(CreateMagicBackupEvent_Chunk value)? chunk,
-  }) =>
-      throw _privateConstructorUsedError;
+class $CreateMagicBackupEventCopyWith<$Res> {
+  $CreateMagicBackupEventCopyWith(
+      CreateMagicBackupEvent _, $Res Function(CreateMagicBackupEvent) __);
+}
+
+/// Adds pattern-matching-related methods to [CreateMagicBackupEvent].
+extension CreateMagicBackupEventPatterns on CreateMagicBackupEvent {
+  /// A variant of `map` that fallback to returning `orElse`.
+  ///
+  /// It is equivalent to doing:
+  /// ```dart
+  /// switch (sealedClass) {
+  ///   case final Subclass value:
+  ///     return ...;
+  ///   case _:
+  ///     return orElse();
+  /// }
+  /// ```
+
   @optionalTypeArgs
   TResult maybeMap<TResult extends Object?>({
     TResult Function(CreateMagicBackupEvent_Start value)? start,
     TResult Function(CreateMagicBackupEvent_Chunk value)? chunk,
     required TResult orElse(),
-  }) =>
-      throw _privateConstructorUsedError;
+  }) {
+    final _that = this;
+    switch (_that) {
+      case CreateMagicBackupEvent_Start() when start != null:
+        return start(_that);
+      case CreateMagicBackupEvent_Chunk() when chunk != null:
+        return chunk(_that);
+      case _:
+        return orElse();
+    }
+  }
+
+  /// A `switch`-like method, using callbacks.
+  ///
+  /// Callbacks receives the raw object, upcasted.
+  /// It is equivalent to doing:
+  /// ```dart
+  /// switch (sealedClass) {
+  ///   case final Subclass value:
+  ///     return ...;
+  ///   case final Subclass2 value:
+  ///     return ...;
+  /// }
+  /// ```
+
+  @optionalTypeArgs
+  TResult map<TResult extends Object?>({
+    required TResult Function(CreateMagicBackupEvent_Start value) start,
+    required TResult Function(CreateMagicBackupEvent_Chunk value) chunk,
+  }) {
+    final _that = this;
+    switch (_that) {
+      case CreateMagicBackupEvent_Start():
+        return start(_that);
+      case CreateMagicBackupEvent_Chunk():
+        return chunk(_that);
+    }
+  }
+
+  /// A variant of `map` that fallback to returning `null`.
+  ///
+  /// It is equivalent to doing:
+  /// ```dart
+  /// switch (sealedClass) {
+  ///   case final Subclass value:
+  ///     return ...;
+  ///   case _:
+  ///     return null;
+  /// }
+  /// ```
+
+  @optionalTypeArgs
+  TResult? mapOrNull<TResult extends Object?>({
+    TResult? Function(CreateMagicBackupEvent_Start value)? start,
+    TResult? Function(CreateMagicBackupEvent_Chunk value)? chunk,
+  }) {
+    final _that = this;
+    switch (_that) {
+      case CreateMagicBackupEvent_Start() when start != null:
+        return start(_that);
+      case CreateMagicBackupEvent_Chunk() when chunk != null:
+        return chunk(_that);
+      case _:
+        return null;
+    }
+  }
+
+  /// A variant of `when` that fallback to an `orElse` callback.
+  ///
+  /// It is equivalent to doing:
+  /// ```dart
+  /// switch (sealedClass) {
+  ///   case Subclass(:final field):
+  ///     return ...;
+  ///   case _:
+  ///     return orElse();
+  /// }
+  /// ```
+
+  @optionalTypeArgs
+  TResult maybeWhen<TResult extends Object?>({
+    TResult Function(StartMagicBackup field0)? start,
+    TResult Function(BackupChunk field0)? chunk,
+    required TResult orElse(),
+  }) {
+    final _that = this;
+    switch (_that) {
+      case CreateMagicBackupEvent_Start() when start != null:
+        return start(_that.field0);
+      case CreateMagicBackupEvent_Chunk() when chunk != null:
+        return chunk(_that.field0);
+      case _:
+        return orElse();
+    }
+  }
+
+  /// A `switch`-like method, using callbacks.
+  ///
+  /// As opposed to `map`, this offers destructuring.
+  /// It is equivalent to doing:
+  /// ```dart
+  /// switch (sealedClass) {
+  ///   case Subclass(:final field):
+  ///     return ...;
+  ///   case Subclass2(:final field2):
+  ///     return ...;
+  /// }
+  /// ```
+
+  @optionalTypeArgs
+  TResult when<TResult extends Object?>({
+    required TResult Function(StartMagicBackup field0) start,
+    required TResult Function(BackupChunk field0) chunk,
+  }) {
+    final _that = this;
+    switch (_that) {
+      case CreateMagicBackupEvent_Start():
+        return start(_that.field0);
+      case CreateMagicBackupEvent_Chunk():
+        return chunk(_that.field0);
+    }
+  }
+
+  /// A variant of `when` that fallback to returning `null`
+  ///
+  /// It is equivalent to doing:
+  /// ```dart
+  /// switch (sealedClass) {
+  ///   case Subclass(:final field):
+  ///     return ...;
+  ///   case _:
+  ///     return null;
+  /// }
+  /// ```
+
+  @optionalTypeArgs
+  TResult? whenOrNull<TResult extends Object?>({
+    TResult? Function(StartMagicBackup field0)? start,
+    TResult? Function(BackupChunk field0)? chunk,
+  }) {
+    final _that = this;
+    switch (_that) {
+      case CreateMagicBackupEvent_Start() when start != null:
+        return start(_that.field0);
+      case CreateMagicBackupEvent_Chunk() when chunk != null:
+        return chunk(_that.field0);
+      case _:
+        return null;
+    }
+  }
 }
 
 /// @nodoc
-abstract class $CreateMagicBackupEventCopyWith<$Res> {
-  factory $CreateMagicBackupEventCopyWith(CreateMagicBackupEvent value,
-          $Res Function(CreateMagicBackupEvent) then) =
-      _$CreateMagicBackupEventCopyWithImpl<$Res, CreateMagicBackupEvent>;
-}
 
-/// @nodoc
-class _$CreateMagicBackupEventCopyWithImpl<$Res,
-        $Val extends CreateMagicBackupEvent>
-    implements $CreateMagicBackupEventCopyWith<$Res> {
-  _$CreateMagicBackupEventCopyWithImpl(this._value, this._then);
+class CreateMagicBackupEvent_Start extends CreateMagicBackupEvent {
+  const CreateMagicBackupEvent_Start(this.field0) : super._();
 
-  // ignore: unused_field
-  final $Val _value;
-  // ignore: unused_field
-  final $Res Function($Val) _then;
+  @override
+  final StartMagicBackup field0;
 
   /// Create a copy of CreateMagicBackupEvent
   /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @pragma('vm:prefer-inline')
+  $CreateMagicBackupEvent_StartCopyWith<CreateMagicBackupEvent_Start>
+      get copyWith => _$CreateMagicBackupEvent_StartCopyWithImpl<
+          CreateMagicBackupEvent_Start>(this, _$identity);
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is CreateMagicBackupEvent_Start &&
+            (identical(other.field0, field0) || other.field0 == field0));
+  }
+
+  @override
+  int get hashCode => Object.hash(runtimeType, field0);
+
+  @override
+  String toString() {
+    return 'CreateMagicBackupEvent.start(field0: $field0)';
+  }
 }
 
 /// @nodoc
-abstract class _$$CreateMagicBackupEvent_StartImplCopyWith<$Res> {
-  factory _$$CreateMagicBackupEvent_StartImplCopyWith(
-          _$CreateMagicBackupEvent_StartImpl value,
-          $Res Function(_$CreateMagicBackupEvent_StartImpl) then) =
-      __$$CreateMagicBackupEvent_StartImplCopyWithImpl<$Res>;
+abstract mixin class $CreateMagicBackupEvent_StartCopyWith<$Res>
+    implements $CreateMagicBackupEventCopyWith<$Res> {
+  factory $CreateMagicBackupEvent_StartCopyWith(
+          CreateMagicBackupEvent_Start value,
+          $Res Function(CreateMagicBackupEvent_Start) _then) =
+      _$CreateMagicBackupEvent_StartCopyWithImpl;
   @useResult
   $Res call({StartMagicBackup field0});
 }
 
 /// @nodoc
-class __$$CreateMagicBackupEvent_StartImplCopyWithImpl<$Res>
-    extends _$CreateMagicBackupEventCopyWithImpl<$Res,
-        _$CreateMagicBackupEvent_StartImpl>
-    implements _$$CreateMagicBackupEvent_StartImplCopyWith<$Res> {
-  __$$CreateMagicBackupEvent_StartImplCopyWithImpl(
-      _$CreateMagicBackupEvent_StartImpl _value,
-      $Res Function(_$CreateMagicBackupEvent_StartImpl) _then)
-      : super(_value, _then);
+class _$CreateMagicBackupEvent_StartCopyWithImpl<$Res>
+    implements $CreateMagicBackupEvent_StartCopyWith<$Res> {
+  _$CreateMagicBackupEvent_StartCopyWithImpl(this._self, this._then);
+
+  final CreateMagicBackupEvent_Start _self;
+  final $Res Function(CreateMagicBackupEvent_Start) _then;
 
   /// Create a copy of CreateMagicBackupEvent
   /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
-  @override
   $Res call({
     Object? field0 = null,
   }) {
-    return _then(_$CreateMagicBackupEvent_StartImpl(
+    return _then(CreateMagicBackupEvent_Start(
       null == field0
-          ? _value.field0
+          ? _self.field0
           : field0 // ignore: cast_nullable_to_non_nullable
               as StartMagicBackup,
     ));
@@ -437,147 +560,65 @@ class __$$CreateMagicBackupEvent_StartImplCopyWithImpl<$Res>
 
 /// @nodoc
 
-class _$CreateMagicBackupEvent_StartImpl extends CreateMagicBackupEvent_Start {
-  const _$CreateMagicBackupEvent_StartImpl(this.field0) : super._();
+class CreateMagicBackupEvent_Chunk extends CreateMagicBackupEvent {
+  const CreateMagicBackupEvent_Chunk(this.field0) : super._();
 
   @override
-  final StartMagicBackup field0;
+  final BackupChunk field0;
 
-  @override
-  String toString() {
-    return 'CreateMagicBackupEvent.start(field0: $field0)';
-  }
+  /// Create a copy of CreateMagicBackupEvent
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @pragma('vm:prefer-inline')
+  $CreateMagicBackupEvent_ChunkCopyWith<CreateMagicBackupEvent_Chunk>
+      get copyWith => _$CreateMagicBackupEvent_ChunkCopyWithImpl<
+          CreateMagicBackupEvent_Chunk>(this, _$identity);
 
   @override
   bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$CreateMagicBackupEvent_StartImpl &&
+            other is CreateMagicBackupEvent_Chunk &&
             (identical(other.field0, field0) || other.field0 == field0));
   }
 
   @override
   int get hashCode => Object.hash(runtimeType, field0);
 
-  /// Create a copy of CreateMagicBackupEvent
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
-  @pragma('vm:prefer-inline')
-  _$$CreateMagicBackupEvent_StartImplCopyWith<
-          _$CreateMagicBackupEvent_StartImpl>
-      get copyWith => __$$CreateMagicBackupEvent_StartImplCopyWithImpl<
-          _$CreateMagicBackupEvent_StartImpl>(this, _$identity);
-
-  @override
-  @optionalTypeArgs
-  TResult when<TResult extends Object?>({
-    required TResult Function(StartMagicBackup field0) start,
-    required TResult Function(BackupChunk field0) chunk,
-  }) {
-    return start(field0);
+  String toString() {
+    return 'CreateMagicBackupEvent.chunk(field0: $field0)';
   }
-
-  @override
-  @optionalTypeArgs
-  TResult? whenOrNull<TResult extends Object?>({
-    TResult? Function(StartMagicBackup field0)? start,
-    TResult? Function(BackupChunk field0)? chunk,
-  }) {
-    return start?.call(field0);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult maybeWhen<TResult extends Object?>({
-    TResult Function(StartMagicBackup field0)? start,
-    TResult Function(BackupChunk field0)? chunk,
-    required TResult orElse(),
-  }) {
-    if (start != null) {
-      return start(field0);
-    }
-    return orElse();
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult map<TResult extends Object?>({
-    required TResult Function(CreateMagicBackupEvent_Start value) start,
-    required TResult Function(CreateMagicBackupEvent_Chunk value) chunk,
-  }) {
-    return start(this);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult? mapOrNull<TResult extends Object?>({
-    TResult? Function(CreateMagicBackupEvent_Start value)? start,
-    TResult? Function(CreateMagicBackupEvent_Chunk value)? chunk,
-  }) {
-    return start?.call(this);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult maybeMap<TResult extends Object?>({
-    TResult Function(CreateMagicBackupEvent_Start value)? start,
-    TResult Function(CreateMagicBackupEvent_Chunk value)? chunk,
-    required TResult orElse(),
-  }) {
-    if (start != null) {
-      return start(this);
-    }
-    return orElse();
-  }
-}
-
-abstract class CreateMagicBackupEvent_Start extends CreateMagicBackupEvent {
-  const factory CreateMagicBackupEvent_Start(final StartMagicBackup field0) =
-      _$CreateMagicBackupEvent_StartImpl;
-  const CreateMagicBackupEvent_Start._() : super._();
-
-  @override
-  StartMagicBackup get field0;
-
-  /// Create a copy of CreateMagicBackupEvent
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  _$$CreateMagicBackupEvent_StartImplCopyWith<
-          _$CreateMagicBackupEvent_StartImpl>
-      get copyWith => throw _privateConstructorUsedError;
 }
 
 /// @nodoc
-abstract class _$$CreateMagicBackupEvent_ChunkImplCopyWith<$Res> {
-  factory _$$CreateMagicBackupEvent_ChunkImplCopyWith(
-          _$CreateMagicBackupEvent_ChunkImpl value,
-          $Res Function(_$CreateMagicBackupEvent_ChunkImpl) then) =
-      __$$CreateMagicBackupEvent_ChunkImplCopyWithImpl<$Res>;
+abstract mixin class $CreateMagicBackupEvent_ChunkCopyWith<$Res>
+    implements $CreateMagicBackupEventCopyWith<$Res> {
+  factory $CreateMagicBackupEvent_ChunkCopyWith(
+          CreateMagicBackupEvent_Chunk value,
+          $Res Function(CreateMagicBackupEvent_Chunk) _then) =
+      _$CreateMagicBackupEvent_ChunkCopyWithImpl;
   @useResult
   $Res call({BackupChunk field0});
 }
 
 /// @nodoc
-class __$$CreateMagicBackupEvent_ChunkImplCopyWithImpl<$Res>
-    extends _$CreateMagicBackupEventCopyWithImpl<$Res,
-        _$CreateMagicBackupEvent_ChunkImpl>
-    implements _$$CreateMagicBackupEvent_ChunkImplCopyWith<$Res> {
-  __$$CreateMagicBackupEvent_ChunkImplCopyWithImpl(
-      _$CreateMagicBackupEvent_ChunkImpl _value,
-      $Res Function(_$CreateMagicBackupEvent_ChunkImpl) _then)
-      : super(_value, _then);
+class _$CreateMagicBackupEvent_ChunkCopyWithImpl<$Res>
+    implements $CreateMagicBackupEvent_ChunkCopyWith<$Res> {
+  _$CreateMagicBackupEvent_ChunkCopyWithImpl(this._self, this._then);
+
+  final CreateMagicBackupEvent_Chunk _self;
+  final $Res Function(CreateMagicBackupEvent_Chunk) _then;
 
   /// Create a copy of CreateMagicBackupEvent
   /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
-  @override
   $Res call({
     Object? field0 = null,
   }) {
-    return _then(_$CreateMagicBackupEvent_ChunkImpl(
+    return _then(CreateMagicBackupEvent_Chunk(
       null == field0
-          ? _value.field0
+          ? _self.field0
           : field0 // ignore: cast_nullable_to_non_nullable
               as BackupChunk,
     ));
@@ -585,324 +626,280 @@ class __$$CreateMagicBackupEvent_ChunkImplCopyWithImpl<$Res>
 }
 
 /// @nodoc
-
-class _$CreateMagicBackupEvent_ChunkImpl extends CreateMagicBackupEvent_Chunk {
-  const _$CreateMagicBackupEvent_ChunkImpl(this.field0) : super._();
-
-  @override
-  final BackupChunk field0;
-
-  @override
-  String toString() {
-    return 'CreateMagicBackupEvent.chunk(field0: $field0)';
-  }
-
-  @override
-  bool operator ==(Object other) {
-    return identical(this, other) ||
-        (other.runtimeType == runtimeType &&
-            other is _$CreateMagicBackupEvent_ChunkImpl &&
-            (identical(other.field0, field0) || other.field0 == field0));
-  }
-
-  @override
-  int get hashCode => Object.hash(runtimeType, field0);
-
-  /// Create a copy of CreateMagicBackupEvent
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  @override
-  @pragma('vm:prefer-inline')
-  _$$CreateMagicBackupEvent_ChunkImplCopyWith<
-          _$CreateMagicBackupEvent_ChunkImpl>
-      get copyWith => __$$CreateMagicBackupEvent_ChunkImplCopyWithImpl<
-          _$CreateMagicBackupEvent_ChunkImpl>(this, _$identity);
-
-  @override
-  @optionalTypeArgs
-  TResult when<TResult extends Object?>({
-    required TResult Function(StartMagicBackup field0) start,
-    required TResult Function(BackupChunk field0) chunk,
-  }) {
-    return chunk(field0);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult? whenOrNull<TResult extends Object?>({
-    TResult? Function(StartMagicBackup field0)? start,
-    TResult? Function(BackupChunk field0)? chunk,
-  }) {
-    return chunk?.call(field0);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult maybeWhen<TResult extends Object?>({
-    TResult Function(StartMagicBackup field0)? start,
-    TResult Function(BackupChunk field0)? chunk,
-    required TResult orElse(),
-  }) {
-    if (chunk != null) {
-      return chunk(field0);
-    }
-    return orElse();
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult map<TResult extends Object?>({
-    required TResult Function(CreateMagicBackupEvent_Start value) start,
-    required TResult Function(CreateMagicBackupEvent_Chunk value) chunk,
-  }) {
-    return chunk(this);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult? mapOrNull<TResult extends Object?>({
-    TResult? Function(CreateMagicBackupEvent_Start value)? start,
-    TResult? Function(CreateMagicBackupEvent_Chunk value)? chunk,
-  }) {
-    return chunk?.call(this);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult maybeMap<TResult extends Object?>({
-    TResult Function(CreateMagicBackupEvent_Start value)? start,
-    TResult Function(CreateMagicBackupEvent_Chunk value)? chunk,
-    required TResult orElse(),
-  }) {
-    if (chunk != null) {
-      return chunk(this);
-    }
-    return orElse();
-  }
-}
-
-abstract class CreateMagicBackupEvent_Chunk extends CreateMagicBackupEvent {
-  const factory CreateMagicBackupEvent_Chunk(final BackupChunk field0) =
-      _$CreateMagicBackupEvent_ChunkImpl;
-  const CreateMagicBackupEvent_Chunk._() : super._();
-
-  @override
-  BackupChunk get field0;
-
-  /// Create a copy of CreateMagicBackupEvent
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  _$$CreateMagicBackupEvent_ChunkImplCopyWith<
-          _$CreateMagicBackupEvent_ChunkImpl>
-      get copyWith => throw _privateConstructorUsedError;
-}
-
-/// @nodoc
 mixin _$CreateMagicBackupResult {
-  @optionalTypeArgs
-  TResult when<TResult extends Object?>({
-    required TResult Function() success,
-    required TResult Function(String error) error,
-  }) =>
-      throw _privateConstructorUsedError;
-  @optionalTypeArgs
-  TResult? whenOrNull<TResult extends Object?>({
-    TResult? Function()? success,
-    TResult? Function(String error)? error,
-  }) =>
-      throw _privateConstructorUsedError;
-  @optionalTypeArgs
-  TResult maybeWhen<TResult extends Object?>({
-    TResult Function()? success,
-    TResult Function(String error)? error,
-    required TResult orElse(),
-  }) =>
-      throw _privateConstructorUsedError;
-  @optionalTypeArgs
-  TResult map<TResult extends Object?>({
-    required TResult Function(CreateMagicBackupResult_Success value) success,
-    required TResult Function(CreateMagicBackupResult_Error value) error,
-  }) =>
-      throw _privateConstructorUsedError;
-  @optionalTypeArgs
-  TResult? mapOrNull<TResult extends Object?>({
-    TResult? Function(CreateMagicBackupResult_Success value)? success,
-    TResult? Function(CreateMagicBackupResult_Error value)? error,
-  }) =>
-      throw _privateConstructorUsedError;
-  @optionalTypeArgs
-  TResult maybeMap<TResult extends Object?>({
-    TResult Function(CreateMagicBackupResult_Success value)? success,
-    TResult Function(CreateMagicBackupResult_Error value)? error,
-    required TResult orElse(),
-  }) =>
-      throw _privateConstructorUsedError;
-}
-
-/// @nodoc
-abstract class $CreateMagicBackupResultCopyWith<$Res> {
-  factory $CreateMagicBackupResultCopyWith(CreateMagicBackupResult value,
-          $Res Function(CreateMagicBackupResult) then) =
-      _$CreateMagicBackupResultCopyWithImpl<$Res, CreateMagicBackupResult>;
-}
-
-/// @nodoc
-class _$CreateMagicBackupResultCopyWithImpl<$Res,
-        $Val extends CreateMagicBackupResult>
-    implements $CreateMagicBackupResultCopyWith<$Res> {
-  _$CreateMagicBackupResultCopyWithImpl(this._value, this._then);
-
-  // ignore: unused_field
-  final $Val _value;
-  // ignore: unused_field
-  final $Res Function($Val) _then;
-
-  /// Create a copy of CreateMagicBackupResult
-  /// with the given fields replaced by the non-null parameter values.
-}
-
-/// @nodoc
-abstract class _$$CreateMagicBackupResult_SuccessImplCopyWith<$Res> {
-  factory _$$CreateMagicBackupResult_SuccessImplCopyWith(
-          _$CreateMagicBackupResult_SuccessImpl value,
-          $Res Function(_$CreateMagicBackupResult_SuccessImpl) then) =
-      __$$CreateMagicBackupResult_SuccessImplCopyWithImpl<$Res>;
-}
-
-/// @nodoc
-class __$$CreateMagicBackupResult_SuccessImplCopyWithImpl<$Res>
-    extends _$CreateMagicBackupResultCopyWithImpl<$Res,
-        _$CreateMagicBackupResult_SuccessImpl>
-    implements _$$CreateMagicBackupResult_SuccessImplCopyWith<$Res> {
-  __$$CreateMagicBackupResult_SuccessImplCopyWithImpl(
-      _$CreateMagicBackupResult_SuccessImpl _value,
-      $Res Function(_$CreateMagicBackupResult_SuccessImpl) _then)
-      : super(_value, _then);
-
-  /// Create a copy of CreateMagicBackupResult
-  /// with the given fields replaced by the non-null parameter values.
-}
-
-/// @nodoc
-
-class _$CreateMagicBackupResult_SuccessImpl
-    extends CreateMagicBackupResult_Success {
-  const _$CreateMagicBackupResult_SuccessImpl() : super._();
-
-  @override
-  String toString() {
-    return 'CreateMagicBackupResult.success()';
-  }
-
   @override
   bool operator ==(Object other) {
     return identical(this, other) ||
-        (other.runtimeType == runtimeType &&
-            other is _$CreateMagicBackupResult_SuccessImpl);
+        (other.runtimeType == runtimeType && other is CreateMagicBackupResult);
   }
 
   @override
   int get hashCode => runtimeType.hashCode;
 
   @override
-  @optionalTypeArgs
-  TResult when<TResult extends Object?>({
-    required TResult Function() success,
-    required TResult Function(String error) error,
-  }) {
-    return success();
+  String toString() {
+    return 'CreateMagicBackupResult()';
   }
+}
 
-  @override
-  @optionalTypeArgs
-  TResult? whenOrNull<TResult extends Object?>({
-    TResult? Function()? success,
-    TResult? Function(String error)? error,
-  }) {
-    return success?.call();
-  }
+/// @nodoc
+class $CreateMagicBackupResultCopyWith<$Res> {
+  $CreateMagicBackupResultCopyWith(
+      CreateMagicBackupResult _, $Res Function(CreateMagicBackupResult) __);
+}
 
-  @override
-  @optionalTypeArgs
-  TResult maybeWhen<TResult extends Object?>({
-    TResult Function()? success,
-    TResult Function(String error)? error,
-    required TResult orElse(),
-  }) {
-    if (success != null) {
-      return success();
-    }
-    return orElse();
-  }
+/// Adds pattern-matching-related methods to [CreateMagicBackupResult].
+extension CreateMagicBackupResultPatterns on CreateMagicBackupResult {
+  /// A variant of `map` that fallback to returning `orElse`.
+  ///
+  /// It is equivalent to doing:
+  /// ```dart
+  /// switch (sealedClass) {
+  ///   case final Subclass value:
+  ///     return ...;
+  ///   case _:
+  ///     return orElse();
+  /// }
+  /// ```
 
-  @override
-  @optionalTypeArgs
-  TResult map<TResult extends Object?>({
-    required TResult Function(CreateMagicBackupResult_Success value) success,
-    required TResult Function(CreateMagicBackupResult_Error value) error,
-  }) {
-    return success(this);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult? mapOrNull<TResult extends Object?>({
-    TResult? Function(CreateMagicBackupResult_Success value)? success,
-    TResult? Function(CreateMagicBackupResult_Error value)? error,
-  }) {
-    return success?.call(this);
-  }
-
-  @override
   @optionalTypeArgs
   TResult maybeMap<TResult extends Object?>({
     TResult Function(CreateMagicBackupResult_Success value)? success,
     TResult Function(CreateMagicBackupResult_Error value)? error,
     required TResult orElse(),
   }) {
-    if (success != null) {
-      return success(this);
+    final _that = this;
+    switch (_that) {
+      case CreateMagicBackupResult_Success() when success != null:
+        return success(_that);
+      case CreateMagicBackupResult_Error() when error != null:
+        return error(_that);
+      case _:
+        return orElse();
     }
-    return orElse();
+  }
+
+  /// A `switch`-like method, using callbacks.
+  ///
+  /// Callbacks receives the raw object, upcasted.
+  /// It is equivalent to doing:
+  /// ```dart
+  /// switch (sealedClass) {
+  ///   case final Subclass value:
+  ///     return ...;
+  ///   case final Subclass2 value:
+  ///     return ...;
+  /// }
+  /// ```
+
+  @optionalTypeArgs
+  TResult map<TResult extends Object?>({
+    required TResult Function(CreateMagicBackupResult_Success value) success,
+    required TResult Function(CreateMagicBackupResult_Error value) error,
+  }) {
+    final _that = this;
+    switch (_that) {
+      case CreateMagicBackupResult_Success():
+        return success(_that);
+      case CreateMagicBackupResult_Error():
+        return error(_that);
+    }
+  }
+
+  /// A variant of `map` that fallback to returning `null`.
+  ///
+  /// It is equivalent to doing:
+  /// ```dart
+  /// switch (sealedClass) {
+  ///   case final Subclass value:
+  ///     return ...;
+  ///   case _:
+  ///     return null;
+  /// }
+  /// ```
+
+  @optionalTypeArgs
+  TResult? mapOrNull<TResult extends Object?>({
+    TResult? Function(CreateMagicBackupResult_Success value)? success,
+    TResult? Function(CreateMagicBackupResult_Error value)? error,
+  }) {
+    final _that = this;
+    switch (_that) {
+      case CreateMagicBackupResult_Success() when success != null:
+        return success(_that);
+      case CreateMagicBackupResult_Error() when error != null:
+        return error(_that);
+      case _:
+        return null;
+    }
+  }
+
+  /// A variant of `when` that fallback to an `orElse` callback.
+  ///
+  /// It is equivalent to doing:
+  /// ```dart
+  /// switch (sealedClass) {
+  ///   case Subclass(:final field):
+  ///     return ...;
+  ///   case _:
+  ///     return orElse();
+  /// }
+  /// ```
+
+  @optionalTypeArgs
+  TResult maybeWhen<TResult extends Object?>({
+    TResult Function()? success,
+    TResult Function(String error)? error,
+    required TResult orElse(),
+  }) {
+    final _that = this;
+    switch (_that) {
+      case CreateMagicBackupResult_Success() when success != null:
+        return success();
+      case CreateMagicBackupResult_Error() when error != null:
+        return error(_that.error);
+      case _:
+        return orElse();
+    }
+  }
+
+  /// A `switch`-like method, using callbacks.
+  ///
+  /// As opposed to `map`, this offers destructuring.
+  /// It is equivalent to doing:
+  /// ```dart
+  /// switch (sealedClass) {
+  ///   case Subclass(:final field):
+  ///     return ...;
+  ///   case Subclass2(:final field2):
+  ///     return ...;
+  /// }
+  /// ```
+
+  @optionalTypeArgs
+  TResult when<TResult extends Object?>({
+    required TResult Function() success,
+    required TResult Function(String error) error,
+  }) {
+    final _that = this;
+    switch (_that) {
+      case CreateMagicBackupResult_Success():
+        return success();
+      case CreateMagicBackupResult_Error():
+        return error(_that.error);
+    }
+  }
+
+  /// A variant of `when` that fallback to returning `null`
+  ///
+  /// It is equivalent to doing:
+  /// ```dart
+  /// switch (sealedClass) {
+  ///   case Subclass(:final field):
+  ///     return ...;
+  ///   case _:
+  ///     return null;
+  /// }
+  /// ```
+
+  @optionalTypeArgs
+  TResult? whenOrNull<TResult extends Object?>({
+    TResult? Function()? success,
+    TResult? Function(String error)? error,
+  }) {
+    final _that = this;
+    switch (_that) {
+      case CreateMagicBackupResult_Success() when success != null:
+        return success();
+      case CreateMagicBackupResult_Error() when error != null:
+        return error(_that.error);
+      case _:
+        return null;
+    }
   }
 }
 
-abstract class CreateMagicBackupResult_Success extends CreateMagicBackupResult {
-  const factory CreateMagicBackupResult_Success() =
-      _$CreateMagicBackupResult_SuccessImpl;
-  const CreateMagicBackupResult_Success._() : super._();
+/// @nodoc
+
+class CreateMagicBackupResult_Success extends CreateMagicBackupResult {
+  const CreateMagicBackupResult_Success() : super._();
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is CreateMagicBackupResult_Success);
+  }
+
+  @override
+  int get hashCode => runtimeType.hashCode;
+
+  @override
+  String toString() {
+    return 'CreateMagicBackupResult.success()';
+  }
 }
 
 /// @nodoc
-abstract class _$$CreateMagicBackupResult_ErrorImplCopyWith<$Res> {
-  factory _$$CreateMagicBackupResult_ErrorImplCopyWith(
-          _$CreateMagicBackupResult_ErrorImpl value,
-          $Res Function(_$CreateMagicBackupResult_ErrorImpl) then) =
-      __$$CreateMagicBackupResult_ErrorImplCopyWithImpl<$Res>;
+
+class CreateMagicBackupResult_Error extends CreateMagicBackupResult {
+  const CreateMagicBackupResult_Error({required this.error}) : super._();
+
+  final String error;
+
+  /// Create a copy of CreateMagicBackupResult
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @pragma('vm:prefer-inline')
+  $CreateMagicBackupResult_ErrorCopyWith<CreateMagicBackupResult_Error>
+      get copyWith => _$CreateMagicBackupResult_ErrorCopyWithImpl<
+          CreateMagicBackupResult_Error>(this, _$identity);
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is CreateMagicBackupResult_Error &&
+            (identical(other.error, error) || other.error == error));
+  }
+
+  @override
+  int get hashCode => Object.hash(runtimeType, error);
+
+  @override
+  String toString() {
+    return 'CreateMagicBackupResult.error(error: $error)';
+  }
+}
+
+/// @nodoc
+abstract mixin class $CreateMagicBackupResult_ErrorCopyWith<$Res>
+    implements $CreateMagicBackupResultCopyWith<$Res> {
+  factory $CreateMagicBackupResult_ErrorCopyWith(
+          CreateMagicBackupResult_Error value,
+          $Res Function(CreateMagicBackupResult_Error) _then) =
+      _$CreateMagicBackupResult_ErrorCopyWithImpl;
   @useResult
   $Res call({String error});
 }
 
 /// @nodoc
-class __$$CreateMagicBackupResult_ErrorImplCopyWithImpl<$Res>
-    extends _$CreateMagicBackupResultCopyWithImpl<$Res,
-        _$CreateMagicBackupResult_ErrorImpl>
-    implements _$$CreateMagicBackupResult_ErrorImplCopyWith<$Res> {
-  __$$CreateMagicBackupResult_ErrorImplCopyWithImpl(
-      _$CreateMagicBackupResult_ErrorImpl _value,
-      $Res Function(_$CreateMagicBackupResult_ErrorImpl) _then)
-      : super(_value, _then);
+class _$CreateMagicBackupResult_ErrorCopyWithImpl<$Res>
+    implements $CreateMagicBackupResult_ErrorCopyWith<$Res> {
+  _$CreateMagicBackupResult_ErrorCopyWithImpl(this._self, this._then);
+
+  final CreateMagicBackupResult_Error _self;
+  final $Res Function(CreateMagicBackupResult_Error) _then;
 
   /// Create a copy of CreateMagicBackupResult
   /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
-  @override
   $Res call({
     Object? error = null,
   }) {
-    return _then(_$CreateMagicBackupResult_ErrorImpl(
+    return _then(CreateMagicBackupResult_Error(
       error: null == error
-          ? _value.error
+          ? _self.error
           : error // ignore: cast_nullable_to_non_nullable
               as String,
     ));
@@ -910,219 +907,283 @@ class __$$CreateMagicBackupResult_ErrorImplCopyWithImpl<$Res>
 }
 
 /// @nodoc
-
-class _$CreateMagicBackupResult_ErrorImpl
-    extends CreateMagicBackupResult_Error {
-  const _$CreateMagicBackupResult_ErrorImpl({required this.error}) : super._();
-
-  @override
-  final String error;
-
-  @override
-  String toString() {
-    return 'CreateMagicBackupResult.error(error: $error)';
-  }
+mixin _$MagicBackupRequestV2 {
+  Object get field0;
 
   @override
   bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$CreateMagicBackupResult_ErrorImpl &&
-            (identical(other.error, error) || other.error == error));
+            other is MagicBackupRequestV2 &&
+            const DeepCollectionEquality().equals(other.field0, field0));
   }
 
   @override
-  int get hashCode => Object.hash(runtimeType, error);
-
-  /// Create a copy of CreateMagicBackupResult
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  @override
-  @pragma('vm:prefer-inline')
-  _$$CreateMagicBackupResult_ErrorImplCopyWith<
-          _$CreateMagicBackupResult_ErrorImpl>
-      get copyWith => __$$CreateMagicBackupResult_ErrorImplCopyWithImpl<
-          _$CreateMagicBackupResult_ErrorImpl>(this, _$identity);
+  int get hashCode =>
+      Object.hash(runtimeType, const DeepCollectionEquality().hash(field0));
 
   @override
-  @optionalTypeArgs
-  TResult when<TResult extends Object?>({
-    required TResult Function() success,
-    required TResult Function(String error) error,
-  }) {
-    return error(this.error);
+  String toString() {
+    return 'MagicBackupRequestV2(field0: $field0)';
   }
-
-  @override
-  @optionalTypeArgs
-  TResult? whenOrNull<TResult extends Object?>({
-    TResult? Function()? success,
-    TResult? Function(String error)? error,
-  }) {
-    return error?.call(this.error);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult maybeWhen<TResult extends Object?>({
-    TResult Function()? success,
-    TResult Function(String error)? error,
-    required TResult orElse(),
-  }) {
-    if (error != null) {
-      return error(this.error);
-    }
-    return orElse();
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult map<TResult extends Object?>({
-    required TResult Function(CreateMagicBackupResult_Success value) success,
-    required TResult Function(CreateMagicBackupResult_Error value) error,
-  }) {
-    return error(this);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult? mapOrNull<TResult extends Object?>({
-    TResult? Function(CreateMagicBackupResult_Success value)? success,
-    TResult? Function(CreateMagicBackupResult_Error value)? error,
-  }) {
-    return error?.call(this);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult maybeMap<TResult extends Object?>({
-    TResult Function(CreateMagicBackupResult_Success value)? success,
-    TResult Function(CreateMagicBackupResult_Error value)? error,
-    required TResult orElse(),
-  }) {
-    if (error != null) {
-      return error(this);
-    }
-    return orElse();
-  }
-}
-
-abstract class CreateMagicBackupResult_Error extends CreateMagicBackupResult {
-  const factory CreateMagicBackupResult_Error({required final String error}) =
-      _$CreateMagicBackupResult_ErrorImpl;
-  const CreateMagicBackupResult_Error._() : super._();
-
-  String get error;
-
-  /// Create a copy of CreateMagicBackupResult
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  _$$CreateMagicBackupResult_ErrorImplCopyWith<
-          _$CreateMagicBackupResult_ErrorImpl>
-      get copyWith => throw _privateConstructorUsedError;
 }
 
 /// @nodoc
-mixin _$MagicBackupRequestV2 {
-  Object get field0 => throw _privateConstructorUsedError;
-  @optionalTypeArgs
-  TResult when<TResult extends Object?>({
-    required TResult Function(CreateMagicBackupV2 field0) create,
-    required TResult Function(GetMagicBackupV2 field0) get_,
-    required TResult Function(DeleteMagicBackupV2 field0) delete,
-  }) =>
-      throw _privateConstructorUsedError;
-  @optionalTypeArgs
-  TResult? whenOrNull<TResult extends Object?>({
-    TResult? Function(CreateMagicBackupV2 field0)? create,
-    TResult? Function(GetMagicBackupV2 field0)? get_,
-    TResult? Function(DeleteMagicBackupV2 field0)? delete,
-  }) =>
-      throw _privateConstructorUsedError;
-  @optionalTypeArgs
-  TResult maybeWhen<TResult extends Object?>({
-    TResult Function(CreateMagicBackupV2 field0)? create,
-    TResult Function(GetMagicBackupV2 field0)? get_,
-    TResult Function(DeleteMagicBackupV2 field0)? delete,
-    required TResult orElse(),
-  }) =>
-      throw _privateConstructorUsedError;
-  @optionalTypeArgs
-  TResult map<TResult extends Object?>({
-    required TResult Function(MagicBackupRequestV2_Create value) create,
-    required TResult Function(MagicBackupRequestV2_Get value) get_,
-    required TResult Function(MagicBackupRequestV2_Delete value) delete,
-  }) =>
-      throw _privateConstructorUsedError;
-  @optionalTypeArgs
-  TResult? mapOrNull<TResult extends Object?>({
-    TResult? Function(MagicBackupRequestV2_Create value)? create,
-    TResult? Function(MagicBackupRequestV2_Get value)? get_,
-    TResult? Function(MagicBackupRequestV2_Delete value)? delete,
-  }) =>
-      throw _privateConstructorUsedError;
+class $MagicBackupRequestV2CopyWith<$Res> {
+  $MagicBackupRequestV2CopyWith(
+      MagicBackupRequestV2 _, $Res Function(MagicBackupRequestV2) __);
+}
+
+/// Adds pattern-matching-related methods to [MagicBackupRequestV2].
+extension MagicBackupRequestV2Patterns on MagicBackupRequestV2 {
+  /// A variant of `map` that fallback to returning `orElse`.
+  ///
+  /// It is equivalent to doing:
+  /// ```dart
+  /// switch (sealedClass) {
+  ///   case final Subclass value:
+  ///     return ...;
+  ///   case _:
+  ///     return orElse();
+  /// }
+  /// ```
+
   @optionalTypeArgs
   TResult maybeMap<TResult extends Object?>({
     TResult Function(MagicBackupRequestV2_Create value)? create,
     TResult Function(MagicBackupRequestV2_Get value)? get_,
     TResult Function(MagicBackupRequestV2_Delete value)? delete,
     required TResult orElse(),
-  }) =>
-      throw _privateConstructorUsedError;
+  }) {
+    final _that = this;
+    switch (_that) {
+      case MagicBackupRequestV2_Create() when create != null:
+        return create(_that);
+      case MagicBackupRequestV2_Get() when get_ != null:
+        return get_(_that);
+      case MagicBackupRequestV2_Delete() when delete != null:
+        return delete(_that);
+      case _:
+        return orElse();
+    }
+  }
+
+  /// A `switch`-like method, using callbacks.
+  ///
+  /// Callbacks receives the raw object, upcasted.
+  /// It is equivalent to doing:
+  /// ```dart
+  /// switch (sealedClass) {
+  ///   case final Subclass value:
+  ///     return ...;
+  ///   case final Subclass2 value:
+  ///     return ...;
+  /// }
+  /// ```
+
+  @optionalTypeArgs
+  TResult map<TResult extends Object?>({
+    required TResult Function(MagicBackupRequestV2_Create value) create,
+    required TResult Function(MagicBackupRequestV2_Get value) get_,
+    required TResult Function(MagicBackupRequestV2_Delete value) delete,
+  }) {
+    final _that = this;
+    switch (_that) {
+      case MagicBackupRequestV2_Create():
+        return create(_that);
+      case MagicBackupRequestV2_Get():
+        return get_(_that);
+      case MagicBackupRequestV2_Delete():
+        return delete(_that);
+    }
+  }
+
+  /// A variant of `map` that fallback to returning `null`.
+  ///
+  /// It is equivalent to doing:
+  /// ```dart
+  /// switch (sealedClass) {
+  ///   case final Subclass value:
+  ///     return ...;
+  ///   case _:
+  ///     return null;
+  /// }
+  /// ```
+
+  @optionalTypeArgs
+  TResult? mapOrNull<TResult extends Object?>({
+    TResult? Function(MagicBackupRequestV2_Create value)? create,
+    TResult? Function(MagicBackupRequestV2_Get value)? get_,
+    TResult? Function(MagicBackupRequestV2_Delete value)? delete,
+  }) {
+    final _that = this;
+    switch (_that) {
+      case MagicBackupRequestV2_Create() when create != null:
+        return create(_that);
+      case MagicBackupRequestV2_Get() when get_ != null:
+        return get_(_that);
+      case MagicBackupRequestV2_Delete() when delete != null:
+        return delete(_that);
+      case _:
+        return null;
+    }
+  }
+
+  /// A variant of `when` that fallback to an `orElse` callback.
+  ///
+  /// It is equivalent to doing:
+  /// ```dart
+  /// switch (sealedClass) {
+  ///   case Subclass(:final field):
+  ///     return ...;
+  ///   case _:
+  ///     return orElse();
+  /// }
+  /// ```
+
+  @optionalTypeArgs
+  TResult maybeWhen<TResult extends Object?>({
+    TResult Function(CreateMagicBackupV2 field0)? create,
+    TResult Function(GetMagicBackupV2 field0)? get_,
+    TResult Function(DeleteMagicBackupV2 field0)? delete,
+    required TResult orElse(),
+  }) {
+    final _that = this;
+    switch (_that) {
+      case MagicBackupRequestV2_Create() when create != null:
+        return create(_that.field0);
+      case MagicBackupRequestV2_Get() when get_ != null:
+        return get_(_that.field0);
+      case MagicBackupRequestV2_Delete() when delete != null:
+        return delete(_that.field0);
+      case _:
+        return orElse();
+    }
+  }
+
+  /// A `switch`-like method, using callbacks.
+  ///
+  /// As opposed to `map`, this offers destructuring.
+  /// It is equivalent to doing:
+  /// ```dart
+  /// switch (sealedClass) {
+  ///   case Subclass(:final field):
+  ///     return ...;
+  ///   case Subclass2(:final field2):
+  ///     return ...;
+  /// }
+  /// ```
+
+  @optionalTypeArgs
+  TResult when<TResult extends Object?>({
+    required TResult Function(CreateMagicBackupV2 field0) create,
+    required TResult Function(GetMagicBackupV2 field0) get_,
+    required TResult Function(DeleteMagicBackupV2 field0) delete,
+  }) {
+    final _that = this;
+    switch (_that) {
+      case MagicBackupRequestV2_Create():
+        return create(_that.field0);
+      case MagicBackupRequestV2_Get():
+        return get_(_that.field0);
+      case MagicBackupRequestV2_Delete():
+        return delete(_that.field0);
+    }
+  }
+
+  /// A variant of `when` that fallback to returning `null`
+  ///
+  /// It is equivalent to doing:
+  /// ```dart
+  /// switch (sealedClass) {
+  ///   case Subclass(:final field):
+  ///     return ...;
+  ///   case _:
+  ///     return null;
+  /// }
+  /// ```
+
+  @optionalTypeArgs
+  TResult? whenOrNull<TResult extends Object?>({
+    TResult? Function(CreateMagicBackupV2 field0)? create,
+    TResult? Function(GetMagicBackupV2 field0)? get_,
+    TResult? Function(DeleteMagicBackupV2 field0)? delete,
+  }) {
+    final _that = this;
+    switch (_that) {
+      case MagicBackupRequestV2_Create() when create != null:
+        return create(_that.field0);
+      case MagicBackupRequestV2_Get() when get_ != null:
+        return get_(_that.field0);
+      case MagicBackupRequestV2_Delete() when delete != null:
+        return delete(_that.field0);
+      case _:
+        return null;
+    }
+  }
 }
 
 /// @nodoc
-abstract class $MagicBackupRequestV2CopyWith<$Res> {
-  factory $MagicBackupRequestV2CopyWith(MagicBackupRequestV2 value,
-          $Res Function(MagicBackupRequestV2) then) =
-      _$MagicBackupRequestV2CopyWithImpl<$Res, MagicBackupRequestV2>;
-}
 
-/// @nodoc
-class _$MagicBackupRequestV2CopyWithImpl<$Res,
-        $Val extends MagicBackupRequestV2>
-    implements $MagicBackupRequestV2CopyWith<$Res> {
-  _$MagicBackupRequestV2CopyWithImpl(this._value, this._then);
+class MagicBackupRequestV2_Create extends MagicBackupRequestV2 {
+  const MagicBackupRequestV2_Create(this.field0) : super._();
 
-  // ignore: unused_field
-  final $Val _value;
-  // ignore: unused_field
-  final $Res Function($Val) _then;
+  @override
+  final CreateMagicBackupV2 field0;
 
   /// Create a copy of MagicBackupRequestV2
   /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @pragma('vm:prefer-inline')
+  $MagicBackupRequestV2_CreateCopyWith<MagicBackupRequestV2_Create>
+      get copyWith => _$MagicBackupRequestV2_CreateCopyWithImpl<
+          MagicBackupRequestV2_Create>(this, _$identity);
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is MagicBackupRequestV2_Create &&
+            (identical(other.field0, field0) || other.field0 == field0));
+  }
+
+  @override
+  int get hashCode => Object.hash(runtimeType, field0);
+
+  @override
+  String toString() {
+    return 'MagicBackupRequestV2.create(field0: $field0)';
+  }
 }
 
 /// @nodoc
-abstract class _$$MagicBackupRequestV2_CreateImplCopyWith<$Res> {
-  factory _$$MagicBackupRequestV2_CreateImplCopyWith(
-          _$MagicBackupRequestV2_CreateImpl value,
-          $Res Function(_$MagicBackupRequestV2_CreateImpl) then) =
-      __$$MagicBackupRequestV2_CreateImplCopyWithImpl<$Res>;
+abstract mixin class $MagicBackupRequestV2_CreateCopyWith<$Res>
+    implements $MagicBackupRequestV2CopyWith<$Res> {
+  factory $MagicBackupRequestV2_CreateCopyWith(
+          MagicBackupRequestV2_Create value,
+          $Res Function(MagicBackupRequestV2_Create) _then) =
+      _$MagicBackupRequestV2_CreateCopyWithImpl;
   @useResult
   $Res call({CreateMagicBackupV2 field0});
 }
 
 /// @nodoc
-class __$$MagicBackupRequestV2_CreateImplCopyWithImpl<$Res>
-    extends _$MagicBackupRequestV2CopyWithImpl<$Res,
-        _$MagicBackupRequestV2_CreateImpl>
-    implements _$$MagicBackupRequestV2_CreateImplCopyWith<$Res> {
-  __$$MagicBackupRequestV2_CreateImplCopyWithImpl(
-      _$MagicBackupRequestV2_CreateImpl _value,
-      $Res Function(_$MagicBackupRequestV2_CreateImpl) _then)
-      : super(_value, _then);
+class _$MagicBackupRequestV2_CreateCopyWithImpl<$Res>
+    implements $MagicBackupRequestV2_CreateCopyWith<$Res> {
+  _$MagicBackupRequestV2_CreateCopyWithImpl(this._self, this._then);
+
+  final MagicBackupRequestV2_Create _self;
+  final $Res Function(MagicBackupRequestV2_Create) _then;
 
   /// Create a copy of MagicBackupRequestV2
   /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
-  @override
   $Res call({
     Object? field0 = null,
   }) {
-    return _then(_$MagicBackupRequestV2_CreateImpl(
+    return _then(MagicBackupRequestV2_Create(
       null == field0
-          ? _value.field0
+          ? _self.field0
           : field0 // ignore: cast_nullable_to_non_nullable
               as CreateMagicBackupV2,
     ));
@@ -1131,151 +1192,64 @@ class __$$MagicBackupRequestV2_CreateImplCopyWithImpl<$Res>
 
 /// @nodoc
 
-class _$MagicBackupRequestV2_CreateImpl extends MagicBackupRequestV2_Create {
-  const _$MagicBackupRequestV2_CreateImpl(this.field0) : super._();
+class MagicBackupRequestV2_Get extends MagicBackupRequestV2 {
+  const MagicBackupRequestV2_Get(this.field0) : super._();
 
   @override
-  final CreateMagicBackupV2 field0;
+  final GetMagicBackupV2 field0;
 
-  @override
-  String toString() {
-    return 'MagicBackupRequestV2.create(field0: $field0)';
-  }
+  /// Create a copy of MagicBackupRequestV2
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @pragma('vm:prefer-inline')
+  $MagicBackupRequestV2_GetCopyWith<MagicBackupRequestV2_Get> get copyWith =>
+      _$MagicBackupRequestV2_GetCopyWithImpl<MagicBackupRequestV2_Get>(
+          this, _$identity);
 
   @override
   bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$MagicBackupRequestV2_CreateImpl &&
+            other is MagicBackupRequestV2_Get &&
             (identical(other.field0, field0) || other.field0 == field0));
   }
 
   @override
   int get hashCode => Object.hash(runtimeType, field0);
 
-  /// Create a copy of MagicBackupRequestV2
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
-  @pragma('vm:prefer-inline')
-  _$$MagicBackupRequestV2_CreateImplCopyWith<_$MagicBackupRequestV2_CreateImpl>
-      get copyWith => __$$MagicBackupRequestV2_CreateImplCopyWithImpl<
-          _$MagicBackupRequestV2_CreateImpl>(this, _$identity);
-
-  @override
-  @optionalTypeArgs
-  TResult when<TResult extends Object?>({
-    required TResult Function(CreateMagicBackupV2 field0) create,
-    required TResult Function(GetMagicBackupV2 field0) get_,
-    required TResult Function(DeleteMagicBackupV2 field0) delete,
-  }) {
-    return create(field0);
+  String toString() {
+    return 'MagicBackupRequestV2.get_(field0: $field0)';
   }
-
-  @override
-  @optionalTypeArgs
-  TResult? whenOrNull<TResult extends Object?>({
-    TResult? Function(CreateMagicBackupV2 field0)? create,
-    TResult? Function(GetMagicBackupV2 field0)? get_,
-    TResult? Function(DeleteMagicBackupV2 field0)? delete,
-  }) {
-    return create?.call(field0);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult maybeWhen<TResult extends Object?>({
-    TResult Function(CreateMagicBackupV2 field0)? create,
-    TResult Function(GetMagicBackupV2 field0)? get_,
-    TResult Function(DeleteMagicBackupV2 field0)? delete,
-    required TResult orElse(),
-  }) {
-    if (create != null) {
-      return create(field0);
-    }
-    return orElse();
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult map<TResult extends Object?>({
-    required TResult Function(MagicBackupRequestV2_Create value) create,
-    required TResult Function(MagicBackupRequestV2_Get value) get_,
-    required TResult Function(MagicBackupRequestV2_Delete value) delete,
-  }) {
-    return create(this);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult? mapOrNull<TResult extends Object?>({
-    TResult? Function(MagicBackupRequestV2_Create value)? create,
-    TResult? Function(MagicBackupRequestV2_Get value)? get_,
-    TResult? Function(MagicBackupRequestV2_Delete value)? delete,
-  }) {
-    return create?.call(this);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult maybeMap<TResult extends Object?>({
-    TResult Function(MagicBackupRequestV2_Create value)? create,
-    TResult Function(MagicBackupRequestV2_Get value)? get_,
-    TResult Function(MagicBackupRequestV2_Delete value)? delete,
-    required TResult orElse(),
-  }) {
-    if (create != null) {
-      return create(this);
-    }
-    return orElse();
-  }
-}
-
-abstract class MagicBackupRequestV2_Create extends MagicBackupRequestV2 {
-  const factory MagicBackupRequestV2_Create(final CreateMagicBackupV2 field0) =
-      _$MagicBackupRequestV2_CreateImpl;
-  const MagicBackupRequestV2_Create._() : super._();
-
-  @override
-  CreateMagicBackupV2 get field0;
-
-  /// Create a copy of MagicBackupRequestV2
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  _$$MagicBackupRequestV2_CreateImplCopyWith<_$MagicBackupRequestV2_CreateImpl>
-      get copyWith => throw _privateConstructorUsedError;
 }
 
 /// @nodoc
-abstract class _$$MagicBackupRequestV2_GetImplCopyWith<$Res> {
-  factory _$$MagicBackupRequestV2_GetImplCopyWith(
-          _$MagicBackupRequestV2_GetImpl value,
-          $Res Function(_$MagicBackupRequestV2_GetImpl) then) =
-      __$$MagicBackupRequestV2_GetImplCopyWithImpl<$Res>;
+abstract mixin class $MagicBackupRequestV2_GetCopyWith<$Res>
+    implements $MagicBackupRequestV2CopyWith<$Res> {
+  factory $MagicBackupRequestV2_GetCopyWith(MagicBackupRequestV2_Get value,
+          $Res Function(MagicBackupRequestV2_Get) _then) =
+      _$MagicBackupRequestV2_GetCopyWithImpl;
   @useResult
   $Res call({GetMagicBackupV2 field0});
 }
 
 /// @nodoc
-class __$$MagicBackupRequestV2_GetImplCopyWithImpl<$Res>
-    extends _$MagicBackupRequestV2CopyWithImpl<$Res,
-        _$MagicBackupRequestV2_GetImpl>
-    implements _$$MagicBackupRequestV2_GetImplCopyWith<$Res> {
-  __$$MagicBackupRequestV2_GetImplCopyWithImpl(
-      _$MagicBackupRequestV2_GetImpl _value,
-      $Res Function(_$MagicBackupRequestV2_GetImpl) _then)
-      : super(_value, _then);
+class _$MagicBackupRequestV2_GetCopyWithImpl<$Res>
+    implements $MagicBackupRequestV2_GetCopyWith<$Res> {
+  _$MagicBackupRequestV2_GetCopyWithImpl(this._self, this._then);
+
+  final MagicBackupRequestV2_Get _self;
+  final $Res Function(MagicBackupRequestV2_Get) _then;
 
   /// Create a copy of MagicBackupRequestV2
   /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
-  @override
   $Res call({
     Object? field0 = null,
   }) {
-    return _then(_$MagicBackupRequestV2_GetImpl(
+    return _then(MagicBackupRequestV2_Get(
       null == field0
-          ? _value.field0
+          ? _self.field0
           : field0 // ignore: cast_nullable_to_non_nullable
               as GetMagicBackupV2,
     ));
@@ -1284,151 +1258,65 @@ class __$$MagicBackupRequestV2_GetImplCopyWithImpl<$Res>
 
 /// @nodoc
 
-class _$MagicBackupRequestV2_GetImpl extends MagicBackupRequestV2_Get {
-  const _$MagicBackupRequestV2_GetImpl(this.field0) : super._();
+class MagicBackupRequestV2_Delete extends MagicBackupRequestV2 {
+  const MagicBackupRequestV2_Delete(this.field0) : super._();
 
   @override
-  final GetMagicBackupV2 field0;
+  final DeleteMagicBackupV2 field0;
 
-  @override
-  String toString() {
-    return 'MagicBackupRequestV2.get_(field0: $field0)';
-  }
+  /// Create a copy of MagicBackupRequestV2
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @pragma('vm:prefer-inline')
+  $MagicBackupRequestV2_DeleteCopyWith<MagicBackupRequestV2_Delete>
+      get copyWith => _$MagicBackupRequestV2_DeleteCopyWithImpl<
+          MagicBackupRequestV2_Delete>(this, _$identity);
 
   @override
   bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$MagicBackupRequestV2_GetImpl &&
+            other is MagicBackupRequestV2_Delete &&
             (identical(other.field0, field0) || other.field0 == field0));
   }
 
   @override
   int get hashCode => Object.hash(runtimeType, field0);
 
-  /// Create a copy of MagicBackupRequestV2
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
-  @pragma('vm:prefer-inline')
-  _$$MagicBackupRequestV2_GetImplCopyWith<_$MagicBackupRequestV2_GetImpl>
-      get copyWith => __$$MagicBackupRequestV2_GetImplCopyWithImpl<
-          _$MagicBackupRequestV2_GetImpl>(this, _$identity);
-
-  @override
-  @optionalTypeArgs
-  TResult when<TResult extends Object?>({
-    required TResult Function(CreateMagicBackupV2 field0) create,
-    required TResult Function(GetMagicBackupV2 field0) get_,
-    required TResult Function(DeleteMagicBackupV2 field0) delete,
-  }) {
-    return get_(field0);
+  String toString() {
+    return 'MagicBackupRequestV2.delete(field0: $field0)';
   }
-
-  @override
-  @optionalTypeArgs
-  TResult? whenOrNull<TResult extends Object?>({
-    TResult? Function(CreateMagicBackupV2 field0)? create,
-    TResult? Function(GetMagicBackupV2 field0)? get_,
-    TResult? Function(DeleteMagicBackupV2 field0)? delete,
-  }) {
-    return get_?.call(field0);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult maybeWhen<TResult extends Object?>({
-    TResult Function(CreateMagicBackupV2 field0)? create,
-    TResult Function(GetMagicBackupV2 field0)? get_,
-    TResult Function(DeleteMagicBackupV2 field0)? delete,
-    required TResult orElse(),
-  }) {
-    if (get_ != null) {
-      return get_(field0);
-    }
-    return orElse();
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult map<TResult extends Object?>({
-    required TResult Function(MagicBackupRequestV2_Create value) create,
-    required TResult Function(MagicBackupRequestV2_Get value) get_,
-    required TResult Function(MagicBackupRequestV2_Delete value) delete,
-  }) {
-    return get_(this);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult? mapOrNull<TResult extends Object?>({
-    TResult? Function(MagicBackupRequestV2_Create value)? create,
-    TResult? Function(MagicBackupRequestV2_Get value)? get_,
-    TResult? Function(MagicBackupRequestV2_Delete value)? delete,
-  }) {
-    return get_?.call(this);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult maybeMap<TResult extends Object?>({
-    TResult Function(MagicBackupRequestV2_Create value)? create,
-    TResult Function(MagicBackupRequestV2_Get value)? get_,
-    TResult Function(MagicBackupRequestV2_Delete value)? delete,
-    required TResult orElse(),
-  }) {
-    if (get_ != null) {
-      return get_(this);
-    }
-    return orElse();
-  }
-}
-
-abstract class MagicBackupRequestV2_Get extends MagicBackupRequestV2 {
-  const factory MagicBackupRequestV2_Get(final GetMagicBackupV2 field0) =
-      _$MagicBackupRequestV2_GetImpl;
-  const MagicBackupRequestV2_Get._() : super._();
-
-  @override
-  GetMagicBackupV2 get field0;
-
-  /// Create a copy of MagicBackupRequestV2
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  _$$MagicBackupRequestV2_GetImplCopyWith<_$MagicBackupRequestV2_GetImpl>
-      get copyWith => throw _privateConstructorUsedError;
 }
 
 /// @nodoc
-abstract class _$$MagicBackupRequestV2_DeleteImplCopyWith<$Res> {
-  factory _$$MagicBackupRequestV2_DeleteImplCopyWith(
-          _$MagicBackupRequestV2_DeleteImpl value,
-          $Res Function(_$MagicBackupRequestV2_DeleteImpl) then) =
-      __$$MagicBackupRequestV2_DeleteImplCopyWithImpl<$Res>;
+abstract mixin class $MagicBackupRequestV2_DeleteCopyWith<$Res>
+    implements $MagicBackupRequestV2CopyWith<$Res> {
+  factory $MagicBackupRequestV2_DeleteCopyWith(
+          MagicBackupRequestV2_Delete value,
+          $Res Function(MagicBackupRequestV2_Delete) _then) =
+      _$MagicBackupRequestV2_DeleteCopyWithImpl;
   @useResult
   $Res call({DeleteMagicBackupV2 field0});
 }
 
 /// @nodoc
-class __$$MagicBackupRequestV2_DeleteImplCopyWithImpl<$Res>
-    extends _$MagicBackupRequestV2CopyWithImpl<$Res,
-        _$MagicBackupRequestV2_DeleteImpl>
-    implements _$$MagicBackupRequestV2_DeleteImplCopyWith<$Res> {
-  __$$MagicBackupRequestV2_DeleteImplCopyWithImpl(
-      _$MagicBackupRequestV2_DeleteImpl _value,
-      $Res Function(_$MagicBackupRequestV2_DeleteImpl) _then)
-      : super(_value, _then);
+class _$MagicBackupRequestV2_DeleteCopyWithImpl<$Res>
+    implements $MagicBackupRequestV2_DeleteCopyWith<$Res> {
+  _$MagicBackupRequestV2_DeleteCopyWithImpl(this._self, this._then);
+
+  final MagicBackupRequestV2_Delete _self;
+  final $Res Function(MagicBackupRequestV2_Delete) _then;
 
   /// Create a copy of MagicBackupRequestV2
   /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
-  @override
   $Res call({
     Object? field0 = null,
   }) {
-    return _then(_$MagicBackupRequestV2_DeleteImpl(
+    return _then(MagicBackupRequestV2_Delete(
       null == field0
-          ? _value.field0
+          ? _self.field0
           : field0 // ignore: cast_nullable_to_non_nullable
               as DeleteMagicBackupV2,
     ));
@@ -1436,301 +1324,42 @@ class __$$MagicBackupRequestV2_DeleteImplCopyWithImpl<$Res>
 }
 
 /// @nodoc
-
-class _$MagicBackupRequestV2_DeleteImpl extends MagicBackupRequestV2_Delete {
-  const _$MagicBackupRequestV2_DeleteImpl(this.field0) : super._();
-
-  @override
-  final DeleteMagicBackupV2 field0;
-
-  @override
-  String toString() {
-    return 'MagicBackupRequestV2.delete(field0: $field0)';
-  }
-
-  @override
-  bool operator ==(Object other) {
-    return identical(this, other) ||
-        (other.runtimeType == runtimeType &&
-            other is _$MagicBackupRequestV2_DeleteImpl &&
-            (identical(other.field0, field0) || other.field0 == field0));
-  }
-
-  @override
-  int get hashCode => Object.hash(runtimeType, field0);
-
-  /// Create a copy of MagicBackupRequestV2
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  @override
-  @pragma('vm:prefer-inline')
-  _$$MagicBackupRequestV2_DeleteImplCopyWith<_$MagicBackupRequestV2_DeleteImpl>
-      get copyWith => __$$MagicBackupRequestV2_DeleteImplCopyWithImpl<
-          _$MagicBackupRequestV2_DeleteImpl>(this, _$identity);
-
-  @override
-  @optionalTypeArgs
-  TResult when<TResult extends Object?>({
-    required TResult Function(CreateMagicBackupV2 field0) create,
-    required TResult Function(GetMagicBackupV2 field0) get_,
-    required TResult Function(DeleteMagicBackupV2 field0) delete,
-  }) {
-    return delete(field0);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult? whenOrNull<TResult extends Object?>({
-    TResult? Function(CreateMagicBackupV2 field0)? create,
-    TResult? Function(GetMagicBackupV2 field0)? get_,
-    TResult? Function(DeleteMagicBackupV2 field0)? delete,
-  }) {
-    return delete?.call(field0);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult maybeWhen<TResult extends Object?>({
-    TResult Function(CreateMagicBackupV2 field0)? create,
-    TResult Function(GetMagicBackupV2 field0)? get_,
-    TResult Function(DeleteMagicBackupV2 field0)? delete,
-    required TResult orElse(),
-  }) {
-    if (delete != null) {
-      return delete(field0);
-    }
-    return orElse();
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult map<TResult extends Object?>({
-    required TResult Function(MagicBackupRequestV2_Create value) create,
-    required TResult Function(MagicBackupRequestV2_Get value) get_,
-    required TResult Function(MagicBackupRequestV2_Delete value) delete,
-  }) {
-    return delete(this);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult? mapOrNull<TResult extends Object?>({
-    TResult? Function(MagicBackupRequestV2_Create value)? create,
-    TResult? Function(MagicBackupRequestV2_Get value)? get_,
-    TResult? Function(MagicBackupRequestV2_Delete value)? delete,
-  }) {
-    return delete?.call(this);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult maybeMap<TResult extends Object?>({
-    TResult Function(MagicBackupRequestV2_Create value)? create,
-    TResult Function(MagicBackupRequestV2_Get value)? get_,
-    TResult Function(MagicBackupRequestV2_Delete value)? delete,
-    required TResult orElse(),
-  }) {
-    if (delete != null) {
-      return delete(this);
-    }
-    return orElse();
-  }
-}
-
-abstract class MagicBackupRequestV2_Delete extends MagicBackupRequestV2 {
-  const factory MagicBackupRequestV2_Delete(final DeleteMagicBackupV2 field0) =
-      _$MagicBackupRequestV2_DeleteImpl;
-  const MagicBackupRequestV2_Delete._() : super._();
-
-  @override
-  DeleteMagicBackupV2 get field0;
-
-  /// Create a copy of MagicBackupRequestV2
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  _$$MagicBackupRequestV2_DeleteImplCopyWith<_$MagicBackupRequestV2_DeleteImpl>
-      get copyWith => throw _privateConstructorUsedError;
-}
-
-/// @nodoc
 mixin _$MagicBackupResponseV2 {
-  @optionalTypeArgs
-  TResult when<TResult extends Object?>({
-    required TResult Function() created,
-    required TResult Function(Uint8List data) backup,
-    required TResult Function() deleted,
-    required TResult Function(String error) error,
-  }) =>
-      throw _privateConstructorUsedError;
-  @optionalTypeArgs
-  TResult? whenOrNull<TResult extends Object?>({
-    TResult? Function()? created,
-    TResult? Function(Uint8List data)? backup,
-    TResult? Function()? deleted,
-    TResult? Function(String error)? error,
-  }) =>
-      throw _privateConstructorUsedError;
-  @optionalTypeArgs
-  TResult maybeWhen<TResult extends Object?>({
-    TResult Function()? created,
-    TResult Function(Uint8List data)? backup,
-    TResult Function()? deleted,
-    TResult Function(String error)? error,
-    required TResult orElse(),
-  }) =>
-      throw _privateConstructorUsedError;
-  @optionalTypeArgs
-  TResult map<TResult extends Object?>({
-    required TResult Function(MagicBackupResponseV2_Created value) created,
-    required TResult Function(MagicBackupResponseV2_Backup value) backup,
-    required TResult Function(MagicBackupResponseV2_Deleted value) deleted,
-    required TResult Function(MagicBackupResponseV2_Error value) error,
-  }) =>
-      throw _privateConstructorUsedError;
-  @optionalTypeArgs
-  TResult? mapOrNull<TResult extends Object?>({
-    TResult? Function(MagicBackupResponseV2_Created value)? created,
-    TResult? Function(MagicBackupResponseV2_Backup value)? backup,
-    TResult? Function(MagicBackupResponseV2_Deleted value)? deleted,
-    TResult? Function(MagicBackupResponseV2_Error value)? error,
-  }) =>
-      throw _privateConstructorUsedError;
-  @optionalTypeArgs
-  TResult maybeMap<TResult extends Object?>({
-    TResult Function(MagicBackupResponseV2_Created value)? created,
-    TResult Function(MagicBackupResponseV2_Backup value)? backup,
-    TResult Function(MagicBackupResponseV2_Deleted value)? deleted,
-    TResult Function(MagicBackupResponseV2_Error value)? error,
-    required TResult orElse(),
-  }) =>
-      throw _privateConstructorUsedError;
-}
-
-/// @nodoc
-abstract class $MagicBackupResponseV2CopyWith<$Res> {
-  factory $MagicBackupResponseV2CopyWith(MagicBackupResponseV2 value,
-          $Res Function(MagicBackupResponseV2) then) =
-      _$MagicBackupResponseV2CopyWithImpl<$Res, MagicBackupResponseV2>;
-}
-
-/// @nodoc
-class _$MagicBackupResponseV2CopyWithImpl<$Res,
-        $Val extends MagicBackupResponseV2>
-    implements $MagicBackupResponseV2CopyWith<$Res> {
-  _$MagicBackupResponseV2CopyWithImpl(this._value, this._then);
-
-  // ignore: unused_field
-  final $Val _value;
-  // ignore: unused_field
-  final $Res Function($Val) _then;
-
-  /// Create a copy of MagicBackupResponseV2
-  /// with the given fields replaced by the non-null parameter values.
-}
-
-/// @nodoc
-abstract class _$$MagicBackupResponseV2_CreatedImplCopyWith<$Res> {
-  factory _$$MagicBackupResponseV2_CreatedImplCopyWith(
-          _$MagicBackupResponseV2_CreatedImpl value,
-          $Res Function(_$MagicBackupResponseV2_CreatedImpl) then) =
-      __$$MagicBackupResponseV2_CreatedImplCopyWithImpl<$Res>;
-}
-
-/// @nodoc
-class __$$MagicBackupResponseV2_CreatedImplCopyWithImpl<$Res>
-    extends _$MagicBackupResponseV2CopyWithImpl<$Res,
-        _$MagicBackupResponseV2_CreatedImpl>
-    implements _$$MagicBackupResponseV2_CreatedImplCopyWith<$Res> {
-  __$$MagicBackupResponseV2_CreatedImplCopyWithImpl(
-      _$MagicBackupResponseV2_CreatedImpl _value,
-      $Res Function(_$MagicBackupResponseV2_CreatedImpl) _then)
-      : super(_value, _then);
-
-  /// Create a copy of MagicBackupResponseV2
-  /// with the given fields replaced by the non-null parameter values.
-}
-
-/// @nodoc
-
-class _$MagicBackupResponseV2_CreatedImpl
-    extends MagicBackupResponseV2_Created {
-  const _$MagicBackupResponseV2_CreatedImpl() : super._();
-
-  @override
-  String toString() {
-    return 'MagicBackupResponseV2.created()';
-  }
-
   @override
   bool operator ==(Object other) {
     return identical(this, other) ||
-        (other.runtimeType == runtimeType &&
-            other is _$MagicBackupResponseV2_CreatedImpl);
+        (other.runtimeType == runtimeType && other is MagicBackupResponseV2);
   }
 
   @override
   int get hashCode => runtimeType.hashCode;
 
   @override
-  @optionalTypeArgs
-  TResult when<TResult extends Object?>({
-    required TResult Function() created,
-    required TResult Function(Uint8List data) backup,
-    required TResult Function() deleted,
-    required TResult Function(String error) error,
-  }) {
-    return created();
+  String toString() {
+    return 'MagicBackupResponseV2()';
   }
+}
 
-  @override
-  @optionalTypeArgs
-  TResult? whenOrNull<TResult extends Object?>({
-    TResult? Function()? created,
-    TResult? Function(Uint8List data)? backup,
-    TResult? Function()? deleted,
-    TResult? Function(String error)? error,
-  }) {
-    return created?.call();
-  }
+/// @nodoc
+class $MagicBackupResponseV2CopyWith<$Res> {
+  $MagicBackupResponseV2CopyWith(
+      MagicBackupResponseV2 _, $Res Function(MagicBackupResponseV2) __);
+}
 
-  @override
-  @optionalTypeArgs
-  TResult maybeWhen<TResult extends Object?>({
-    TResult Function()? created,
-    TResult Function(Uint8List data)? backup,
-    TResult Function()? deleted,
-    TResult Function(String error)? error,
-    required TResult orElse(),
-  }) {
-    if (created != null) {
-      return created();
-    }
-    return orElse();
-  }
+/// Adds pattern-matching-related methods to [MagicBackupResponseV2].
+extension MagicBackupResponseV2Patterns on MagicBackupResponseV2 {
+  /// A variant of `map` that fallback to returning `orElse`.
+  ///
+  /// It is equivalent to doing:
+  /// ```dart
+  /// switch (sealedClass) {
+  ///   case final Subclass value:
+  ///     return ...;
+  ///   case _:
+  ///     return orElse();
+  /// }
+  /// ```
 
-  @override
-  @optionalTypeArgs
-  TResult map<TResult extends Object?>({
-    required TResult Function(MagicBackupResponseV2_Created value) created,
-    required TResult Function(MagicBackupResponseV2_Backup value) backup,
-    required TResult Function(MagicBackupResponseV2_Deleted value) deleted,
-    required TResult Function(MagicBackupResponseV2_Error value) error,
-  }) {
-    return created(this);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult? mapOrNull<TResult extends Object?>({
-    TResult? Function(MagicBackupResponseV2_Created value)? created,
-    TResult? Function(MagicBackupResponseV2_Backup value)? backup,
-    TResult? Function(MagicBackupResponseV2_Deleted value)? deleted,
-    TResult? Function(MagicBackupResponseV2_Error value)? error,
-  }) {
-    return created?.call(this);
-  }
-
-  @override
   @optionalTypeArgs
   TResult maybeMap<TResult extends Object?>({
     TResult Function(MagicBackupResponseV2_Created value)? created,
@@ -1739,49 +1368,273 @@ class _$MagicBackupResponseV2_CreatedImpl
     TResult Function(MagicBackupResponseV2_Error value)? error,
     required TResult orElse(),
   }) {
-    if (created != null) {
-      return created(this);
+    final _that = this;
+    switch (_that) {
+      case MagicBackupResponseV2_Created() when created != null:
+        return created(_that);
+      case MagicBackupResponseV2_Backup() when backup != null:
+        return backup(_that);
+      case MagicBackupResponseV2_Deleted() when deleted != null:
+        return deleted(_that);
+      case MagicBackupResponseV2_Error() when error != null:
+        return error(_that);
+      case _:
+        return orElse();
     }
-    return orElse();
+  }
+
+  /// A `switch`-like method, using callbacks.
+  ///
+  /// Callbacks receives the raw object, upcasted.
+  /// It is equivalent to doing:
+  /// ```dart
+  /// switch (sealedClass) {
+  ///   case final Subclass value:
+  ///     return ...;
+  ///   case final Subclass2 value:
+  ///     return ...;
+  /// }
+  /// ```
+
+  @optionalTypeArgs
+  TResult map<TResult extends Object?>({
+    required TResult Function(MagicBackupResponseV2_Created value) created,
+    required TResult Function(MagicBackupResponseV2_Backup value) backup,
+    required TResult Function(MagicBackupResponseV2_Deleted value) deleted,
+    required TResult Function(MagicBackupResponseV2_Error value) error,
+  }) {
+    final _that = this;
+    switch (_that) {
+      case MagicBackupResponseV2_Created():
+        return created(_that);
+      case MagicBackupResponseV2_Backup():
+        return backup(_that);
+      case MagicBackupResponseV2_Deleted():
+        return deleted(_that);
+      case MagicBackupResponseV2_Error():
+        return error(_that);
+    }
+  }
+
+  /// A variant of `map` that fallback to returning `null`.
+  ///
+  /// It is equivalent to doing:
+  /// ```dart
+  /// switch (sealedClass) {
+  ///   case final Subclass value:
+  ///     return ...;
+  ///   case _:
+  ///     return null;
+  /// }
+  /// ```
+
+  @optionalTypeArgs
+  TResult? mapOrNull<TResult extends Object?>({
+    TResult? Function(MagicBackupResponseV2_Created value)? created,
+    TResult? Function(MagicBackupResponseV2_Backup value)? backup,
+    TResult? Function(MagicBackupResponseV2_Deleted value)? deleted,
+    TResult? Function(MagicBackupResponseV2_Error value)? error,
+  }) {
+    final _that = this;
+    switch (_that) {
+      case MagicBackupResponseV2_Created() when created != null:
+        return created(_that);
+      case MagicBackupResponseV2_Backup() when backup != null:
+        return backup(_that);
+      case MagicBackupResponseV2_Deleted() when deleted != null:
+        return deleted(_that);
+      case MagicBackupResponseV2_Error() when error != null:
+        return error(_that);
+      case _:
+        return null;
+    }
+  }
+
+  /// A variant of `when` that fallback to an `orElse` callback.
+  ///
+  /// It is equivalent to doing:
+  /// ```dart
+  /// switch (sealedClass) {
+  ///   case Subclass(:final field):
+  ///     return ...;
+  ///   case _:
+  ///     return orElse();
+  /// }
+  /// ```
+
+  @optionalTypeArgs
+  TResult maybeWhen<TResult extends Object?>({
+    TResult Function()? created,
+    TResult Function(Uint8List data)? backup,
+    TResult Function()? deleted,
+    TResult Function(String error)? error,
+    required TResult orElse(),
+  }) {
+    final _that = this;
+    switch (_that) {
+      case MagicBackupResponseV2_Created() when created != null:
+        return created();
+      case MagicBackupResponseV2_Backup() when backup != null:
+        return backup(_that.data);
+      case MagicBackupResponseV2_Deleted() when deleted != null:
+        return deleted();
+      case MagicBackupResponseV2_Error() when error != null:
+        return error(_that.error);
+      case _:
+        return orElse();
+    }
+  }
+
+  /// A `switch`-like method, using callbacks.
+  ///
+  /// As opposed to `map`, this offers destructuring.
+  /// It is equivalent to doing:
+  /// ```dart
+  /// switch (sealedClass) {
+  ///   case Subclass(:final field):
+  ///     return ...;
+  ///   case Subclass2(:final field2):
+  ///     return ...;
+  /// }
+  /// ```
+
+  @optionalTypeArgs
+  TResult when<TResult extends Object?>({
+    required TResult Function() created,
+    required TResult Function(Uint8List data) backup,
+    required TResult Function() deleted,
+    required TResult Function(String error) error,
+  }) {
+    final _that = this;
+    switch (_that) {
+      case MagicBackupResponseV2_Created():
+        return created();
+      case MagicBackupResponseV2_Backup():
+        return backup(_that.data);
+      case MagicBackupResponseV2_Deleted():
+        return deleted();
+      case MagicBackupResponseV2_Error():
+        return error(_that.error);
+    }
+  }
+
+  /// A variant of `when` that fallback to returning `null`
+  ///
+  /// It is equivalent to doing:
+  /// ```dart
+  /// switch (sealedClass) {
+  ///   case Subclass(:final field):
+  ///     return ...;
+  ///   case _:
+  ///     return null;
+  /// }
+  /// ```
+
+  @optionalTypeArgs
+  TResult? whenOrNull<TResult extends Object?>({
+    TResult? Function()? created,
+    TResult? Function(Uint8List data)? backup,
+    TResult? Function()? deleted,
+    TResult? Function(String error)? error,
+  }) {
+    final _that = this;
+    switch (_that) {
+      case MagicBackupResponseV2_Created() when created != null:
+        return created();
+      case MagicBackupResponseV2_Backup() when backup != null:
+        return backup(_that.data);
+      case MagicBackupResponseV2_Deleted() when deleted != null:
+        return deleted();
+      case MagicBackupResponseV2_Error() when error != null:
+        return error(_that.error);
+      case _:
+        return null;
+    }
   }
 }
 
-abstract class MagicBackupResponseV2_Created extends MagicBackupResponseV2 {
-  const factory MagicBackupResponseV2_Created() =
-      _$MagicBackupResponseV2_CreatedImpl;
-  const MagicBackupResponseV2_Created._() : super._();
+/// @nodoc
+
+class MagicBackupResponseV2_Created extends MagicBackupResponseV2 {
+  const MagicBackupResponseV2_Created() : super._();
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is MagicBackupResponseV2_Created);
+  }
+
+  @override
+  int get hashCode => runtimeType.hashCode;
+
+  @override
+  String toString() {
+    return 'MagicBackupResponseV2.created()';
+  }
 }
 
 /// @nodoc
-abstract class _$$MagicBackupResponseV2_BackupImplCopyWith<$Res> {
-  factory _$$MagicBackupResponseV2_BackupImplCopyWith(
-          _$MagicBackupResponseV2_BackupImpl value,
-          $Res Function(_$MagicBackupResponseV2_BackupImpl) then) =
-      __$$MagicBackupResponseV2_BackupImplCopyWithImpl<$Res>;
+
+class MagicBackupResponseV2_Backup extends MagicBackupResponseV2 {
+  const MagicBackupResponseV2_Backup({required this.data}) : super._();
+
+  final Uint8List data;
+
+  /// Create a copy of MagicBackupResponseV2
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @pragma('vm:prefer-inline')
+  $MagicBackupResponseV2_BackupCopyWith<MagicBackupResponseV2_Backup>
+      get copyWith => _$MagicBackupResponseV2_BackupCopyWithImpl<
+          MagicBackupResponseV2_Backup>(this, _$identity);
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is MagicBackupResponseV2_Backup &&
+            const DeepCollectionEquality().equals(other.data, data));
+  }
+
+  @override
+  int get hashCode =>
+      Object.hash(runtimeType, const DeepCollectionEquality().hash(data));
+
+  @override
+  String toString() {
+    return 'MagicBackupResponseV2.backup(data: $data)';
+  }
+}
+
+/// @nodoc
+abstract mixin class $MagicBackupResponseV2_BackupCopyWith<$Res>
+    implements $MagicBackupResponseV2CopyWith<$Res> {
+  factory $MagicBackupResponseV2_BackupCopyWith(
+          MagicBackupResponseV2_Backup value,
+          $Res Function(MagicBackupResponseV2_Backup) _then) =
+      _$MagicBackupResponseV2_BackupCopyWithImpl;
   @useResult
   $Res call({Uint8List data});
 }
 
 /// @nodoc
-class __$$MagicBackupResponseV2_BackupImplCopyWithImpl<$Res>
-    extends _$MagicBackupResponseV2CopyWithImpl<$Res,
-        _$MagicBackupResponseV2_BackupImpl>
-    implements _$$MagicBackupResponseV2_BackupImplCopyWith<$Res> {
-  __$$MagicBackupResponseV2_BackupImplCopyWithImpl(
-      _$MagicBackupResponseV2_BackupImpl _value,
-      $Res Function(_$MagicBackupResponseV2_BackupImpl) _then)
-      : super(_value, _then);
+class _$MagicBackupResponseV2_BackupCopyWithImpl<$Res>
+    implements $MagicBackupResponseV2_BackupCopyWith<$Res> {
+  _$MagicBackupResponseV2_BackupCopyWithImpl(this._self, this._then);
+
+  final MagicBackupResponseV2_Backup _self;
+  final $Res Function(MagicBackupResponseV2_Backup) _then;
 
   /// Create a copy of MagicBackupResponseV2
   /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
-  @override
   $Res call({
     Object? data = null,
   }) {
-    return _then(_$MagicBackupResponseV2_BackupImpl(
+    return _then(MagicBackupResponseV2_Backup(
       data: null == data
-          ? _value.data
+          ? _self.data
           : data // ignore: cast_nullable_to_non_nullable
               as Uint8List,
     ));
@@ -1790,283 +1643,85 @@ class __$$MagicBackupResponseV2_BackupImplCopyWithImpl<$Res>
 
 /// @nodoc
 
-class _$MagicBackupResponseV2_BackupImpl extends MagicBackupResponseV2_Backup {
-  const _$MagicBackupResponseV2_BackupImpl({required this.data}) : super._();
-
-  @override
-  final Uint8List data;
-
-  @override
-  String toString() {
-    return 'MagicBackupResponseV2.backup(data: $data)';
-  }
+class MagicBackupResponseV2_Deleted extends MagicBackupResponseV2 {
+  const MagicBackupResponseV2_Deleted() : super._();
 
   @override
   bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$MagicBackupResponseV2_BackupImpl &&
-            const DeepCollectionEquality().equals(other.data, data));
-  }
-
-  @override
-  int get hashCode =>
-      Object.hash(runtimeType, const DeepCollectionEquality().hash(data));
-
-  /// Create a copy of MagicBackupResponseV2
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  @override
-  @pragma('vm:prefer-inline')
-  _$$MagicBackupResponseV2_BackupImplCopyWith<
-          _$MagicBackupResponseV2_BackupImpl>
-      get copyWith => __$$MagicBackupResponseV2_BackupImplCopyWithImpl<
-          _$MagicBackupResponseV2_BackupImpl>(this, _$identity);
-
-  @override
-  @optionalTypeArgs
-  TResult when<TResult extends Object?>({
-    required TResult Function() created,
-    required TResult Function(Uint8List data) backup,
-    required TResult Function() deleted,
-    required TResult Function(String error) error,
-  }) {
-    return backup(data);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult? whenOrNull<TResult extends Object?>({
-    TResult? Function()? created,
-    TResult? Function(Uint8List data)? backup,
-    TResult? Function()? deleted,
-    TResult? Function(String error)? error,
-  }) {
-    return backup?.call(data);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult maybeWhen<TResult extends Object?>({
-    TResult Function()? created,
-    TResult Function(Uint8List data)? backup,
-    TResult Function()? deleted,
-    TResult Function(String error)? error,
-    required TResult orElse(),
-  }) {
-    if (backup != null) {
-      return backup(data);
-    }
-    return orElse();
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult map<TResult extends Object?>({
-    required TResult Function(MagicBackupResponseV2_Created value) created,
-    required TResult Function(MagicBackupResponseV2_Backup value) backup,
-    required TResult Function(MagicBackupResponseV2_Deleted value) deleted,
-    required TResult Function(MagicBackupResponseV2_Error value) error,
-  }) {
-    return backup(this);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult? mapOrNull<TResult extends Object?>({
-    TResult? Function(MagicBackupResponseV2_Created value)? created,
-    TResult? Function(MagicBackupResponseV2_Backup value)? backup,
-    TResult? Function(MagicBackupResponseV2_Deleted value)? deleted,
-    TResult? Function(MagicBackupResponseV2_Error value)? error,
-  }) {
-    return backup?.call(this);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult maybeMap<TResult extends Object?>({
-    TResult Function(MagicBackupResponseV2_Created value)? created,
-    TResult Function(MagicBackupResponseV2_Backup value)? backup,
-    TResult Function(MagicBackupResponseV2_Deleted value)? deleted,
-    TResult Function(MagicBackupResponseV2_Error value)? error,
-    required TResult orElse(),
-  }) {
-    if (backup != null) {
-      return backup(this);
-    }
-    return orElse();
-  }
-}
-
-abstract class MagicBackupResponseV2_Backup extends MagicBackupResponseV2 {
-  const factory MagicBackupResponseV2_Backup({required final Uint8List data}) =
-      _$MagicBackupResponseV2_BackupImpl;
-  const MagicBackupResponseV2_Backup._() : super._();
-
-  Uint8List get data;
-
-  /// Create a copy of MagicBackupResponseV2
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  _$$MagicBackupResponseV2_BackupImplCopyWith<
-          _$MagicBackupResponseV2_BackupImpl>
-      get copyWith => throw _privateConstructorUsedError;
-}
-
-/// @nodoc
-abstract class _$$MagicBackupResponseV2_DeletedImplCopyWith<$Res> {
-  factory _$$MagicBackupResponseV2_DeletedImplCopyWith(
-          _$MagicBackupResponseV2_DeletedImpl value,
-          $Res Function(_$MagicBackupResponseV2_DeletedImpl) then) =
-      __$$MagicBackupResponseV2_DeletedImplCopyWithImpl<$Res>;
-}
-
-/// @nodoc
-class __$$MagicBackupResponseV2_DeletedImplCopyWithImpl<$Res>
-    extends _$MagicBackupResponseV2CopyWithImpl<$Res,
-        _$MagicBackupResponseV2_DeletedImpl>
-    implements _$$MagicBackupResponseV2_DeletedImplCopyWith<$Res> {
-  __$$MagicBackupResponseV2_DeletedImplCopyWithImpl(
-      _$MagicBackupResponseV2_DeletedImpl _value,
-      $Res Function(_$MagicBackupResponseV2_DeletedImpl) _then)
-      : super(_value, _then);
-
-  /// Create a copy of MagicBackupResponseV2
-  /// with the given fields replaced by the non-null parameter values.
-}
-
-/// @nodoc
-
-class _$MagicBackupResponseV2_DeletedImpl
-    extends MagicBackupResponseV2_Deleted {
-  const _$MagicBackupResponseV2_DeletedImpl() : super._();
-
-  @override
-  String toString() {
-    return 'MagicBackupResponseV2.deleted()';
-  }
-
-  @override
-  bool operator ==(Object other) {
-    return identical(this, other) ||
-        (other.runtimeType == runtimeType &&
-            other is _$MagicBackupResponseV2_DeletedImpl);
+            other is MagicBackupResponseV2_Deleted);
   }
 
   @override
   int get hashCode => runtimeType.hashCode;
 
   @override
-  @optionalTypeArgs
-  TResult when<TResult extends Object?>({
-    required TResult Function() created,
-    required TResult Function(Uint8List data) backup,
-    required TResult Function() deleted,
-    required TResult Function(String error) error,
-  }) {
-    return deleted();
+  String toString() {
+    return 'MagicBackupResponseV2.deleted()';
   }
-
-  @override
-  @optionalTypeArgs
-  TResult? whenOrNull<TResult extends Object?>({
-    TResult? Function()? created,
-    TResult? Function(Uint8List data)? backup,
-    TResult? Function()? deleted,
-    TResult? Function(String error)? error,
-  }) {
-    return deleted?.call();
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult maybeWhen<TResult extends Object?>({
-    TResult Function()? created,
-    TResult Function(Uint8List data)? backup,
-    TResult Function()? deleted,
-    TResult Function(String error)? error,
-    required TResult orElse(),
-  }) {
-    if (deleted != null) {
-      return deleted();
-    }
-    return orElse();
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult map<TResult extends Object?>({
-    required TResult Function(MagicBackupResponseV2_Created value) created,
-    required TResult Function(MagicBackupResponseV2_Backup value) backup,
-    required TResult Function(MagicBackupResponseV2_Deleted value) deleted,
-    required TResult Function(MagicBackupResponseV2_Error value) error,
-  }) {
-    return deleted(this);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult? mapOrNull<TResult extends Object?>({
-    TResult? Function(MagicBackupResponseV2_Created value)? created,
-    TResult? Function(MagicBackupResponseV2_Backup value)? backup,
-    TResult? Function(MagicBackupResponseV2_Deleted value)? deleted,
-    TResult? Function(MagicBackupResponseV2_Error value)? error,
-  }) {
-    return deleted?.call(this);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult maybeMap<TResult extends Object?>({
-    TResult Function(MagicBackupResponseV2_Created value)? created,
-    TResult Function(MagicBackupResponseV2_Backup value)? backup,
-    TResult Function(MagicBackupResponseV2_Deleted value)? deleted,
-    TResult Function(MagicBackupResponseV2_Error value)? error,
-    required TResult orElse(),
-  }) {
-    if (deleted != null) {
-      return deleted(this);
-    }
-    return orElse();
-  }
-}
-
-abstract class MagicBackupResponseV2_Deleted extends MagicBackupResponseV2 {
-  const factory MagicBackupResponseV2_Deleted() =
-      _$MagicBackupResponseV2_DeletedImpl;
-  const MagicBackupResponseV2_Deleted._() : super._();
 }
 
 /// @nodoc
-abstract class _$$MagicBackupResponseV2_ErrorImplCopyWith<$Res> {
-  factory _$$MagicBackupResponseV2_ErrorImplCopyWith(
-          _$MagicBackupResponseV2_ErrorImpl value,
-          $Res Function(_$MagicBackupResponseV2_ErrorImpl) then) =
-      __$$MagicBackupResponseV2_ErrorImplCopyWithImpl<$Res>;
+
+class MagicBackupResponseV2_Error extends MagicBackupResponseV2 {
+  const MagicBackupResponseV2_Error({required this.error}) : super._();
+
+  final String error;
+
+  /// Create a copy of MagicBackupResponseV2
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @pragma('vm:prefer-inline')
+  $MagicBackupResponseV2_ErrorCopyWith<MagicBackupResponseV2_Error>
+      get copyWith => _$MagicBackupResponseV2_ErrorCopyWithImpl<
+          MagicBackupResponseV2_Error>(this, _$identity);
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is MagicBackupResponseV2_Error &&
+            (identical(other.error, error) || other.error == error));
+  }
+
+  @override
+  int get hashCode => Object.hash(runtimeType, error);
+
+  @override
+  String toString() {
+    return 'MagicBackupResponseV2.error(error: $error)';
+  }
+}
+
+/// @nodoc
+abstract mixin class $MagicBackupResponseV2_ErrorCopyWith<$Res>
+    implements $MagicBackupResponseV2CopyWith<$Res> {
+  factory $MagicBackupResponseV2_ErrorCopyWith(
+          MagicBackupResponseV2_Error value,
+          $Res Function(MagicBackupResponseV2_Error) _then) =
+      _$MagicBackupResponseV2_ErrorCopyWithImpl;
   @useResult
   $Res call({String error});
 }
 
 /// @nodoc
-class __$$MagicBackupResponseV2_ErrorImplCopyWithImpl<$Res>
-    extends _$MagicBackupResponseV2CopyWithImpl<$Res,
-        _$MagicBackupResponseV2_ErrorImpl>
-    implements _$$MagicBackupResponseV2_ErrorImplCopyWith<$Res> {
-  __$$MagicBackupResponseV2_ErrorImplCopyWithImpl(
-      _$MagicBackupResponseV2_ErrorImpl _value,
-      $Res Function(_$MagicBackupResponseV2_ErrorImpl) _then)
-      : super(_value, _then);
+class _$MagicBackupResponseV2_ErrorCopyWithImpl<$Res>
+    implements $MagicBackupResponseV2_ErrorCopyWith<$Res> {
+  _$MagicBackupResponseV2_ErrorCopyWithImpl(this._self, this._then);
+
+  final MagicBackupResponseV2_Error _self;
+  final $Res Function(MagicBackupResponseV2_Error) _then;
 
   /// Create a copy of MagicBackupResponseV2
   /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
-  @override
   $Res call({
     Object? error = null,
   }) {
-    return _then(_$MagicBackupResponseV2_ErrorImpl(
+    return _then(MagicBackupResponseV2_Error(
       error: null == error
-          ? _value.error
+          ? _self.error
           : error // ignore: cast_nullable_to_non_nullable
               as String,
     ));
@@ -2074,306 +1729,42 @@ class __$$MagicBackupResponseV2_ErrorImplCopyWithImpl<$Res>
 }
 
 /// @nodoc
-
-class _$MagicBackupResponseV2_ErrorImpl extends MagicBackupResponseV2_Error {
-  const _$MagicBackupResponseV2_ErrorImpl({required this.error}) : super._();
-
-  @override
-  final String error;
-
-  @override
-  String toString() {
-    return 'MagicBackupResponseV2.error(error: $error)';
-  }
-
-  @override
-  bool operator ==(Object other) {
-    return identical(this, other) ||
-        (other.runtimeType == runtimeType &&
-            other is _$MagicBackupResponseV2_ErrorImpl &&
-            (identical(other.error, error) || other.error == error));
-  }
-
-  @override
-  int get hashCode => Object.hash(runtimeType, error);
-
-  /// Create a copy of MagicBackupResponseV2
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  @override
-  @pragma('vm:prefer-inline')
-  _$$MagicBackupResponseV2_ErrorImplCopyWith<_$MagicBackupResponseV2_ErrorImpl>
-      get copyWith => __$$MagicBackupResponseV2_ErrorImplCopyWithImpl<
-          _$MagicBackupResponseV2_ErrorImpl>(this, _$identity);
-
-  @override
-  @optionalTypeArgs
-  TResult when<TResult extends Object?>({
-    required TResult Function() created,
-    required TResult Function(Uint8List data) backup,
-    required TResult Function() deleted,
-    required TResult Function(String error) error,
-  }) {
-    return error(this.error);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult? whenOrNull<TResult extends Object?>({
-    TResult? Function()? created,
-    TResult? Function(Uint8List data)? backup,
-    TResult? Function()? deleted,
-    TResult? Function(String error)? error,
-  }) {
-    return error?.call(this.error);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult maybeWhen<TResult extends Object?>({
-    TResult Function()? created,
-    TResult Function(Uint8List data)? backup,
-    TResult Function()? deleted,
-    TResult Function(String error)? error,
-    required TResult orElse(),
-  }) {
-    if (error != null) {
-      return error(this.error);
-    }
-    return orElse();
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult map<TResult extends Object?>({
-    required TResult Function(MagicBackupResponseV2_Created value) created,
-    required TResult Function(MagicBackupResponseV2_Backup value) backup,
-    required TResult Function(MagicBackupResponseV2_Deleted value) deleted,
-    required TResult Function(MagicBackupResponseV2_Error value) error,
-  }) {
-    return error(this);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult? mapOrNull<TResult extends Object?>({
-    TResult? Function(MagicBackupResponseV2_Created value)? created,
-    TResult? Function(MagicBackupResponseV2_Backup value)? backup,
-    TResult? Function(MagicBackupResponseV2_Deleted value)? deleted,
-    TResult? Function(MagicBackupResponseV2_Error value)? error,
-  }) {
-    return error?.call(this);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult maybeMap<TResult extends Object?>({
-    TResult Function(MagicBackupResponseV2_Created value)? created,
-    TResult Function(MagicBackupResponseV2_Backup value)? backup,
-    TResult Function(MagicBackupResponseV2_Deleted value)? deleted,
-    TResult Function(MagicBackupResponseV2_Error value)? error,
-    required TResult orElse(),
-  }) {
-    if (error != null) {
-      return error(this);
-    }
-    return orElse();
-  }
-}
-
-abstract class MagicBackupResponseV2_Error extends MagicBackupResponseV2 {
-  const factory MagicBackupResponseV2_Error({required final String error}) =
-      _$MagicBackupResponseV2_ErrorImpl;
-  const MagicBackupResponseV2_Error._() : super._();
-
-  String get error;
-
-  /// Create a copy of MagicBackupResponseV2
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  _$$MagicBackupResponseV2_ErrorImplCopyWith<_$MagicBackupResponseV2_ErrorImpl>
-      get copyWith => throw _privateConstructorUsedError;
-}
-
-/// @nodoc
 mixin _$RestoreMagicBackupEvent {
-  @optionalTypeArgs
-  TResult when<TResult extends Object?>({
-    required TResult Function() notFound,
-    required TResult Function(BackupMetadata field0) starting,
-    required TResult Function(BackupChunk field0) chunk,
-    required TResult Function(String error) error,
-  }) =>
-      throw _privateConstructorUsedError;
-  @optionalTypeArgs
-  TResult? whenOrNull<TResult extends Object?>({
-    TResult? Function()? notFound,
-    TResult? Function(BackupMetadata field0)? starting,
-    TResult? Function(BackupChunk field0)? chunk,
-    TResult? Function(String error)? error,
-  }) =>
-      throw _privateConstructorUsedError;
-  @optionalTypeArgs
-  TResult maybeWhen<TResult extends Object?>({
-    TResult Function()? notFound,
-    TResult Function(BackupMetadata field0)? starting,
-    TResult Function(BackupChunk field0)? chunk,
-    TResult Function(String error)? error,
-    required TResult orElse(),
-  }) =>
-      throw _privateConstructorUsedError;
-  @optionalTypeArgs
-  TResult map<TResult extends Object?>({
-    required TResult Function(RestoreMagicBackupEvent_NotFound value) notFound,
-    required TResult Function(RestoreMagicBackupEvent_Starting value) starting,
-    required TResult Function(RestoreMagicBackupEvent_Chunk value) chunk,
-    required TResult Function(RestoreMagicBackupEvent_Error value) error,
-  }) =>
-      throw _privateConstructorUsedError;
-  @optionalTypeArgs
-  TResult? mapOrNull<TResult extends Object?>({
-    TResult? Function(RestoreMagicBackupEvent_NotFound value)? notFound,
-    TResult? Function(RestoreMagicBackupEvent_Starting value)? starting,
-    TResult? Function(RestoreMagicBackupEvent_Chunk value)? chunk,
-    TResult? Function(RestoreMagicBackupEvent_Error value)? error,
-  }) =>
-      throw _privateConstructorUsedError;
-  @optionalTypeArgs
-  TResult maybeMap<TResult extends Object?>({
-    TResult Function(RestoreMagicBackupEvent_NotFound value)? notFound,
-    TResult Function(RestoreMagicBackupEvent_Starting value)? starting,
-    TResult Function(RestoreMagicBackupEvent_Chunk value)? chunk,
-    TResult Function(RestoreMagicBackupEvent_Error value)? error,
-    required TResult orElse(),
-  }) =>
-      throw _privateConstructorUsedError;
-}
-
-/// @nodoc
-abstract class $RestoreMagicBackupEventCopyWith<$Res> {
-  factory $RestoreMagicBackupEventCopyWith(RestoreMagicBackupEvent value,
-          $Res Function(RestoreMagicBackupEvent) then) =
-      _$RestoreMagicBackupEventCopyWithImpl<$Res, RestoreMagicBackupEvent>;
-}
-
-/// @nodoc
-class _$RestoreMagicBackupEventCopyWithImpl<$Res,
-        $Val extends RestoreMagicBackupEvent>
-    implements $RestoreMagicBackupEventCopyWith<$Res> {
-  _$RestoreMagicBackupEventCopyWithImpl(this._value, this._then);
-
-  // ignore: unused_field
-  final $Val _value;
-  // ignore: unused_field
-  final $Res Function($Val) _then;
-
-  /// Create a copy of RestoreMagicBackupEvent
-  /// with the given fields replaced by the non-null parameter values.
-}
-
-/// @nodoc
-abstract class _$$RestoreMagicBackupEvent_NotFoundImplCopyWith<$Res> {
-  factory _$$RestoreMagicBackupEvent_NotFoundImplCopyWith(
-          _$RestoreMagicBackupEvent_NotFoundImpl value,
-          $Res Function(_$RestoreMagicBackupEvent_NotFoundImpl) then) =
-      __$$RestoreMagicBackupEvent_NotFoundImplCopyWithImpl<$Res>;
-}
-
-/// @nodoc
-class __$$RestoreMagicBackupEvent_NotFoundImplCopyWithImpl<$Res>
-    extends _$RestoreMagicBackupEventCopyWithImpl<$Res,
-        _$RestoreMagicBackupEvent_NotFoundImpl>
-    implements _$$RestoreMagicBackupEvent_NotFoundImplCopyWith<$Res> {
-  __$$RestoreMagicBackupEvent_NotFoundImplCopyWithImpl(
-      _$RestoreMagicBackupEvent_NotFoundImpl _value,
-      $Res Function(_$RestoreMagicBackupEvent_NotFoundImpl) _then)
-      : super(_value, _then);
-
-  /// Create a copy of RestoreMagicBackupEvent
-  /// with the given fields replaced by the non-null parameter values.
-}
-
-/// @nodoc
-
-class _$RestoreMagicBackupEvent_NotFoundImpl
-    extends RestoreMagicBackupEvent_NotFound {
-  const _$RestoreMagicBackupEvent_NotFoundImpl() : super._();
-
-  @override
-  String toString() {
-    return 'RestoreMagicBackupEvent.notFound()';
-  }
-
   @override
   bool operator ==(Object other) {
     return identical(this, other) ||
-        (other.runtimeType == runtimeType &&
-            other is _$RestoreMagicBackupEvent_NotFoundImpl);
+        (other.runtimeType == runtimeType && other is RestoreMagicBackupEvent);
   }
 
   @override
   int get hashCode => runtimeType.hashCode;
 
   @override
-  @optionalTypeArgs
-  TResult when<TResult extends Object?>({
-    required TResult Function() notFound,
-    required TResult Function(BackupMetadata field0) starting,
-    required TResult Function(BackupChunk field0) chunk,
-    required TResult Function(String error) error,
-  }) {
-    return notFound();
+  String toString() {
+    return 'RestoreMagicBackupEvent()';
   }
+}
 
-  @override
-  @optionalTypeArgs
-  TResult? whenOrNull<TResult extends Object?>({
-    TResult? Function()? notFound,
-    TResult? Function(BackupMetadata field0)? starting,
-    TResult? Function(BackupChunk field0)? chunk,
-    TResult? Function(String error)? error,
-  }) {
-    return notFound?.call();
-  }
+/// @nodoc
+class $RestoreMagicBackupEventCopyWith<$Res> {
+  $RestoreMagicBackupEventCopyWith(
+      RestoreMagicBackupEvent _, $Res Function(RestoreMagicBackupEvent) __);
+}
 
-  @override
-  @optionalTypeArgs
-  TResult maybeWhen<TResult extends Object?>({
-    TResult Function()? notFound,
-    TResult Function(BackupMetadata field0)? starting,
-    TResult Function(BackupChunk field0)? chunk,
-    TResult Function(String error)? error,
-    required TResult orElse(),
-  }) {
-    if (notFound != null) {
-      return notFound();
-    }
-    return orElse();
-  }
+/// Adds pattern-matching-related methods to [RestoreMagicBackupEvent].
+extension RestoreMagicBackupEventPatterns on RestoreMagicBackupEvent {
+  /// A variant of `map` that fallback to returning `orElse`.
+  ///
+  /// It is equivalent to doing:
+  /// ```dart
+  /// switch (sealedClass) {
+  ///   case final Subclass value:
+  ///     return ...;
+  ///   case _:
+  ///     return orElse();
+  /// }
+  /// ```
 
-  @override
-  @optionalTypeArgs
-  TResult map<TResult extends Object?>({
-    required TResult Function(RestoreMagicBackupEvent_NotFound value) notFound,
-    required TResult Function(RestoreMagicBackupEvent_Starting value) starting,
-    required TResult Function(RestoreMagicBackupEvent_Chunk value) chunk,
-    required TResult Function(RestoreMagicBackupEvent_Error value) error,
-  }) {
-    return notFound(this);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult? mapOrNull<TResult extends Object?>({
-    TResult? Function(RestoreMagicBackupEvent_NotFound value)? notFound,
-    TResult? Function(RestoreMagicBackupEvent_Starting value)? starting,
-    TResult? Function(RestoreMagicBackupEvent_Chunk value)? chunk,
-    TResult? Function(RestoreMagicBackupEvent_Error value)? error,
-  }) {
-    return notFound?.call(this);
-  }
-
-  @override
   @optionalTypeArgs
   TResult maybeMap<TResult extends Object?>({
     TResult Function(RestoreMagicBackupEvent_NotFound value)? notFound,
@@ -2382,50 +1773,272 @@ class _$RestoreMagicBackupEvent_NotFoundImpl
     TResult Function(RestoreMagicBackupEvent_Error value)? error,
     required TResult orElse(),
   }) {
-    if (notFound != null) {
-      return notFound(this);
+    final _that = this;
+    switch (_that) {
+      case RestoreMagicBackupEvent_NotFound() when notFound != null:
+        return notFound(_that);
+      case RestoreMagicBackupEvent_Starting() when starting != null:
+        return starting(_that);
+      case RestoreMagicBackupEvent_Chunk() when chunk != null:
+        return chunk(_that);
+      case RestoreMagicBackupEvent_Error() when error != null:
+        return error(_that);
+      case _:
+        return orElse();
     }
-    return orElse();
+  }
+
+  /// A `switch`-like method, using callbacks.
+  ///
+  /// Callbacks receives the raw object, upcasted.
+  /// It is equivalent to doing:
+  /// ```dart
+  /// switch (sealedClass) {
+  ///   case final Subclass value:
+  ///     return ...;
+  ///   case final Subclass2 value:
+  ///     return ...;
+  /// }
+  /// ```
+
+  @optionalTypeArgs
+  TResult map<TResult extends Object?>({
+    required TResult Function(RestoreMagicBackupEvent_NotFound value) notFound,
+    required TResult Function(RestoreMagicBackupEvent_Starting value) starting,
+    required TResult Function(RestoreMagicBackupEvent_Chunk value) chunk,
+    required TResult Function(RestoreMagicBackupEvent_Error value) error,
+  }) {
+    final _that = this;
+    switch (_that) {
+      case RestoreMagicBackupEvent_NotFound():
+        return notFound(_that);
+      case RestoreMagicBackupEvent_Starting():
+        return starting(_that);
+      case RestoreMagicBackupEvent_Chunk():
+        return chunk(_that);
+      case RestoreMagicBackupEvent_Error():
+        return error(_that);
+    }
+  }
+
+  /// A variant of `map` that fallback to returning `null`.
+  ///
+  /// It is equivalent to doing:
+  /// ```dart
+  /// switch (sealedClass) {
+  ///   case final Subclass value:
+  ///     return ...;
+  ///   case _:
+  ///     return null;
+  /// }
+  /// ```
+
+  @optionalTypeArgs
+  TResult? mapOrNull<TResult extends Object?>({
+    TResult? Function(RestoreMagicBackupEvent_NotFound value)? notFound,
+    TResult? Function(RestoreMagicBackupEvent_Starting value)? starting,
+    TResult? Function(RestoreMagicBackupEvent_Chunk value)? chunk,
+    TResult? Function(RestoreMagicBackupEvent_Error value)? error,
+  }) {
+    final _that = this;
+    switch (_that) {
+      case RestoreMagicBackupEvent_NotFound() when notFound != null:
+        return notFound(_that);
+      case RestoreMagicBackupEvent_Starting() when starting != null:
+        return starting(_that);
+      case RestoreMagicBackupEvent_Chunk() when chunk != null:
+        return chunk(_that);
+      case RestoreMagicBackupEvent_Error() when error != null:
+        return error(_that);
+      case _:
+        return null;
+    }
+  }
+
+  /// A variant of `when` that fallback to an `orElse` callback.
+  ///
+  /// It is equivalent to doing:
+  /// ```dart
+  /// switch (sealedClass) {
+  ///   case Subclass(:final field):
+  ///     return ...;
+  ///   case _:
+  ///     return orElse();
+  /// }
+  /// ```
+
+  @optionalTypeArgs
+  TResult maybeWhen<TResult extends Object?>({
+    TResult Function()? notFound,
+    TResult Function(BackupMetadata field0)? starting,
+    TResult Function(BackupChunk field0)? chunk,
+    TResult Function(String error)? error,
+    required TResult orElse(),
+  }) {
+    final _that = this;
+    switch (_that) {
+      case RestoreMagicBackupEvent_NotFound() when notFound != null:
+        return notFound();
+      case RestoreMagicBackupEvent_Starting() when starting != null:
+        return starting(_that.field0);
+      case RestoreMagicBackupEvent_Chunk() when chunk != null:
+        return chunk(_that.field0);
+      case RestoreMagicBackupEvent_Error() when error != null:
+        return error(_that.error);
+      case _:
+        return orElse();
+    }
+  }
+
+  /// A `switch`-like method, using callbacks.
+  ///
+  /// As opposed to `map`, this offers destructuring.
+  /// It is equivalent to doing:
+  /// ```dart
+  /// switch (sealedClass) {
+  ///   case Subclass(:final field):
+  ///     return ...;
+  ///   case Subclass2(:final field2):
+  ///     return ...;
+  /// }
+  /// ```
+
+  @optionalTypeArgs
+  TResult when<TResult extends Object?>({
+    required TResult Function() notFound,
+    required TResult Function(BackupMetadata field0) starting,
+    required TResult Function(BackupChunk field0) chunk,
+    required TResult Function(String error) error,
+  }) {
+    final _that = this;
+    switch (_that) {
+      case RestoreMagicBackupEvent_NotFound():
+        return notFound();
+      case RestoreMagicBackupEvent_Starting():
+        return starting(_that.field0);
+      case RestoreMagicBackupEvent_Chunk():
+        return chunk(_that.field0);
+      case RestoreMagicBackupEvent_Error():
+        return error(_that.error);
+    }
+  }
+
+  /// A variant of `when` that fallback to returning `null`
+  ///
+  /// It is equivalent to doing:
+  /// ```dart
+  /// switch (sealedClass) {
+  ///   case Subclass(:final field):
+  ///     return ...;
+  ///   case _:
+  ///     return null;
+  /// }
+  /// ```
+
+  @optionalTypeArgs
+  TResult? whenOrNull<TResult extends Object?>({
+    TResult? Function()? notFound,
+    TResult? Function(BackupMetadata field0)? starting,
+    TResult? Function(BackupChunk field0)? chunk,
+    TResult? Function(String error)? error,
+  }) {
+    final _that = this;
+    switch (_that) {
+      case RestoreMagicBackupEvent_NotFound() when notFound != null:
+        return notFound();
+      case RestoreMagicBackupEvent_Starting() when starting != null:
+        return starting(_that.field0);
+      case RestoreMagicBackupEvent_Chunk() when chunk != null:
+        return chunk(_that.field0);
+      case RestoreMagicBackupEvent_Error() when error != null:
+        return error(_that.error);
+      case _:
+        return null;
+    }
   }
 }
 
-abstract class RestoreMagicBackupEvent_NotFound
-    extends RestoreMagicBackupEvent {
-  const factory RestoreMagicBackupEvent_NotFound() =
-      _$RestoreMagicBackupEvent_NotFoundImpl;
-  const RestoreMagicBackupEvent_NotFound._() : super._();
+/// @nodoc
+
+class RestoreMagicBackupEvent_NotFound extends RestoreMagicBackupEvent {
+  const RestoreMagicBackupEvent_NotFound() : super._();
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is RestoreMagicBackupEvent_NotFound);
+  }
+
+  @override
+  int get hashCode => runtimeType.hashCode;
+
+  @override
+  String toString() {
+    return 'RestoreMagicBackupEvent.notFound()';
+  }
 }
 
 /// @nodoc
-abstract class _$$RestoreMagicBackupEvent_StartingImplCopyWith<$Res> {
-  factory _$$RestoreMagicBackupEvent_StartingImplCopyWith(
-          _$RestoreMagicBackupEvent_StartingImpl value,
-          $Res Function(_$RestoreMagicBackupEvent_StartingImpl) then) =
-      __$$RestoreMagicBackupEvent_StartingImplCopyWithImpl<$Res>;
+
+class RestoreMagicBackupEvent_Starting extends RestoreMagicBackupEvent {
+  const RestoreMagicBackupEvent_Starting(this.field0) : super._();
+
+  final BackupMetadata field0;
+
+  /// Create a copy of RestoreMagicBackupEvent
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @pragma('vm:prefer-inline')
+  $RestoreMagicBackupEvent_StartingCopyWith<RestoreMagicBackupEvent_Starting>
+      get copyWith => _$RestoreMagicBackupEvent_StartingCopyWithImpl<
+          RestoreMagicBackupEvent_Starting>(this, _$identity);
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is RestoreMagicBackupEvent_Starting &&
+            (identical(other.field0, field0) || other.field0 == field0));
+  }
+
+  @override
+  int get hashCode => Object.hash(runtimeType, field0);
+
+  @override
+  String toString() {
+    return 'RestoreMagicBackupEvent.starting(field0: $field0)';
+  }
+}
+
+/// @nodoc
+abstract mixin class $RestoreMagicBackupEvent_StartingCopyWith<$Res>
+    implements $RestoreMagicBackupEventCopyWith<$Res> {
+  factory $RestoreMagicBackupEvent_StartingCopyWith(
+          RestoreMagicBackupEvent_Starting value,
+          $Res Function(RestoreMagicBackupEvent_Starting) _then) =
+      _$RestoreMagicBackupEvent_StartingCopyWithImpl;
   @useResult
   $Res call({BackupMetadata field0});
 }
 
 /// @nodoc
-class __$$RestoreMagicBackupEvent_StartingImplCopyWithImpl<$Res>
-    extends _$RestoreMagicBackupEventCopyWithImpl<$Res,
-        _$RestoreMagicBackupEvent_StartingImpl>
-    implements _$$RestoreMagicBackupEvent_StartingImplCopyWith<$Res> {
-  __$$RestoreMagicBackupEvent_StartingImplCopyWithImpl(
-      _$RestoreMagicBackupEvent_StartingImpl _value,
-      $Res Function(_$RestoreMagicBackupEvent_StartingImpl) _then)
-      : super(_value, _then);
+class _$RestoreMagicBackupEvent_StartingCopyWithImpl<$Res>
+    implements $RestoreMagicBackupEvent_StartingCopyWith<$Res> {
+  _$RestoreMagicBackupEvent_StartingCopyWithImpl(this._self, this._then);
+
+  final RestoreMagicBackupEvent_Starting _self;
+  final $Res Function(RestoreMagicBackupEvent_Starting) _then;
 
   /// Create a copy of RestoreMagicBackupEvent
   /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
-  @override
   $Res call({
     Object? field0 = null,
   }) {
-    return _then(_$RestoreMagicBackupEvent_StartingImpl(
+    return _then(RestoreMagicBackupEvent_Starting(
       null == field0
-          ? _value.field0
+          ? _self.field0
           : field0 // ignore: cast_nullable_to_non_nullable
               as BackupMetadata,
     ));
@@ -2434,160 +2047,64 @@ class __$$RestoreMagicBackupEvent_StartingImplCopyWithImpl<$Res>
 
 /// @nodoc
 
-class _$RestoreMagicBackupEvent_StartingImpl
-    extends RestoreMagicBackupEvent_Starting {
-  const _$RestoreMagicBackupEvent_StartingImpl(this.field0) : super._();
+class RestoreMagicBackupEvent_Chunk extends RestoreMagicBackupEvent {
+  const RestoreMagicBackupEvent_Chunk(this.field0) : super._();
 
-  @override
-  final BackupMetadata field0;
+  final BackupChunk field0;
 
-  @override
-  String toString() {
-    return 'RestoreMagicBackupEvent.starting(field0: $field0)';
-  }
+  /// Create a copy of RestoreMagicBackupEvent
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @pragma('vm:prefer-inline')
+  $RestoreMagicBackupEvent_ChunkCopyWith<RestoreMagicBackupEvent_Chunk>
+      get copyWith => _$RestoreMagicBackupEvent_ChunkCopyWithImpl<
+          RestoreMagicBackupEvent_Chunk>(this, _$identity);
 
   @override
   bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$RestoreMagicBackupEvent_StartingImpl &&
+            other is RestoreMagicBackupEvent_Chunk &&
             (identical(other.field0, field0) || other.field0 == field0));
   }
 
   @override
   int get hashCode => Object.hash(runtimeType, field0);
 
-  /// Create a copy of RestoreMagicBackupEvent
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
-  @pragma('vm:prefer-inline')
-  _$$RestoreMagicBackupEvent_StartingImplCopyWith<
-          _$RestoreMagicBackupEvent_StartingImpl>
-      get copyWith => __$$RestoreMagicBackupEvent_StartingImplCopyWithImpl<
-          _$RestoreMagicBackupEvent_StartingImpl>(this, _$identity);
-
-  @override
-  @optionalTypeArgs
-  TResult when<TResult extends Object?>({
-    required TResult Function() notFound,
-    required TResult Function(BackupMetadata field0) starting,
-    required TResult Function(BackupChunk field0) chunk,
-    required TResult Function(String error) error,
-  }) {
-    return starting(field0);
+  String toString() {
+    return 'RestoreMagicBackupEvent.chunk(field0: $field0)';
   }
-
-  @override
-  @optionalTypeArgs
-  TResult? whenOrNull<TResult extends Object?>({
-    TResult? Function()? notFound,
-    TResult? Function(BackupMetadata field0)? starting,
-    TResult? Function(BackupChunk field0)? chunk,
-    TResult? Function(String error)? error,
-  }) {
-    return starting?.call(field0);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult maybeWhen<TResult extends Object?>({
-    TResult Function()? notFound,
-    TResult Function(BackupMetadata field0)? starting,
-    TResult Function(BackupChunk field0)? chunk,
-    TResult Function(String error)? error,
-    required TResult orElse(),
-  }) {
-    if (starting != null) {
-      return starting(field0);
-    }
-    return orElse();
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult map<TResult extends Object?>({
-    required TResult Function(RestoreMagicBackupEvent_NotFound value) notFound,
-    required TResult Function(RestoreMagicBackupEvent_Starting value) starting,
-    required TResult Function(RestoreMagicBackupEvent_Chunk value) chunk,
-    required TResult Function(RestoreMagicBackupEvent_Error value) error,
-  }) {
-    return starting(this);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult? mapOrNull<TResult extends Object?>({
-    TResult? Function(RestoreMagicBackupEvent_NotFound value)? notFound,
-    TResult? Function(RestoreMagicBackupEvent_Starting value)? starting,
-    TResult? Function(RestoreMagicBackupEvent_Chunk value)? chunk,
-    TResult? Function(RestoreMagicBackupEvent_Error value)? error,
-  }) {
-    return starting?.call(this);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult maybeMap<TResult extends Object?>({
-    TResult Function(RestoreMagicBackupEvent_NotFound value)? notFound,
-    TResult Function(RestoreMagicBackupEvent_Starting value)? starting,
-    TResult Function(RestoreMagicBackupEvent_Chunk value)? chunk,
-    TResult Function(RestoreMagicBackupEvent_Error value)? error,
-    required TResult orElse(),
-  }) {
-    if (starting != null) {
-      return starting(this);
-    }
-    return orElse();
-  }
-}
-
-abstract class RestoreMagicBackupEvent_Starting
-    extends RestoreMagicBackupEvent {
-  const factory RestoreMagicBackupEvent_Starting(final BackupMetadata field0) =
-      _$RestoreMagicBackupEvent_StartingImpl;
-  const RestoreMagicBackupEvent_Starting._() : super._();
-
-  BackupMetadata get field0;
-
-  /// Create a copy of RestoreMagicBackupEvent
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  _$$RestoreMagicBackupEvent_StartingImplCopyWith<
-          _$RestoreMagicBackupEvent_StartingImpl>
-      get copyWith => throw _privateConstructorUsedError;
 }
 
 /// @nodoc
-abstract class _$$RestoreMagicBackupEvent_ChunkImplCopyWith<$Res> {
-  factory _$$RestoreMagicBackupEvent_ChunkImplCopyWith(
-          _$RestoreMagicBackupEvent_ChunkImpl value,
-          $Res Function(_$RestoreMagicBackupEvent_ChunkImpl) then) =
-      __$$RestoreMagicBackupEvent_ChunkImplCopyWithImpl<$Res>;
+abstract mixin class $RestoreMagicBackupEvent_ChunkCopyWith<$Res>
+    implements $RestoreMagicBackupEventCopyWith<$Res> {
+  factory $RestoreMagicBackupEvent_ChunkCopyWith(
+          RestoreMagicBackupEvent_Chunk value,
+          $Res Function(RestoreMagicBackupEvent_Chunk) _then) =
+      _$RestoreMagicBackupEvent_ChunkCopyWithImpl;
   @useResult
   $Res call({BackupChunk field0});
 }
 
 /// @nodoc
-class __$$RestoreMagicBackupEvent_ChunkImplCopyWithImpl<$Res>
-    extends _$RestoreMagicBackupEventCopyWithImpl<$Res,
-        _$RestoreMagicBackupEvent_ChunkImpl>
-    implements _$$RestoreMagicBackupEvent_ChunkImplCopyWith<$Res> {
-  __$$RestoreMagicBackupEvent_ChunkImplCopyWithImpl(
-      _$RestoreMagicBackupEvent_ChunkImpl _value,
-      $Res Function(_$RestoreMagicBackupEvent_ChunkImpl) _then)
-      : super(_value, _then);
+class _$RestoreMagicBackupEvent_ChunkCopyWithImpl<$Res>
+    implements $RestoreMagicBackupEvent_ChunkCopyWith<$Res> {
+  _$RestoreMagicBackupEvent_ChunkCopyWithImpl(this._self, this._then);
+
+  final RestoreMagicBackupEvent_Chunk _self;
+  final $Res Function(RestoreMagicBackupEvent_Chunk) _then;
 
   /// Create a copy of RestoreMagicBackupEvent
   /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
-  @override
   $Res call({
     Object? field0 = null,
   }) {
-    return _then(_$RestoreMagicBackupEvent_ChunkImpl(
+    return _then(RestoreMagicBackupEvent_Chunk(
       null == field0
-          ? _value.field0
+          ? _self.field0
           : field0 // ignore: cast_nullable_to_non_nullable
               as BackupChunk,
     ));
@@ -2596,159 +2113,64 @@ class __$$RestoreMagicBackupEvent_ChunkImplCopyWithImpl<$Res>
 
 /// @nodoc
 
-class _$RestoreMagicBackupEvent_ChunkImpl
-    extends RestoreMagicBackupEvent_Chunk {
-  const _$RestoreMagicBackupEvent_ChunkImpl(this.field0) : super._();
+class RestoreMagicBackupEvent_Error extends RestoreMagicBackupEvent {
+  const RestoreMagicBackupEvent_Error({required this.error}) : super._();
 
-  @override
-  final BackupChunk field0;
+  final String error;
 
-  @override
-  String toString() {
-    return 'RestoreMagicBackupEvent.chunk(field0: $field0)';
-  }
+  /// Create a copy of RestoreMagicBackupEvent
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @pragma('vm:prefer-inline')
+  $RestoreMagicBackupEvent_ErrorCopyWith<RestoreMagicBackupEvent_Error>
+      get copyWith => _$RestoreMagicBackupEvent_ErrorCopyWithImpl<
+          RestoreMagicBackupEvent_Error>(this, _$identity);
 
   @override
   bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$RestoreMagicBackupEvent_ChunkImpl &&
-            (identical(other.field0, field0) || other.field0 == field0));
+            other is RestoreMagicBackupEvent_Error &&
+            (identical(other.error, error) || other.error == error));
   }
 
   @override
-  int get hashCode => Object.hash(runtimeType, field0);
-
-  /// Create a copy of RestoreMagicBackupEvent
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  @override
-  @pragma('vm:prefer-inline')
-  _$$RestoreMagicBackupEvent_ChunkImplCopyWith<
-          _$RestoreMagicBackupEvent_ChunkImpl>
-      get copyWith => __$$RestoreMagicBackupEvent_ChunkImplCopyWithImpl<
-          _$RestoreMagicBackupEvent_ChunkImpl>(this, _$identity);
+  int get hashCode => Object.hash(runtimeType, error);
 
   @override
-  @optionalTypeArgs
-  TResult when<TResult extends Object?>({
-    required TResult Function() notFound,
-    required TResult Function(BackupMetadata field0) starting,
-    required TResult Function(BackupChunk field0) chunk,
-    required TResult Function(String error) error,
-  }) {
-    return chunk(field0);
+  String toString() {
+    return 'RestoreMagicBackupEvent.error(error: $error)';
   }
-
-  @override
-  @optionalTypeArgs
-  TResult? whenOrNull<TResult extends Object?>({
-    TResult? Function()? notFound,
-    TResult? Function(BackupMetadata field0)? starting,
-    TResult? Function(BackupChunk field0)? chunk,
-    TResult? Function(String error)? error,
-  }) {
-    return chunk?.call(field0);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult maybeWhen<TResult extends Object?>({
-    TResult Function()? notFound,
-    TResult Function(BackupMetadata field0)? starting,
-    TResult Function(BackupChunk field0)? chunk,
-    TResult Function(String error)? error,
-    required TResult orElse(),
-  }) {
-    if (chunk != null) {
-      return chunk(field0);
-    }
-    return orElse();
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult map<TResult extends Object?>({
-    required TResult Function(RestoreMagicBackupEvent_NotFound value) notFound,
-    required TResult Function(RestoreMagicBackupEvent_Starting value) starting,
-    required TResult Function(RestoreMagicBackupEvent_Chunk value) chunk,
-    required TResult Function(RestoreMagicBackupEvent_Error value) error,
-  }) {
-    return chunk(this);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult? mapOrNull<TResult extends Object?>({
-    TResult? Function(RestoreMagicBackupEvent_NotFound value)? notFound,
-    TResult? Function(RestoreMagicBackupEvent_Starting value)? starting,
-    TResult? Function(RestoreMagicBackupEvent_Chunk value)? chunk,
-    TResult? Function(RestoreMagicBackupEvent_Error value)? error,
-  }) {
-    return chunk?.call(this);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult maybeMap<TResult extends Object?>({
-    TResult Function(RestoreMagicBackupEvent_NotFound value)? notFound,
-    TResult Function(RestoreMagicBackupEvent_Starting value)? starting,
-    TResult Function(RestoreMagicBackupEvent_Chunk value)? chunk,
-    TResult Function(RestoreMagicBackupEvent_Error value)? error,
-    required TResult orElse(),
-  }) {
-    if (chunk != null) {
-      return chunk(this);
-    }
-    return orElse();
-  }
-}
-
-abstract class RestoreMagicBackupEvent_Chunk extends RestoreMagicBackupEvent {
-  const factory RestoreMagicBackupEvent_Chunk(final BackupChunk field0) =
-      _$RestoreMagicBackupEvent_ChunkImpl;
-  const RestoreMagicBackupEvent_Chunk._() : super._();
-
-  BackupChunk get field0;
-
-  /// Create a copy of RestoreMagicBackupEvent
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  _$$RestoreMagicBackupEvent_ChunkImplCopyWith<
-          _$RestoreMagicBackupEvent_ChunkImpl>
-      get copyWith => throw _privateConstructorUsedError;
 }
 
 /// @nodoc
-abstract class _$$RestoreMagicBackupEvent_ErrorImplCopyWith<$Res> {
-  factory _$$RestoreMagicBackupEvent_ErrorImplCopyWith(
-          _$RestoreMagicBackupEvent_ErrorImpl value,
-          $Res Function(_$RestoreMagicBackupEvent_ErrorImpl) then) =
-      __$$RestoreMagicBackupEvent_ErrorImplCopyWithImpl<$Res>;
+abstract mixin class $RestoreMagicBackupEvent_ErrorCopyWith<$Res>
+    implements $RestoreMagicBackupEventCopyWith<$Res> {
+  factory $RestoreMagicBackupEvent_ErrorCopyWith(
+          RestoreMagicBackupEvent_Error value,
+          $Res Function(RestoreMagicBackupEvent_Error) _then) =
+      _$RestoreMagicBackupEvent_ErrorCopyWithImpl;
   @useResult
   $Res call({String error});
 }
 
 /// @nodoc
-class __$$RestoreMagicBackupEvent_ErrorImplCopyWithImpl<$Res>
-    extends _$RestoreMagicBackupEventCopyWithImpl<$Res,
-        _$RestoreMagicBackupEvent_ErrorImpl>
-    implements _$$RestoreMagicBackupEvent_ErrorImplCopyWith<$Res> {
-  __$$RestoreMagicBackupEvent_ErrorImplCopyWithImpl(
-      _$RestoreMagicBackupEvent_ErrorImpl _value,
-      $Res Function(_$RestoreMagicBackupEvent_ErrorImpl) _then)
-      : super(_value, _then);
+class _$RestoreMagicBackupEvent_ErrorCopyWithImpl<$Res>
+    implements $RestoreMagicBackupEvent_ErrorCopyWith<$Res> {
+  _$RestoreMagicBackupEvent_ErrorCopyWithImpl(this._self, this._then);
+
+  final RestoreMagicBackupEvent_Error _self;
+  final $Res Function(RestoreMagicBackupEvent_Error) _then;
 
   /// Create a copy of RestoreMagicBackupEvent
   /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
-  @override
   $Res call({
     Object? error = null,
   }) {
-    return _then(_$RestoreMagicBackupEvent_ErrorImpl(
+    return _then(RestoreMagicBackupEvent_Error(
       error: null == error
-          ? _value.error
+          ? _self.error
           : error // ignore: cast_nullable_to_non_nullable
               as String,
     ));
@@ -2756,337 +2178,280 @@ class __$$RestoreMagicBackupEvent_ErrorImplCopyWithImpl<$Res>
 }
 
 /// @nodoc
-
-class _$RestoreMagicBackupEvent_ErrorImpl
-    extends RestoreMagicBackupEvent_Error {
-  const _$RestoreMagicBackupEvent_ErrorImpl({required this.error}) : super._();
-
-  @override
-  final String error;
-
-  @override
-  String toString() {
-    return 'RestoreMagicBackupEvent.error(error: $error)';
-  }
-
-  @override
-  bool operator ==(Object other) {
-    return identical(this, other) ||
-        (other.runtimeType == runtimeType &&
-            other is _$RestoreMagicBackupEvent_ErrorImpl &&
-            (identical(other.error, error) || other.error == error));
-  }
-
-  @override
-  int get hashCode => Object.hash(runtimeType, error);
-
-  /// Create a copy of RestoreMagicBackupEvent
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  @override
-  @pragma('vm:prefer-inline')
-  _$$RestoreMagicBackupEvent_ErrorImplCopyWith<
-          _$RestoreMagicBackupEvent_ErrorImpl>
-      get copyWith => __$$RestoreMagicBackupEvent_ErrorImplCopyWithImpl<
-          _$RestoreMagicBackupEvent_ErrorImpl>(this, _$identity);
-
-  @override
-  @optionalTypeArgs
-  TResult when<TResult extends Object?>({
-    required TResult Function() notFound,
-    required TResult Function(BackupMetadata field0) starting,
-    required TResult Function(BackupChunk field0) chunk,
-    required TResult Function(String error) error,
-  }) {
-    return error(this.error);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult? whenOrNull<TResult extends Object?>({
-    TResult? Function()? notFound,
-    TResult? Function(BackupMetadata field0)? starting,
-    TResult? Function(BackupChunk field0)? chunk,
-    TResult? Function(String error)? error,
-  }) {
-    return error?.call(this.error);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult maybeWhen<TResult extends Object?>({
-    TResult Function()? notFound,
-    TResult Function(BackupMetadata field0)? starting,
-    TResult Function(BackupChunk field0)? chunk,
-    TResult Function(String error)? error,
-    required TResult orElse(),
-  }) {
-    if (error != null) {
-      return error(this.error);
-    }
-    return orElse();
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult map<TResult extends Object?>({
-    required TResult Function(RestoreMagicBackupEvent_NotFound value) notFound,
-    required TResult Function(RestoreMagicBackupEvent_Starting value) starting,
-    required TResult Function(RestoreMagicBackupEvent_Chunk value) chunk,
-    required TResult Function(RestoreMagicBackupEvent_Error value) error,
-  }) {
-    return error(this);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult? mapOrNull<TResult extends Object?>({
-    TResult? Function(RestoreMagicBackupEvent_NotFound value)? notFound,
-    TResult? Function(RestoreMagicBackupEvent_Starting value)? starting,
-    TResult? Function(RestoreMagicBackupEvent_Chunk value)? chunk,
-    TResult? Function(RestoreMagicBackupEvent_Error value)? error,
-  }) {
-    return error?.call(this);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult maybeMap<TResult extends Object?>({
-    TResult Function(RestoreMagicBackupEvent_NotFound value)? notFound,
-    TResult Function(RestoreMagicBackupEvent_Starting value)? starting,
-    TResult Function(RestoreMagicBackupEvent_Chunk value)? chunk,
-    TResult Function(RestoreMagicBackupEvent_Error value)? error,
-    required TResult orElse(),
-  }) {
-    if (error != null) {
-      return error(this);
-    }
-    return orElse();
-  }
-}
-
-abstract class RestoreMagicBackupEvent_Error extends RestoreMagicBackupEvent {
-  const factory RestoreMagicBackupEvent_Error({required final String error}) =
-      _$RestoreMagicBackupEvent_ErrorImpl;
-  const RestoreMagicBackupEvent_Error._() : super._();
-
-  String get error;
-
-  /// Create a copy of RestoreMagicBackupEvent
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  _$$RestoreMagicBackupEvent_ErrorImplCopyWith<
-          _$RestoreMagicBackupEvent_ErrorImpl>
-      get copyWith => throw _privateConstructorUsedError;
-}
-
-/// @nodoc
 mixin _$RestoreMagicBackupResult {
-  @optionalTypeArgs
-  TResult when<TResult extends Object?>({
-    required TResult Function() success,
-    required TResult Function(String error) error,
-  }) =>
-      throw _privateConstructorUsedError;
-  @optionalTypeArgs
-  TResult? whenOrNull<TResult extends Object?>({
-    TResult? Function()? success,
-    TResult? Function(String error)? error,
-  }) =>
-      throw _privateConstructorUsedError;
-  @optionalTypeArgs
-  TResult maybeWhen<TResult extends Object?>({
-    TResult Function()? success,
-    TResult Function(String error)? error,
-    required TResult orElse(),
-  }) =>
-      throw _privateConstructorUsedError;
-  @optionalTypeArgs
-  TResult map<TResult extends Object?>({
-    required TResult Function(RestoreMagicBackupResult_Success value) success,
-    required TResult Function(RestoreMagicBackupResult_Error value) error,
-  }) =>
-      throw _privateConstructorUsedError;
-  @optionalTypeArgs
-  TResult? mapOrNull<TResult extends Object?>({
-    TResult? Function(RestoreMagicBackupResult_Success value)? success,
-    TResult? Function(RestoreMagicBackupResult_Error value)? error,
-  }) =>
-      throw _privateConstructorUsedError;
-  @optionalTypeArgs
-  TResult maybeMap<TResult extends Object?>({
-    TResult Function(RestoreMagicBackupResult_Success value)? success,
-    TResult Function(RestoreMagicBackupResult_Error value)? error,
-    required TResult orElse(),
-  }) =>
-      throw _privateConstructorUsedError;
-}
-
-/// @nodoc
-abstract class $RestoreMagicBackupResultCopyWith<$Res> {
-  factory $RestoreMagicBackupResultCopyWith(RestoreMagicBackupResult value,
-          $Res Function(RestoreMagicBackupResult) then) =
-      _$RestoreMagicBackupResultCopyWithImpl<$Res, RestoreMagicBackupResult>;
-}
-
-/// @nodoc
-class _$RestoreMagicBackupResultCopyWithImpl<$Res,
-        $Val extends RestoreMagicBackupResult>
-    implements $RestoreMagicBackupResultCopyWith<$Res> {
-  _$RestoreMagicBackupResultCopyWithImpl(this._value, this._then);
-
-  // ignore: unused_field
-  final $Val _value;
-  // ignore: unused_field
-  final $Res Function($Val) _then;
-
-  /// Create a copy of RestoreMagicBackupResult
-  /// with the given fields replaced by the non-null parameter values.
-}
-
-/// @nodoc
-abstract class _$$RestoreMagicBackupResult_SuccessImplCopyWith<$Res> {
-  factory _$$RestoreMagicBackupResult_SuccessImplCopyWith(
-          _$RestoreMagicBackupResult_SuccessImpl value,
-          $Res Function(_$RestoreMagicBackupResult_SuccessImpl) then) =
-      __$$RestoreMagicBackupResult_SuccessImplCopyWithImpl<$Res>;
-}
-
-/// @nodoc
-class __$$RestoreMagicBackupResult_SuccessImplCopyWithImpl<$Res>
-    extends _$RestoreMagicBackupResultCopyWithImpl<$Res,
-        _$RestoreMagicBackupResult_SuccessImpl>
-    implements _$$RestoreMagicBackupResult_SuccessImplCopyWith<$Res> {
-  __$$RestoreMagicBackupResult_SuccessImplCopyWithImpl(
-      _$RestoreMagicBackupResult_SuccessImpl _value,
-      $Res Function(_$RestoreMagicBackupResult_SuccessImpl) _then)
-      : super(_value, _then);
-
-  /// Create a copy of RestoreMagicBackupResult
-  /// with the given fields replaced by the non-null parameter values.
-}
-
-/// @nodoc
-
-class _$RestoreMagicBackupResult_SuccessImpl
-    extends RestoreMagicBackupResult_Success {
-  const _$RestoreMagicBackupResult_SuccessImpl() : super._();
-
-  @override
-  String toString() {
-    return 'RestoreMagicBackupResult.success()';
-  }
-
   @override
   bool operator ==(Object other) {
     return identical(this, other) ||
-        (other.runtimeType == runtimeType &&
-            other is _$RestoreMagicBackupResult_SuccessImpl);
+        (other.runtimeType == runtimeType && other is RestoreMagicBackupResult);
   }
 
   @override
   int get hashCode => runtimeType.hashCode;
 
   @override
-  @optionalTypeArgs
-  TResult when<TResult extends Object?>({
-    required TResult Function() success,
-    required TResult Function(String error) error,
-  }) {
-    return success();
+  String toString() {
+    return 'RestoreMagicBackupResult()';
   }
+}
 
-  @override
-  @optionalTypeArgs
-  TResult? whenOrNull<TResult extends Object?>({
-    TResult? Function()? success,
-    TResult? Function(String error)? error,
-  }) {
-    return success?.call();
-  }
+/// @nodoc
+class $RestoreMagicBackupResultCopyWith<$Res> {
+  $RestoreMagicBackupResultCopyWith(
+      RestoreMagicBackupResult _, $Res Function(RestoreMagicBackupResult) __);
+}
 
-  @override
-  @optionalTypeArgs
-  TResult maybeWhen<TResult extends Object?>({
-    TResult Function()? success,
-    TResult Function(String error)? error,
-    required TResult orElse(),
-  }) {
-    if (success != null) {
-      return success();
-    }
-    return orElse();
-  }
+/// Adds pattern-matching-related methods to [RestoreMagicBackupResult].
+extension RestoreMagicBackupResultPatterns on RestoreMagicBackupResult {
+  /// A variant of `map` that fallback to returning `orElse`.
+  ///
+  /// It is equivalent to doing:
+  /// ```dart
+  /// switch (sealedClass) {
+  ///   case final Subclass value:
+  ///     return ...;
+  ///   case _:
+  ///     return orElse();
+  /// }
+  /// ```
 
-  @override
-  @optionalTypeArgs
-  TResult map<TResult extends Object?>({
-    required TResult Function(RestoreMagicBackupResult_Success value) success,
-    required TResult Function(RestoreMagicBackupResult_Error value) error,
-  }) {
-    return success(this);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult? mapOrNull<TResult extends Object?>({
-    TResult? Function(RestoreMagicBackupResult_Success value)? success,
-    TResult? Function(RestoreMagicBackupResult_Error value)? error,
-  }) {
-    return success?.call(this);
-  }
-
-  @override
   @optionalTypeArgs
   TResult maybeMap<TResult extends Object?>({
     TResult Function(RestoreMagicBackupResult_Success value)? success,
     TResult Function(RestoreMagicBackupResult_Error value)? error,
     required TResult orElse(),
   }) {
-    if (success != null) {
-      return success(this);
+    final _that = this;
+    switch (_that) {
+      case RestoreMagicBackupResult_Success() when success != null:
+        return success(_that);
+      case RestoreMagicBackupResult_Error() when error != null:
+        return error(_that);
+      case _:
+        return orElse();
     }
-    return orElse();
+  }
+
+  /// A `switch`-like method, using callbacks.
+  ///
+  /// Callbacks receives the raw object, upcasted.
+  /// It is equivalent to doing:
+  /// ```dart
+  /// switch (sealedClass) {
+  ///   case final Subclass value:
+  ///     return ...;
+  ///   case final Subclass2 value:
+  ///     return ...;
+  /// }
+  /// ```
+
+  @optionalTypeArgs
+  TResult map<TResult extends Object?>({
+    required TResult Function(RestoreMagicBackupResult_Success value) success,
+    required TResult Function(RestoreMagicBackupResult_Error value) error,
+  }) {
+    final _that = this;
+    switch (_that) {
+      case RestoreMagicBackupResult_Success():
+        return success(_that);
+      case RestoreMagicBackupResult_Error():
+        return error(_that);
+    }
+  }
+
+  /// A variant of `map` that fallback to returning `null`.
+  ///
+  /// It is equivalent to doing:
+  /// ```dart
+  /// switch (sealedClass) {
+  ///   case final Subclass value:
+  ///     return ...;
+  ///   case _:
+  ///     return null;
+  /// }
+  /// ```
+
+  @optionalTypeArgs
+  TResult? mapOrNull<TResult extends Object?>({
+    TResult? Function(RestoreMagicBackupResult_Success value)? success,
+    TResult? Function(RestoreMagicBackupResult_Error value)? error,
+  }) {
+    final _that = this;
+    switch (_that) {
+      case RestoreMagicBackupResult_Success() when success != null:
+        return success(_that);
+      case RestoreMagicBackupResult_Error() when error != null:
+        return error(_that);
+      case _:
+        return null;
+    }
+  }
+
+  /// A variant of `when` that fallback to an `orElse` callback.
+  ///
+  /// It is equivalent to doing:
+  /// ```dart
+  /// switch (sealedClass) {
+  ///   case Subclass(:final field):
+  ///     return ...;
+  ///   case _:
+  ///     return orElse();
+  /// }
+  /// ```
+
+  @optionalTypeArgs
+  TResult maybeWhen<TResult extends Object?>({
+    TResult Function()? success,
+    TResult Function(String error)? error,
+    required TResult orElse(),
+  }) {
+    final _that = this;
+    switch (_that) {
+      case RestoreMagicBackupResult_Success() when success != null:
+        return success();
+      case RestoreMagicBackupResult_Error() when error != null:
+        return error(_that.error);
+      case _:
+        return orElse();
+    }
+  }
+
+  /// A `switch`-like method, using callbacks.
+  ///
+  /// As opposed to `map`, this offers destructuring.
+  /// It is equivalent to doing:
+  /// ```dart
+  /// switch (sealedClass) {
+  ///   case Subclass(:final field):
+  ///     return ...;
+  ///   case Subclass2(:final field2):
+  ///     return ...;
+  /// }
+  /// ```
+
+  @optionalTypeArgs
+  TResult when<TResult extends Object?>({
+    required TResult Function() success,
+    required TResult Function(String error) error,
+  }) {
+    final _that = this;
+    switch (_that) {
+      case RestoreMagicBackupResult_Success():
+        return success();
+      case RestoreMagicBackupResult_Error():
+        return error(_that.error);
+    }
+  }
+
+  /// A variant of `when` that fallback to returning `null`
+  ///
+  /// It is equivalent to doing:
+  /// ```dart
+  /// switch (sealedClass) {
+  ///   case Subclass(:final field):
+  ///     return ...;
+  ///   case _:
+  ///     return null;
+  /// }
+  /// ```
+
+  @optionalTypeArgs
+  TResult? whenOrNull<TResult extends Object?>({
+    TResult? Function()? success,
+    TResult? Function(String error)? error,
+  }) {
+    final _that = this;
+    switch (_that) {
+      case RestoreMagicBackupResult_Success() when success != null:
+        return success();
+      case RestoreMagicBackupResult_Error() when error != null:
+        return error(_that.error);
+      case _:
+        return null;
+    }
   }
 }
 
-abstract class RestoreMagicBackupResult_Success
-    extends RestoreMagicBackupResult {
-  const factory RestoreMagicBackupResult_Success() =
-      _$RestoreMagicBackupResult_SuccessImpl;
-  const RestoreMagicBackupResult_Success._() : super._();
+/// @nodoc
+
+class RestoreMagicBackupResult_Success extends RestoreMagicBackupResult {
+  const RestoreMagicBackupResult_Success() : super._();
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is RestoreMagicBackupResult_Success);
+  }
+
+  @override
+  int get hashCode => runtimeType.hashCode;
+
+  @override
+  String toString() {
+    return 'RestoreMagicBackupResult.success()';
+  }
 }
 
 /// @nodoc
-abstract class _$$RestoreMagicBackupResult_ErrorImplCopyWith<$Res> {
-  factory _$$RestoreMagicBackupResult_ErrorImplCopyWith(
-          _$RestoreMagicBackupResult_ErrorImpl value,
-          $Res Function(_$RestoreMagicBackupResult_ErrorImpl) then) =
-      __$$RestoreMagicBackupResult_ErrorImplCopyWithImpl<$Res>;
+
+class RestoreMagicBackupResult_Error extends RestoreMagicBackupResult {
+  const RestoreMagicBackupResult_Error({required this.error}) : super._();
+
+  final String error;
+
+  /// Create a copy of RestoreMagicBackupResult
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @pragma('vm:prefer-inline')
+  $RestoreMagicBackupResult_ErrorCopyWith<RestoreMagicBackupResult_Error>
+      get copyWith => _$RestoreMagicBackupResult_ErrorCopyWithImpl<
+          RestoreMagicBackupResult_Error>(this, _$identity);
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is RestoreMagicBackupResult_Error &&
+            (identical(other.error, error) || other.error == error));
+  }
+
+  @override
+  int get hashCode => Object.hash(runtimeType, error);
+
+  @override
+  String toString() {
+    return 'RestoreMagicBackupResult.error(error: $error)';
+  }
+}
+
+/// @nodoc
+abstract mixin class $RestoreMagicBackupResult_ErrorCopyWith<$Res>
+    implements $RestoreMagicBackupResultCopyWith<$Res> {
+  factory $RestoreMagicBackupResult_ErrorCopyWith(
+          RestoreMagicBackupResult_Error value,
+          $Res Function(RestoreMagicBackupResult_Error) _then) =
+      _$RestoreMagicBackupResult_ErrorCopyWithImpl;
   @useResult
   $Res call({String error});
 }
 
 /// @nodoc
-class __$$RestoreMagicBackupResult_ErrorImplCopyWithImpl<$Res>
-    extends _$RestoreMagicBackupResultCopyWithImpl<$Res,
-        _$RestoreMagicBackupResult_ErrorImpl>
-    implements _$$RestoreMagicBackupResult_ErrorImplCopyWith<$Res> {
-  __$$RestoreMagicBackupResult_ErrorImplCopyWithImpl(
-      _$RestoreMagicBackupResult_ErrorImpl _value,
-      $Res Function(_$RestoreMagicBackupResult_ErrorImpl) _then)
-      : super(_value, _then);
+class _$RestoreMagicBackupResult_ErrorCopyWithImpl<$Res>
+    implements $RestoreMagicBackupResult_ErrorCopyWith<$Res> {
+  _$RestoreMagicBackupResult_ErrorCopyWithImpl(this._self, this._then);
+
+  final RestoreMagicBackupResult_Error _self;
+  final $Res Function(RestoreMagicBackupResult_Error) _then;
 
   /// Create a copy of RestoreMagicBackupResult
   /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
-  @override
   $Res call({
     Object? error = null,
   }) {
-    return _then(_$RestoreMagicBackupResult_ErrorImpl(
+    return _then(RestoreMagicBackupResult_Error(
       error: null == error
-          ? _value.error
+          ? _self.error
           : error // ignore: cast_nullable_to_non_nullable
               as String,
     ));
@@ -3094,218 +2459,277 @@ class __$$RestoreMagicBackupResult_ErrorImplCopyWithImpl<$Res>
 }
 
 /// @nodoc
-
-class _$RestoreMagicBackupResult_ErrorImpl
-    extends RestoreMagicBackupResult_Error {
-  const _$RestoreMagicBackupResult_ErrorImpl({required this.error}) : super._();
-
-  @override
-  final String error;
-
-  @override
-  String toString() {
-    return 'RestoreMagicBackupResult.error(error: $error)';
-  }
-
+mixin _$RestoreShardResponse {
   @override
   bool operator ==(Object other) {
     return identical(this, other) ||
-        (other.runtimeType == runtimeType &&
-            other is _$RestoreMagicBackupResult_ErrorImpl &&
-            (identical(other.error, error) || other.error == error));
+        (other.runtimeType == runtimeType && other is RestoreShardResponse);
   }
 
   @override
-  int get hashCode => Object.hash(runtimeType, error);
-
-  /// Create a copy of RestoreMagicBackupResult
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  @override
-  @pragma('vm:prefer-inline')
-  _$$RestoreMagicBackupResult_ErrorImplCopyWith<
-          _$RestoreMagicBackupResult_ErrorImpl>
-      get copyWith => __$$RestoreMagicBackupResult_ErrorImplCopyWithImpl<
-          _$RestoreMagicBackupResult_ErrorImpl>(this, _$identity);
+  int get hashCode => runtimeType.hashCode;
 
   @override
-  @optionalTypeArgs
-  TResult when<TResult extends Object?>({
-    required TResult Function() success,
-    required TResult Function(String error) error,
-  }) {
-    return error(this.error);
+  String toString() {
+    return 'RestoreShardResponse()';
   }
-
-  @override
-  @optionalTypeArgs
-  TResult? whenOrNull<TResult extends Object?>({
-    TResult? Function()? success,
-    TResult? Function(String error)? error,
-  }) {
-    return error?.call(this.error);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult maybeWhen<TResult extends Object?>({
-    TResult Function()? success,
-    TResult Function(String error)? error,
-    required TResult orElse(),
-  }) {
-    if (error != null) {
-      return error(this.error);
-    }
-    return orElse();
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult map<TResult extends Object?>({
-    required TResult Function(RestoreMagicBackupResult_Success value) success,
-    required TResult Function(RestoreMagicBackupResult_Error value) error,
-  }) {
-    return error(this);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult? mapOrNull<TResult extends Object?>({
-    TResult? Function(RestoreMagicBackupResult_Success value)? success,
-    TResult? Function(RestoreMagicBackupResult_Error value)? error,
-  }) {
-    return error?.call(this);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult maybeMap<TResult extends Object?>({
-    TResult Function(RestoreMagicBackupResult_Success value)? success,
-    TResult Function(RestoreMagicBackupResult_Error value)? error,
-    required TResult orElse(),
-  }) {
-    if (error != null) {
-      return error(this);
-    }
-    return orElse();
-  }
-}
-
-abstract class RestoreMagicBackupResult_Error extends RestoreMagicBackupResult {
-  const factory RestoreMagicBackupResult_Error({required final String error}) =
-      _$RestoreMagicBackupResult_ErrorImpl;
-  const RestoreMagicBackupResult_Error._() : super._();
-
-  String get error;
-
-  /// Create a copy of RestoreMagicBackupResult
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  _$$RestoreMagicBackupResult_ErrorImplCopyWith<
-          _$RestoreMagicBackupResult_ErrorImpl>
-      get copyWith => throw _privateConstructorUsedError;
 }
 
 /// @nodoc
-mixin _$RestoreShardResponse {
-  @optionalTypeArgs
-  TResult when<TResult extends Object?>({
-    required TResult Function(Shard shard) success,
-    required TResult Function(String error) error,
-    required TResult Function() notFound,
-  }) =>
-      throw _privateConstructorUsedError;
-  @optionalTypeArgs
-  TResult? whenOrNull<TResult extends Object?>({
-    TResult? Function(Shard shard)? success,
-    TResult? Function(String error)? error,
-    TResult? Function()? notFound,
-  }) =>
-      throw _privateConstructorUsedError;
-  @optionalTypeArgs
-  TResult maybeWhen<TResult extends Object?>({
-    TResult Function(Shard shard)? success,
-    TResult Function(String error)? error,
-    TResult Function()? notFound,
-    required TResult orElse(),
-  }) =>
-      throw _privateConstructorUsedError;
-  @optionalTypeArgs
-  TResult map<TResult extends Object?>({
-    required TResult Function(RestoreShardResponse_Success value) success,
-    required TResult Function(RestoreShardResponse_Error value) error,
-    required TResult Function(RestoreShardResponse_NotFound value) notFound,
-  }) =>
-      throw _privateConstructorUsedError;
-  @optionalTypeArgs
-  TResult? mapOrNull<TResult extends Object?>({
-    TResult? Function(RestoreShardResponse_Success value)? success,
-    TResult? Function(RestoreShardResponse_Error value)? error,
-    TResult? Function(RestoreShardResponse_NotFound value)? notFound,
-  }) =>
-      throw _privateConstructorUsedError;
+class $RestoreShardResponseCopyWith<$Res> {
+  $RestoreShardResponseCopyWith(
+      RestoreShardResponse _, $Res Function(RestoreShardResponse) __);
+}
+
+/// Adds pattern-matching-related methods to [RestoreShardResponse].
+extension RestoreShardResponsePatterns on RestoreShardResponse {
+  /// A variant of `map` that fallback to returning `orElse`.
+  ///
+  /// It is equivalent to doing:
+  /// ```dart
+  /// switch (sealedClass) {
+  ///   case final Subclass value:
+  ///     return ...;
+  ///   case _:
+  ///     return orElse();
+  /// }
+  /// ```
+
   @optionalTypeArgs
   TResult maybeMap<TResult extends Object?>({
     TResult Function(RestoreShardResponse_Success value)? success,
     TResult Function(RestoreShardResponse_Error value)? error,
     TResult Function(RestoreShardResponse_NotFound value)? notFound,
     required TResult orElse(),
-  }) =>
-      throw _privateConstructorUsedError;
+  }) {
+    final _that = this;
+    switch (_that) {
+      case RestoreShardResponse_Success() when success != null:
+        return success(_that);
+      case RestoreShardResponse_Error() when error != null:
+        return error(_that);
+      case RestoreShardResponse_NotFound() when notFound != null:
+        return notFound(_that);
+      case _:
+        return orElse();
+    }
+  }
+
+  /// A `switch`-like method, using callbacks.
+  ///
+  /// Callbacks receives the raw object, upcasted.
+  /// It is equivalent to doing:
+  /// ```dart
+  /// switch (sealedClass) {
+  ///   case final Subclass value:
+  ///     return ...;
+  ///   case final Subclass2 value:
+  ///     return ...;
+  /// }
+  /// ```
+
+  @optionalTypeArgs
+  TResult map<TResult extends Object?>({
+    required TResult Function(RestoreShardResponse_Success value) success,
+    required TResult Function(RestoreShardResponse_Error value) error,
+    required TResult Function(RestoreShardResponse_NotFound value) notFound,
+  }) {
+    final _that = this;
+    switch (_that) {
+      case RestoreShardResponse_Success():
+        return success(_that);
+      case RestoreShardResponse_Error():
+        return error(_that);
+      case RestoreShardResponse_NotFound():
+        return notFound(_that);
+    }
+  }
+
+  /// A variant of `map` that fallback to returning `null`.
+  ///
+  /// It is equivalent to doing:
+  /// ```dart
+  /// switch (sealedClass) {
+  ///   case final Subclass value:
+  ///     return ...;
+  ///   case _:
+  ///     return null;
+  /// }
+  /// ```
+
+  @optionalTypeArgs
+  TResult? mapOrNull<TResult extends Object?>({
+    TResult? Function(RestoreShardResponse_Success value)? success,
+    TResult? Function(RestoreShardResponse_Error value)? error,
+    TResult? Function(RestoreShardResponse_NotFound value)? notFound,
+  }) {
+    final _that = this;
+    switch (_that) {
+      case RestoreShardResponse_Success() when success != null:
+        return success(_that);
+      case RestoreShardResponse_Error() when error != null:
+        return error(_that);
+      case RestoreShardResponse_NotFound() when notFound != null:
+        return notFound(_that);
+      case _:
+        return null;
+    }
+  }
+
+  /// A variant of `when` that fallback to an `orElse` callback.
+  ///
+  /// It is equivalent to doing:
+  /// ```dart
+  /// switch (sealedClass) {
+  ///   case Subclass(:final field):
+  ///     return ...;
+  ///   case _:
+  ///     return orElse();
+  /// }
+  /// ```
+
+  @optionalTypeArgs
+  TResult maybeWhen<TResult extends Object?>({
+    TResult Function(Shard shard)? success,
+    TResult Function(String error)? error,
+    TResult Function()? notFound,
+    required TResult orElse(),
+  }) {
+    final _that = this;
+    switch (_that) {
+      case RestoreShardResponse_Success() when success != null:
+        return success(_that.shard);
+      case RestoreShardResponse_Error() when error != null:
+        return error(_that.error);
+      case RestoreShardResponse_NotFound() when notFound != null:
+        return notFound();
+      case _:
+        return orElse();
+    }
+  }
+
+  /// A `switch`-like method, using callbacks.
+  ///
+  /// As opposed to `map`, this offers destructuring.
+  /// It is equivalent to doing:
+  /// ```dart
+  /// switch (sealedClass) {
+  ///   case Subclass(:final field):
+  ///     return ...;
+  ///   case Subclass2(:final field2):
+  ///     return ...;
+  /// }
+  /// ```
+
+  @optionalTypeArgs
+  TResult when<TResult extends Object?>({
+    required TResult Function(Shard shard) success,
+    required TResult Function(String error) error,
+    required TResult Function() notFound,
+  }) {
+    final _that = this;
+    switch (_that) {
+      case RestoreShardResponse_Success():
+        return success(_that.shard);
+      case RestoreShardResponse_Error():
+        return error(_that.error);
+      case RestoreShardResponse_NotFound():
+        return notFound();
+    }
+  }
+
+  /// A variant of `when` that fallback to returning `null`
+  ///
+  /// It is equivalent to doing:
+  /// ```dart
+  /// switch (sealedClass) {
+  ///   case Subclass(:final field):
+  ///     return ...;
+  ///   case _:
+  ///     return null;
+  /// }
+  /// ```
+
+  @optionalTypeArgs
+  TResult? whenOrNull<TResult extends Object?>({
+    TResult? Function(Shard shard)? success,
+    TResult? Function(String error)? error,
+    TResult? Function()? notFound,
+  }) {
+    final _that = this;
+    switch (_that) {
+      case RestoreShardResponse_Success() when success != null:
+        return success(_that.shard);
+      case RestoreShardResponse_Error() when error != null:
+        return error(_that.error);
+      case RestoreShardResponse_NotFound() when notFound != null:
+        return notFound();
+      case _:
+        return null;
+    }
+  }
 }
 
 /// @nodoc
-abstract class $RestoreShardResponseCopyWith<$Res> {
-  factory $RestoreShardResponseCopyWith(RestoreShardResponse value,
-          $Res Function(RestoreShardResponse) then) =
-      _$RestoreShardResponseCopyWithImpl<$Res, RestoreShardResponse>;
-}
 
-/// @nodoc
-class _$RestoreShardResponseCopyWithImpl<$Res,
-        $Val extends RestoreShardResponse>
-    implements $RestoreShardResponseCopyWith<$Res> {
-  _$RestoreShardResponseCopyWithImpl(this._value, this._then);
+class RestoreShardResponse_Success extends RestoreShardResponse {
+  const RestoreShardResponse_Success({required this.shard}) : super._();
 
-  // ignore: unused_field
-  final $Val _value;
-  // ignore: unused_field
-  final $Res Function($Val) _then;
+  final Shard shard;
 
   /// Create a copy of RestoreShardResponse
   /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @pragma('vm:prefer-inline')
+  $RestoreShardResponse_SuccessCopyWith<RestoreShardResponse_Success>
+      get copyWith => _$RestoreShardResponse_SuccessCopyWithImpl<
+          RestoreShardResponse_Success>(this, _$identity);
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is RestoreShardResponse_Success &&
+            (identical(other.shard, shard) || other.shard == shard));
+  }
+
+  @override
+  int get hashCode => Object.hash(runtimeType, shard);
+
+  @override
+  String toString() {
+    return 'RestoreShardResponse.success(shard: $shard)';
+  }
 }
 
 /// @nodoc
-abstract class _$$RestoreShardResponse_SuccessImplCopyWith<$Res> {
-  factory _$$RestoreShardResponse_SuccessImplCopyWith(
-          _$RestoreShardResponse_SuccessImpl value,
-          $Res Function(_$RestoreShardResponse_SuccessImpl) then) =
-      __$$RestoreShardResponse_SuccessImplCopyWithImpl<$Res>;
+abstract mixin class $RestoreShardResponse_SuccessCopyWith<$Res>
+    implements $RestoreShardResponseCopyWith<$Res> {
+  factory $RestoreShardResponse_SuccessCopyWith(
+          RestoreShardResponse_Success value,
+          $Res Function(RestoreShardResponse_Success) _then) =
+      _$RestoreShardResponse_SuccessCopyWithImpl;
   @useResult
   $Res call({Shard shard});
 }
 
 /// @nodoc
-class __$$RestoreShardResponse_SuccessImplCopyWithImpl<$Res>
-    extends _$RestoreShardResponseCopyWithImpl<$Res,
-        _$RestoreShardResponse_SuccessImpl>
-    implements _$$RestoreShardResponse_SuccessImplCopyWith<$Res> {
-  __$$RestoreShardResponse_SuccessImplCopyWithImpl(
-      _$RestoreShardResponse_SuccessImpl _value,
-      $Res Function(_$RestoreShardResponse_SuccessImpl) _then)
-      : super(_value, _then);
+class _$RestoreShardResponse_SuccessCopyWithImpl<$Res>
+    implements $RestoreShardResponse_SuccessCopyWith<$Res> {
+  _$RestoreShardResponse_SuccessCopyWithImpl(this._self, this._then);
+
+  final RestoreShardResponse_Success _self;
+  final $Res Function(RestoreShardResponse_Success) _then;
 
   /// Create a copy of RestoreShardResponse
   /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
-  @override
   $Res call({
     Object? shard = null,
   }) {
-    return _then(_$RestoreShardResponse_SuccessImpl(
+    return _then(RestoreShardResponse_Success(
       shard: null == shard
-          ? _value.shard
+          ? _self.shard
           : shard // ignore: cast_nullable_to_non_nullable
               as Shard,
     ));
@@ -3314,152 +2738,64 @@ class __$$RestoreShardResponse_SuccessImplCopyWithImpl<$Res>
 
 /// @nodoc
 
-class _$RestoreShardResponse_SuccessImpl extends RestoreShardResponse_Success {
-  const _$RestoreShardResponse_SuccessImpl({required this.shard}) : super._();
+class RestoreShardResponse_Error extends RestoreShardResponse {
+  const RestoreShardResponse_Error({required this.error}) : super._();
 
-  @override
-  final Shard shard;
+  final String error;
 
-  @override
-  String toString() {
-    return 'RestoreShardResponse.success(shard: $shard)';
-  }
+  /// Create a copy of RestoreShardResponse
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @pragma('vm:prefer-inline')
+  $RestoreShardResponse_ErrorCopyWith<RestoreShardResponse_Error>
+      get copyWith =>
+          _$RestoreShardResponse_ErrorCopyWithImpl<RestoreShardResponse_Error>(
+              this, _$identity);
 
   @override
   bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$RestoreShardResponse_SuccessImpl &&
-            (identical(other.shard, shard) || other.shard == shard));
+            other is RestoreShardResponse_Error &&
+            (identical(other.error, error) || other.error == error));
   }
 
   @override
-  int get hashCode => Object.hash(runtimeType, shard);
-
-  /// Create a copy of RestoreShardResponse
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  @override
-  @pragma('vm:prefer-inline')
-  _$$RestoreShardResponse_SuccessImplCopyWith<
-          _$RestoreShardResponse_SuccessImpl>
-      get copyWith => __$$RestoreShardResponse_SuccessImplCopyWithImpl<
-          _$RestoreShardResponse_SuccessImpl>(this, _$identity);
+  int get hashCode => Object.hash(runtimeType, error);
 
   @override
-  @optionalTypeArgs
-  TResult when<TResult extends Object?>({
-    required TResult Function(Shard shard) success,
-    required TResult Function(String error) error,
-    required TResult Function() notFound,
-  }) {
-    return success(shard);
+  String toString() {
+    return 'RestoreShardResponse.error(error: $error)';
   }
-
-  @override
-  @optionalTypeArgs
-  TResult? whenOrNull<TResult extends Object?>({
-    TResult? Function(Shard shard)? success,
-    TResult? Function(String error)? error,
-    TResult? Function()? notFound,
-  }) {
-    return success?.call(shard);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult maybeWhen<TResult extends Object?>({
-    TResult Function(Shard shard)? success,
-    TResult Function(String error)? error,
-    TResult Function()? notFound,
-    required TResult orElse(),
-  }) {
-    if (success != null) {
-      return success(shard);
-    }
-    return orElse();
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult map<TResult extends Object?>({
-    required TResult Function(RestoreShardResponse_Success value) success,
-    required TResult Function(RestoreShardResponse_Error value) error,
-    required TResult Function(RestoreShardResponse_NotFound value) notFound,
-  }) {
-    return success(this);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult? mapOrNull<TResult extends Object?>({
-    TResult? Function(RestoreShardResponse_Success value)? success,
-    TResult? Function(RestoreShardResponse_Error value)? error,
-    TResult? Function(RestoreShardResponse_NotFound value)? notFound,
-  }) {
-    return success?.call(this);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult maybeMap<TResult extends Object?>({
-    TResult Function(RestoreShardResponse_Success value)? success,
-    TResult Function(RestoreShardResponse_Error value)? error,
-    TResult Function(RestoreShardResponse_NotFound value)? notFound,
-    required TResult orElse(),
-  }) {
-    if (success != null) {
-      return success(this);
-    }
-    return orElse();
-  }
-}
-
-abstract class RestoreShardResponse_Success extends RestoreShardResponse {
-  const factory RestoreShardResponse_Success({required final Shard shard}) =
-      _$RestoreShardResponse_SuccessImpl;
-  const RestoreShardResponse_Success._() : super._();
-
-  Shard get shard;
-
-  /// Create a copy of RestoreShardResponse
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  _$$RestoreShardResponse_SuccessImplCopyWith<
-          _$RestoreShardResponse_SuccessImpl>
-      get copyWith => throw _privateConstructorUsedError;
 }
 
 /// @nodoc
-abstract class _$$RestoreShardResponse_ErrorImplCopyWith<$Res> {
-  factory _$$RestoreShardResponse_ErrorImplCopyWith(
-          _$RestoreShardResponse_ErrorImpl value,
-          $Res Function(_$RestoreShardResponse_ErrorImpl) then) =
-      __$$RestoreShardResponse_ErrorImplCopyWithImpl<$Res>;
+abstract mixin class $RestoreShardResponse_ErrorCopyWith<$Res>
+    implements $RestoreShardResponseCopyWith<$Res> {
+  factory $RestoreShardResponse_ErrorCopyWith(RestoreShardResponse_Error value,
+          $Res Function(RestoreShardResponse_Error) _then) =
+      _$RestoreShardResponse_ErrorCopyWithImpl;
   @useResult
   $Res call({String error});
 }
 
 /// @nodoc
-class __$$RestoreShardResponse_ErrorImplCopyWithImpl<$Res>
-    extends _$RestoreShardResponseCopyWithImpl<$Res,
-        _$RestoreShardResponse_ErrorImpl>
-    implements _$$RestoreShardResponse_ErrorImplCopyWith<$Res> {
-  __$$RestoreShardResponse_ErrorImplCopyWithImpl(
-      _$RestoreShardResponse_ErrorImpl _value,
-      $Res Function(_$RestoreShardResponse_ErrorImpl) _then)
-      : super(_value, _then);
+class _$RestoreShardResponse_ErrorCopyWithImpl<$Res>
+    implements $RestoreShardResponse_ErrorCopyWith<$Res> {
+  _$RestoreShardResponse_ErrorCopyWithImpl(this._self, this._then);
+
+  final RestoreShardResponse_Error _self;
+  final $Res Function(RestoreShardResponse_Error) _then;
 
   /// Create a copy of RestoreShardResponse
   /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
-  @override
   $Res call({
     Object? error = null,
   }) {
-    return _then(_$RestoreShardResponse_ErrorImpl(
+    return _then(RestoreShardResponse_Error(
       error: null == error
-          ? _value.error
+          ? _self.error
           : error // ignore: cast_nullable_to_non_nullable
               as String,
     ));
@@ -3468,234 +2804,23 @@ class __$$RestoreShardResponse_ErrorImplCopyWithImpl<$Res>
 
 /// @nodoc
 
-class _$RestoreShardResponse_ErrorImpl extends RestoreShardResponse_Error {
-  const _$RestoreShardResponse_ErrorImpl({required this.error}) : super._();
-
-  @override
-  final String error;
-
-  @override
-  String toString() {
-    return 'RestoreShardResponse.error(error: $error)';
-  }
+class RestoreShardResponse_NotFound extends RestoreShardResponse {
+  const RestoreShardResponse_NotFound() : super._();
 
   @override
   bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$RestoreShardResponse_ErrorImpl &&
-            (identical(other.error, error) || other.error == error));
-  }
-
-  @override
-  int get hashCode => Object.hash(runtimeType, error);
-
-  /// Create a copy of RestoreShardResponse
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  @override
-  @pragma('vm:prefer-inline')
-  _$$RestoreShardResponse_ErrorImplCopyWith<_$RestoreShardResponse_ErrorImpl>
-      get copyWith => __$$RestoreShardResponse_ErrorImplCopyWithImpl<
-          _$RestoreShardResponse_ErrorImpl>(this, _$identity);
-
-  @override
-  @optionalTypeArgs
-  TResult when<TResult extends Object?>({
-    required TResult Function(Shard shard) success,
-    required TResult Function(String error) error,
-    required TResult Function() notFound,
-  }) {
-    return error(this.error);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult? whenOrNull<TResult extends Object?>({
-    TResult? Function(Shard shard)? success,
-    TResult? Function(String error)? error,
-    TResult? Function()? notFound,
-  }) {
-    return error?.call(this.error);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult maybeWhen<TResult extends Object?>({
-    TResult Function(Shard shard)? success,
-    TResult Function(String error)? error,
-    TResult Function()? notFound,
-    required TResult orElse(),
-  }) {
-    if (error != null) {
-      return error(this.error);
-    }
-    return orElse();
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult map<TResult extends Object?>({
-    required TResult Function(RestoreShardResponse_Success value) success,
-    required TResult Function(RestoreShardResponse_Error value) error,
-    required TResult Function(RestoreShardResponse_NotFound value) notFound,
-  }) {
-    return error(this);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult? mapOrNull<TResult extends Object?>({
-    TResult? Function(RestoreShardResponse_Success value)? success,
-    TResult? Function(RestoreShardResponse_Error value)? error,
-    TResult? Function(RestoreShardResponse_NotFound value)? notFound,
-  }) {
-    return error?.call(this);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult maybeMap<TResult extends Object?>({
-    TResult Function(RestoreShardResponse_Success value)? success,
-    TResult Function(RestoreShardResponse_Error value)? error,
-    TResult Function(RestoreShardResponse_NotFound value)? notFound,
-    required TResult orElse(),
-  }) {
-    if (error != null) {
-      return error(this);
-    }
-    return orElse();
-  }
-}
-
-abstract class RestoreShardResponse_Error extends RestoreShardResponse {
-  const factory RestoreShardResponse_Error({required final String error}) =
-      _$RestoreShardResponse_ErrorImpl;
-  const RestoreShardResponse_Error._() : super._();
-
-  String get error;
-
-  /// Create a copy of RestoreShardResponse
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  _$$RestoreShardResponse_ErrorImplCopyWith<_$RestoreShardResponse_ErrorImpl>
-      get copyWith => throw _privateConstructorUsedError;
-}
-
-/// @nodoc
-abstract class _$$RestoreShardResponse_NotFoundImplCopyWith<$Res> {
-  factory _$$RestoreShardResponse_NotFoundImplCopyWith(
-          _$RestoreShardResponse_NotFoundImpl value,
-          $Res Function(_$RestoreShardResponse_NotFoundImpl) then) =
-      __$$RestoreShardResponse_NotFoundImplCopyWithImpl<$Res>;
-}
-
-/// @nodoc
-class __$$RestoreShardResponse_NotFoundImplCopyWithImpl<$Res>
-    extends _$RestoreShardResponseCopyWithImpl<$Res,
-        _$RestoreShardResponse_NotFoundImpl>
-    implements _$$RestoreShardResponse_NotFoundImplCopyWith<$Res> {
-  __$$RestoreShardResponse_NotFoundImplCopyWithImpl(
-      _$RestoreShardResponse_NotFoundImpl _value,
-      $Res Function(_$RestoreShardResponse_NotFoundImpl) _then)
-      : super(_value, _then);
-
-  /// Create a copy of RestoreShardResponse
-  /// with the given fields replaced by the non-null parameter values.
-}
-
-/// @nodoc
-
-class _$RestoreShardResponse_NotFoundImpl
-    extends RestoreShardResponse_NotFound {
-  const _$RestoreShardResponse_NotFoundImpl() : super._();
-
-  @override
-  String toString() {
-    return 'RestoreShardResponse.notFound()';
-  }
-
-  @override
-  bool operator ==(Object other) {
-    return identical(this, other) ||
-        (other.runtimeType == runtimeType &&
-            other is _$RestoreShardResponse_NotFoundImpl);
+            other is RestoreShardResponse_NotFound);
   }
 
   @override
   int get hashCode => runtimeType.hashCode;
 
   @override
-  @optionalTypeArgs
-  TResult when<TResult extends Object?>({
-    required TResult Function(Shard shard) success,
-    required TResult Function(String error) error,
-    required TResult Function() notFound,
-  }) {
-    return notFound();
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult? whenOrNull<TResult extends Object?>({
-    TResult? Function(Shard shard)? success,
-    TResult? Function(String error)? error,
-    TResult? Function()? notFound,
-  }) {
-    return notFound?.call();
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult maybeWhen<TResult extends Object?>({
-    TResult Function(Shard shard)? success,
-    TResult Function(String error)? error,
-    TResult Function()? notFound,
-    required TResult orElse(),
-  }) {
-    if (notFound != null) {
-      return notFound();
-    }
-    return orElse();
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult map<TResult extends Object?>({
-    required TResult Function(RestoreShardResponse_Success value) success,
-    required TResult Function(RestoreShardResponse_Error value) error,
-    required TResult Function(RestoreShardResponse_NotFound value) notFound,
-  }) {
-    return notFound(this);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult? mapOrNull<TResult extends Object?>({
-    TResult? Function(RestoreShardResponse_Success value)? success,
-    TResult? Function(RestoreShardResponse_Error value)? error,
-    TResult? Function(RestoreShardResponse_NotFound value)? notFound,
-  }) {
-    return notFound?.call(this);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult maybeMap<TResult extends Object?>({
-    TResult Function(RestoreShardResponse_Success value)? success,
-    TResult Function(RestoreShardResponse_Error value)? error,
-    TResult Function(RestoreShardResponse_NotFound value)? notFound,
-    required TResult orElse(),
-  }) {
-    if (notFound != null) {
-      return notFound(this);
-    }
-    return orElse();
+  String toString() {
+    return 'RestoreShardResponse.notFound()';
   }
 }
 
-abstract class RestoreShardResponse_NotFound extends RestoreShardResponse {
-  const factory RestoreShardResponse_NotFound() =
-      _$RestoreShardResponse_NotFoundImpl;
-  const RestoreShardResponse_NotFound._() : super._();
-}
+// dart format on
