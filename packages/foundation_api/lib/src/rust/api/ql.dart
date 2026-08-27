@@ -18,7 +18,7 @@ import '../third_party/foundation_api/api/scv.dart';
 import '../third_party/foundation_api/api/status.dart';
 import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated.dart';
 
-// These functions are ignored because they are not marked as `pub`: `hash_data`, `split_backup_into_chunks`, `split_fw_update_into_chunks`
+// These functions are ignored because they are not marked as `pub`: `check_and_store`, `hash_data`, `should_track_arid`, `split_backup_into_chunks`, `split_fw_update_into_chunks`
 
 Future<EnvoyMasterDechunker> getDecoder() =>
     RustLib.instance.api.crateApiQlGetDecoder();

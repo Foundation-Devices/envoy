@@ -270,8 +270,8 @@ class _DefaultAccountsListState extends ConsumerState<DefaultAccountsList> {
     final scrollView = ScrollGradientMask(
       start: 0.00,
       topGradientValue: 0.045,
-      bottomGradientValue: 0.845,
-      end: 0.89,
+      bottomGradientValue: 0.955,
+      end: 0.977,
       child: ReorderableListView(
         // env-2000-line-through-shade
         header: const SizedBox(height: 20),
@@ -400,8 +400,8 @@ class PassphraseAccountsList extends ConsumerWidget {
     return ScrollGradientMask(
       start: 0.00,
       topGradientValue: 0.045,
-      bottomGradientValue: 0.845,
-      end: 0.89,
+      bottomGradientValue: 0.955,
+      end: 1.0,
       child: ListView.builder(
         padding: const EdgeInsets.symmetric(horizontal: 20),
         physics: const BouncingScrollPhysics(),

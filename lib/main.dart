@@ -26,6 +26,7 @@ import 'package:envoy/ui/migrations/migration_manager.dart';
 import 'package:envoy/ui/routes/route_state.dart';
 import 'package:envoy/ui/routes/routes.dart';
 import 'package:envoy/ui/theme/envoy_colors.dart';
+import 'package:envoy/ui/widgets/app_scale_clamp.dart';
 import 'package:envoy/ui/widgets/envoy_page_transition.dart';
 import 'package:envoy/util/bug_report_helper.dart';
 import 'package:envoy/util/console.dart';
@@ -43,7 +44,6 @@ import 'package:tor/tor.dart';
 import 'package:envoy/business/feed_manager.dart';
 import 'package:envoy/business/fees.dart';
 import 'package:envoy/business/scv_server.dart';
-import 'package:envoy/business/stripe.dart';
 import 'package:ur/ur.dart';
 import 'generated/l10n.dart';
 import 'package:tor/util.dart';
@@ -125,7 +125,6 @@ Future<void> initSingletons({bool integrationTestsRunning = false}) async {
   FeedManager.init();
   MapData.init();
   ConnectivityManager.init();
-  StripeSessionMonitor().init();
 }
 
 class EnvoyApp extends StatefulWidget {
@@ -192,6 +191,8 @@ class _EnvoyAppState extends State<EnvoyApp> {
     return ProviderScope(
       child: DevBannerWrapper(
         child: MaterialApp.router(
+          builder: (context, child) =>
+              AppScaleClamp(child: child ?? const SizedBox.shrink()),
           localizationsDelegates: const [
             S.delegate,
             GlobalMaterialLocalizations.delegate,

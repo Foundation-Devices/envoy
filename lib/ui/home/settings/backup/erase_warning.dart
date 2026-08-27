@@ -12,7 +12,6 @@ import 'package:envoy/ui/envoy_button.dart';
 import 'package:envoy/ui/envoy_method_channel.dart';
 import 'package:envoy/ui/home/home_state.dart';
 import 'package:envoy/ui/onboard/manual/manual_setup.dart';
-import 'package:envoy/ui/onboard/manual/widgets/mnemonic_grid_widget.dart';
 import 'package:envoy/ui/onboard/onboard_page_wrapper.dart';
 import 'package:envoy/ui/onboard/onboarding_page.dart';
 import 'package:envoy/ui/routes/accounts_router.dart';
@@ -24,175 +23,42 @@ import 'package:envoy/ui/theme/envoy_icons.dart';
 import 'package:envoy/ui/theme/envoy_spacing.dart';
 import 'package:envoy/ui/theme/envoy_typography.dart';
 import 'package:envoy/ui/widgets/blur_dialog.dart';
-import 'package:envoy/ui/widgets/expandable_page_view.dart';
 import 'package:envoy/util/console.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:rive/rive.dart' as rive;
 
-class EraseWalletsAndBackupsWarning extends ConsumerStatefulWidget {
+class EraseWalletsAndBackupsWarning extends ConsumerWidget {
   const EraseWalletsAndBackupsWarning({super.key});
 
   @override
-  ConsumerState<EraseWalletsAndBackupsWarning> createState() =>
-      _EraseWalletsAndBackupsWarningState();
-}
-
-class _EraseWalletsAndBackupsWarningState
-    extends ConsumerState<EraseWalletsAndBackupsWarning> {
-  final PageController _pageController = PageController();
-
-  double estimateExpandablePageViewHeight(BuildContext context) {
-    double text1Height = 0.0;
-    double text2Height = 0.0;
-    double biggerText = 0.0;
-
-    String text1 = Platform.isAndroid
+  Widget build(BuildContext context, WidgetRef ref) {
+    final platformWarning = Platform.isAndroid
         ? S().backups_erase_wallets_and_backups_modal_1_2_android_subheading
         : S().backups_erase_wallets_and_backups_modal_1_2_ios_subheading;
-    text1Height = estimateTextHeight(text1, EnvoyTypography.info, context);
+    final backupWarning =
+        S().backups_erase_wallets_and_backups_modal_2_2_subheading;
 
-    String text2 = S().backups_erase_wallets_and_backups_modal_2_2_subheading;
-    text2Height += estimateTextHeight(text2, EnvoyTypography.info, context);
-
-    biggerText = text1Height > text2Height ? text1Height : text2Height;
-
-    return biggerText + EnvoySpacing.medium2;
-  }
-
-  double estimateTextHeight(
-    String text,
-    TextStyle style,
-    BuildContext context,
-  ) {
-    final TextPainter textPainter = TextPainter(
-      text: TextSpan(text: text, style: style),
-      textDirection: TextDirection.ltr,
-      maxLines: null,
-    )..layout(maxWidth: MediaQuery.of(context).size.width * 0.5);
-
-    return textPainter.size.height;
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    double expandablePageViewHeight = estimateExpandablePageViewHeight(context);
-
-    return SizedBox(
-      width: MediaQuery.of(context).size.width * 0.8,
-      child: Padding(
-        padding: const EdgeInsets.symmetric(
-          horizontal: EnvoySpacing.medium2,
-          vertical: EnvoySpacing.medium2,
-        ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Align(
-              alignment: Alignment.topRight,
-              child: IconButton(
-                icon: const Icon(Icons.close),
-                onPressed: () {
-                  Navigator.of(context).pop();
-                },
-              ),
-            ),
-            Column(
-              children: [
-                const EnvoyIcon(
-                  EnvoyIcons.alert,
-                  color: EnvoyColors.accentSecondary,
-                  size: EnvoyIconSize.big,
-                ),
-                const SizedBox(height: EnvoySpacing.medium1),
-                Text(
-                  S().component_warning.toUpperCase(),
-                  textAlign: TextAlign.center,
-                  style: EnvoyTypography.info,
-                ),
-                const SizedBox(height: EnvoySpacing.medium1),
-                Container(
-                  height: expandablePageViewHeight,
-                  constraints: BoxConstraints(
-                    maxHeight: MediaQuery.of(context).size.height *
-                        0.6, // max size of PageView
-                  ),
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: EnvoySpacing.small,
-                    ),
-                    child: SingleChildScrollView(
-                      child: ExpandablePageView(
-                        controller: _pageController,
-                        children: [
-                          Text(
-                            Platform.isAndroid
-                                ? S()
-                                    .backups_erase_wallets_and_backups_modal_1_2_android_subheading
-                                : S()
-                                    .backups_erase_wallets_and_backups_modal_1_2_ios_subheading,
-                            textAlign: TextAlign.center,
-                            style: EnvoyTypography.info,
-                          ),
-                          Text(
-                            S().backups_erase_wallets_and_backups_modal_2_2_subheading,
-                            textAlign: TextAlign.center,
-                            style: EnvoyTypography.info,
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                ),
-                const SizedBox(height: EnvoySpacing.medium2),
-                DotsIndicator(totalPages: 2, pageController: _pageController),
-                const SizedBox(height: EnvoySpacing.small),
-              ],
-            ),
-            Padding(
-              padding: const EdgeInsets.symmetric(
-                horizontal: EnvoySpacing.small,
-              ),
-              child: Column(
-                children: [
-                  OnboardingButton(
-                    type: EnvoyButtonTypes.tertiary,
-                    label: S().component_cancel,
-                    onTap: () {
-                      Navigator.pop(context);
-                    },
-                  ),
-                  OnboardingButton(
-                    type: EnvoyButtonTypes.primaryModal,
-                    label: S().component_continue,
-                    onTap: () {
-                      int currentPage = _pageController.page?.toInt() ?? 0;
-                      if (currentPage == 1) {
-                        if (ref.read(hotWalletAccountsEmptyProvider)) {
-                          // Safe to delete
-                          displaySeedBeforeNuke(context);
-                        } else {
-                          showEnvoyDialog(
-                              context: context,
-                              dialog: const EraseWalletsBalanceWarning());
-                        }
-                      } else {
-                        _pageController.nextPage(
-                          duration: const Duration(milliseconds: 300),
-                          curve: Curves.easeInOutCubicEmphasized,
-                        );
-                      }
-                    },
-                  ),
-                  const SizedBox(height: EnvoySpacing.small),
-                ],
-              ),
-            ),
-          ],
-        ),
-      ),
+    return EnvoyPopUp(
+      icon: EnvoyIcons.alert,
+      typeOfMessage: PopUpState.warning,
+      title: S().component_warning,
+      showCloseButton: false,
+      content: "${platformWarning.trim()}\n\n${backupWarning.trim()}",
+      secondaryButtonLabel: S().component_cancel,
+      onSecondaryButtonTap: (context) => Navigator.pop(context),
+      primaryButtonLabel: S().component_continue,
+      onPrimaryButtonTap: (context) {
+        if (ref.read(hotWalletAccountsEmptyProvider)) {
+          displaySeedBeforeNuke(context);
+        } else {
+          showEnvoyDialog(
+            context: context,
+            dialog: const EraseWalletsBalanceWarning(),
+          );
+        }
+      },
     );
   }
 }

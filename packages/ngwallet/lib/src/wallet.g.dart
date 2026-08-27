@@ -62,7 +62,6 @@ const _$TransactionTypeEnumMap = {
   TransactionType.pending: 'pending',
   TransactionType.btcPay: 'btcPay',
   TransactionType.ramp: 'ramp',
-  TransactionType.stripe: 'stripe',
 };
 
 Wallet _$WalletFromJson(Map<String, dynamic> json) => Wallet(

@@ -38,6 +38,7 @@ class QLConnection with EnvoyMessageWriter {
   static const int _heartbeatActiveThreshold = 15;
   static const Duration _heartbeatCheckInterval = Duration(seconds: 1);
   static const Duration _autoReconnectInterval = Duration(seconds: 3);
+  static const Duration _pairingResponseTimeout = Duration(seconds: 2);
 
   //Mac address on android, Device UUID on iOS
   final String deviceId;
@@ -75,6 +76,7 @@ class QLConnection with EnvoyMessageWriter {
   Timer? _qlActivityMonitorTimer;
   Timer? _autoReconnectTimer;
   Timer? _postTransferLivenessTimer;
+  Timer? _pairingRetryTimer;
 
   late final Stream<DeviceStatus> _deviceStatusStream;
   late final Stream<WriteProgress> _writeProgressStream;
@@ -100,6 +102,8 @@ class QLConnection with EnvoyMessageWriter {
   bool _awaitingHeartbeatAfterConnect = false;
   bool _autoReconnectInFlight = false;
   bool _intentionalDisconnectPending = false;
+  bool _pairingRetryInFlight = false;
+  int _pairingGeneration = 0;
 
   bool _firmwareTransferInProgress = false;
 
@@ -189,6 +193,7 @@ class QLConnection with EnvoyMessageWriter {
           _stopAutoReconnect();
           _awaitingHeartbeatAfterConnect = true;
         case BluetoothConnectionEventType.deviceDisconnected:
+          _cancelPairingRetry();
           final shouldAutoReconnect = !_intentionalDisconnectPending;
           _intentionalDisconnectPending = false;
           _autoReconnectInFlight = false;
@@ -204,6 +209,7 @@ class QLConnection with EnvoyMessageWriter {
             _stopAutoReconnect();
           }
         case BluetoothConnectionEventType.connectionError:
+          _cancelPairingRetry();
           _autoReconnectInFlight = false;
           _abortFirmwareTransferOnDisconnect();
         default:
@@ -233,6 +239,9 @@ class QLConnection with EnvoyMessageWriter {
     // );
     final message = await _decode(data, _qlIdentity!);
     if (message != null) {
+      if (message.message is api.QuantumLinkMessage_PairingResponse) {
+        _cancelPairingRetry();
+      }
       _qlHandlers.dispatch(message);
     }
   }
@@ -715,6 +724,7 @@ class QLConnection with EnvoyMessageWriter {
 
   /// Dispose of stream subscriptions and cleanup
   void dispose() {
+    _cancelPairingRetry();
     _deviceStatusSubscription?.cancel();
     _qlActivityMonitorTimer?.cancel();
     _autoReconnectTimer?.cancel();
@@ -727,7 +737,13 @@ class QLConnection with EnvoyMessageWriter {
   }
 
   Future<bool> pair(api.XidDocument payload) async {
-    _qlIdentity ??= await api.generateQlIdentity();
+    _cancelPairingRetry();
+    final pairingGeneration = _pairingGeneration;
+    final identity = _qlIdentity ?? await api.generateQlIdentity();
+    if (pairingGeneration != _pairingGeneration) {
+      return false;
+    }
+    _qlIdentity ??= identity;
     _recipientXid = payload;
     debugIdentities(
       message: "Pairing to device...",
@@ -746,10 +762,39 @@ class QLConnection with EnvoyMessageWriter {
       kPrint("Error resetting onboard handler during pairing: $e");
     }
 
-    kPrint("Pairing...");
-    final xid = await api.serializeXid(quantumLinkIdentity: _qlIdentity!);
+    final success = await _sendOnboardingPairingRequest(pairingGeneration);
+    if (success &&
+        pairingGeneration == _pairingGeneration &&
+        !qlHandler.bleOnboardHandler.pairingDone) {
+      _pairingRetryTimer = Timer(_pairingResponseTimeout, () {
+        _pairingRetryTimer = null;
+        if (pairingGeneration != _pairingGeneration ||
+            qlHandler.bleOnboardHandler.pairingDone) {
+          return;
+        }
+        _retryOnboardingPairingRequest(pairingGeneration);
+      });
+    }
+    return success;
+  }
+
+  Future<bool> _sendOnboardingPairingRequest(
+    int pairingGeneration,
+  ) async {
+    final identity = _qlIdentity;
+    if (pairingGeneration != _pairingGeneration ||
+        identity == null ||
+        _recipientXid == null) {
+      return false;
+    }
+
+    final xid = await api.serializeXid(quantumLinkIdentity: identity);
 
     final deviceName = await BluetoothChannel().getDeviceName();
+
+    if (pairingGeneration != _pairingGeneration) {
+      return false;
+    }
 
     final success = await writeMessage(
       api.QuantumLinkMessage.pairingRequest(
@@ -758,6 +803,54 @@ class QLConnection with EnvoyMessageWriter {
     );
     kPrint("Pairing... success ?  $success");
     return success;
+  }
+
+  void _retryOnboardingPairingRequest(int pairingGeneration) {
+    if (_pairingRetryInFlight ||
+        pairingGeneration != _pairingGeneration ||
+        qlHandler.bleOnboardHandler.pairingDone) {
+      return;
+    }
+
+    _pairingRetryInFlight = true;
+    final timeoutSeconds = _pairingResponseTimeout.inSeconds;
+    kPrint(
+      "[$deviceId] No PairingResponse after $timeoutSeconds seconds; retrying PairingRequest",
+    );
+    unawaited(
+      EnvoyReport().log(
+        "QLPairing",
+        "No PairingResponse after $timeoutSeconds seconds; retrying PairingRequest for device=$deviceId",
+      ),
+    );
+    unawaited(() async {
+      try {
+        final success = await _sendOnboardingPairingRequest(
+          pairingGeneration,
+        );
+        await EnvoyReport().log(
+          "QLPairing",
+          "PairingRequest retry completed after $timeoutSeconds seconds; success=$success device=$deviceId",
+        );
+      } catch (e, stack) {
+        await EnvoyReport().log(
+          "QLPairing",
+          "PairingRequest retry failed for $deviceId: $e",
+          stackTrace: stack,
+        );
+      } finally {
+        if (pairingGeneration == _pairingGeneration) {
+          _pairingRetryInFlight = false;
+        }
+      }
+    }());
+  }
+
+  void _cancelPairingRetry() {
+    _pairingGeneration++;
+    _pairingRetryTimer?.cancel();
+    _pairingRetryTimer = null;
+    _pairingRetryInFlight = false;
   }
 
   /// Set up the QuantumLink identity for an existing connection.

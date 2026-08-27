@@ -1,5 +1,5 @@
-// coverage:ignore-file
 // GENERATED CODE - DO NOT MODIFY BY HAND
+// coverage:ignore-file
 // ignore_for_file: type=lint
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
@@ -9,105 +9,264 @@ part of 'scv.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// dart format off
 T _$identity<T>(T value) => value;
-
-final _privateConstructorUsedError = UnsupportedError(
-    'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#adding-getters-and-methods-to-our-models');
 
 /// @nodoc
 mixin _$ChallengeResponseResult {
-  @optionalTypeArgs
-  TResult when<TResult extends Object?>({
-    required TResult Function(Uint8List data) success,
-    required TResult Function(String error) error,
-  }) =>
-      throw _privateConstructorUsedError;
-  @optionalTypeArgs
-  TResult? whenOrNull<TResult extends Object?>({
-    TResult? Function(Uint8List data)? success,
-    TResult? Function(String error)? error,
-  }) =>
-      throw _privateConstructorUsedError;
-  @optionalTypeArgs
-  TResult maybeWhen<TResult extends Object?>({
-    TResult Function(Uint8List data)? success,
-    TResult Function(String error)? error,
-    required TResult orElse(),
-  }) =>
-      throw _privateConstructorUsedError;
-  @optionalTypeArgs
-  TResult map<TResult extends Object?>({
-    required TResult Function(ChallengeResponseResult_Success value) success,
-    required TResult Function(ChallengeResponseResult_Error value) error,
-  }) =>
-      throw _privateConstructorUsedError;
-  @optionalTypeArgs
-  TResult? mapOrNull<TResult extends Object?>({
-    TResult? Function(ChallengeResponseResult_Success value)? success,
-    TResult? Function(ChallengeResponseResult_Error value)? error,
-  }) =>
-      throw _privateConstructorUsedError;
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType && other is ChallengeResponseResult);
+  }
+
+  @override
+  int get hashCode => runtimeType.hashCode;
+
+  @override
+  String toString() {
+    return 'ChallengeResponseResult()';
+  }
+}
+
+/// @nodoc
+class $ChallengeResponseResultCopyWith<$Res> {
+  $ChallengeResponseResultCopyWith(
+      ChallengeResponseResult _, $Res Function(ChallengeResponseResult) __);
+}
+
+/// Adds pattern-matching-related methods to [ChallengeResponseResult].
+extension ChallengeResponseResultPatterns on ChallengeResponseResult {
+  /// A variant of `map` that fallback to returning `orElse`.
+  ///
+  /// It is equivalent to doing:
+  /// ```dart
+  /// switch (sealedClass) {
+  ///   case final Subclass value:
+  ///     return ...;
+  ///   case _:
+  ///     return orElse();
+  /// }
+  /// ```
+
   @optionalTypeArgs
   TResult maybeMap<TResult extends Object?>({
     TResult Function(ChallengeResponseResult_Success value)? success,
     TResult Function(ChallengeResponseResult_Error value)? error,
     required TResult orElse(),
-  }) =>
-      throw _privateConstructorUsedError;
+  }) {
+    final _that = this;
+    switch (_that) {
+      case ChallengeResponseResult_Success() when success != null:
+        return success(_that);
+      case ChallengeResponseResult_Error() when error != null:
+        return error(_that);
+      case _:
+        return orElse();
+    }
+  }
+
+  /// A `switch`-like method, using callbacks.
+  ///
+  /// Callbacks receives the raw object, upcasted.
+  /// It is equivalent to doing:
+  /// ```dart
+  /// switch (sealedClass) {
+  ///   case final Subclass value:
+  ///     return ...;
+  ///   case final Subclass2 value:
+  ///     return ...;
+  /// }
+  /// ```
+
+  @optionalTypeArgs
+  TResult map<TResult extends Object?>({
+    required TResult Function(ChallengeResponseResult_Success value) success,
+    required TResult Function(ChallengeResponseResult_Error value) error,
+  }) {
+    final _that = this;
+    switch (_that) {
+      case ChallengeResponseResult_Success():
+        return success(_that);
+      case ChallengeResponseResult_Error():
+        return error(_that);
+    }
+  }
+
+  /// A variant of `map` that fallback to returning `null`.
+  ///
+  /// It is equivalent to doing:
+  /// ```dart
+  /// switch (sealedClass) {
+  ///   case final Subclass value:
+  ///     return ...;
+  ///   case _:
+  ///     return null;
+  /// }
+  /// ```
+
+  @optionalTypeArgs
+  TResult? mapOrNull<TResult extends Object?>({
+    TResult? Function(ChallengeResponseResult_Success value)? success,
+    TResult? Function(ChallengeResponseResult_Error value)? error,
+  }) {
+    final _that = this;
+    switch (_that) {
+      case ChallengeResponseResult_Success() when success != null:
+        return success(_that);
+      case ChallengeResponseResult_Error() when error != null:
+        return error(_that);
+      case _:
+        return null;
+    }
+  }
+
+  /// A variant of `when` that fallback to an `orElse` callback.
+  ///
+  /// It is equivalent to doing:
+  /// ```dart
+  /// switch (sealedClass) {
+  ///   case Subclass(:final field):
+  ///     return ...;
+  ///   case _:
+  ///     return orElse();
+  /// }
+  /// ```
+
+  @optionalTypeArgs
+  TResult maybeWhen<TResult extends Object?>({
+    TResult Function(Uint8List data)? success,
+    TResult Function(String error)? error,
+    required TResult orElse(),
+  }) {
+    final _that = this;
+    switch (_that) {
+      case ChallengeResponseResult_Success() when success != null:
+        return success(_that.data);
+      case ChallengeResponseResult_Error() when error != null:
+        return error(_that.error);
+      case _:
+        return orElse();
+    }
+  }
+
+  /// A `switch`-like method, using callbacks.
+  ///
+  /// As opposed to `map`, this offers destructuring.
+  /// It is equivalent to doing:
+  /// ```dart
+  /// switch (sealedClass) {
+  ///   case Subclass(:final field):
+  ///     return ...;
+  ///   case Subclass2(:final field2):
+  ///     return ...;
+  /// }
+  /// ```
+
+  @optionalTypeArgs
+  TResult when<TResult extends Object?>({
+    required TResult Function(Uint8List data) success,
+    required TResult Function(String error) error,
+  }) {
+    final _that = this;
+    switch (_that) {
+      case ChallengeResponseResult_Success():
+        return success(_that.data);
+      case ChallengeResponseResult_Error():
+        return error(_that.error);
+    }
+  }
+
+  /// A variant of `when` that fallback to returning `null`
+  ///
+  /// It is equivalent to doing:
+  /// ```dart
+  /// switch (sealedClass) {
+  ///   case Subclass(:final field):
+  ///     return ...;
+  ///   case _:
+  ///     return null;
+  /// }
+  /// ```
+
+  @optionalTypeArgs
+  TResult? whenOrNull<TResult extends Object?>({
+    TResult? Function(Uint8List data)? success,
+    TResult? Function(String error)? error,
+  }) {
+    final _that = this;
+    switch (_that) {
+      case ChallengeResponseResult_Success() when success != null:
+        return success(_that.data);
+      case ChallengeResponseResult_Error() when error != null:
+        return error(_that.error);
+      case _:
+        return null;
+    }
+  }
 }
 
 /// @nodoc
-abstract class $ChallengeResponseResultCopyWith<$Res> {
-  factory $ChallengeResponseResultCopyWith(ChallengeResponseResult value,
-          $Res Function(ChallengeResponseResult) then) =
-      _$ChallengeResponseResultCopyWithImpl<$Res, ChallengeResponseResult>;
-}
 
-/// @nodoc
-class _$ChallengeResponseResultCopyWithImpl<$Res,
-        $Val extends ChallengeResponseResult>
-    implements $ChallengeResponseResultCopyWith<$Res> {
-  _$ChallengeResponseResultCopyWithImpl(this._value, this._then);
+class ChallengeResponseResult_Success extends ChallengeResponseResult {
+  const ChallengeResponseResult_Success({required this.data}) : super._();
 
-  // ignore: unused_field
-  final $Val _value;
-  // ignore: unused_field
-  final $Res Function($Val) _then;
+  final Uint8List data;
 
   /// Create a copy of ChallengeResponseResult
   /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @pragma('vm:prefer-inline')
+  $ChallengeResponseResult_SuccessCopyWith<ChallengeResponseResult_Success>
+      get copyWith => _$ChallengeResponseResult_SuccessCopyWithImpl<
+          ChallengeResponseResult_Success>(this, _$identity);
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is ChallengeResponseResult_Success &&
+            const DeepCollectionEquality().equals(other.data, data));
+  }
+
+  @override
+  int get hashCode =>
+      Object.hash(runtimeType, const DeepCollectionEquality().hash(data));
+
+  @override
+  String toString() {
+    return 'ChallengeResponseResult.success(data: $data)';
+  }
 }
 
 /// @nodoc
-abstract class _$$ChallengeResponseResult_SuccessImplCopyWith<$Res> {
-  factory _$$ChallengeResponseResult_SuccessImplCopyWith(
-          _$ChallengeResponseResult_SuccessImpl value,
-          $Res Function(_$ChallengeResponseResult_SuccessImpl) then) =
-      __$$ChallengeResponseResult_SuccessImplCopyWithImpl<$Res>;
+abstract mixin class $ChallengeResponseResult_SuccessCopyWith<$Res>
+    implements $ChallengeResponseResultCopyWith<$Res> {
+  factory $ChallengeResponseResult_SuccessCopyWith(
+          ChallengeResponseResult_Success value,
+          $Res Function(ChallengeResponseResult_Success) _then) =
+      _$ChallengeResponseResult_SuccessCopyWithImpl;
   @useResult
   $Res call({Uint8List data});
 }
 
 /// @nodoc
-class __$$ChallengeResponseResult_SuccessImplCopyWithImpl<$Res>
-    extends _$ChallengeResponseResultCopyWithImpl<$Res,
-        _$ChallengeResponseResult_SuccessImpl>
-    implements _$$ChallengeResponseResult_SuccessImplCopyWith<$Res> {
-  __$$ChallengeResponseResult_SuccessImplCopyWithImpl(
-      _$ChallengeResponseResult_SuccessImpl _value,
-      $Res Function(_$ChallengeResponseResult_SuccessImpl) _then)
-      : super(_value, _then);
+class _$ChallengeResponseResult_SuccessCopyWithImpl<$Res>
+    implements $ChallengeResponseResult_SuccessCopyWith<$Res> {
+  _$ChallengeResponseResult_SuccessCopyWithImpl(this._self, this._then);
+
+  final ChallengeResponseResult_Success _self;
+  final $Res Function(ChallengeResponseResult_Success) _then;
 
   /// Create a copy of ChallengeResponseResult
   /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
-  @override
   $Res call({
     Object? data = null,
   }) {
-    return _then(_$ChallengeResponseResult_SuccessImpl(
+    return _then(ChallengeResponseResult_Success(
       data: null == data
-          ? _value.data
+          ? _self.data
           : data // ignore: cast_nullable_to_non_nullable
               as Uint8List,
     ));
@@ -116,148 +275,64 @@ class __$$ChallengeResponseResult_SuccessImplCopyWithImpl<$Res>
 
 /// @nodoc
 
-class _$ChallengeResponseResult_SuccessImpl
-    extends ChallengeResponseResult_Success {
-  const _$ChallengeResponseResult_SuccessImpl({required this.data}) : super._();
+class ChallengeResponseResult_Error extends ChallengeResponseResult {
+  const ChallengeResponseResult_Error({required this.error}) : super._();
 
-  @override
-  final Uint8List data;
+  final String error;
 
-  @override
-  String toString() {
-    return 'ChallengeResponseResult.success(data: $data)';
-  }
+  /// Create a copy of ChallengeResponseResult
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @pragma('vm:prefer-inline')
+  $ChallengeResponseResult_ErrorCopyWith<ChallengeResponseResult_Error>
+      get copyWith => _$ChallengeResponseResult_ErrorCopyWithImpl<
+          ChallengeResponseResult_Error>(this, _$identity);
 
   @override
   bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$ChallengeResponseResult_SuccessImpl &&
-            const DeepCollectionEquality().equals(other.data, data));
+            other is ChallengeResponseResult_Error &&
+            (identical(other.error, error) || other.error == error));
   }
 
   @override
-  int get hashCode =>
-      Object.hash(runtimeType, const DeepCollectionEquality().hash(data));
-
-  /// Create a copy of ChallengeResponseResult
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  @override
-  @pragma('vm:prefer-inline')
-  _$$ChallengeResponseResult_SuccessImplCopyWith<
-          _$ChallengeResponseResult_SuccessImpl>
-      get copyWith => __$$ChallengeResponseResult_SuccessImplCopyWithImpl<
-          _$ChallengeResponseResult_SuccessImpl>(this, _$identity);
+  int get hashCode => Object.hash(runtimeType, error);
 
   @override
-  @optionalTypeArgs
-  TResult when<TResult extends Object?>({
-    required TResult Function(Uint8List data) success,
-    required TResult Function(String error) error,
-  }) {
-    return success(data);
+  String toString() {
+    return 'ChallengeResponseResult.error(error: $error)';
   }
-
-  @override
-  @optionalTypeArgs
-  TResult? whenOrNull<TResult extends Object?>({
-    TResult? Function(Uint8List data)? success,
-    TResult? Function(String error)? error,
-  }) {
-    return success?.call(data);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult maybeWhen<TResult extends Object?>({
-    TResult Function(Uint8List data)? success,
-    TResult Function(String error)? error,
-    required TResult orElse(),
-  }) {
-    if (success != null) {
-      return success(data);
-    }
-    return orElse();
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult map<TResult extends Object?>({
-    required TResult Function(ChallengeResponseResult_Success value) success,
-    required TResult Function(ChallengeResponseResult_Error value) error,
-  }) {
-    return success(this);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult? mapOrNull<TResult extends Object?>({
-    TResult? Function(ChallengeResponseResult_Success value)? success,
-    TResult? Function(ChallengeResponseResult_Error value)? error,
-  }) {
-    return success?.call(this);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult maybeMap<TResult extends Object?>({
-    TResult Function(ChallengeResponseResult_Success value)? success,
-    TResult Function(ChallengeResponseResult_Error value)? error,
-    required TResult orElse(),
-  }) {
-    if (success != null) {
-      return success(this);
-    }
-    return orElse();
-  }
-}
-
-abstract class ChallengeResponseResult_Success extends ChallengeResponseResult {
-  const factory ChallengeResponseResult_Success(
-      {required final Uint8List data}) = _$ChallengeResponseResult_SuccessImpl;
-  const ChallengeResponseResult_Success._() : super._();
-
-  Uint8List get data;
-
-  /// Create a copy of ChallengeResponseResult
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  _$$ChallengeResponseResult_SuccessImplCopyWith<
-          _$ChallengeResponseResult_SuccessImpl>
-      get copyWith => throw _privateConstructorUsedError;
 }
 
 /// @nodoc
-abstract class _$$ChallengeResponseResult_ErrorImplCopyWith<$Res> {
-  factory _$$ChallengeResponseResult_ErrorImplCopyWith(
-          _$ChallengeResponseResult_ErrorImpl value,
-          $Res Function(_$ChallengeResponseResult_ErrorImpl) then) =
-      __$$ChallengeResponseResult_ErrorImplCopyWithImpl<$Res>;
+abstract mixin class $ChallengeResponseResult_ErrorCopyWith<$Res>
+    implements $ChallengeResponseResultCopyWith<$Res> {
+  factory $ChallengeResponseResult_ErrorCopyWith(
+          ChallengeResponseResult_Error value,
+          $Res Function(ChallengeResponseResult_Error) _then) =
+      _$ChallengeResponseResult_ErrorCopyWithImpl;
   @useResult
   $Res call({String error});
 }
 
 /// @nodoc
-class __$$ChallengeResponseResult_ErrorImplCopyWithImpl<$Res>
-    extends _$ChallengeResponseResultCopyWithImpl<$Res,
-        _$ChallengeResponseResult_ErrorImpl>
-    implements _$$ChallengeResponseResult_ErrorImplCopyWith<$Res> {
-  __$$ChallengeResponseResult_ErrorImplCopyWithImpl(
-      _$ChallengeResponseResult_ErrorImpl _value,
-      $Res Function(_$ChallengeResponseResult_ErrorImpl) _then)
-      : super(_value, _then);
+class _$ChallengeResponseResult_ErrorCopyWithImpl<$Res>
+    implements $ChallengeResponseResult_ErrorCopyWith<$Res> {
+  _$ChallengeResponseResult_ErrorCopyWithImpl(this._self, this._then);
+
+  final ChallengeResponseResult_Error _self;
+  final $Res Function(ChallengeResponseResult_Error) _then;
 
   /// Create a copy of ChallengeResponseResult
   /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
-  @override
   $Res call({
     Object? error = null,
   }) {
-    return _then(_$ChallengeResponseResult_ErrorImpl(
+    return _then(ChallengeResponseResult_Error(
       error: null == error
-          ? _value.error
+          ? _self.error
           : error // ignore: cast_nullable_to_non_nullable
               as String,
     ));
@@ -265,143 +340,80 @@ class __$$ChallengeResponseResult_ErrorImplCopyWithImpl<$Res>
 }
 
 /// @nodoc
-
-class _$ChallengeResponseResult_ErrorImpl
-    extends ChallengeResponseResult_Error {
-  const _$ChallengeResponseResult_ErrorImpl({required this.error}) : super._();
-
-  @override
-  final String error;
-
-  @override
-  String toString() {
-    return 'ChallengeResponseResult.error(error: $error)';
-  }
+mixin _$SecurityCheck {
+  Object get field0;
 
   @override
   bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$ChallengeResponseResult_ErrorImpl &&
-            (identical(other.error, error) || other.error == error));
+            other is SecurityCheck &&
+            const DeepCollectionEquality().equals(other.field0, field0));
   }
 
   @override
-  int get hashCode => Object.hash(runtimeType, error);
-
-  /// Create a copy of ChallengeResponseResult
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  @override
-  @pragma('vm:prefer-inline')
-  _$$ChallengeResponseResult_ErrorImplCopyWith<
-          _$ChallengeResponseResult_ErrorImpl>
-      get copyWith => __$$ChallengeResponseResult_ErrorImplCopyWithImpl<
-          _$ChallengeResponseResult_ErrorImpl>(this, _$identity);
+  int get hashCode =>
+      Object.hash(runtimeType, const DeepCollectionEquality().hash(field0));
 
   @override
-  @optionalTypeArgs
-  TResult when<TResult extends Object?>({
-    required TResult Function(Uint8List data) success,
-    required TResult Function(String error) error,
-  }) {
-    return error(this.error);
+  String toString() {
+    return 'SecurityCheck(field0: $field0)';
   }
-
-  @override
-  @optionalTypeArgs
-  TResult? whenOrNull<TResult extends Object?>({
-    TResult? Function(Uint8List data)? success,
-    TResult? Function(String error)? error,
-  }) {
-    return error?.call(this.error);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult maybeWhen<TResult extends Object?>({
-    TResult Function(Uint8List data)? success,
-    TResult Function(String error)? error,
-    required TResult orElse(),
-  }) {
-    if (error != null) {
-      return error(this.error);
-    }
-    return orElse();
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult map<TResult extends Object?>({
-    required TResult Function(ChallengeResponseResult_Success value) success,
-    required TResult Function(ChallengeResponseResult_Error value) error,
-  }) {
-    return error(this);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult? mapOrNull<TResult extends Object?>({
-    TResult? Function(ChallengeResponseResult_Success value)? success,
-    TResult? Function(ChallengeResponseResult_Error value)? error,
-  }) {
-    return error?.call(this);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult maybeMap<TResult extends Object?>({
-    TResult Function(ChallengeResponseResult_Success value)? success,
-    TResult Function(ChallengeResponseResult_Error value)? error,
-    required TResult orElse(),
-  }) {
-    if (error != null) {
-      return error(this);
-    }
-    return orElse();
-  }
-}
-
-abstract class ChallengeResponseResult_Error extends ChallengeResponseResult {
-  const factory ChallengeResponseResult_Error({required final String error}) =
-      _$ChallengeResponseResult_ErrorImpl;
-  const ChallengeResponseResult_Error._() : super._();
-
-  String get error;
-
-  /// Create a copy of ChallengeResponseResult
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  _$$ChallengeResponseResult_ErrorImplCopyWith<
-          _$ChallengeResponseResult_ErrorImpl>
-      get copyWith => throw _privateConstructorUsedError;
 }
 
 /// @nodoc
-mixin _$SecurityCheck {
-  Object get field0 => throw _privateConstructorUsedError;
+class $SecurityCheckCopyWith<$Res> {
+  $SecurityCheckCopyWith(SecurityCheck _, $Res Function(SecurityCheck) __);
+}
+
+/// Adds pattern-matching-related methods to [SecurityCheck].
+extension SecurityCheckPatterns on SecurityCheck {
+  /// A variant of `map` that fallback to returning `orElse`.
+  ///
+  /// It is equivalent to doing:
+  /// ```dart
+  /// switch (sealedClass) {
+  ///   case final Subclass value:
+  ///     return ...;
+  ///   case _:
+  ///     return orElse();
+  /// }
+  /// ```
+
   @optionalTypeArgs
-  TResult when<TResult extends Object?>({
-    required TResult Function(ChallengeRequest field0) challengeRequest,
-    required TResult Function(ChallengeResponseResult field0) challengeResponse,
-    required TResult Function(VerificationResult field0) verificationResult,
-  }) =>
-      throw _privateConstructorUsedError;
-  @optionalTypeArgs
-  TResult? whenOrNull<TResult extends Object?>({
-    TResult? Function(ChallengeRequest field0)? challengeRequest,
-    TResult? Function(ChallengeResponseResult field0)? challengeResponse,
-    TResult? Function(VerificationResult field0)? verificationResult,
-  }) =>
-      throw _privateConstructorUsedError;
-  @optionalTypeArgs
-  TResult maybeWhen<TResult extends Object?>({
-    TResult Function(ChallengeRequest field0)? challengeRequest,
-    TResult Function(ChallengeResponseResult field0)? challengeResponse,
-    TResult Function(VerificationResult field0)? verificationResult,
+  TResult maybeMap<TResult extends Object?>({
+    TResult Function(SecurityCheck_ChallengeRequest value)? challengeRequest,
+    TResult Function(SecurityCheck_ChallengeResponse value)? challengeResponse,
+    TResult Function(SecurityCheck_VerificationResult value)?
+        verificationResult,
     required TResult orElse(),
-  }) =>
-      throw _privateConstructorUsedError;
+  }) {
+    final _that = this;
+    switch (_that) {
+      case SecurityCheck_ChallengeRequest() when challengeRequest != null:
+        return challengeRequest(_that);
+      case SecurityCheck_ChallengeResponse() when challengeResponse != null:
+        return challengeResponse(_that);
+      case SecurityCheck_VerificationResult() when verificationResult != null:
+        return verificationResult(_that);
+      case _:
+        return orElse();
+    }
+  }
+
+  /// A `switch`-like method, using callbacks.
+  ///
+  /// Callbacks receives the raw object, upcasted.
+  /// It is equivalent to doing:
+  /// ```dart
+  /// switch (sealedClass) {
+  ///   case final Subclass value:
+  ///     return ...;
+  ///   case final Subclass2 value:
+  ///     return ...;
+  /// }
+  /// ```
+
   @optionalTypeArgs
   TResult map<TResult extends Object?>({
     required TResult Function(SecurityCheck_ChallengeRequest value)
@@ -410,78 +422,205 @@ mixin _$SecurityCheck {
         challengeResponse,
     required TResult Function(SecurityCheck_VerificationResult value)
         verificationResult,
-  }) =>
-      throw _privateConstructorUsedError;
+  }) {
+    final _that = this;
+    switch (_that) {
+      case SecurityCheck_ChallengeRequest():
+        return challengeRequest(_that);
+      case SecurityCheck_ChallengeResponse():
+        return challengeResponse(_that);
+      case SecurityCheck_VerificationResult():
+        return verificationResult(_that);
+    }
+  }
+
+  /// A variant of `map` that fallback to returning `null`.
+  ///
+  /// It is equivalent to doing:
+  /// ```dart
+  /// switch (sealedClass) {
+  ///   case final Subclass value:
+  ///     return ...;
+  ///   case _:
+  ///     return null;
+  /// }
+  /// ```
+
   @optionalTypeArgs
   TResult? mapOrNull<TResult extends Object?>({
     TResult? Function(SecurityCheck_ChallengeRequest value)? challengeRequest,
     TResult? Function(SecurityCheck_ChallengeResponse value)? challengeResponse,
     TResult? Function(SecurityCheck_VerificationResult value)?
         verificationResult,
-  }) =>
-      throw _privateConstructorUsedError;
+  }) {
+    final _that = this;
+    switch (_that) {
+      case SecurityCheck_ChallengeRequest() when challengeRequest != null:
+        return challengeRequest(_that);
+      case SecurityCheck_ChallengeResponse() when challengeResponse != null:
+        return challengeResponse(_that);
+      case SecurityCheck_VerificationResult() when verificationResult != null:
+        return verificationResult(_that);
+      case _:
+        return null;
+    }
+  }
+
+  /// A variant of `when` that fallback to an `orElse` callback.
+  ///
+  /// It is equivalent to doing:
+  /// ```dart
+  /// switch (sealedClass) {
+  ///   case Subclass(:final field):
+  ///     return ...;
+  ///   case _:
+  ///     return orElse();
+  /// }
+  /// ```
+
   @optionalTypeArgs
-  TResult maybeMap<TResult extends Object?>({
-    TResult Function(SecurityCheck_ChallengeRequest value)? challengeRequest,
-    TResult Function(SecurityCheck_ChallengeResponse value)? challengeResponse,
-    TResult Function(SecurityCheck_VerificationResult value)?
-        verificationResult,
+  TResult maybeWhen<TResult extends Object?>({
+    TResult Function(ChallengeRequest field0)? challengeRequest,
+    TResult Function(ChallengeResponseResult field0)? challengeResponse,
+    TResult Function(VerificationResult field0)? verificationResult,
     required TResult orElse(),
-  }) =>
-      throw _privateConstructorUsedError;
+  }) {
+    final _that = this;
+    switch (_that) {
+      case SecurityCheck_ChallengeRequest() when challengeRequest != null:
+        return challengeRequest(_that.field0);
+      case SecurityCheck_ChallengeResponse() when challengeResponse != null:
+        return challengeResponse(_that.field0);
+      case SecurityCheck_VerificationResult() when verificationResult != null:
+        return verificationResult(_that.field0);
+      case _:
+        return orElse();
+    }
+  }
+
+  /// A `switch`-like method, using callbacks.
+  ///
+  /// As opposed to `map`, this offers destructuring.
+  /// It is equivalent to doing:
+  /// ```dart
+  /// switch (sealedClass) {
+  ///   case Subclass(:final field):
+  ///     return ...;
+  ///   case Subclass2(:final field2):
+  ///     return ...;
+  /// }
+  /// ```
+
+  @optionalTypeArgs
+  TResult when<TResult extends Object?>({
+    required TResult Function(ChallengeRequest field0) challengeRequest,
+    required TResult Function(ChallengeResponseResult field0) challengeResponse,
+    required TResult Function(VerificationResult field0) verificationResult,
+  }) {
+    final _that = this;
+    switch (_that) {
+      case SecurityCheck_ChallengeRequest():
+        return challengeRequest(_that.field0);
+      case SecurityCheck_ChallengeResponse():
+        return challengeResponse(_that.field0);
+      case SecurityCheck_VerificationResult():
+        return verificationResult(_that.field0);
+    }
+  }
+
+  /// A variant of `when` that fallback to returning `null`
+  ///
+  /// It is equivalent to doing:
+  /// ```dart
+  /// switch (sealedClass) {
+  ///   case Subclass(:final field):
+  ///     return ...;
+  ///   case _:
+  ///     return null;
+  /// }
+  /// ```
+
+  @optionalTypeArgs
+  TResult? whenOrNull<TResult extends Object?>({
+    TResult? Function(ChallengeRequest field0)? challengeRequest,
+    TResult? Function(ChallengeResponseResult field0)? challengeResponse,
+    TResult? Function(VerificationResult field0)? verificationResult,
+  }) {
+    final _that = this;
+    switch (_that) {
+      case SecurityCheck_ChallengeRequest() when challengeRequest != null:
+        return challengeRequest(_that.field0);
+      case SecurityCheck_ChallengeResponse() when challengeResponse != null:
+        return challengeResponse(_that.field0);
+      case SecurityCheck_VerificationResult() when verificationResult != null:
+        return verificationResult(_that.field0);
+      case _:
+        return null;
+    }
+  }
 }
 
 /// @nodoc
-abstract class $SecurityCheckCopyWith<$Res> {
-  factory $SecurityCheckCopyWith(
-          SecurityCheck value, $Res Function(SecurityCheck) then) =
-      _$SecurityCheckCopyWithImpl<$Res, SecurityCheck>;
-}
 
-/// @nodoc
-class _$SecurityCheckCopyWithImpl<$Res, $Val extends SecurityCheck>
-    implements $SecurityCheckCopyWith<$Res> {
-  _$SecurityCheckCopyWithImpl(this._value, this._then);
+class SecurityCheck_ChallengeRequest extends SecurityCheck {
+  const SecurityCheck_ChallengeRequest(this.field0) : super._();
 
-  // ignore: unused_field
-  final $Val _value;
-  // ignore: unused_field
-  final $Res Function($Val) _then;
+  @override
+  final ChallengeRequest field0;
 
   /// Create a copy of SecurityCheck
   /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @pragma('vm:prefer-inline')
+  $SecurityCheck_ChallengeRequestCopyWith<SecurityCheck_ChallengeRequest>
+      get copyWith => _$SecurityCheck_ChallengeRequestCopyWithImpl<
+          SecurityCheck_ChallengeRequest>(this, _$identity);
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is SecurityCheck_ChallengeRequest &&
+            (identical(other.field0, field0) || other.field0 == field0));
+  }
+
+  @override
+  int get hashCode => Object.hash(runtimeType, field0);
+
+  @override
+  String toString() {
+    return 'SecurityCheck.challengeRequest(field0: $field0)';
+  }
 }
 
 /// @nodoc
-abstract class _$$SecurityCheck_ChallengeRequestImplCopyWith<$Res> {
-  factory _$$SecurityCheck_ChallengeRequestImplCopyWith(
-          _$SecurityCheck_ChallengeRequestImpl value,
-          $Res Function(_$SecurityCheck_ChallengeRequestImpl) then) =
-      __$$SecurityCheck_ChallengeRequestImplCopyWithImpl<$Res>;
+abstract mixin class $SecurityCheck_ChallengeRequestCopyWith<$Res>
+    implements $SecurityCheckCopyWith<$Res> {
+  factory $SecurityCheck_ChallengeRequestCopyWith(
+          SecurityCheck_ChallengeRequest value,
+          $Res Function(SecurityCheck_ChallengeRequest) _then) =
+      _$SecurityCheck_ChallengeRequestCopyWithImpl;
   @useResult
   $Res call({ChallengeRequest field0});
 }
 
 /// @nodoc
-class __$$SecurityCheck_ChallengeRequestImplCopyWithImpl<$Res>
-    extends _$SecurityCheckCopyWithImpl<$Res,
-        _$SecurityCheck_ChallengeRequestImpl>
-    implements _$$SecurityCheck_ChallengeRequestImplCopyWith<$Res> {
-  __$$SecurityCheck_ChallengeRequestImplCopyWithImpl(
-      _$SecurityCheck_ChallengeRequestImpl _value,
-      $Res Function(_$SecurityCheck_ChallengeRequestImpl) _then)
-      : super(_value, _then);
+class _$SecurityCheck_ChallengeRequestCopyWithImpl<$Res>
+    implements $SecurityCheck_ChallengeRequestCopyWith<$Res> {
+  _$SecurityCheck_ChallengeRequestCopyWithImpl(this._self, this._then);
+
+  final SecurityCheck_ChallengeRequest _self;
+  final $Res Function(SecurityCheck_ChallengeRequest) _then;
 
   /// Create a copy of SecurityCheck
   /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
-  @override
   $Res call({
     Object? field0 = null,
   }) {
-    return _then(_$SecurityCheck_ChallengeRequestImpl(
+    return _then(SecurityCheck_ChallengeRequest(
       null == field0
-          ? _value.field0
+          ? _self.field0
           : field0 // ignore: cast_nullable_to_non_nullable
               as ChallengeRequest,
     ));
@@ -490,135 +629,44 @@ class __$$SecurityCheck_ChallengeRequestImplCopyWithImpl<$Res>
 
 /// @nodoc
 
-class _$SecurityCheck_ChallengeRequestImpl
-    extends SecurityCheck_ChallengeRequest {
-  const _$SecurityCheck_ChallengeRequestImpl(this.field0) : super._();
+class SecurityCheck_ChallengeResponse extends SecurityCheck {
+  const SecurityCheck_ChallengeResponse(this.field0) : super._();
 
   @override
-  final ChallengeRequest field0;
+  final ChallengeResponseResult field0;
 
-  @override
-  String toString() {
-    return 'SecurityCheck.challengeRequest(field0: $field0)';
-  }
+  /// Create a copy of SecurityCheck
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @pragma('vm:prefer-inline')
+  $SecurityCheck_ChallengeResponseCopyWith<SecurityCheck_ChallengeResponse>
+      get copyWith => _$SecurityCheck_ChallengeResponseCopyWithImpl<
+          SecurityCheck_ChallengeResponse>(this, _$identity);
 
   @override
   bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$SecurityCheck_ChallengeRequestImpl &&
+            other is SecurityCheck_ChallengeResponse &&
             (identical(other.field0, field0) || other.field0 == field0));
   }
 
   @override
   int get hashCode => Object.hash(runtimeType, field0);
 
-  /// Create a copy of SecurityCheck
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
-  @pragma('vm:prefer-inline')
-  _$$SecurityCheck_ChallengeRequestImplCopyWith<
-          _$SecurityCheck_ChallengeRequestImpl>
-      get copyWith => __$$SecurityCheck_ChallengeRequestImplCopyWithImpl<
-          _$SecurityCheck_ChallengeRequestImpl>(this, _$identity);
-
-  @override
-  @optionalTypeArgs
-  TResult when<TResult extends Object?>({
-    required TResult Function(ChallengeRequest field0) challengeRequest,
-    required TResult Function(ChallengeResponseResult field0) challengeResponse,
-    required TResult Function(VerificationResult field0) verificationResult,
-  }) {
-    return challengeRequest(field0);
+  String toString() {
+    return 'SecurityCheck.challengeResponse(field0: $field0)';
   }
-
-  @override
-  @optionalTypeArgs
-  TResult? whenOrNull<TResult extends Object?>({
-    TResult? Function(ChallengeRequest field0)? challengeRequest,
-    TResult? Function(ChallengeResponseResult field0)? challengeResponse,
-    TResult? Function(VerificationResult field0)? verificationResult,
-  }) {
-    return challengeRequest?.call(field0);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult maybeWhen<TResult extends Object?>({
-    TResult Function(ChallengeRequest field0)? challengeRequest,
-    TResult Function(ChallengeResponseResult field0)? challengeResponse,
-    TResult Function(VerificationResult field0)? verificationResult,
-    required TResult orElse(),
-  }) {
-    if (challengeRequest != null) {
-      return challengeRequest(field0);
-    }
-    return orElse();
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult map<TResult extends Object?>({
-    required TResult Function(SecurityCheck_ChallengeRequest value)
-        challengeRequest,
-    required TResult Function(SecurityCheck_ChallengeResponse value)
-        challengeResponse,
-    required TResult Function(SecurityCheck_VerificationResult value)
-        verificationResult,
-  }) {
-    return challengeRequest(this);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult? mapOrNull<TResult extends Object?>({
-    TResult? Function(SecurityCheck_ChallengeRequest value)? challengeRequest,
-    TResult? Function(SecurityCheck_ChallengeResponse value)? challengeResponse,
-    TResult? Function(SecurityCheck_VerificationResult value)?
-        verificationResult,
-  }) {
-    return challengeRequest?.call(this);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult maybeMap<TResult extends Object?>({
-    TResult Function(SecurityCheck_ChallengeRequest value)? challengeRequest,
-    TResult Function(SecurityCheck_ChallengeResponse value)? challengeResponse,
-    TResult Function(SecurityCheck_VerificationResult value)?
-        verificationResult,
-    required TResult orElse(),
-  }) {
-    if (challengeRequest != null) {
-      return challengeRequest(this);
-    }
-    return orElse();
-  }
-}
-
-abstract class SecurityCheck_ChallengeRequest extends SecurityCheck {
-  const factory SecurityCheck_ChallengeRequest(final ChallengeRequest field0) =
-      _$SecurityCheck_ChallengeRequestImpl;
-  const SecurityCheck_ChallengeRequest._() : super._();
-
-  @override
-  ChallengeRequest get field0;
-
-  /// Create a copy of SecurityCheck
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  _$$SecurityCheck_ChallengeRequestImplCopyWith<
-          _$SecurityCheck_ChallengeRequestImpl>
-      get copyWith => throw _privateConstructorUsedError;
 }
 
 /// @nodoc
-abstract class _$$SecurityCheck_ChallengeResponseImplCopyWith<$Res> {
-  factory _$$SecurityCheck_ChallengeResponseImplCopyWith(
-          _$SecurityCheck_ChallengeResponseImpl value,
-          $Res Function(_$SecurityCheck_ChallengeResponseImpl) then) =
-      __$$SecurityCheck_ChallengeResponseImplCopyWithImpl<$Res>;
+abstract mixin class $SecurityCheck_ChallengeResponseCopyWith<$Res>
+    implements $SecurityCheckCopyWith<$Res> {
+  factory $SecurityCheck_ChallengeResponseCopyWith(
+          SecurityCheck_ChallengeResponse value,
+          $Res Function(SecurityCheck_ChallengeResponse) _then) =
+      _$SecurityCheck_ChallengeResponseCopyWithImpl;
   @useResult
   $Res call({ChallengeResponseResult field0});
 
@@ -626,25 +674,22 @@ abstract class _$$SecurityCheck_ChallengeResponseImplCopyWith<$Res> {
 }
 
 /// @nodoc
-class __$$SecurityCheck_ChallengeResponseImplCopyWithImpl<$Res>
-    extends _$SecurityCheckCopyWithImpl<$Res,
-        _$SecurityCheck_ChallengeResponseImpl>
-    implements _$$SecurityCheck_ChallengeResponseImplCopyWith<$Res> {
-  __$$SecurityCheck_ChallengeResponseImplCopyWithImpl(
-      _$SecurityCheck_ChallengeResponseImpl _value,
-      $Res Function(_$SecurityCheck_ChallengeResponseImpl) _then)
-      : super(_value, _then);
+class _$SecurityCheck_ChallengeResponseCopyWithImpl<$Res>
+    implements $SecurityCheck_ChallengeResponseCopyWith<$Res> {
+  _$SecurityCheck_ChallengeResponseCopyWithImpl(this._self, this._then);
+
+  final SecurityCheck_ChallengeResponse _self;
+  final $Res Function(SecurityCheck_ChallengeResponse) _then;
 
   /// Create a copy of SecurityCheck
   /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
-  @override
   $Res call({
     Object? field0 = null,
   }) {
-    return _then(_$SecurityCheck_ChallengeResponseImpl(
+    return _then(SecurityCheck_ChallengeResponse(
       null == field0
-          ? _value.field0
+          ? _self.field0
           : field0 // ignore: cast_nullable_to_non_nullable
               as ChallengeResponseResult,
     ));
@@ -655,144 +700,52 @@ class __$$SecurityCheck_ChallengeResponseImplCopyWithImpl<$Res>
   @override
   @pragma('vm:prefer-inline')
   $ChallengeResponseResultCopyWith<$Res> get field0 {
-    return $ChallengeResponseResultCopyWith<$Res>(_value.field0, (value) {
-      return _then(_value.copyWith(field0: value));
+    return $ChallengeResponseResultCopyWith<$Res>(_self.field0, (value) {
+      return _then(_self.copyWith(field0: value));
     });
   }
 }
 
 /// @nodoc
 
-class _$SecurityCheck_ChallengeResponseImpl
-    extends SecurityCheck_ChallengeResponse {
-  const _$SecurityCheck_ChallengeResponseImpl(this.field0) : super._();
+class SecurityCheck_VerificationResult extends SecurityCheck {
+  const SecurityCheck_VerificationResult(this.field0) : super._();
 
   @override
-  final ChallengeResponseResult field0;
+  final VerificationResult field0;
 
-  @override
-  String toString() {
-    return 'SecurityCheck.challengeResponse(field0: $field0)';
-  }
+  /// Create a copy of SecurityCheck
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @pragma('vm:prefer-inline')
+  $SecurityCheck_VerificationResultCopyWith<SecurityCheck_VerificationResult>
+      get copyWith => _$SecurityCheck_VerificationResultCopyWithImpl<
+          SecurityCheck_VerificationResult>(this, _$identity);
 
   @override
   bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$SecurityCheck_ChallengeResponseImpl &&
+            other is SecurityCheck_VerificationResult &&
             (identical(other.field0, field0) || other.field0 == field0));
   }
 
   @override
   int get hashCode => Object.hash(runtimeType, field0);
 
-  /// Create a copy of SecurityCheck
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
-  @pragma('vm:prefer-inline')
-  _$$SecurityCheck_ChallengeResponseImplCopyWith<
-          _$SecurityCheck_ChallengeResponseImpl>
-      get copyWith => __$$SecurityCheck_ChallengeResponseImplCopyWithImpl<
-          _$SecurityCheck_ChallengeResponseImpl>(this, _$identity);
-
-  @override
-  @optionalTypeArgs
-  TResult when<TResult extends Object?>({
-    required TResult Function(ChallengeRequest field0) challengeRequest,
-    required TResult Function(ChallengeResponseResult field0) challengeResponse,
-    required TResult Function(VerificationResult field0) verificationResult,
-  }) {
-    return challengeResponse(field0);
+  String toString() {
+    return 'SecurityCheck.verificationResult(field0: $field0)';
   }
-
-  @override
-  @optionalTypeArgs
-  TResult? whenOrNull<TResult extends Object?>({
-    TResult? Function(ChallengeRequest field0)? challengeRequest,
-    TResult? Function(ChallengeResponseResult field0)? challengeResponse,
-    TResult? Function(VerificationResult field0)? verificationResult,
-  }) {
-    return challengeResponse?.call(field0);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult maybeWhen<TResult extends Object?>({
-    TResult Function(ChallengeRequest field0)? challengeRequest,
-    TResult Function(ChallengeResponseResult field0)? challengeResponse,
-    TResult Function(VerificationResult field0)? verificationResult,
-    required TResult orElse(),
-  }) {
-    if (challengeResponse != null) {
-      return challengeResponse(field0);
-    }
-    return orElse();
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult map<TResult extends Object?>({
-    required TResult Function(SecurityCheck_ChallengeRequest value)
-        challengeRequest,
-    required TResult Function(SecurityCheck_ChallengeResponse value)
-        challengeResponse,
-    required TResult Function(SecurityCheck_VerificationResult value)
-        verificationResult,
-  }) {
-    return challengeResponse(this);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult? mapOrNull<TResult extends Object?>({
-    TResult? Function(SecurityCheck_ChallengeRequest value)? challengeRequest,
-    TResult? Function(SecurityCheck_ChallengeResponse value)? challengeResponse,
-    TResult? Function(SecurityCheck_VerificationResult value)?
-        verificationResult,
-  }) {
-    return challengeResponse?.call(this);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult maybeMap<TResult extends Object?>({
-    TResult Function(SecurityCheck_ChallengeRequest value)? challengeRequest,
-    TResult Function(SecurityCheck_ChallengeResponse value)? challengeResponse,
-    TResult Function(SecurityCheck_VerificationResult value)?
-        verificationResult,
-    required TResult orElse(),
-  }) {
-    if (challengeResponse != null) {
-      return challengeResponse(this);
-    }
-    return orElse();
-  }
-}
-
-abstract class SecurityCheck_ChallengeResponse extends SecurityCheck {
-  const factory SecurityCheck_ChallengeResponse(
-          final ChallengeResponseResult field0) =
-      _$SecurityCheck_ChallengeResponseImpl;
-  const SecurityCheck_ChallengeResponse._() : super._();
-
-  @override
-  ChallengeResponseResult get field0;
-
-  /// Create a copy of SecurityCheck
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  _$$SecurityCheck_ChallengeResponseImplCopyWith<
-          _$SecurityCheck_ChallengeResponseImpl>
-      get copyWith => throw _privateConstructorUsedError;
 }
 
 /// @nodoc
-abstract class _$$SecurityCheck_VerificationResultImplCopyWith<$Res> {
-  factory _$$SecurityCheck_VerificationResultImplCopyWith(
-          _$SecurityCheck_VerificationResultImpl value,
-          $Res Function(_$SecurityCheck_VerificationResultImpl) then) =
-      __$$SecurityCheck_VerificationResultImplCopyWithImpl<$Res>;
+abstract mixin class $SecurityCheck_VerificationResultCopyWith<$Res>
+    implements $SecurityCheckCopyWith<$Res> {
+  factory $SecurityCheck_VerificationResultCopyWith(
+          SecurityCheck_VerificationResult value,
+          $Res Function(SecurityCheck_VerificationResult) _then) =
+      _$SecurityCheck_VerificationResultCopyWithImpl;
   @useResult
   $Res call({VerificationResult field0});
 
@@ -800,25 +753,22 @@ abstract class _$$SecurityCheck_VerificationResultImplCopyWith<$Res> {
 }
 
 /// @nodoc
-class __$$SecurityCheck_VerificationResultImplCopyWithImpl<$Res>
-    extends _$SecurityCheckCopyWithImpl<$Res,
-        _$SecurityCheck_VerificationResultImpl>
-    implements _$$SecurityCheck_VerificationResultImplCopyWith<$Res> {
-  __$$SecurityCheck_VerificationResultImplCopyWithImpl(
-      _$SecurityCheck_VerificationResultImpl _value,
-      $Res Function(_$SecurityCheck_VerificationResultImpl) _then)
-      : super(_value, _then);
+class _$SecurityCheck_VerificationResultCopyWithImpl<$Res>
+    implements $SecurityCheck_VerificationResultCopyWith<$Res> {
+  _$SecurityCheck_VerificationResultCopyWithImpl(this._self, this._then);
+
+  final SecurityCheck_VerificationResult _self;
+  final $Res Function(SecurityCheck_VerificationResult) _then;
 
   /// Create a copy of SecurityCheck
   /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
-  @override
   $Res call({
     Object? field0 = null,
   }) {
-    return _then(_$SecurityCheck_VerificationResultImpl(
+    return _then(SecurityCheck_VerificationResult(
       null == field0
-          ? _value.field0
+          ? _self.field0
           : field0 // ignore: cast_nullable_to_non_nullable
               as VerificationResult,
     ));
@@ -829,303 +779,49 @@ class __$$SecurityCheck_VerificationResultImplCopyWithImpl<$Res>
   @override
   @pragma('vm:prefer-inline')
   $VerificationResultCopyWith<$Res> get field0 {
-    return $VerificationResultCopyWith<$Res>(_value.field0, (value) {
-      return _then(_value.copyWith(field0: value));
+    return $VerificationResultCopyWith<$Res>(_self.field0, (value) {
+      return _then(_self.copyWith(field0: value));
     });
   }
 }
 
 /// @nodoc
-
-class _$SecurityCheck_VerificationResultImpl
-    extends SecurityCheck_VerificationResult {
-  const _$SecurityCheck_VerificationResultImpl(this.field0) : super._();
-
-  @override
-  final VerificationResult field0;
-
-  @override
-  String toString() {
-    return 'SecurityCheck.verificationResult(field0: $field0)';
-  }
-
-  @override
-  bool operator ==(Object other) {
-    return identical(this, other) ||
-        (other.runtimeType == runtimeType &&
-            other is _$SecurityCheck_VerificationResultImpl &&
-            (identical(other.field0, field0) || other.field0 == field0));
-  }
-
-  @override
-  int get hashCode => Object.hash(runtimeType, field0);
-
-  /// Create a copy of SecurityCheck
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  @override
-  @pragma('vm:prefer-inline')
-  _$$SecurityCheck_VerificationResultImplCopyWith<
-          _$SecurityCheck_VerificationResultImpl>
-      get copyWith => __$$SecurityCheck_VerificationResultImplCopyWithImpl<
-          _$SecurityCheck_VerificationResultImpl>(this, _$identity);
-
-  @override
-  @optionalTypeArgs
-  TResult when<TResult extends Object?>({
-    required TResult Function(ChallengeRequest field0) challengeRequest,
-    required TResult Function(ChallengeResponseResult field0) challengeResponse,
-    required TResult Function(VerificationResult field0) verificationResult,
-  }) {
-    return verificationResult(field0);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult? whenOrNull<TResult extends Object?>({
-    TResult? Function(ChallengeRequest field0)? challengeRequest,
-    TResult? Function(ChallengeResponseResult field0)? challengeResponse,
-    TResult? Function(VerificationResult field0)? verificationResult,
-  }) {
-    return verificationResult?.call(field0);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult maybeWhen<TResult extends Object?>({
-    TResult Function(ChallengeRequest field0)? challengeRequest,
-    TResult Function(ChallengeResponseResult field0)? challengeResponse,
-    TResult Function(VerificationResult field0)? verificationResult,
-    required TResult orElse(),
-  }) {
-    if (verificationResult != null) {
-      return verificationResult(field0);
-    }
-    return orElse();
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult map<TResult extends Object?>({
-    required TResult Function(SecurityCheck_ChallengeRequest value)
-        challengeRequest,
-    required TResult Function(SecurityCheck_ChallengeResponse value)
-        challengeResponse,
-    required TResult Function(SecurityCheck_VerificationResult value)
-        verificationResult,
-  }) {
-    return verificationResult(this);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult? mapOrNull<TResult extends Object?>({
-    TResult? Function(SecurityCheck_ChallengeRequest value)? challengeRequest,
-    TResult? Function(SecurityCheck_ChallengeResponse value)? challengeResponse,
-    TResult? Function(SecurityCheck_VerificationResult value)?
-        verificationResult,
-  }) {
-    return verificationResult?.call(this);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult maybeMap<TResult extends Object?>({
-    TResult Function(SecurityCheck_ChallengeRequest value)? challengeRequest,
-    TResult Function(SecurityCheck_ChallengeResponse value)? challengeResponse,
-    TResult Function(SecurityCheck_VerificationResult value)?
-        verificationResult,
-    required TResult orElse(),
-  }) {
-    if (verificationResult != null) {
-      return verificationResult(this);
-    }
-    return orElse();
-  }
-}
-
-abstract class SecurityCheck_VerificationResult extends SecurityCheck {
-  const factory SecurityCheck_VerificationResult(
-      final VerificationResult field0) = _$SecurityCheck_VerificationResultImpl;
-  const SecurityCheck_VerificationResult._() : super._();
-
-  @override
-  VerificationResult get field0;
-
-  /// Create a copy of SecurityCheck
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  _$$SecurityCheck_VerificationResultImplCopyWith<
-          _$SecurityCheck_VerificationResultImpl>
-      get copyWith => throw _privateConstructorUsedError;
-}
-
-/// @nodoc
 mixin _$VerificationResult {
-  @optionalTypeArgs
-  TResult when<TResult extends Object?>({
-    required TResult Function() success,
-    required TResult Function(String error) error,
-    required TResult Function() failure,
-  }) =>
-      throw _privateConstructorUsedError;
-  @optionalTypeArgs
-  TResult? whenOrNull<TResult extends Object?>({
-    TResult? Function()? success,
-    TResult? Function(String error)? error,
-    TResult? Function()? failure,
-  }) =>
-      throw _privateConstructorUsedError;
-  @optionalTypeArgs
-  TResult maybeWhen<TResult extends Object?>({
-    TResult Function()? success,
-    TResult Function(String error)? error,
-    TResult Function()? failure,
-    required TResult orElse(),
-  }) =>
-      throw _privateConstructorUsedError;
-  @optionalTypeArgs
-  TResult map<TResult extends Object?>({
-    required TResult Function(VerificationResult_Success value) success,
-    required TResult Function(VerificationResult_Error value) error,
-    required TResult Function(VerificationResult_Failure value) failure,
-  }) =>
-      throw _privateConstructorUsedError;
-  @optionalTypeArgs
-  TResult? mapOrNull<TResult extends Object?>({
-    TResult? Function(VerificationResult_Success value)? success,
-    TResult? Function(VerificationResult_Error value)? error,
-    TResult? Function(VerificationResult_Failure value)? failure,
-  }) =>
-      throw _privateConstructorUsedError;
-  @optionalTypeArgs
-  TResult maybeMap<TResult extends Object?>({
-    TResult Function(VerificationResult_Success value)? success,
-    TResult Function(VerificationResult_Error value)? error,
-    TResult Function(VerificationResult_Failure value)? failure,
-    required TResult orElse(),
-  }) =>
-      throw _privateConstructorUsedError;
-}
-
-/// @nodoc
-abstract class $VerificationResultCopyWith<$Res> {
-  factory $VerificationResultCopyWith(
-          VerificationResult value, $Res Function(VerificationResult) then) =
-      _$VerificationResultCopyWithImpl<$Res, VerificationResult>;
-}
-
-/// @nodoc
-class _$VerificationResultCopyWithImpl<$Res, $Val extends VerificationResult>
-    implements $VerificationResultCopyWith<$Res> {
-  _$VerificationResultCopyWithImpl(this._value, this._then);
-
-  // ignore: unused_field
-  final $Val _value;
-  // ignore: unused_field
-  final $Res Function($Val) _then;
-
-  /// Create a copy of VerificationResult
-  /// with the given fields replaced by the non-null parameter values.
-}
-
-/// @nodoc
-abstract class _$$VerificationResult_SuccessImplCopyWith<$Res> {
-  factory _$$VerificationResult_SuccessImplCopyWith(
-          _$VerificationResult_SuccessImpl value,
-          $Res Function(_$VerificationResult_SuccessImpl) then) =
-      __$$VerificationResult_SuccessImplCopyWithImpl<$Res>;
-}
-
-/// @nodoc
-class __$$VerificationResult_SuccessImplCopyWithImpl<$Res>
-    extends _$VerificationResultCopyWithImpl<$Res,
-        _$VerificationResult_SuccessImpl>
-    implements _$$VerificationResult_SuccessImplCopyWith<$Res> {
-  __$$VerificationResult_SuccessImplCopyWithImpl(
-      _$VerificationResult_SuccessImpl _value,
-      $Res Function(_$VerificationResult_SuccessImpl) _then)
-      : super(_value, _then);
-
-  /// Create a copy of VerificationResult
-  /// with the given fields replaced by the non-null parameter values.
-}
-
-/// @nodoc
-
-class _$VerificationResult_SuccessImpl extends VerificationResult_Success {
-  const _$VerificationResult_SuccessImpl() : super._();
-
-  @override
-  String toString() {
-    return 'VerificationResult.success()';
-  }
-
   @override
   bool operator ==(Object other) {
     return identical(this, other) ||
-        (other.runtimeType == runtimeType &&
-            other is _$VerificationResult_SuccessImpl);
+        (other.runtimeType == runtimeType && other is VerificationResult);
   }
 
   @override
   int get hashCode => runtimeType.hashCode;
 
   @override
-  @optionalTypeArgs
-  TResult when<TResult extends Object?>({
-    required TResult Function() success,
-    required TResult Function(String error) error,
-    required TResult Function() failure,
-  }) {
-    return success();
+  String toString() {
+    return 'VerificationResult()';
   }
+}
 
-  @override
-  @optionalTypeArgs
-  TResult? whenOrNull<TResult extends Object?>({
-    TResult? Function()? success,
-    TResult? Function(String error)? error,
-    TResult? Function()? failure,
-  }) {
-    return success?.call();
-  }
+/// @nodoc
+class $VerificationResultCopyWith<$Res> {
+  $VerificationResultCopyWith(
+      VerificationResult _, $Res Function(VerificationResult) __);
+}
 
-  @override
-  @optionalTypeArgs
-  TResult maybeWhen<TResult extends Object?>({
-    TResult Function()? success,
-    TResult Function(String error)? error,
-    TResult Function()? failure,
-    required TResult orElse(),
-  }) {
-    if (success != null) {
-      return success();
-    }
-    return orElse();
-  }
+/// Adds pattern-matching-related methods to [VerificationResult].
+extension VerificationResultPatterns on VerificationResult {
+  /// A variant of `map` that fallback to returning `orElse`.
+  ///
+  /// It is equivalent to doing:
+  /// ```dart
+  /// switch (sealedClass) {
+  ///   case final Subclass value:
+  ///     return ...;
+  ///   case _:
+  ///     return orElse();
+  /// }
+  /// ```
 
-  @override
-  @optionalTypeArgs
-  TResult map<TResult extends Object?>({
-    required TResult Function(VerificationResult_Success value) success,
-    required TResult Function(VerificationResult_Error value) error,
-    required TResult Function(VerificationResult_Failure value) failure,
-  }) {
-    return success(this);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult? mapOrNull<TResult extends Object?>({
-    TResult? Function(VerificationResult_Success value)? success,
-    TResult? Function(VerificationResult_Error value)? error,
-    TResult? Function(VerificationResult_Failure value)? failure,
-  }) {
-    return success?.call(this);
-  }
-
-  @override
   @optionalTypeArgs
   TResult maybeMap<TResult extends Object?>({
     TResult Function(VerificationResult_Success value)? success,
@@ -1133,48 +829,254 @@ class _$VerificationResult_SuccessImpl extends VerificationResult_Success {
     TResult Function(VerificationResult_Failure value)? failure,
     required TResult orElse(),
   }) {
-    if (success != null) {
-      return success(this);
+    final _that = this;
+    switch (_that) {
+      case VerificationResult_Success() when success != null:
+        return success(_that);
+      case VerificationResult_Error() when error != null:
+        return error(_that);
+      case VerificationResult_Failure() when failure != null:
+        return failure(_that);
+      case _:
+        return orElse();
     }
-    return orElse();
+  }
+
+  /// A `switch`-like method, using callbacks.
+  ///
+  /// Callbacks receives the raw object, upcasted.
+  /// It is equivalent to doing:
+  /// ```dart
+  /// switch (sealedClass) {
+  ///   case final Subclass value:
+  ///     return ...;
+  ///   case final Subclass2 value:
+  ///     return ...;
+  /// }
+  /// ```
+
+  @optionalTypeArgs
+  TResult map<TResult extends Object?>({
+    required TResult Function(VerificationResult_Success value) success,
+    required TResult Function(VerificationResult_Error value) error,
+    required TResult Function(VerificationResult_Failure value) failure,
+  }) {
+    final _that = this;
+    switch (_that) {
+      case VerificationResult_Success():
+        return success(_that);
+      case VerificationResult_Error():
+        return error(_that);
+      case VerificationResult_Failure():
+        return failure(_that);
+    }
+  }
+
+  /// A variant of `map` that fallback to returning `null`.
+  ///
+  /// It is equivalent to doing:
+  /// ```dart
+  /// switch (sealedClass) {
+  ///   case final Subclass value:
+  ///     return ...;
+  ///   case _:
+  ///     return null;
+  /// }
+  /// ```
+
+  @optionalTypeArgs
+  TResult? mapOrNull<TResult extends Object?>({
+    TResult? Function(VerificationResult_Success value)? success,
+    TResult? Function(VerificationResult_Error value)? error,
+    TResult? Function(VerificationResult_Failure value)? failure,
+  }) {
+    final _that = this;
+    switch (_that) {
+      case VerificationResult_Success() when success != null:
+        return success(_that);
+      case VerificationResult_Error() when error != null:
+        return error(_that);
+      case VerificationResult_Failure() when failure != null:
+        return failure(_that);
+      case _:
+        return null;
+    }
+  }
+
+  /// A variant of `when` that fallback to an `orElse` callback.
+  ///
+  /// It is equivalent to doing:
+  /// ```dart
+  /// switch (sealedClass) {
+  ///   case Subclass(:final field):
+  ///     return ...;
+  ///   case _:
+  ///     return orElse();
+  /// }
+  /// ```
+
+  @optionalTypeArgs
+  TResult maybeWhen<TResult extends Object?>({
+    TResult Function()? success,
+    TResult Function(String error)? error,
+    TResult Function()? failure,
+    required TResult orElse(),
+  }) {
+    final _that = this;
+    switch (_that) {
+      case VerificationResult_Success() when success != null:
+        return success();
+      case VerificationResult_Error() when error != null:
+        return error(_that.error);
+      case VerificationResult_Failure() when failure != null:
+        return failure();
+      case _:
+        return orElse();
+    }
+  }
+
+  /// A `switch`-like method, using callbacks.
+  ///
+  /// As opposed to `map`, this offers destructuring.
+  /// It is equivalent to doing:
+  /// ```dart
+  /// switch (sealedClass) {
+  ///   case Subclass(:final field):
+  ///     return ...;
+  ///   case Subclass2(:final field2):
+  ///     return ...;
+  /// }
+  /// ```
+
+  @optionalTypeArgs
+  TResult when<TResult extends Object?>({
+    required TResult Function() success,
+    required TResult Function(String error) error,
+    required TResult Function() failure,
+  }) {
+    final _that = this;
+    switch (_that) {
+      case VerificationResult_Success():
+        return success();
+      case VerificationResult_Error():
+        return error(_that.error);
+      case VerificationResult_Failure():
+        return failure();
+    }
+  }
+
+  /// A variant of `when` that fallback to returning `null`
+  ///
+  /// It is equivalent to doing:
+  /// ```dart
+  /// switch (sealedClass) {
+  ///   case Subclass(:final field):
+  ///     return ...;
+  ///   case _:
+  ///     return null;
+  /// }
+  /// ```
+
+  @optionalTypeArgs
+  TResult? whenOrNull<TResult extends Object?>({
+    TResult? Function()? success,
+    TResult? Function(String error)? error,
+    TResult? Function()? failure,
+  }) {
+    final _that = this;
+    switch (_that) {
+      case VerificationResult_Success() when success != null:
+        return success();
+      case VerificationResult_Error() when error != null:
+        return error(_that.error);
+      case VerificationResult_Failure() when failure != null:
+        return failure();
+      case _:
+        return null;
+    }
   }
 }
 
-abstract class VerificationResult_Success extends VerificationResult {
-  const factory VerificationResult_Success() = _$VerificationResult_SuccessImpl;
-  const VerificationResult_Success._() : super._();
+/// @nodoc
+
+class VerificationResult_Success extends VerificationResult {
+  const VerificationResult_Success() : super._();
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is VerificationResult_Success);
+  }
+
+  @override
+  int get hashCode => runtimeType.hashCode;
+
+  @override
+  String toString() {
+    return 'VerificationResult.success()';
+  }
 }
 
 /// @nodoc
-abstract class _$$VerificationResult_ErrorImplCopyWith<$Res> {
-  factory _$$VerificationResult_ErrorImplCopyWith(
-          _$VerificationResult_ErrorImpl value,
-          $Res Function(_$VerificationResult_ErrorImpl) then) =
-      __$$VerificationResult_ErrorImplCopyWithImpl<$Res>;
+
+class VerificationResult_Error extends VerificationResult {
+  const VerificationResult_Error({required this.error}) : super._();
+
+  final String error;
+
+  /// Create a copy of VerificationResult
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @pragma('vm:prefer-inline')
+  $VerificationResult_ErrorCopyWith<VerificationResult_Error> get copyWith =>
+      _$VerificationResult_ErrorCopyWithImpl<VerificationResult_Error>(
+          this, _$identity);
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is VerificationResult_Error &&
+            (identical(other.error, error) || other.error == error));
+  }
+
+  @override
+  int get hashCode => Object.hash(runtimeType, error);
+
+  @override
+  String toString() {
+    return 'VerificationResult.error(error: $error)';
+  }
+}
+
+/// @nodoc
+abstract mixin class $VerificationResult_ErrorCopyWith<$Res>
+    implements $VerificationResultCopyWith<$Res> {
+  factory $VerificationResult_ErrorCopyWith(VerificationResult_Error value,
+          $Res Function(VerificationResult_Error) _then) =
+      _$VerificationResult_ErrorCopyWithImpl;
   @useResult
   $Res call({String error});
 }
 
 /// @nodoc
-class __$$VerificationResult_ErrorImplCopyWithImpl<$Res>
-    extends _$VerificationResultCopyWithImpl<$Res,
-        _$VerificationResult_ErrorImpl>
-    implements _$$VerificationResult_ErrorImplCopyWith<$Res> {
-  __$$VerificationResult_ErrorImplCopyWithImpl(
-      _$VerificationResult_ErrorImpl _value,
-      $Res Function(_$VerificationResult_ErrorImpl) _then)
-      : super(_value, _then);
+class _$VerificationResult_ErrorCopyWithImpl<$Res>
+    implements $VerificationResult_ErrorCopyWith<$Res> {
+  _$VerificationResult_ErrorCopyWithImpl(this._self, this._then);
+
+  final VerificationResult_Error _self;
+  final $Res Function(VerificationResult_Error) _then;
 
   /// Create a copy of VerificationResult
   /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
-  @override
   $Res call({
     Object? error = null,
   }) {
-    return _then(_$VerificationResult_ErrorImpl(
+    return _then(VerificationResult_Error(
       error: null == error
-          ? _value.error
+          ? _self.error
           : error // ignore: cast_nullable_to_non_nullable
               as String,
     ));
@@ -1183,232 +1085,23 @@ class __$$VerificationResult_ErrorImplCopyWithImpl<$Res>
 
 /// @nodoc
 
-class _$VerificationResult_ErrorImpl extends VerificationResult_Error {
-  const _$VerificationResult_ErrorImpl({required this.error}) : super._();
-
-  @override
-  final String error;
-
-  @override
-  String toString() {
-    return 'VerificationResult.error(error: $error)';
-  }
+class VerificationResult_Failure extends VerificationResult {
+  const VerificationResult_Failure() : super._();
 
   @override
   bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$VerificationResult_ErrorImpl &&
-            (identical(other.error, error) || other.error == error));
-  }
-
-  @override
-  int get hashCode => Object.hash(runtimeType, error);
-
-  /// Create a copy of VerificationResult
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  @override
-  @pragma('vm:prefer-inline')
-  _$$VerificationResult_ErrorImplCopyWith<_$VerificationResult_ErrorImpl>
-      get copyWith => __$$VerificationResult_ErrorImplCopyWithImpl<
-          _$VerificationResult_ErrorImpl>(this, _$identity);
-
-  @override
-  @optionalTypeArgs
-  TResult when<TResult extends Object?>({
-    required TResult Function() success,
-    required TResult Function(String error) error,
-    required TResult Function() failure,
-  }) {
-    return error(this.error);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult? whenOrNull<TResult extends Object?>({
-    TResult? Function()? success,
-    TResult? Function(String error)? error,
-    TResult? Function()? failure,
-  }) {
-    return error?.call(this.error);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult maybeWhen<TResult extends Object?>({
-    TResult Function()? success,
-    TResult Function(String error)? error,
-    TResult Function()? failure,
-    required TResult orElse(),
-  }) {
-    if (error != null) {
-      return error(this.error);
-    }
-    return orElse();
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult map<TResult extends Object?>({
-    required TResult Function(VerificationResult_Success value) success,
-    required TResult Function(VerificationResult_Error value) error,
-    required TResult Function(VerificationResult_Failure value) failure,
-  }) {
-    return error(this);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult? mapOrNull<TResult extends Object?>({
-    TResult? Function(VerificationResult_Success value)? success,
-    TResult? Function(VerificationResult_Error value)? error,
-    TResult? Function(VerificationResult_Failure value)? failure,
-  }) {
-    return error?.call(this);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult maybeMap<TResult extends Object?>({
-    TResult Function(VerificationResult_Success value)? success,
-    TResult Function(VerificationResult_Error value)? error,
-    TResult Function(VerificationResult_Failure value)? failure,
-    required TResult orElse(),
-  }) {
-    if (error != null) {
-      return error(this);
-    }
-    return orElse();
-  }
-}
-
-abstract class VerificationResult_Error extends VerificationResult {
-  const factory VerificationResult_Error({required final String error}) =
-      _$VerificationResult_ErrorImpl;
-  const VerificationResult_Error._() : super._();
-
-  String get error;
-
-  /// Create a copy of VerificationResult
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  _$$VerificationResult_ErrorImplCopyWith<_$VerificationResult_ErrorImpl>
-      get copyWith => throw _privateConstructorUsedError;
-}
-
-/// @nodoc
-abstract class _$$VerificationResult_FailureImplCopyWith<$Res> {
-  factory _$$VerificationResult_FailureImplCopyWith(
-          _$VerificationResult_FailureImpl value,
-          $Res Function(_$VerificationResult_FailureImpl) then) =
-      __$$VerificationResult_FailureImplCopyWithImpl<$Res>;
-}
-
-/// @nodoc
-class __$$VerificationResult_FailureImplCopyWithImpl<$Res>
-    extends _$VerificationResultCopyWithImpl<$Res,
-        _$VerificationResult_FailureImpl>
-    implements _$$VerificationResult_FailureImplCopyWith<$Res> {
-  __$$VerificationResult_FailureImplCopyWithImpl(
-      _$VerificationResult_FailureImpl _value,
-      $Res Function(_$VerificationResult_FailureImpl) _then)
-      : super(_value, _then);
-
-  /// Create a copy of VerificationResult
-  /// with the given fields replaced by the non-null parameter values.
-}
-
-/// @nodoc
-
-class _$VerificationResult_FailureImpl extends VerificationResult_Failure {
-  const _$VerificationResult_FailureImpl() : super._();
-
-  @override
-  String toString() {
-    return 'VerificationResult.failure()';
-  }
-
-  @override
-  bool operator ==(Object other) {
-    return identical(this, other) ||
-        (other.runtimeType == runtimeType &&
-            other is _$VerificationResult_FailureImpl);
+            other is VerificationResult_Failure);
   }
 
   @override
   int get hashCode => runtimeType.hashCode;
 
   @override
-  @optionalTypeArgs
-  TResult when<TResult extends Object?>({
-    required TResult Function() success,
-    required TResult Function(String error) error,
-    required TResult Function() failure,
-  }) {
-    return failure();
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult? whenOrNull<TResult extends Object?>({
-    TResult? Function()? success,
-    TResult? Function(String error)? error,
-    TResult? Function()? failure,
-  }) {
-    return failure?.call();
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult maybeWhen<TResult extends Object?>({
-    TResult Function()? success,
-    TResult Function(String error)? error,
-    TResult Function()? failure,
-    required TResult orElse(),
-  }) {
-    if (failure != null) {
-      return failure();
-    }
-    return orElse();
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult map<TResult extends Object?>({
-    required TResult Function(VerificationResult_Success value) success,
-    required TResult Function(VerificationResult_Error value) error,
-    required TResult Function(VerificationResult_Failure value) failure,
-  }) {
-    return failure(this);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult? mapOrNull<TResult extends Object?>({
-    TResult? Function(VerificationResult_Success value)? success,
-    TResult? Function(VerificationResult_Error value)? error,
-    TResult? Function(VerificationResult_Failure value)? failure,
-  }) {
-    return failure?.call(this);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult maybeMap<TResult extends Object?>({
-    TResult Function(VerificationResult_Success value)? success,
-    TResult Function(VerificationResult_Error value)? error,
-    TResult Function(VerificationResult_Failure value)? failure,
-    required TResult orElse(),
-  }) {
-    if (failure != null) {
-      return failure(this);
-    }
-    return orElse();
+  String toString() {
+    return 'VerificationResult.failure()';
   }
 }
 
-abstract class VerificationResult_Failure extends VerificationResult {
-  const factory VerificationResult_Failure() = _$VerificationResult_FailureImpl;
-  const VerificationResult_Failure._() : super._();
-}
+// dart format on
