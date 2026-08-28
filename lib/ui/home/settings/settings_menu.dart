@@ -2,7 +2,6 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-import 'package:envoy/business/envoy_seed.dart';
 import 'package:envoy/business/settings.dart';
 import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/home/home_page.dart';
@@ -176,13 +175,12 @@ class _SettingsMenuWidgetState extends ConsumerState<SettingsMenuWidget>
                       background.state = HomePageBackgroundState.settings;
                     },
                   ),
-                  if (EnvoySeed().walletDerived())
-                    MenuOption(
-                      label: S().menu_backups.toUpperCase(),
-                      onTap: () {
-                        background.state = HomePageBackgroundState.backups;
-                      },
-                    ),
+                  MenuOption(
+                    label: S().menu_backups.toUpperCase(),
+                    onTap: () {
+                      background.state = HomePageBackgroundState.backups;
+                    },
+                  ),
                   MenuOption(
                     label: S().menu_support.toUpperCase(),
                     onTap: () {

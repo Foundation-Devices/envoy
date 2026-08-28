@@ -11,12 +11,6 @@ private let methodChannel = "envoy"
 private let sdCardEventChannel = "sd_card_events"
 private var eventSink: FlutterEventSink? = nil
 
-private let localSecretCloudStorageKey = "localSecret"
-private let localSecretFileName = "local.secret"
-
-private let primeSecretCloudStorageKey = "prime"
-private let primeSecretsFileName = "prime.secrets"
-
 private var folderAccessResult: FlutterResult? = nil
 
 private let appGroupID = "group.com.foundationdevices.envoy"
@@ -46,14 +40,7 @@ func getSdCardBookmark() -> URL {
         _ application: UIApplication,
         didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?
     ) -> Bool {
-        NotificationCenter.default.addObserver(self,
-                                               selector: #selector(ubiquitousKeyValueStoreDidChange(_:)),
-                                               name: NSUbiquitousKeyValueStore.didChangeExternallyNotification,
-                                               object: NSUbiquitousKeyValueStore.default)
-
-        if NSUbiquitousKeyValueStore.default.synchronize() == false {
-            fatalError("This app was not built with the proper entitlement requests.")
-        }
+        MagicBackup.shared.start()
 
         pendingAppClipHandoffURL = checkAppClipHandoff()
 
@@ -66,6 +53,9 @@ func getSdCardBookmark() -> URL {
     }
 
     private func configureFlutterChannels(binaryMessenger: FlutterBinaryMessenger) {
+        NativeLogStream.shared.register(binaryMessenger: binaryMessenger)
+        MagicBackup.shared.register(binaryMessenger: binaryMessenger)
+
         sdCardFlutterEventChannel = FlutterEventChannel(
             name: sdCardEventChannel,
             binaryMessenger: binaryMessenger
@@ -117,71 +107,6 @@ func getSdCardBookmark() -> URL {
                     result(bookmarkUrl.startAccessingSecurityScopedResource())
                 } catch {
                     result(false)
-                }
-            case "data_changed":
-                do {
-                    let paths = FileManager.default.urls(
-                        for: .applicationSupportDirectory,
-                        in: .userDomainMask
-                    )
-                    let localSecretURL = paths[0].appendingPathComponent(localSecretFileName)
-                    let localSecret = try String(contentsOf: localSecretURL)
-
-                    let primeSecretsURL = paths[0].appendingPathComponent(primeSecretsFileName)
-                    let primeSecrets = try String(contentsOf: primeSecretsURL)
-
-                    NSUbiquitousKeyValueStore.default.set(
-                        primeSecrets,
-                        forKey: primeSecretCloudStorageKey
-                    )
-                    NSUbiquitousKeyValueStore.default.set(
-                        localSecret,
-                        forKey: localSecretCloudStorageKey
-                    )
-                    NSUbiquitousKeyValueStore.default.synchronize()
-                    result(true)
-                } catch {
-                    result(false)
-                }
-            case "get_shard_path_icloud":
-                // url(forUbiquityContainerIdentifier:) blocks until iCloud is ready — must run off main thread.
-                DispatchQueue.global(qos: .userInitiated).async {
-                    guard let ubiquityURL = FileManager.default.url(
-                        forUbiquityContainerIdentifier: "iCloud.com.foundationdevices.envoy"
-                    ) else {
-                        result(nil)
-                        return
-                    }
-                    let docsURL = ubiquityURL.appendingPathComponent("Documents")
-                    try? FileManager.default.createDirectory(
-                        at: docsURL,
-                        withIntermediateDirectories: true
-                    )
-                    let dst = docsURL.appendingPathComponent("prime.secret")
-
-                    // Migrate from App Group container (previous approach)
-                    if let container = FileManager.default.containerURL(
-                        forSecurityApplicationGroupIdentifier: appGroupID
-                    ) {
-                        let src = container.appendingPathComponent("prime.secret")
-                        if FileManager.default.fileExists(atPath: src.path),
-                           !FileManager.default.fileExists(atPath: dst.path) {
-                            try? FileManager.default.copyItem(at: src, to: dst)
-                        }
-                    }
-
-                    // Migrate from applicationSupportDirectory (original location)
-                    let appSupport = FileManager.default.urls(
-                        for: .applicationSupportDirectory,
-                        in: .userDomainMask
-                    )[0]
-                    let legacySrc = appSupport.appendingPathComponent("prime.secret")
-                    if FileManager.default.fileExists(atPath: legacySrc.path),
-                       !FileManager.default.fileExists(atPath: dst.path) {
-                        try? FileManager.default.copyItem(at: legacySrc, to: dst)
-                    }
-
-                    result(dst.path)
                 }
             default:
                 result(FlutterMethodNotImplemented)
@@ -277,48 +202,6 @@ func getSdCardBookmark() -> URL {
           print("\n--- AUDIT COMPLETE ---\n")
       }
 
-    @objc
-    func ubiquitousKeyValueStoreDidChange(_ notification: Notification) {
-        guard let userInfo = notification.userInfo else { return }
-        guard let reasonForChange = userInfo[NSUbiquitousKeyValueStoreChangeReasonKey] as? Int else { return }
-        guard let keys = userInfo[NSUbiquitousKeyValueStoreChangedKeysKey] as? [String] else { return }
-        guard keys.contains(localSecretCloudStorageKey) else { return }
-
-        // Save the timestamp
-        let path: URL
-        do {
-            path = try FileManager.default.url(for: .applicationSupportDirectory, in: .userDomainMask, appropriateFor: nil, create: true)
-            let localSecretTimestampURL = path.appendingPathComponent(localSecretFileName + ".backup_timestamp")
-            try NSDate().timeIntervalSince1970.description.write(to: localSecretTimestampURL, atomically: true, encoding: .ascii)
-        } catch {
-            print(error)
-            return
-        }
-
-        switch reasonForChange {
-        case NSUbiquitousKeyValueStoreAccountChange, NSUbiquitousKeyValueStoreServerChange, NSUbiquitousKeyValueStoreInitialSyncChange:
-            let localSecret = NSUbiquitousKeyValueStore.default.string(forKey: localSecretCloudStorageKey)
-            let primeSecrets = NSUbiquitousKeyValueStore.default.string(forKey: primeSecretCloudStorageKey)
-
-            do {
-                let localSecretURL = path.appendingPathComponent(localSecretFileName)
-                let localPrimeSecretURL = path.appendingPathComponent(primeSecretsFileName)
-                if let primeSecrets = primeSecrets {
-                    try primeSecrets.write(to: localPrimeSecretURL, atomically: true, encoding: .ascii)
-                }
-                if let localSecret = localSecret {
-                    try localSecret.write(to: localSecretURL, atomically: true, encoding: .ascii)
-                }
-            } catch {
-                print(error)
-            }
-
-          
-        default:
-            break
-        }
-    }
-    
     // MARK: - Folder access
     
     private func promptUserForFolderAccess() {

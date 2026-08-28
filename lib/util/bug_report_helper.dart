@@ -11,6 +11,8 @@ import 'package:path_provider/path_provider.dart';
 import 'package:sembast/sembast_io.dart';
 import 'package:stack_trace/stack_trace.dart';
 
+import 'native_log_stream.dart';
+
 class EnvoyReport extends ChangeNotifier {
   static final EnvoyReport _instance = EnvoyReport._();
 
@@ -60,6 +62,8 @@ class EnvoyReport extends ChangeNotifier {
                 sortOrders: [SortOrder(Field.key, true)], limit: _logCapacity));
       }
     }
+
+    NativeLogStream.init();
   }
 
   Future<void> _cleanupStoredLogs() async {
