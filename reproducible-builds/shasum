@@ -1,0 +1,26 @@
+#!/usr/bin/env bash
+
+# SPDX-FileCopyrightText: 2026 Foundation Devices Inc.
+# SPDX-License-Identifier: GPL-3.0-or-later
+
+set -euo pipefail
+
+algorithm=1
+if [[ ${1:-} == "-a" ]]; then
+    [[ $# -ge 2 ]] || {
+        echo "shasum: -a requires an algorithm" >&2
+        exit 2
+    }
+    algorithm=$2
+    shift 2
+fi
+
+case "$algorithm" in
+    1|224|256|384|512) ;;
+    *)
+        echo "shasum: unsupported algorithm: $algorithm" >&2
+        exit 2
+        ;;
+esac
+
+exec "sha${algorithm}sum" "$@"
