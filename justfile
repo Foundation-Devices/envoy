@@ -21,6 +21,22 @@ generate:
 bump:
     bash scripts/bump_version.sh
 
+# Build the unsigned Android App Bundle used for public reproduction.
+reproducible-build:
+    ./reproducible-builds/build.sh
+
+# Generate the unsigned Android verification artifacts through Docker.
+reproducible-docker-build:
+    ./reproducible-builds/docker-build.sh
+
+# Build the AAB, universal APK, and split APK set used for verification.
+build-android-artifacts:
+    ./reproducible-builds/docker-build.sh
+
+# Compare generated artifacts with a supplied AAB and APK or split directory.
+verify-android-artifacts aab apk_input:
+    ./reproducible-builds/verify-android-artifacts.sh "{{aab}}" "{{apk_input}}"
+
 fmt:
     cargo-fmt && \
     ./scripts/format.sh

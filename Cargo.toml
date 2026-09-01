@@ -24,5 +24,9 @@ pqcrypto-mlkem = { git = "https://github.com/icota/pqcrypto", branch = "aarch64-
 [profile.release]
 lto = true
 codegen-units = 1
+# Release artifacts are rebuilt by third parties, so they must not contain
+# checkout-specific debug paths or depend on Cargo's incremental cache. The
+# canonical builder remaps source paths, and Android strips device libraries
+# while retaining a separate symbol table for crash reports.
 debug = true
-incremental = true
+incremental = false
