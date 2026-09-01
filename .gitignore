@@ -60,6 +60,12 @@ target/
 # Android builds
 release/
 
+# Locally downloaded/generated release artifacts
+/reproducible-builds/*.aab
+/reproducible-builds/*.apk
+/reproducible-builds/release-manifest.json
+/reproducible-builds/generated/
+
 # Localazy creds
 localazy.json
 
@@ -80,4 +86,3 @@ packages/kebab_mcp/bin/kebab_mcp
 
 # db test files
 *.db
-

@@ -9,7 +9,7 @@ jobs:
   nix-android-build:
     runs-on: [ self-hosted, Linux, X64 ]
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
       - name: Check if Nix is installed
         id: check-nix
@@ -31,20 +31,54 @@ jobs:
 
       - name: Setup Nix
         if: steps.check-nix.outputs.installed == 'false'
-        uses: DeterminateSystems/nix-installer-action@main
+        uses: DeterminateSystems/nix-installer-action@33c9ab3ef95cd57c164d9d6eb1f9a46338538d41
 
-      - run: nix develop --command flutter pub get
-        name: Get Flutter dependencies
+      - name: Build signed AAB and derive universal APK
+        run: |
+          upload_key_path="$RUNNER_TEMP/envoy-upload-key.jks"
+          keystore_password_path="$RUNNER_TEMP/envoy-keystore-password"
+          key_password_path="$RUNNER_TEMP/envoy-key-password"
+          cleanup_signing_files() {
+            rm -f -- \
+              "$upload_key_path" \
+              "$keystore_password_path" \
+              "$key_password_path"
+          }
+          trap cleanup_signing_files EXIT
 
-      - run:  echo -n $KEY_JKS | base64 -di > android/key.jks && nix develop --command flutter build apk --release --target-platform android-arm64 --verbose
-        name: Build Envoy APK
-        env:
-          KEY_JKS: ${{ secrets.KEY_JKS }}
-          KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
-          ALIAS_PASSWORD: ${{ secrets.ALIAS_PASSWORD }}
+          printf '%s' "$KEY_JKS" | base64 --decode > "$upload_key_path"
+          printf '%s\n' "$KEY_PASSWORD" > "$keystore_password_path"
+          printf '%s\n' "$ALIAS_PASSWORD" > "$key_password_path"
+          chmod 600 "$upload_key_path" "$keystore_password_path" "$key_password_path"
 
-      - run: echo -n $KEY_JKS | base64 -di > android/key.jks && nix develop --command flutter build aab --release --target-platform android-arm64
-        name: Build Envoy AAB
+          ./reproducible-builds/build.sh \
+            --signing-key "$upload_key_path" \
+            --output build/app/outputs/bundle/release/app-release.aab
+
+          mkdir -p build/app/outputs/apk/release build/app/outputs/apks/release
+          nix develop .#reproducibleAndroid --command bundletool build-apks \
+            --bundle=build/app/outputs/bundle/release/app-release.aab \
+            --output=build/app/outputs/apks/release/app-release.apks \
+            --mode=universal \
+            --ks="$upload_key_path" \
+            --ks-key-alias=upload \
+            --ks-pass="file:$keystore_password_path" \
+            --key-pass="file:$key_password_path"
+          nix develop .#reproducibleAndroid --command \
+            unzip -p build/app/outputs/apks/release/app-release.apks universal.apk \
+            > build/app/outputs/apk/release/app-release.apk
+
+          release_tag_arguments=()
+          if [[ "$GITHUB_REF_TYPE" == "tag" ]]; then
+            release_tag_arguments=(--tag "$GITHUB_REF_NAME")
+          fi
+          nix develop .#reproducibleAndroid --command \
+            python3 reproducible-builds/release_manifest.py \
+            --aab build/app/outputs/bundle/release/app-release.aab \
+            --apk build/app/outputs/apk/release/app-release.apk \
+            --output build/app/outputs/bundle/release/release-manifest.json \
+            --commit "$GITHUB_SHA" \
+            "${release_tag_arguments[@]}"
         env:
           KEY_JKS: ${{ secrets.KEY_JKS }}
           KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
@@ -58,7 +92,9 @@ jobs:
       - uses: actions/upload-artifact@v4
         with:
           name: app-release.aab
-          path: build/app/outputs/bundle/release/app-release.aab
+          path: |
+            build/app/outputs/bundle/release/app-release.aab
+            build/app/outputs/bundle/release/release-manifest.json
 
       - name: Upload AAB to Google Play internal track
         uses: r0adkll/upload-google-play@v1.1.5

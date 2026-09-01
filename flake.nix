@@ -97,6 +97,63 @@
           ];
         };
 
+        # Nixpkgs adds legacy i686 compatibility libraries to every Android
+        # build-tools package on x86_64 Linux. The current Android tools are
+        # 64-bit, and Docker Desktop's Rosetta backend cannot build i686 Nix
+        # derivations. Keep the regular development SDK unchanged, but avoid
+        # those unused compatibility derivations in the canonical container.
+        reproducibleAndroidPkgs = pkgs.extend (final: previous: {
+          pkgsi686Linux = previous.pkgsi686Linux // {
+            inherit (final) glibc zlib ncurses5;
+          };
+        });
+        reproducibleAndroidEnv = reproducibleAndroidPkgs.callPackage
+          (nixpkgs + "/pkgs/development/mobile/androidenv/default.nix")
+          { pkgs = reproducibleAndroidPkgs; };
+        reproducibleAndroidComposition = reproducibleAndroidEnv.composeAndroidPackages {
+          cmdLineToolsVersion = "8.0";
+          # The obsolete pre-cmdline SDK tools bundle contains 32-bit Linux
+          # binaries. Flutter and Gradle only require cmdline-tools here.
+          toolsVersion = null;
+          platformToolsVersion = "35.0.2";
+          buildToolsVersions = [
+            "30.0.3"
+            "33.0.1"
+            "34.0.0"
+            "35.0.0"
+          ];
+          includeEmulator = false;
+          platformVersions = [
+            "28"
+            "29"
+            "30"
+            "31"
+            "33"
+            "34"
+            "35"
+            "36"
+          ];
+          includeSources = false;
+          includeSystemImages = false;
+          abiVersions = [ "arm64-v8a" ];
+          cmakeVersions = [
+            "3.10.2"
+            "3.18.1"
+            "3.22.1"
+          ];
+          includeNDK = true;
+          ndkVersions = [
+            "25.1.8937393"
+            "27.0.12077973"
+            "28.2.13676358"
+          ];
+          useGoogleAPIs = false;
+          useGoogleTVAddOns = false;
+          includeExtras = [
+            "extras;google;gcm"
+          ];
+        };
+
         darwinPackages =
           let
             xcodeenv = import (nixpkgs + "/pkgs/development/mobile/xcodeenv") { inherit (pkgs) callPackage; };
@@ -107,6 +164,15 @@
 
         rustToolchain = fenix.packages.${system}.fromToolchainFile {
           file = ./rust-toolchain.toml;
+          sha256 = "sha256-2eWc3xVTKqg5wKSHGwt1XoM/kUBC6y3MWfKg74Zn+fY=";
+        };
+        reproducibleRustToolchain = fenix.packages.${system}.fromToolchainFile {
+          file = builtins.toFile "envoy-reproducible-rust-toolchain.toml" ''
+            [toolchain]
+            channel = "1.91.0"
+            profile = "minimal"
+            targets = ["aarch64-linux-android"]
+          '';
           sha256 = "sha256-2eWc3xVTKqg5wKSHGwt1XoM/kUBC6y3MWfKg74Zn+fY=";
         };
 
@@ -208,6 +274,38 @@
           exec ${flutterPinned}/bin/flutter "$@"
         '';
 
+        reproducibleFlutterWrapper = pkgs.writeShellScriptBin "flutter" ''
+          exec ${flutterPinned}/bin/flutter "$@"
+        '';
+
+        # rive_native invokes the BSD/macOS-style `shasum -a 512` command
+        # while downloading its pinned Android artifacts. Minimal Linux images
+        # provide GNU sha512sum instead, so expose the interface Rive expects
+        # without adding an unpinned host dependency.
+        shasumCompat = pkgs.writeShellScriptBin "shasum" ''
+          set -eu
+
+          algorithm=1
+          if [ "''${1:-}" = "-a" ]; then
+            [ $# -ge 2 ] || {
+              echo "shasum: -a requires an algorithm" >&2
+              exit 2
+            }
+            algorithm=$2
+            shift 2
+          fi
+
+          case "$algorithm" in
+            1|224|256|384|512) ;;
+            *)
+              echo "shasum: unsupported algorithm: $algorithm" >&2
+              exit 2
+              ;;
+          esac
+
+          exec ${pkgs.coreutils}/bin/sha"$algorithm"sum "$@"
+        '';
+
         buildInputs =
           with pkgs;
           [
@@ -222,8 +320,10 @@
             flutterPinned
             dart
             android-tools
+            bundletool
             flutterRustBridgeCodegen
             jdk17
+            python3
 
             # Development tools
             which
@@ -331,6 +431,49 @@
             pcre2.dev
           ]
           ++ darwinPackages;
+
+        # Keep the canonical Android environment free of desktop Linux,
+        # Android Studio, and 32-bit host dependencies. Besides reducing the
+        # public verifier download, this allows linux/amd64 Nix to run through
+        # Rosetta on Apple silicon without requesting a 32-bit personality.
+        reproducibleAndroidInputs =
+          with pkgs;
+          [
+            reproducibleRustToolchain
+            rustup-shim
+            rust-bindgen
+            reproducibleFlutterWrapper
+            flutterPinned
+            dart
+            android-tools
+            bundletool
+            jdk17
+            python3
+            git
+            which
+            bash
+            clang
+            cmake
+            openssl
+            perl
+            llvm
+            unzip
+            rsync
+            shasumCompat
+            gnumake
+            pkg-config
+            reproducibleAndroidComposition.androidsdk
+          ]
+          ++ lib.optionals (pkgs.stdenv.hostPlatform.system == "x86_64-linux") [
+            glibc
+            glibc.dev
+            glibc.static
+            libcxx
+            sqlite
+            sqlite.dev
+            pcre2
+            pcre2.dev
+          ];
       in
       {
         customPackages = buildInputs;
@@ -363,7 +506,25 @@
             export NDK_HOME="$ANDROID_NDK_ROOT"
 
             # Add Android tools to PATH
-            export PATH="$ANDROID_SDK_ROOT/tools:$ANDROID_SDK_ROOT/tools/bin:$ANDROID_SDK_ROOT/platform-tools:$PATH"
+            # Prefer current build tools and Nix's SDK wrappers. Keep the
+            # legacy tools directories last so their Java-8-only apkanalyzer
+            # cannot shadow the Java-17-compatible wrapper.
+            export PATH="$ANDROID_SDK_ROOT/cmdline-tools/latest/bin:$ANDROID_SDK_ROOT/build-tools/35.0.0:$ANDROID_SDK_ROOT/platform-tools:$PATH:$ANDROID_SDK_ROOT/tools:$ANDROID_SDK_ROOT/tools/bin"
+          '';
+        };
+
+        devShells.reproducibleAndroid = pkgs.mkShell {
+          buildInputs = reproducibleAndroidInputs;
+          shellHook = ''
+            export FLUTTER_ROOT="${flutterPinned}"
+            export PATH="${reproducibleFlutterWrapper}/bin:$FLUTTER_ROOT/bin:$PATH"
+            export PATH=$(echo $PATH | tr ':' '\n' | grep -v ".cargo/bin" | tr '\n' ':')
+
+            export ANDROID_SDK_ROOT="${reproducibleAndroidComposition.androidsdk}/libexec/android-sdk"
+            export ANDROID_HOME="$ANDROID_SDK_ROOT"
+            export ANDROID_NDK_ROOT="$ANDROID_SDK_ROOT/ndk/28.2.13676358"
+            export NDK_HOME="$ANDROID_NDK_ROOT"
+            export PATH="$ANDROID_SDK_ROOT/cmdline-tools/latest/bin:$ANDROID_SDK_ROOT/build-tools/35.0.0:$ANDROID_SDK_ROOT/platform-tools:$PATH:$ANDROID_SDK_ROOT/tools:$ANDROID_SDK_ROOT/tools/bin"
           '';
         };
       }

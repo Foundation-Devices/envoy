@@ -63,7 +63,6 @@ android {
         // Fixes duplicate libraries build issue,
         // when your project uses more than one plugin that depend on C++ libs.
         pickFirst 'lib/**/libc++_shared.so'
-        doNotStrip 'lib/**/librust_lib_ngwallet.so'
     }
 
     buildTypes {
@@ -71,6 +70,10 @@ android {
             if (!project.hasProperty("nosign")) {
                 signingConfig signingConfigs.release
             }
+
+            // Keep native symbolication data in the bundle metadata while
+            // shipping consistently stripped libraries to devices.
+            ndk.debugSymbolLevel = 'SYMBOL_TABLE'
 
             minifyEnabled true
             shrinkResources true
