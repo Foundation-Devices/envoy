@@ -66,7 +66,7 @@ class RustLib extends BaseEntrypoint<RustLibApi, RustLibApiImpl, RustLibWire> {
   String get codegenVersion => '2.11.1';
 
   @override
-  int get rustContentHash => 749957930;
+  int get rustContentHash => -130592199;
 
   static const kDefaultExternalLibraryLoaderConfig =
       ExternalLibraryLoaderConfig(
@@ -77,6 +77,12 @@ class RustLib extends BaseEntrypoint<RustLibApi, RustLibApiImpl, RustLibWire> {
 }
 
 abstract class RustLibApi extends BaseApi {
+  void crateApiHttpDownloadCancellationTokenCancel({
+    required DownloadCancellationToken that,
+  });
+
+  DownloadCancellationToken crateApiHttpDownloadCancellationTokenNew();
+
   ArcJoinHandleResultError crateApiHttpDownloadAutoAccessorGetHandle({
     required Download that,
   });
@@ -87,6 +93,17 @@ abstract class RustLibApi extends BaseApi {
   });
 
   Future<void> crateApiHttpDownloadCancel({required Download that});
+
+  Future<void> crateApiHttpDownloadVerifiedFile({
+    required String path,
+    required String url,
+    required int torPort,
+    required BigInt expectedSize,
+    required String expectedSha256,
+    required ProgressStream progressStream,
+    required BigInt overallTimeoutMs,
+    required DownloadCancellationToken cancellationToken,
+  });
 
   Future<Download> crateApiHttpGetFile({
     required String path,
@@ -123,6 +140,15 @@ abstract class RustLibApi extends BaseApi {
   get rust_arc_decrement_strong_count_Download;
 
   CrossPlatformFinalizerArg get rust_arc_decrement_strong_count_DownloadPtr;
+
+  RustArcIncrementStrongCountFnType
+  get rust_arc_increment_strong_count_DownloadCancellationToken;
+
+  RustArcDecrementStrongCountFnType
+  get rust_arc_decrement_strong_count_DownloadCancellationToken;
+
+  CrossPlatformFinalizerArg
+  get rust_arc_decrement_strong_count_DownloadCancellationTokenPtr;
 }
 
 class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
@@ -132,6 +158,63 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
     required super.generalizedFrbRustBinding,
     required super.portManager,
   });
+
+  @override
+  void crateApiHttpDownloadCancellationTokenCancel({
+    required DownloadCancellationToken that,
+  }) {
+    return handler.executeSync(
+      SyncTask(
+        callFfi: () {
+          final serializer = SseSerializer(generalizedFrbRustBinding);
+          sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerDownloadCancellationToken(
+            that,
+            serializer,
+          );
+          return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 1)!;
+        },
+        codec: SseCodec(
+          decodeSuccessData: sse_decode_unit,
+          decodeErrorData: null,
+        ),
+        constMeta: kCrateApiHttpDownloadCancellationTokenCancelConstMeta,
+        argValues: [that],
+        apiImpl: this,
+      ),
+    );
+  }
+
+  TaskConstMeta get kCrateApiHttpDownloadCancellationTokenCancelConstMeta =>
+      const TaskConstMeta(
+        debugName: "DownloadCancellationToken_cancel",
+        argNames: ["that"],
+      );
+
+  @override
+  DownloadCancellationToken crateApiHttpDownloadCancellationTokenNew() {
+    return handler.executeSync(
+      SyncTask(
+        callFfi: () {
+          final serializer = SseSerializer(generalizedFrbRustBinding);
+          return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 2)!;
+        },
+        codec: SseCodec(
+          decodeSuccessData:
+              sse_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerDownloadCancellationToken,
+          decodeErrorData: null,
+        ),
+        constMeta: kCrateApiHttpDownloadCancellationTokenNewConstMeta,
+        argValues: [],
+        apiImpl: this,
+      ),
+    );
+  }
+
+  TaskConstMeta get kCrateApiHttpDownloadCancellationTokenNewConstMeta =>
+      const TaskConstMeta(
+        debugName: "DownloadCancellationToken_new",
+        argNames: [],
+      );
 
   @override
   ArcJoinHandleResultError crateApiHttpDownloadAutoAccessorGetHandle({
@@ -145,7 +228,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
             that,
             serializer,
           );
-          return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 1)!;
+          return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 3)!;
         },
         codec: SseCodec(
           decodeSuccessData:
@@ -182,7 +265,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
             handle,
             serializer,
           );
-          return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 2)!;
+          return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 4)!;
         },
         codec: SseCodec(
           decodeSuccessData: sse_decode_unit,
@@ -214,7 +297,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
           pdeCallFfi(
             generalizedFrbRustBinding,
             serializer,
-            funcId: 3,
+            funcId: 5,
             port: port_,
           );
         },
@@ -231,6 +314,74 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
 
   TaskConstMeta get kCrateApiHttpDownloadCancelConstMeta =>
       const TaskConstMeta(debugName: "Download_cancel", argNames: ["that"]);
+
+  @override
+  Future<void> crateApiHttpDownloadVerifiedFile({
+    required String path,
+    required String url,
+    required int torPort,
+    required BigInt expectedSize,
+    required String expectedSha256,
+    required ProgressStream progressStream,
+    required BigInt overallTimeoutMs,
+    required DownloadCancellationToken cancellationToken,
+  }) {
+    return handler.executeNormal(
+      NormalTask(
+        callFfi: (port_) {
+          final serializer = SseSerializer(generalizedFrbRustBinding);
+          sse_encode_String(path, serializer);
+          sse_encode_String(url, serializer);
+          sse_encode_i_32(torPort, serializer);
+          sse_encode_u_64(expectedSize, serializer);
+          sse_encode_String(expectedSha256, serializer);
+          sse_encode_box_autoadd_progress_stream(progressStream, serializer);
+          sse_encode_u_64(overallTimeoutMs, serializer);
+          sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerDownloadCancellationToken(
+            cancellationToken,
+            serializer,
+          );
+          pdeCallFfi(
+            generalizedFrbRustBinding,
+            serializer,
+            funcId: 6,
+            port: port_,
+          );
+        },
+        codec: SseCodec(
+          decodeSuccessData: sse_decode_unit,
+          decodeErrorData: sse_decode_AnyhowException,
+        ),
+        constMeta: kCrateApiHttpDownloadVerifiedFileConstMeta,
+        argValues: [
+          path,
+          url,
+          torPort,
+          expectedSize,
+          expectedSha256,
+          progressStream,
+          overallTimeoutMs,
+          cancellationToken,
+        ],
+        apiImpl: this,
+      ),
+    );
+  }
+
+  TaskConstMeta get kCrateApiHttpDownloadVerifiedFileConstMeta =>
+      const TaskConstMeta(
+        debugName: "download_verified_file",
+        argNames: [
+          "path",
+          "url",
+          "torPort",
+          "expectedSize",
+          "expectedSha256",
+          "progressStream",
+          "overallTimeoutMs",
+          "cancellationToken",
+        ],
+      );
 
   @override
   Future<Download> crateApiHttpGetFile({
@@ -250,7 +401,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
           pdeCallFfi(
             generalizedFrbRustBinding,
             serializer,
-            funcId: 4,
+            funcId: 7,
             port: port_,
           );
         },
@@ -281,7 +432,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
           pdeCallFfi(
             generalizedFrbRustBinding,
             serializer,
-            funcId: 5,
+            funcId: 8,
             port: port_,
           );
         },
@@ -308,7 +459,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
           pdeCallFfi(
             generalizedFrbRustBinding,
             serializer,
-            funcId: 6,
+            funcId: 9,
             port: port_,
           );
         },
@@ -346,7 +497,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
           pdeCallFfi(
             generalizedFrbRustBinding,
             serializer,
-            funcId: 7,
+            funcId: 10,
             port: port_,
           );
         },
@@ -382,6 +533,14 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   get rust_arc_decrement_strong_count_Download => wire
       .rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerDownload;
 
+  RustArcIncrementStrongCountFnType
+  get rust_arc_increment_strong_count_DownloadCancellationToken => wire
+      .rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerDownloadCancellationToken;
+
+  RustArcDecrementStrongCountFnType
+  get rust_arc_decrement_strong_count_DownloadCancellationToken => wire
+      .rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerDownloadCancellationToken;
+
   @protected
   AnyhowException dco_decode_AnyhowException(dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
@@ -409,6 +568,17 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  DownloadCancellationToken
+  dco_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerDownloadCancellationToken(
+    dynamic raw,
+  ) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return DownloadCancellationTokenImpl.frbInternalDcoDecode(
+      raw as List<dynamic>,
+    );
+  }
+
+  @protected
   Download
   dco_decode_Auto_RefMut_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerDownload(
     dynamic raw,
@@ -424,6 +594,17 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   ) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
     return DownloadImpl.frbInternalDcoDecode(raw as List<dynamic>);
+  }
+
+  @protected
+  DownloadCancellationToken
+  dco_decode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerDownloadCancellationToken(
+    dynamic raw,
+  ) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return DownloadCancellationTokenImpl.frbInternalDcoDecode(
+      raw as List<dynamic>,
+    );
   }
 
   @protected
@@ -454,6 +635,17 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   ) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
     return DownloadImpl.frbInternalDcoDecode(raw as List<dynamic>);
+  }
+
+  @protected
+  DownloadCancellationToken
+  dco_decode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerDownloadCancellationToken(
+    dynamic raw,
+  ) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return DownloadCancellationTokenImpl.frbInternalDcoDecode(
+      raw as List<dynamic>,
+    );
   }
 
   @protected
@@ -610,6 +802,18 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  DownloadCancellationToken
+  sse_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerDownloadCancellationToken(
+    SseDeserializer deserializer,
+  ) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    return DownloadCancellationTokenImpl.frbInternalSseDecode(
+      sse_decode_usize(deserializer),
+      sse_decode_i_32(deserializer),
+    );
+  }
+
+  @protected
   Download
   sse_decode_Auto_RefMut_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerDownload(
     SseDeserializer deserializer,
@@ -628,6 +832,18 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   ) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     return DownloadImpl.frbInternalSseDecode(
+      sse_decode_usize(deserializer),
+      sse_decode_i_32(deserializer),
+    );
+  }
+
+  @protected
+  DownloadCancellationToken
+  sse_decode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerDownloadCancellationToken(
+    SseDeserializer deserializer,
+  ) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    return DownloadCancellationTokenImpl.frbInternalSseDecode(
       sse_decode_usize(deserializer),
       sse_decode_i_32(deserializer),
     );
@@ -661,6 +877,18 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   ) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     return DownloadImpl.frbInternalSseDecode(
+      sse_decode_usize(deserializer),
+      sse_decode_i_32(deserializer),
+    );
+  }
+
+  @protected
+  DownloadCancellationToken
+  sse_decode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerDownloadCancellationToken(
+    SseDeserializer deserializer,
+  ) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    return DownloadCancellationTokenImpl.frbInternalSseDecode(
       sse_decode_usize(deserializer),
       sse_decode_i_32(deserializer),
     );
@@ -844,6 +1072,19 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
 
   @protected
   void
+  sse_encode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerDownloadCancellationToken(
+    DownloadCancellationToken self,
+    SseSerializer serializer,
+  ) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_usize(
+      (self as DownloadCancellationTokenImpl).frbInternalSseEncode(move: true),
+      serializer,
+    );
+  }
+
+  @protected
+  void
   sse_encode_Auto_RefMut_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerDownload(
     Download self,
     SseSerializer serializer,
@@ -864,6 +1105,19 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
     // Codec=Sse (Serialization based), see doc to use other codecs
     sse_encode_usize(
       (self as DownloadImpl).frbInternalSseEncode(move: false),
+      serializer,
+    );
+  }
+
+  @protected
+  void
+  sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerDownloadCancellationToken(
+    DownloadCancellationToken self,
+    SseSerializer serializer,
+  ) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_usize(
+      (self as DownloadCancellationTokenImpl).frbInternalSseEncode(move: false),
       serializer,
     );
   }
@@ -902,6 +1156,19 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
     // Codec=Sse (Serialization based), see doc to use other codecs
     sse_encode_usize(
       (self as DownloadImpl).frbInternalSseEncode(move: null),
+      serializer,
+    );
+  }
+
+  @protected
+  void
+  sse_encode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerDownloadCancellationToken(
+    DownloadCancellationToken self,
+    SseSerializer serializer,
+  ) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_usize(
+      (self as DownloadCancellationTokenImpl).frbInternalSseEncode(move: null),
       serializer,
     );
   }
@@ -1082,6 +1349,38 @@ class ArcJoinHandleResultErrorImpl extends RustOpaque
         .api
         .rust_arc_decrement_strong_count_ArcJoinHandleResultErrorPtr,
   );
+}
+
+@sealed
+class DownloadCancellationTokenImpl extends RustOpaque
+    implements DownloadCancellationToken {
+  // Not to be used by end users
+  DownloadCancellationTokenImpl.frbInternalDcoDecode(List<dynamic> wire)
+    : super.frbInternalDcoDecode(wire, _kStaticData);
+
+  // Not to be used by end users
+  DownloadCancellationTokenImpl.frbInternalSseDecode(
+    BigInt ptr,
+    int externalSizeOnNative,
+  ) : super.frbInternalSseDecode(ptr, externalSizeOnNative, _kStaticData);
+
+  static final _kStaticData = RustArcStaticData(
+    rustArcIncrementStrongCount: RustLib
+        .instance
+        .api
+        .rust_arc_increment_strong_count_DownloadCancellationToken,
+    rustArcDecrementStrongCount: RustLib
+        .instance
+        .api
+        .rust_arc_decrement_strong_count_DownloadCancellationToken,
+    rustArcDecrementStrongCountPtr: RustLib
+        .instance
+        .api
+        .rust_arc_decrement_strong_count_DownloadCancellationTokenPtr,
+  );
+
+  void cancel() => RustLib.instance.api
+      .crateApiHttpDownloadCancellationTokenCancel(that: this);
 }
 
 @sealed

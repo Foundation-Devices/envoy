@@ -16,6 +16,7 @@ export 'src/rust/api/http.dart';
 import 'dart:convert';
 
 import 'src/request_route.dart';
+import 'src/tor_readiness.dart';
 
 class GetFileRequest {
   String path;
@@ -33,6 +34,8 @@ class FileDownload {
 }
 
 class HttpTor {
+  static const _verifiedDownloadOverallTimeout = Duration(minutes: 20);
+
   late final Tor tor;
   late final ParallelScheduler scheduler;
   static final HttpTor _instance = HttpTor._internal();
@@ -161,6 +164,96 @@ class HttpTor {
       progress: progressStream.field0.stream,
       cancel: download.cancel,
     );
+  }
+
+  Future<File> downloadVerifiedFile(
+    String path,
+    String uri, {
+    required int expectedSize,
+    required String expectedSha256,
+    required http.DownloadCancellationToken cancellationToken,
+    void Function(http.Progress progress)? onProgress,
+  }) async {
+    // The URI was selected for this route before the call. Keep that choice
+    // stable and fail closed if Tor is disabled while the download is active.
+    final requiresTor = tor.enabled;
+    final elapsed = Stopwatch()..start();
+    return runWithRouteReplacement(
+      requiresTor: requiresTor,
+      resolveRoute: () async {
+        final remaining = _verifiedDownloadTimeRemaining(elapsed);
+        if (requiresTor) {
+          await _waitForTorReadiness(remaining);
+        }
+        return resolveScheduledProxyPort(
+          requiresTor: requiresTor,
+          currentTorPort: tor.port,
+        );
+      },
+      run: (torPort) => _downloadVerifiedFileOnRoute(
+        path,
+        uri,
+        torPort: torPort,
+        expectedSize: expectedSize,
+        expectedSha256: expectedSha256,
+        cancellationToken: cancellationToken,
+        overallTimeout: _verifiedDownloadTimeRemaining(elapsed),
+        onProgress: onProgress,
+      ),
+    );
+  }
+
+  Future<void> _waitForTorReadiness(Duration timeout) async {
+    // Tor.isReady polls after Future.timeout has stopped listening. Waiting on
+    // state events lets a timeout cancel its subscription without an orphan.
+    await waitForTorReadiness(
+      stateChanges: tor.events.stream,
+      isEnabled: () => tor.enabled,
+      isBootstrapped: () => tor.bootstrapped,
+      timeout: timeout,
+    );
+  }
+
+  Duration _verifiedDownloadTimeRemaining(Stopwatch elapsed) {
+    final remaining = _verifiedDownloadOverallTimeout - elapsed.elapsed;
+    if (remaining.inMilliseconds <= 0) {
+      throw TimeoutException('Verified download exceeded the overall timeout');
+    }
+    return remaining;
+  }
+
+  Future<File> _downloadVerifiedFileOnRoute(
+    String path,
+    String uri, {
+    required int torPort,
+    required int expectedSize,
+    required String expectedSha256,
+    required http.DownloadCancellationToken cancellationToken,
+    required Duration overallTimeout,
+    void Function(http.Progress progress)? onProgress,
+  }) async {
+    final progressStream = http.ProgressStream(field0: RustStreamSink());
+    // FRB initializes the sink while serializing the Rust call arguments.
+    final download = http.downloadVerifiedFile(
+      path: path,
+      url: uri,
+      torPort: torPort,
+      expectedSize: BigInt.from(expectedSize),
+      expectedSha256: expectedSha256,
+      progressStream: progressStream,
+      overallTimeoutMs: BigInt.from(overallTimeout.inMilliseconds),
+      cancellationToken: cancellationToken,
+    );
+    final progressSubscription = progressStream.field0.stream.listen(
+      onProgress ?? (_) {},
+    );
+    try {
+      // A long transfer must not occupy the shared request scheduler.
+      await download;
+      return File(path);
+    } finally {
+      await progressSubscription.cancel();
+    }
   }
 
   Future<http.Response> _makeHttpRequest(

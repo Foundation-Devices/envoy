@@ -17,6 +17,7 @@ import 'package:envoy/business/map_data.dart';
 import 'package:envoy/business/notifications.dart';
 import 'package:envoy/business/prime_shard.dart';
 import 'package:envoy/business/scheduler.dart';
+import 'package:envoy/business/server.dart';
 import 'package:envoy/business/settings.dart';
 import 'package:envoy/business/updates_manager.dart';
 import 'package:envoy/ui/home/settings/dev_options_page.dart';
@@ -104,6 +105,7 @@ Future<void> initSingletons({bool integrationTestsRunning = false}) async {
   await ExchangeRate.init();
 
   await EnvoyReport().init();
+  unawaited(Server.cleanupStalePrimePatchFiles());
   await Tor.init(enabled: Settings().torEnabled());
   await HttpTor.init(Tor.instance, EnvoyScheduler().parallel);
   UpdatesManager.init();

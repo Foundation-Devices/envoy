@@ -3430,6 +3430,7 @@ dependencies = [
  "oslog",
  "reqwest",
  "tokio",
+ "tokio-util",
 ]
 
 [[package]]

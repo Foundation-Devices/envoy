@@ -14,6 +14,7 @@ crate-type = ["cdylib", "staticlib"]
 flutter_rust_bridge = "=2.11.1"
 reqwest = { version = "0.12.23", features = ["socks", "blocking"] }
 tokio = { version = "1", features = ["full"] }
+tokio-util = "0.7"
 lazy_static = "1.4"
 anyhow = "1.0"
 log = "0.4.27"

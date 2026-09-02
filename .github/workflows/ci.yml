@@ -71,6 +71,10 @@ jobs:
       - run: nix develop --command flutter pub get
         name: Get Flutter dependencies
 
+      - run: nix develop --command flutter pub get
+        name: Get HTTP Tor dependencies
+        working-directory: packages/http_tor
+
       - run: nix develop --command dart pub get
         name: Get kebab_mcp dependencies
         working-directory: packages/kebab_mcp
@@ -80,6 +84,12 @@ jobs:
 
       - run: nix develop --command flutter analyze
         name: Analyze Dart project source
+
+      - run: |
+          nix develop --command flutter analyze lib
+          nix develop --command flutter analyze test
+        name: Analyze HTTP Tor package
+        working-directory: packages/http_tor
 
       - run: nix develop --command cargo fmt --all --check
         name: Check Rust formatting
@@ -94,9 +104,12 @@ jobs:
       - run: nix develop --command flutter test
         name: Run Dart tests
 
+      - run: nix develop --command flutter test
+        name: Run HTTP Tor Dart tests
+        working-directory: packages/http_tor
+
       - run: nix develop --command cargo clippy -- -Dwarnings -A clippy::missing_safety_doc
         name: Run Clippy
 
       - run: nix develop --command cargo test
         name: Run Rust tests
-

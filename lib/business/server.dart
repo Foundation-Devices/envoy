@@ -3,6 +3,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:envoy/business/settings.dart';
 import 'package:envoy/util/bug_report_helper.dart';
@@ -10,9 +11,8 @@ import 'package:envoy/util/console.dart';
 import 'package:flutter/services.dart';
 import 'package:http_tor/http_tor.dart';
 import 'package:package_info_plus/package_info_plus.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:pub_semver/pub_semver.dart';
-
-typedef PatchBinary = ({Uint8List binary, PrimePatch patch});
 
 class Server {
   HttpTor? http;
@@ -92,51 +92,86 @@ class Server {
     return '${Settings().primeFirmwareServerAddress}/$path';
   }
 
-  Future<Uint8List?> fetchPrimePatchBinary(PrimePatch patch) async {
-    final url = _primePatchUrl(patch);
-    try {
-      final response = await http!.get(url);
-      if (response.statusCode == 200) {
-        return Uint8List.fromList(response.bodyBytes);
-      } else {
-        throw Exception(
-          'Failed to fetch prime patch ${response.statusCode} ${response.body}',
-        );
-      }
-    } catch (e) {
-      EnvoyReport().log(
-        "Sever",
-        "Error fetching prime patches: $e : $url",
+  Future<Uint8List> fetchPrimePatchBinary(
+    PrimePatch patch, {
+    required DownloadCancellationToken cancellationToken,
+  }) async {
+    final digest = patch.signedSha256.toLowerCase();
+    if (!RegExp(r'^[0-9a-f]{64}$').hasMatch(digest)) {
+      throw const FormatException('Prime patch has an invalid SHA-256 digest');
+    }
+    if (patch.size <= 0) {
+      throw const FormatException(
+        'Prime patch metadata is missing the update size',
       );
     }
 
-    return null;
-  }
-
-  Future<List<PatchBinary>> fetchPrimePatchBinaries(
-    String currentVersion,
-  ) async {
-    List<PatchBinary> result = [];
+    // Resolve the async cache path before selecting the URL. The subsequent
+    // download call captures the matching Tor route synchronously.
+    final cachePath = await _primePatchCachePath(digest);
+    final url = _primePatchUrl(patch);
 
     try {
-      final patches = await fetchPrimePatches(currentVersion);
-      for (final patch in patches) {
-        final response = await http!.get(_primePatchUrl(patch));
-        if (response.statusCode == 200) {
-          PatchBinary patchBinary = (
-            binary: Uint8List.fromList(response.bodyBytes),
-            patch: patch,
+      final file = await http!.downloadVerifiedFile(
+        cachePath,
+        url,
+        expectedSize: patch.size,
+        expectedSha256: digest,
+        cancellationToken: cancellationToken,
+      );
+      return file.readAsBytes();
+    } catch (e, stack) {
+      EnvoyReport().log(
+        "Server",
+        "Error fetching Prime patch: $e : $url",
+        stackTrace: stack,
+      );
+      rethrow;
+    }
+  }
+
+  static Future<String> _primePatchCachePath(String digest) async {
+    final directory = await getTemporaryDirectory();
+    return '${directory.path}${Platform.pathSeparator}prime-$digest.tar';
+  }
+
+  static Future<void> cleanupStalePrimePatchFiles({
+    Duration maxAge = const Duration(days: 2),
+  }) async {
+    try {
+      final directory = await getTemporaryDirectory();
+      final cutoff = DateTime.now().subtract(maxAge);
+      final cacheFilePattern = RegExp(
+        r'^prime-[0-9a-f]{64}\.tar(?:\.part)?$',
+      );
+
+      await for (final entity in directory.list()) {
+        if (entity is! File ||
+            !cacheFilePattern.hasMatch(entity.uri.pathSegments.last)) {
+          continue;
+        }
+
+        try {
+          final modified = await entity.lastModified();
+          if (modified.isBefore(cutoff)) {
+            await entity.delete();
+          }
+        } catch (e, stack) {
+          EnvoyReport().log(
+            "Server",
+            "Failed to remove stale Prime patch cache file: $e : ${entity.path}",
+            stackTrace: stack,
           );
-          result.add(patchBinary);
-        } else {
-          throw Exception('Failed to fetch prime patch');
         }
       }
-    } catch (e) {
-      kPrint("Error fetching prime patches: $e");
+    } catch (e, stack) {
+      // Cache cleanup is best-effort and must not affect a completed update.
+      EnvoyReport().log(
+        "Server",
+        "Failed to clean the Prime patch cache: $e",
+        stackTrace: stack,
+      );
     }
-
-    return result;
   }
 
   Future<ApiKeys> fetchApiKeys() async {

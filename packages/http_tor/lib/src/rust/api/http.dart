@@ -6,9 +6,34 @@
 import '../frb_generated.dart';
 import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated.dart';
 
-// These functions are ignored because they are not marked as `pub`: `setup_log_to_console`
-// These types are ignored because they are neither used by any `pub` functions nor (for structs and enums) marked `#[frb(unignore)]`: `RUNTIME`
-// These function are ignored because they are on traits that is not defined in current crate (put an empty `#[frb]` on it to unignore): `clone`, `clone`, `clone`, `deref`, `fmt`, `fmt`, `initialize`
+// These functions are ignored because they are not marked as `pub`: `download_attempts`, `download_policy`, `download_verified_file_inner`, `download_verified_file_with_policy`, `encode_sha256`, `file_is_valid`, `file_len`, `is_retryable_status`, `partial_path`, `publish_progress`, `remove_if_exists`, `setup_log_to_console`, `sha256_file`, `validate_content_range`, `verified_download_lock`, `wait_before_retry`
+// These types are ignored because they are neither used by any `pub` functions nor (for structs and enums) marked `#[frb(unignore)]`: `DownloadPolicy`, `RUNTIME`, `VERIFIED_DOWNLOAD_LOCKS`
+// These function are ignored because they are on traits that is not defined in current crate (put an empty `#[frb]` on it to unignore): `clone`, `clone`, `clone`, `clone`, `deref`, `deref`, `fmt`, `fmt`, `initialize`, `initialize`
+
+/// Download and verify a large file within the caller's remaining deadline.
+///
+/// Partial data is stored at `<path>.part` and resumed on a later attempt. The
+/// final path only becomes visible after both the expected size and SHA-256
+/// digest have been verified.
+Future<void> downloadVerifiedFile({
+  required String path,
+  required String url,
+  required int torPort,
+  required BigInt expectedSize,
+  required String expectedSha256,
+  required ProgressStream progressStream,
+  required BigInt overallTimeoutMs,
+  required DownloadCancellationToken cancellationToken,
+}) => RustLib.instance.api.crateApiHttpDownloadVerifiedFile(
+  path: path,
+  url: url,
+  torPort: torPort,
+  expectedSize: expectedSize,
+  expectedSha256: expectedSha256,
+  progressStream: progressStream,
+  overallTimeoutMs: overallTimeoutMs,
+  cancellationToken: cancellationToken,
+);
 
 /// Download a file from a URL and stream progress updates
 ///
@@ -65,6 +90,14 @@ abstract class Download implements RustOpaqueInterface {
   set handle(ArcJoinHandleResultError handle);
 
   Future<void> cancel();
+}
+
+// Rust type: RustOpaqueMoi<flutter_rust_bridge::for_generated::RustAutoOpaqueInner<DownloadCancellationToken>>
+abstract class DownloadCancellationToken implements RustOpaqueInterface {
+  void cancel();
+
+  factory DownloadCancellationToken() =>
+      RustLib.instance.api.crateApiHttpDownloadCancellationTokenNew();
 }
 
 class Progress {
