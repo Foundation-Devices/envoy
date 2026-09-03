@@ -26,6 +26,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:http_tor/http_tor.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 
 enum ConnectivityState { checking, connected, disconnected }
@@ -85,9 +86,14 @@ class _OnboardPrimeWelcomeState extends State<OnboardPrimeWelcome> {
 
       _retryTimer?.cancel();
 
-      final isDeprecated = await Server()
-          .checkForForceUpdate()
-          .timeout(const Duration(seconds: 10), onTimeout: () => false);
+      final torEnabled = Settings().torEnabled();
+      final forceUpdate = Server().checkForForceUpdate(foreground: torEnabled);
+      final isDeprecated = torEnabled
+          ? await forceUpdate.timeout(HttpTor.foregroundTorRequestTimeout)
+          : await forceUpdate.timeout(
+              const Duration(seconds: 10),
+              onTimeout: () => false,
+            );
       if (!mounted) return;
 
       if (isDeprecated) {

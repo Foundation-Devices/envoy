@@ -122,6 +122,7 @@ abstract class RustLibApi extends BaseApi {
     required int torPort,
     Uint8List? body,
     required Map<String, String> headers,
+    required bool extendedTimeout,
   });
 
   RustArcIncrementStrongCountFnType
@@ -484,6 +485,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
     required int torPort,
     Uint8List? body,
     required Map<String, String> headers,
+    required bool extendedTimeout,
   }) {
     return handler.executeNormal(
       NormalTask(
@@ -494,6 +496,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
           sse_encode_i_32(torPort, serializer);
           sse_encode_opt_list_prim_u_8_strict(body, serializer);
           sse_encode_Map_String_String_None(headers, serializer);
+          sse_encode_bool(extendedTimeout, serializer);
           pdeCallFfi(
             generalizedFrbRustBinding,
             serializer,
@@ -506,7 +509,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
           decodeErrorData: sse_decode_AnyhowException,
         ),
         constMeta: kCrateApiHttpRequestConstMeta,
-        argValues: [verb, url, torPort, body, headers],
+        argValues: [verb, url, torPort, body, headers, extendedTimeout],
         apiImpl: this,
       ),
     );
@@ -514,7 +517,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
 
   TaskConstMeta get kCrateApiHttpRequestConstMeta => const TaskConstMeta(
     debugName: "request",
-    argNames: ["verb", "url", "torPort", "body", "headers"],
+    argNames: ["verb", "url", "torPort", "body", "headers", "extendedTimeout"],
   );
 
   RustArcIncrementStrongCountFnType
@@ -658,6 +661,12 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   String dco_decode_String(dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
     return raw as String;
+  }
+
+  @protected
+  bool dco_decode_bool(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return raw as bool;
   }
 
   @protected
@@ -910,6 +919,12 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  bool sse_decode_bool(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    return deserializer.buffer.getUint8() != 0;
+  }
+
+  @protected
   ProgressStream sse_decode_box_autoadd_progress_stream(
     SseDeserializer deserializer,
   ) {
@@ -1027,12 +1042,6 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
     // Codec=Sse (Serialization based), see doc to use other codecs
     var inner = sse_decode_i_32(deserializer);
     return Verb.values[inner];
-  }
-
-  @protected
-  bool sse_decode_bool(SseDeserializer deserializer) {
-    // Codec=Sse (Serialization based), see doc to use other codecs
-    return deserializer.buffer.getUint8() != 0;
   }
 
   @protected
@@ -1197,6 +1206,12 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  void sse_encode_bool(bool self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    serializer.buffer.putUint8(self ? 1 : 0);
+  }
+
+  @protected
   void sse_encode_box_autoadd_progress_stream(
     ProgressStream self,
     SseSerializer serializer,
@@ -1313,12 +1328,6 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   void sse_encode_verb(Verb self, SseSerializer serializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     sse_encode_i_32(self.index, serializer);
-  }
-
-  @protected
-  void sse_encode_bool(bool self, SseSerializer serializer) {
-    // Codec=Sse (Serialization based), see doc to use other codecs
-    serializer.buffer.putUint8(self ? 1 : 0);
   }
 }
 

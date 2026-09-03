@@ -6,11 +6,13 @@ import 'dart:async';
 
 import 'package:envoy/ble/quantum_link_router.dart';
 import 'package:envoy/business/scv_server.dart';
+import 'package:envoy/business/settings.dart';
 import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/widgets/envoy_step_item.dart';
 import 'package:envoy/util/bug_report_helper.dart';
 import 'package:envoy/util/console.dart';
 import 'package:foundation_api/foundation_api.dart' as api;
+import 'package:http_tor/http_tor.dart';
 
 /// Type of security check error
 enum ScvErrorType {
@@ -44,14 +46,17 @@ class ScvHandler extends PassportMessageHandler {
   static const Duration defaultChallengeFetchTimeout = Duration(seconds: 15);
   static const Duration defaultChallengeResponseTimeout = Duration(seconds: 15);
   static const Duration defaultProofVerificationTimeout = Duration(seconds: 30);
+  // SCV owns a small protocol-processing margin beyond the HTTP operation.
+  static final Duration defaultTorServerRequestTimeout =
+      HttpTor.foregroundTorRequestTimeout + const Duration(seconds: 5);
   static const int _maxExpiredChallengeRetries = 3;
 
   ScvHandler(
     super.connection, {
     PrimeSecurityCheckService? securityCheckService,
-    Duration challengeFetchTimeout = defaultChallengeFetchTimeout,
+    Duration? challengeFetchTimeout,
     Duration challengeResponseTimeout = defaultChallengeResponseTimeout,
-    Duration proofVerificationTimeout = defaultProofVerificationTimeout,
+    Duration? proofVerificationTimeout,
     void Function(String message)? logger,
   })  : _securityCheckService = securityCheckService ?? ScvServer(),
         _challengeFetchTimeout = challengeFetchTimeout,
@@ -60,9 +65,9 @@ class ScvHandler extends PassportMessageHandler {
         _logger = logger ?? _defaultLogger;
 
   final PrimeSecurityCheckService _securityCheckService;
-  final Duration _challengeFetchTimeout;
+  final Duration? _challengeFetchTimeout;
   final Duration _challengeResponseTimeout;
-  final Duration _proofVerificationTimeout;
+  final Duration? _proofVerificationTimeout;
   final void Function(String message) _logger;
 
   Future<void>? _sendInFlight;
@@ -105,9 +110,13 @@ class ScvHandler extends PassportMessageHandler {
           final verificationStopwatch = Stopwatch()..start();
           ScvVerificationResult verificationResult;
           try {
-            verificationResult = await _securityCheckService
-                .verifyProof(proofData)
-                .timeout(_proofVerificationTimeout);
+            verificationResult =
+                await _securityCheckService.verifyProof(proofData).timeout(
+                      _serverRequestTimeout(
+                        _proofVerificationTimeout,
+                        defaultProofVerificationTimeout,
+                      ),
+                    );
             _logEvent(
               "proof verification completed durationMs=${verificationStopwatch.elapsedMilliseconds}",
             );
@@ -265,9 +274,12 @@ class ScvHandler extends PassportMessageHandler {
     );
     final fetchStopwatch = Stopwatch()..start();
     try {
-      final challenge = await _securityCheckService
-          .getPrimeChallenge()
-          .timeout(_challengeFetchTimeout);
+      final challenge = await _securityCheckService.getPrimeChallenge().timeout(
+            _serverRequestTimeout(
+              _challengeFetchTimeout,
+              defaultChallengeFetchTimeout,
+            ),
+          );
       if (challenge == null) {
         _logEvent(
           "challenge fetch failed durationMs=${fetchStopwatch.elapsedMilliseconds}",
@@ -323,6 +335,15 @@ class ScvHandler extends PassportMessageHandler {
       }
     }
   }
+
+  Duration _serverRequestTimeout(
+    Duration? configuredTimeout,
+    Duration clearnetTimeout,
+  ) =>
+      configuredTimeout ??
+      (Settings().torEnabled()
+          ? defaultTorServerRequestTimeout
+          : clearnetTimeout);
 
   Future<void> _showChallengeError({required String reason}) async {
     if (_disposed) {

@@ -184,11 +184,22 @@ class Server {
     }
   }
 
-  Future<bool> checkForForceUpdate() async {
+  Future<bool> checkForForceUpdate({bool foreground = false}) async {
+    late final Response response;
     try {
       // Fetch deprecated versions from the backend
-      final response = await http!.get('$_serverAddress/deprecated-versions');
+      response = foreground
+          ? await http!.getForeground('$_serverAddress/deprecated-versions')
+          : await http!.get('$_serverAddress/deprecated-versions');
+    } catch (e, stackTrace) {
+      _reportUpdateCheckError(e, stackTrace);
+      if (foreground) {
+        rethrow;
+      }
+      return false;
+    }
 
+    try {
       if (response.statusCode == 200) {
         var data = jsonDecode(response.body);
         List<dynamic> deprecatedVersions = data['deprecated_versions'];
@@ -210,14 +221,18 @@ class Server {
         );
       }
     } catch (e, stackTrace) {
-      EnvoyReport().log(
-        "UpdateCheck",
-        "Error checking envoy update: $e",
-        stackTrace: stackTrace,
-      );
-      kPrint("Error checking for force update: $e");
+      _reportUpdateCheckError(e, stackTrace);
       return false;
     }
+  }
+
+  void _reportUpdateCheckError(Object error, StackTrace stackTrace) {
+    EnvoyReport().log(
+      "UpdateCheck",
+      "Error checking envoy update: $error",
+      stackTrace: stackTrace,
+    );
+    kPrint("Error checking for force update: $error");
   }
 }
 

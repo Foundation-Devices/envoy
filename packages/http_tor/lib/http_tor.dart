@@ -34,6 +34,19 @@ class FileDownload {
 }
 
 class HttpTor {
+  static const Duration _torStartTimeout = Duration(seconds: 90);
+  // Mirrors EXTENDED_TOR_REQUEST_TIMEOUT in rust/src/api/http.rs.
+  static const Duration _foregroundTorNativeRequestTimeout = Duration(
+    seconds: 90,
+  );
+  static const Duration _foregroundTorRequestSlack = Duration(seconds: 15);
+
+  /// Allows one full Tor bootstrap, one foreground native request, and enough
+  /// headroom for FFI dispatch and response processing around those budgets.
+  static final Duration foregroundTorRequestTimeout =
+      _torStartTimeout +
+      _foregroundTorNativeRequestTimeout +
+      _foregroundTorRequestSlack;
   static const _verifiedDownloadOverallTimeout = Duration(minutes: 20);
 
   late final Tor tor;
@@ -113,6 +126,25 @@ class HttpTor {
     );
   }
 
+  /// Runs a user-blocking request without waiting behind background traffic.
+  ///
+  /// Foreground Tor requests also receive the extended onion rendezvous
+  /// budget. Callers should use this only for bounded requests that gate an
+  /// immediate user action. Regular requests belong on the shared scheduler.
+  Future<http.Response> getForeground(
+    String uri, {
+    String? body,
+    Map<String, String>? headers,
+  }) async {
+    return _makeHttpRequest(
+      http.Verb.get_,
+      uri,
+      body: body == null ? null : utf8.encode(body),
+      headers: headers,
+      foreground: true,
+    );
+  }
+
   Future<http.Response> post(
     String uri, {
     String? body,
@@ -130,12 +162,14 @@ class HttpTor {
     String uri, {
     required List<int> body,
     Map<String, String>? headers,
+    bool foreground = false,
   }) async {
     return _makeHttpRequest(
       http.Verb.post,
       uri,
       body: Uint8List.fromList(body),
       headers: headers,
+      foreground: foreground,
     );
   }
 
@@ -261,20 +295,22 @@ class HttpTor {
     String uri, {
     Uint8List? body,
     Map<String, String>? headers,
+    bool foreground = false,
   }) async {
     final requiresTor = tor.enabled;
-    if (requiresTor) {
-      await tor.isReady();
-    }
-
+    final torStartBudget = Stopwatch();
     var resolvedPort = -1;
 
     try {
-      return await scheduler.run(() async {
+      if (requiresTor) {
+        await _ensureTorStarted(torStartBudget);
+      }
+
+      Future<http.Response> request() async {
         // A restart may have happened while this request waited in the queue.
         // Resolve the route immediately before starting network I/O.
         if (requiresTor && tor.port == -1) {
-          await tor.isReady();
+          await _ensureTorStarted(torStartBudget);
         }
 
         resolvedPort = resolveScheduledProxyPort(
@@ -287,12 +323,32 @@ class HttpTor {
           resolvedPort,
           body: body,
           headers: headers,
+          extendedTimeout: foreground,
         );
-      }).result;
+      }
+
+      if (foreground) {
+        return await request();
+      }
+
+      return await scheduler.run(request).result;
     } on TimeoutException {
       throw TimeoutException("Timed out $uri, torPort: $resolvedPort");
     } catch (e) {
       throw Exception(e.toString());
+    }
+  }
+
+  Future<void> _ensureTorStarted(Stopwatch torStartBudget) async {
+    final remaining = _torStartTimeout - torStartBudget.elapsed;
+    if (remaining <= Duration.zero) {
+      throw TimeoutException("Tor start budget exhausted", _torStartTimeout);
+    }
+    torStartBudget.start();
+    try {
+      await tor.start().timeout(remaining);
+    } finally {
+      torStartBudget.stop();
     }
   }
 
@@ -302,6 +358,7 @@ class HttpTor {
     int torPort, {
     Uint8List? body,
     Map<String, String>? headers,
+    required bool extendedTimeout,
   }) async {
     // pretend to be wget to avoid cloudflare captchas and other challenges
     headers ??= {"User-Agent": "Wget/1.12"};
@@ -312,6 +369,7 @@ class HttpTor {
       torPort: torPort,
       body: body,
       headers: headers,
+      extendedTimeout: extendedTimeout,
     );
   }
 }

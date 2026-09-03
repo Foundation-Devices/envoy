@@ -496,6 +496,7 @@ fn wire__crate__api__http__request_impl(
             let api_body = <Option<Vec<u8>>>::sse_decode(&mut deserializer);
             let api_headers =
                 <std::collections::HashMap<String, String>>::sse_decode(&mut deserializer);
+            let api_extended_timeout = <bool>::sse_decode(&mut deserializer);
             deserializer.end();
             move |context| {
                 transform_result_sse::<_, flutter_rust_bridge::for_generated::anyhow::Error>(
@@ -506,6 +507,7 @@ fn wire__crate__api__http__request_impl(
                             api_tor_port,
                             api_body,
                             api_headers,
+                            api_extended_timeout,
                         )?;
                         Ok(output_ok)
                     })(),
@@ -626,6 +628,13 @@ impl SseDecode for String {
     fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
         let mut inner = <Vec<u8>>::sse_decode(deserializer);
         return String::from_utf8(inner).unwrap();
+    }
+}
+
+impl SseDecode for bool {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        deserializer.cursor.read_u8().unwrap() != 0
     }
 }
 
@@ -759,13 +768,6 @@ impl SseDecode for crate::api::http::Verb {
             1 => crate::api::http::Verb::Post,
             _ => unreachable!("Invalid variant for Verb: {}", inner),
         };
-    }
-}
-
-impl SseDecode for bool {
-    // Codec=Sse (Serialization based), see doc to use other codecs
-    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
-        deserializer.cursor.read_u8().unwrap() != 0
     }
 }
 
@@ -1042,6 +1044,13 @@ impl SseEncode for String {
     }
 }
 
+impl SseEncode for bool {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        serializer.cursor.write_u8(self as _).unwrap();
+    }
+}
+
 impl SseEncode for i32 {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
@@ -1160,13 +1169,6 @@ impl SseEncode for crate::api::http::Verb {
             },
             serializer,
         );
-    }
-}
-
-impl SseEncode for bool {
-    // Codec=Sse (Serialization based), see doc to use other codecs
-    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
-        serializer.cursor.write_u8(self as _).unwrap();
     }
 }
 

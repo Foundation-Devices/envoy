@@ -50,6 +50,21 @@ pub struct Progress {
 
 const REQUEST_TIMEOUT: Duration = Duration::from_secs(30);
 const CONNECT_TIMEOUT: Duration = Duration::from_secs(10);
+// reqwest's connect timeout includes the SOCKS handshake. For onion services,
+// that handshake also includes the rendezvous and routinely needs more than
+// the clearnet budget on mobile networks.
+// Keep aligned with HttpTor._foregroundTorNativeRequestTimeout in lib/http_tor.dart.
+const EXTENDED_TOR_REQUEST_TIMEOUT: Duration = Duration::from_secs(90);
+const EXTENDED_TOR_CONNECT_TIMEOUT: Duration = Duration::from_secs(60);
+
+fn request_timeouts(tor_port: i32, extended_timeout: bool) -> (Duration, Duration) {
+    if tor_port > 0 && extended_timeout {
+        (EXTENDED_TOR_CONNECT_TIMEOUT, EXTENDED_TOR_REQUEST_TIMEOUT)
+    } else {
+        (CONNECT_TIMEOUT, REQUEST_TIMEOUT)
+    }
+}
+
 const DOWNLOAD_CONNECT_TIMEOUT: Duration = Duration::from_secs(60);
 const DOWNLOAD_RESPONSE_TIMEOUT: Duration = Duration::from_secs(90);
 const DOWNLOAD_STALL_TIMEOUT: Duration = Duration::from_secs(90);
@@ -622,27 +637,27 @@ pub async fn get_file(
 /// * `tor_port` - The port for Tor proxy (0 to disable)
 /// * `body` - The request body
 /// * `headers` - Map of header names to values
+/// * `extended_timeout` - Whether a Tor request may use the foreground onion-service budget
 pub fn request(
     verb: Verb,
     url: String,
     tor_port: i32,
     body: Option<Vec<u8>>,
     headers: HashMap<String, String>,
+    extended_timeout: bool,
 ) -> Result<Response> {
-    let client: reqwest::blocking::Client = if tor_port > 0 {
+    let (connect_timeout, request_timeout) = request_timeouts(tor_port, extended_timeout);
+    let mut client_builder = reqwest::blocking::Client::builder()
+        .connect_timeout(connect_timeout)
+        .timeout(request_timeout);
+
+    if tor_port > 0 {
         let proxy = reqwest::Proxy::all(format!("socks5h://127.0.0.1:{}", tor_port))?;
-        reqwest::blocking::Client::builder()
-            .connect_timeout(CONNECT_TIMEOUT)
-            .timeout(REQUEST_TIMEOUT)
-            .proxy(proxy)
-            .build()?
+        client_builder = client_builder.proxy(proxy);
     } else {
-        reqwest::blocking::Client::builder()
-            .connect_timeout(CONNECT_TIMEOUT)
-            .timeout(REQUEST_TIMEOUT)
-            .no_proxy()
-            .build()?
-    };
+        client_builder = client_builder.no_proxy();
+    }
+    let client = client_builder.build()?;
 
     let mut header_map = HeaderMap::new();
     for (key, value) in headers {
@@ -703,6 +718,22 @@ mod tests {
     use tokio::net::{TcpListener, TcpStream};
 
     static NEXT_TEST_FILE: AtomicU64 = AtomicU64::new(0);
+
+    #[test]
+    fn extended_timeouts_are_scoped_to_foreground_tor_requests() {
+        assert_eq!(
+            request_timeouts(9050, false),
+            (CONNECT_TIMEOUT, REQUEST_TIMEOUT)
+        );
+        assert_eq!(
+            request_timeouts(9050, true),
+            (EXTENDED_TOR_CONNECT_TIMEOUT, EXTENDED_TOR_REQUEST_TIMEOUT)
+        );
+        assert_eq!(
+            request_timeouts(-1, true),
+            (CONNECT_TIMEOUT, REQUEST_TIMEOUT)
+        );
+    }
 
     fn test_policy() -> DownloadPolicy {
         DownloadPolicy {

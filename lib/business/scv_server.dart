@@ -14,7 +14,6 @@ import 'package:http_tor/http_tor.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:envoy/business/local_storage.dart';
 import 'package:foundation_api/foundation_api.dart';
-import 'package:tor/tor.dart';
 
 // Generated
 part 'scv_server.g.dart';
@@ -43,13 +42,6 @@ class ScvServer implements PrimeSecurityCheckService {
   static String primeSecurityCheckUrl = "https://security-check.foundation.xyz";
   static String primeSecurityCheckOnion =
       "http://rmaxv6sivzvw2agnnl3uuyukrkgqjqsnudlq75tbqj5m6hmej4ybp2ad.onion";
-
-  static String get primeSecurityCheckBaseUrl {
-    if (Settings().torEnabled()) {
-      return primeSecurityCheckOnion;
-    }
-    return primeSecurityCheckUrl;
-  }
 
   final LocalStorage _ls = LocalStorage();
   static const String SCV_CHALLENGE_PREFS = "scv_challenge";
@@ -157,32 +149,41 @@ class ScvServer implements PrimeSecurityCheckService {
     }
   }
 
+  static const Duration _clearnetChallengeTimeout = Duration(seconds: 15);
+
   /// Checks if the Prime security check server is reachable.
   /// Returns true if we can connect to the server, false otherwise.
   Future<bool> canReachPrimeServer() async {
-    await Future.delayed(const Duration(seconds: 4));
-    final uri = Uri.parse(ScvServer.primeSecurityCheckBaseUrl);
-    if (Settings().torEnabled()) {
+    final torEnabled = Settings().torEnabled();
+    final baseUrl = torEnabled
+        ? ScvServer.primeSecurityCheckOnion
+        : ScvServer.primeSecurityCheckUrl;
+    final uri = Uri.parse(baseUrl);
+
+    if (torEnabled) {
       kPrint("Tor enabled, checking connectivity...");
-      await Tor.instance.isReady().timeout(const Duration(seconds: 20),
-          onTimeout: () {
-        throw TimeoutException("Tor is not ready", Duration(seconds: 20));
-      });
-      kPrint("Tor ready, checking connectivity... $uri");
-    } else {
-      await InternetAddress.lookup(uri.host)
-          .timeout(const Duration(seconds: 15));
+      final response = await http
+          .getForeground('$baseUrl/challenge')
+          .timeout(HttpTor.foregroundTorRequestTimeout);
+      return response.statusCode == 200;
     }
-    final response = await http
-        .get('$primeSecurityCheckBaseUrl/challenge')
-        .timeout(const Duration(seconds: 15));
+
+    await InternetAddress.lookup(uri.host).timeout(const Duration(seconds: 15));
+    final response =
+        await http.get('$baseUrl/challenge').timeout(_clearnetChallengeTimeout);
     return response.statusCode == 200;
   }
 
   @override
   Future<ChallengeRequest?> getPrimeChallenge() async {
+    final torEnabled = Settings().torEnabled();
+    final baseUrl = torEnabled
+        ? ScvServer.primeSecurityCheckOnion
+        : ScvServer.primeSecurityCheckUrl;
     try {
-      final response = await http.get('$primeSecurityCheckBaseUrl/challenge');
+      final response = torEnabled
+          ? await http.getForeground('$baseUrl/challenge')
+          : await http.get('$baseUrl/challenge');
 
       kPrint("response status code: ${response.statusCode}");
       if (response.statusCode != 200) {
@@ -210,13 +211,18 @@ class ScvServer implements PrimeSecurityCheckService {
       return ScvVerificationResult.success;
     }
 
-    final uri = '$primeSecurityCheckBaseUrl/verify';
+    final torEnabled = Settings().torEnabled();
+    final baseUrl = torEnabled
+        ? ScvServer.primeSecurityCheckOnion
+        : ScvServer.primeSecurityCheckUrl;
+    final uri = '$baseUrl/verify';
     try {
       kPrint("Received proof verification payload");
       final response = await http.postBytes(
         uri,
         body: data.toList(),
         headers: {'Content-Type': 'application/octet-stream'},
+        foreground: torEnabled,
       );
 
       kPrint("response status code: ${response.statusCode}");

@@ -6,7 +6,7 @@
 import '../frb_generated.dart';
 import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated.dart';
 
-// These functions are ignored because they are not marked as `pub`: `download_attempts`, `download_policy`, `download_verified_file_inner`, `download_verified_file_with_policy`, `encode_sha256`, `file_is_valid`, `file_len`, `is_retryable_status`, `partial_path`, `publish_progress`, `remove_if_exists`, `setup_log_to_console`, `sha256_file`, `validate_content_range`, `verified_download_lock`, `wait_before_retry`
+// These functions are ignored because they are not marked as `pub`: `download_attempts`, `download_policy`, `download_verified_file_inner`, `download_verified_file_with_policy`, `encode_sha256`, `file_is_valid`, `file_len`, `is_retryable_status`, `partial_path`, `publish_progress`, `remove_if_exists`, `request_timeouts`, `setup_log_to_console`, `sha256_file`, `validate_content_range`, `verified_download_lock`, `wait_before_retry`
 // These types are ignored because they are neither used by any `pub` functions nor (for structs and enums) marked `#[frb(unignore)]`: `DownloadPolicy`, `RUNTIME`, `VERIFIED_DOWNLOAD_LOCKS`
 // These function are ignored because they are on traits that is not defined in current crate (put an empty `#[frb]` on it to unignore): `clone`, `clone`, `clone`, `clone`, `deref`, `deref`, `fmt`, `fmt`, `initialize`, `initialize`
 
@@ -60,18 +60,21 @@ Future<Download> getFile({
 /// * `tor_port` - The port for Tor proxy (0 to disable)
 /// * `body` - The request body
 /// * `headers` - Map of header names to values
+/// * `extended_timeout` - Whether a Tor request may use the foreground onion-service budget
 Future<Response> request({
   required Verb verb,
   required String url,
   required int torPort,
   Uint8List? body,
   required Map<String, String> headers,
+  required bool extendedTimeout,
 }) => RustLib.instance.api.crateApiHttpRequest(
   verb: verb,
   url: url,
   torPort: torPort,
   body: body,
   headers: headers,
+  extendedTimeout: extendedTimeout,
 );
 
 /// Get the public IP address

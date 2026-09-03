@@ -99,6 +99,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   String dco_decode_String(dynamic raw);
 
   @protected
+  bool dco_decode_bool(dynamic raw);
+
+  @protected
   ProgressStream dco_decode_box_autoadd_progress_stream(dynamic raw);
 
   @protected
@@ -214,6 +217,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   String sse_decode_String(SseDeserializer deserializer);
 
   @protected
+  bool sse_decode_bool(SseDeserializer deserializer);
+
+  @protected
   ProgressStream sse_decode_box_autoadd_progress_stream(
     SseDeserializer deserializer,
   );
@@ -263,9 +269,6 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   Verb sse_decode_verb(SseDeserializer deserializer);
-
-  @protected
-  bool sse_decode_bool(SseDeserializer deserializer);
 
   @protected
   void sse_encode_AnyhowException(
@@ -352,6 +355,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   void sse_encode_String(String self, SseSerializer serializer);
 
   @protected
+  void sse_encode_bool(bool self, SseSerializer serializer);
+
+  @protected
   void sse_encode_box_autoadd_progress_stream(
     ProgressStream self,
     SseSerializer serializer,
@@ -413,9 +419,6 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   void sse_encode_verb(Verb self, SseSerializer serializer);
-
-  @protected
-  void sse_encode_bool(bool self, SseSerializer serializer);
 }
 
 // Section: wire_class
