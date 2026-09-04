@@ -7,17 +7,11 @@ enum ElectrumSyncReachability { notAttempted, reachable, unreachable }
 ElectrumSyncReachability aggregateElectrumSyncReachability(
   Iterable<ElectrumSyncReachability> results,
 ) {
-  var aggregate = ElectrumSyncReachability.notAttempted;
-
-  for (final result in results) {
-    if (result == ElectrumSyncReachability.reachable) {
-      return ElectrumSyncReachability.reachable;
-    }
-
-    if (result == ElectrumSyncReachability.unreachable) {
-      aggregate = ElectrumSyncReachability.unreachable;
-    }
+  if (results.contains(ElectrumSyncReachability.reachable)) {
+    return ElectrumSyncReachability.reachable;
   }
-
-  return aggregate;
+  if (results.contains(ElectrumSyncReachability.unreachable)) {
+    return ElectrumSyncReachability.unreachable;
+  }
+  return ElectrumSyncReachability.notAttempted;
 }

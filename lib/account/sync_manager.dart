@@ -38,7 +38,7 @@ class Syncing extends WalletProgress {
 
 class None extends WalletProgress {}
 
-/// Outcome of a single-descriptor [SyncManager.performFullScan].
+/// Outcome of a single-descriptor [SyncManager._performFullScan].
 enum FullScanOutcome {
   /// Scan completed and the update was applied.
   success,
@@ -52,10 +52,9 @@ enum FullScanOutcome {
   failure,
 }
 
-typedef FullScanResult = ({
+typedef _FullScanResult = ({
   FullScanOutcome outcome,
-  ElectrumSyncReachability reachability,
-  bool viaTor,
+  _ElectrumSyncResult health,
 });
 
 class SyncManager {
@@ -72,7 +71,6 @@ class SyncManager {
   // Track active operations to prevent duplicates
   final Set<(String, AddressType)> _activeSyncOperations = {};
   final Set<(String, AddressType)> _activeFullScanOperations = {};
-  final Set<(String, AddressType)> _reportedMissingFullScanRequests = {};
 
   Function(EnvoyAccount)? _onUpdateFinished;
   late Timer _syncTimer;
@@ -138,46 +136,54 @@ class SyncManager {
 
 // Sync a single account
   Future<void> syncAccount(EnvoyAccount account) async {
+    final handler = account.handler;
+    if (handler == null) return;
+
     final server = Settings().electrumAddress(account.network);
     int? port = Settings().getTorPort(account.network, server);
     try {
-      if (account.handler != null) {
-        final futures = <Future<_ElectrumSyncResult>>[];
-
-        for (var descriptor in account.descriptors) {
-          final request = await account.handler!
-              .syncRequest(addressType: descriptor.addressType);
-          futures.add(
-            _performWalletSync(
-              account,
-              server,
-              request,
-              port,
-              descriptor.addressType,
-            ).then(
-              (reachability) => (
-                network: account.network,
-                viaTor: port != null,
-                reachability: reachability,
-              ),
-            ),
+      _ElectrumSyncResult result(
+        ElectrumSyncReachability reachability,
+      ) =>
+          (
+            network: account.network,
+            viaTor: port != null,
+            reachability: reachability,
           );
+
+      final futures = account.descriptors.map((descriptor) async {
+        try {
+          final request = await handler.syncRequest(
+            addressType: descriptor.addressType,
+          );
+          final reachability = await _performWalletSync(
+            account,
+            server,
+            request,
+            port,
+            descriptor.addressType,
+          );
+          return result(reachability);
+        } catch (e, stack) {
+          debugPrintStack(stackTrace: stack);
           if (_enableLogging) {
             kPrint(
-                "SyncManager: added sync future for ${descriptor.addressType}");
+              "SyncManager: unable to prepare sync for ${descriptor.addressType}: $e",
+            );
           }
+          return result(ElectrumSyncReachability.notAttempted);
         }
+      });
 
-        // Actually wait for all descriptor syncs
-        final results = await Future.wait(futures);
-        _reportElectrumSyncReachability(results);
+      // Actually wait for all descriptor syncs
+      final results = await Future.wait(futures);
+      _reportElectrumSyncReachability(results);
 
-        // Notify listeners that this account finished syncing
-        _onUpdateFinished?.call(account);
+      // Notify listeners that this account finished syncing
+      _onUpdateFinished?.call(account);
 
-        if (_enableLogging) {
-          kPrint("SyncManager: Single Account Sync Finished ${account.name}");
-        }
+      if (_enableLogging) {
+        kPrint("SyncManager: Single Account Sync Finished ${account.name}");
       }
     } catch (e) {
       if (_enableLogging) {
@@ -297,17 +303,13 @@ class SyncManager {
         final request =
             await handler.requestFullScan(addressType: descriptor.addressType);
 
-        final result = await performFullScan(
+        final result = await _performFullScan(
           handler,
           descriptor.addressType,
           request,
           stopGap: stopGap,
         );
-        healthResults.add((
-          network: account.network,
-          viaTor: result.viaTor,
-          reachability: result.reachability,
-        ));
+        healthResults.add(result.health);
         switch (result.outcome) {
           case FullScanOutcome.failure:
             anyFailure = true;
@@ -464,12 +466,8 @@ class SyncManager {
             return null;
           }
 
-          final result = await performFullScan(handler, type, fullScanRequest);
-          return (
-            network: account.network,
-            viaTor: result.viaTor,
-            reachability: result.reachability,
-          );
+          final result = await _performFullScan(handler, type, fullScanRequest);
+          return result.health;
         } catch (e, stack) {
           debugPrintStack(stackTrace: stack);
           if (_enableLogging) {
@@ -495,7 +493,7 @@ class SyncManager {
 
   /// The UI outcome and Electrum reachability are reported independently so
   /// local apply failures cannot masquerade as network failures.
-  Future<FullScanResult> performFullScan(
+  Future<_FullScanResult> _performFullScan(
     EnvoyAccountHandler handler,
     AddressType addressType,
     FullScanRequest fullScanRequest, {
@@ -505,11 +503,18 @@ class SyncManager {
     final server = Settings().electrumAddress(account.network);
     final port = Settings().getTorPort(account.network, server);
     final viaTor = port != null;
-    FullScanResult scanResult(
+    _FullScanResult scanResult(
       FullScanOutcome outcome,
       ElectrumSyncReachability reachability,
     ) =>
-        (outcome: outcome, reachability: reachability, viaTor: viaTor);
+        (
+          outcome: outcome,
+          health: (
+            network: account.network,
+            viaTor: viaTor,
+            reachability: reachability,
+          ),
+        );
 
     if (_activeFullScanOperations.contains((account.id, addressType))) {
       return scanResult(
@@ -563,15 +568,6 @@ class SyncManager {
         final scanRequestMissing =
             e.toString().contains("No Scan request found");
         if (fullScanRequest.isDisposed || scanRequestMissing) {
-          if (scanRequestMissing &&
-              _reportedMissingFullScanRequests.add(
-                (account.id, addressType),
-              )) {
-            EnvoyReport().log(
-              "Full scan request unavailable $addressType - ${account.name} | ${account.network}",
-              e.toString(),
-            );
-          }
           return scanResult(
             FullScanOutcome.failure,
             ElectrumSyncReachability.notAttempted,
@@ -681,7 +677,9 @@ class SyncManager {
         );
       } catch (e, stack) {
         debugPrintStack(stackTrace: stack);
-        if (syncRequest.isDisposed) {
+        // The Rust request can be empty even while its Dart handle is alive.
+        if (syncRequest.isDisposed ||
+            e.toString().contains("No sync request found")) {
           return ElectrumSyncReachability.notAttempted;
         }
         if (_enableLogging) {
