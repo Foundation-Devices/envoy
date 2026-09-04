@@ -213,6 +213,8 @@ class QLConnection: NSObject {
             result(isConnected())
         case "cancelTransfer":
             cancelTransfer(result: result)
+        case "resetAfterWriteTimeout":
+            resetAfterWriteTimeout(result: result)
         case "reconnect":
             reconnect(result: result)
         default:
@@ -500,6 +502,17 @@ class QLConnection: NSObject {
         }
     }
 
+    /// Cancel the active binary write before Dart advances its serialized queue.
+    /// The disconnect event owns starting the normal auto-reconnect flow.
+    private func resetAfterWriteTimeout(result: @escaping FlutterResult) {
+        bleWriteQueue?.cancel()
+        bleWriteQueue = nil
+        if let peripheral = connectedPeripheral {
+            delegate?.getCentralManager()?.cancelPeripheralConnection(peripheral)
+        }
+        result(nil)
+    }
+
     // MARK: - Binary Write Handler
 
     private func handleBinaryWrite(data: Data) async -> Data {
@@ -525,18 +538,21 @@ class QLConnection: NSObject {
         if bleWriteQueue == nil {
             bleWriteQueue = BleWriteQueue(peripheral: peripheral, characteristic: writeChar)
         }
+        guard let writeQueue = bleWriteQueue else {
+            return Data()
+        }
 
         let maxMTU = Self.BLE_PACKET_SIZE
 
         if data.count <= maxMTU {
-            let success = await bleWriteQueue?.enqueue(data: data) ?? false
+            let success = await writeQueue.enqueue(data: data)
             return success ? Data([1]) : Data()
         } else {
             let chunks = data.chunked(into: maxMTU)
             print("\(Self.TAG) [\(deviceId)] Writing chunks: \(chunks.count)")
 
             for chunk in chunks {
-                let success = await bleWriteQueue?.enqueue(data: chunk) ?? false
+                let success = await writeQueue.enqueue(data: chunk)
                 if !success {
                     print(
                         "\(Self.TAG) [\(deviceId)] Failed to enqueue chunk of size: \(chunk.count)")

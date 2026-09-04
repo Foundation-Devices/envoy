@@ -12,6 +12,7 @@ import android.bluetooth.BluetoothStatusCodes
 import android.content.Context
 import android.os.Build
 import android.util.Log
+import com.foundationdevices.envoy.NativeLogStream
 import io.flutter.plugin.common.BasicMessageChannel
 import io.flutter.plugin.common.BinaryCodec
 import io.flutter.plugin.common.BinaryMessenger
@@ -107,6 +108,7 @@ class QLConnection(
     private var readCharacteristic: BluetoothGattCharacteristic? = null
 
     // Write operation state
+    @Volatile
     private var bleWriteQueue: BleWriteQueue? = null
     private var pendingWriteData: ByteArray? = null
     private var writeRetryCount: Int = 0
@@ -176,6 +178,7 @@ class QLConnection(
             "getConnectedPeripheralId" -> result.success(peripheralId)
             "isConnected" -> result.success(isConnected())
             "cancelTransfer" -> cancelTransfer(result)
+            "resetAfterWriteTimeout" -> resetAfterWriteTimeout(result)
             "reconnect" -> reconnect(result)
             "requestHighPriority" -> requestHighPriority(result)
             "requestBalancedPriority" -> requestBalancedPriority(result)
@@ -236,13 +239,13 @@ class QLConnection(
                 )
             }
         } catch (e: SecurityException) {
-            Log.e(TAG, "[$deviceId] Security exception during connection: ${e.message}")
+            NativeLogStream.error(TAG, "[$deviceId] Security exception during connection: ${e.message}")
             sendConnectionEvent(
                 BluetoothConnectionEventType.CONNECTION_ERROR,
                 "Permission denied: ${e.message}"
             )
         } catch (e: Exception) {
-            Log.e(TAG, "[$deviceId] Unexpected error during connection: ${e.message}")
+            NativeLogStream.error(TAG, "[$deviceId] Unexpected error during connection: ${e.message}")
             sendConnectionEvent(
                 BluetoothConnectionEventType.CONNECTION_ERROR,
                 "Connection failed: ${e.message}"
@@ -281,7 +284,7 @@ class QLConnection(
                 Log.d(TAG, "[$deviceId] Starting bonding...")
                 val bondResult = device.createBond()
                 if (!bondResult) {
-                    Log.e(TAG, "[$deviceId] Failed to start bonding")
+                    NativeLogStream.error(TAG, "[$deviceId] Failed to start bonding")
                     sendConnectionEvent(
                         BluetoothConnectionEventType.CONNECTION_ERROR,
                         "Failed to start bonding"
@@ -363,7 +366,7 @@ class QLConnection(
                     stream.forEachChunk(BLE_PACKET_SIZE) { chunk ->
                         val success = bleWriteQueue?.enqueue(chunk) ?: false
                         if (!success) {
-                            Log.e(TAG, "[$deviceId] Failed to enqueue data at byte $bytesProcessed")
+                            NativeLogStream.error(TAG, "[$deviceId] Failed to enqueue data at byte $bytesProcessed")
                             writeError = true
                             withContext(Dispatchers.Main) {
                                 safeResult.error(
@@ -425,6 +428,30 @@ class QLConnection(
     }
 
     /**
+     * Cancel the active binary write before Dart advances its serialized queue.
+     * The disconnect event owns starting the normal auto-reconnect flow.
+     */
+    @SuppressLint("MissingPermission")
+    private fun resetAfterWriteTimeout(result: MethodChannel.Result) {
+        val writeQueue = bleWriteQueue
+        bleWriteQueue = null
+        val gatt = bluetoothGatt
+        scope.launch {
+            try {
+                withContext(Dispatchers.IO) {
+                    val cancellation = writeQueue?.cancel()
+                    gatt?.disconnect()
+                    cancellation?.join()
+                }
+                result.success(null)
+            } catch (e: Exception) {
+                NativeLogStream.error(TAG, "[$deviceId] Failed to reset after write timeout", e)
+                result.error("RESET_ERROR", e.message, null)
+            }
+        }
+    }
+
+    /**
      * Reconnect to a previously bonded device.
      * This is called when restoring a connection after app restart.
      */
@@ -447,7 +474,7 @@ class QLConnection(
             connect(device)
             result.success(true)
         } catch (e: Exception) {
-            Log.e(TAG, "[$deviceId] Error reconnecting: ${e.message}")
+            NativeLogStream.error(TAG, "[$deviceId] Error reconnecting: ${e.message}")
             result.error("RECONNECT_ERROR", "Failed to reconnect: ${e.message}", null)
         }
     }
@@ -471,12 +498,12 @@ class QLConnection(
         val failureBuffer = createDirectByteBuffer(0)
 
         if (transferJob?.isActive == true) {
-            Log.e(TAG, "[$deviceId] Another write operation is in progress")
+            NativeLogStream.error(TAG, "[$deviceId] Another write operation is in progress")
             return failureBuffer
         }
 
         if (message == null) {
-            Log.e(TAG, "[$deviceId] Message is null")
+            NativeLogStream.error(TAG, "[$deviceId] Message is null")
             return failureBuffer
         }
 
@@ -484,17 +511,18 @@ class QLConnection(
         message.get(data)
 
         if (bluetoothGatt == null) {
-            Log.e(TAG, "[$deviceId] No active Bluetooth connection")
+            NativeLogStream.error(TAG, "[$deviceId] No active Bluetooth connection")
             return failureBuffer
         }
 
         if (writeCharacteristic == null) {
-            Log.e(TAG, "[$deviceId] No write characteristic available")
+            Log.w(TAG, "[$deviceId] No write characteristic available")
             return failureBuffer
         }
 
-        if (bleWriteQueue == null) {
-            Log.e(TAG, "[$deviceId] BLE Write Queue is not initialized")
+        val writeQueue = bleWriteQueue
+        if (writeQueue == null) {
+            NativeLogStream.error(TAG, "[$deviceId] BLE Write Queue is not initialized")
             return failureBuffer
         }
 
@@ -504,17 +532,16 @@ class QLConnection(
 
         return if (data.size > BLE_PACKET_SIZE) {
             var success = true
-            data.chunked(BLE_PACKET_SIZE).forEach { chunk ->
-                val result = bleWriteQueue?.enqueue(chunk) ?: false
-                if (!result) {
-                    Log.e(TAG, "[$deviceId] Failed to enqueue chunk of size ${chunk.size}")
+            for (chunk in data.chunked(BLE_PACKET_SIZE)) {
+                if (!writeQueue.enqueue(chunk)) {
+                    NativeLogStream.error(TAG, "[$deviceId] Failed to enqueue chunk of size ${chunk.size}")
                     success = false
-                    return@forEach
+                    break
                 }
             }
             if (success) createDirectByteBuffer(1) else failureBuffer
         } else {
-            val success = bleWriteQueue?.enqueue(data) ?: false
+            val success = writeQueue.enqueue(data)
             if (success) createDirectByteBuffer(1) else failureBuffer
         }
     }
@@ -578,7 +605,7 @@ class QLConnection(
                 directBuffer.put(data)
                 bleReadChannel.send(directBuffer) { _ -> }
             } catch (e: Exception) {
-                Log.e(TAG, "[$deviceId] Error sending binary data: ${e.message}")
+                NativeLogStream.error(TAG, "[$deviceId] Error sending binary data: ${e.message}")
             }
         }
     }
@@ -663,7 +690,7 @@ class QLConnection(
             if (status == BluetoothGatt.GATT_SUCCESS) {
                 Log.d(TAG, "[$deviceId] ✓ MTU negotiation successful, max data: ${mtu - 3} bytes")
             } else {
-                Log.e(TAG, "[$deviceId] ✗ MTU negotiation failed")
+                NativeLogStream.error(TAG, "[$deviceId] ✗ MTU negotiation failed")
             }
             Log.d(TAG, "[$deviceId] ════════════════════════════════════════")
             currentMtu = mtu
@@ -675,7 +702,6 @@ class QLConnection(
                 BluetoothProfile.STATE_CONNECTED -> {
                     Log.d(TAG, "[$deviceId] ✓ CONNECTED TO GATT SERVER")
                     connectedDevice = gatt?.device
-                    bleWriteQueue?.restart()
 
                     if (connectedDevice?.bondState == BluetoothDevice.BOND_BONDED) {
                         sendConnectionEvent(BluetoothConnectionEventType.DEVICE_CONNECTED)
@@ -708,7 +734,9 @@ class QLConnection(
                 BluetoothProfile.STATE_DISCONNECTED -> {
                     Log.d(TAG, "[$deviceId] Disconnected from GATT server")
                     sendConnectionEvent(BluetoothConnectionEventType.DEVICE_DISCONNECTED)
-                    bleWriteQueue?.cancel()
+                    val disconnectedWriteQueue = bleWriteQueue
+                    bleWriteQueue = null
+                    disconnectedWriteQueue?.cancel()
                     connectedDevice = null
                     writeCharacteristic = null
                     readCharacteristic = null
@@ -761,9 +789,9 @@ class QLConnection(
                                             gatt.writeDescriptor(descriptor)
                                         }
                                     } else {
-                                        Log.e(TAG, "[$deviceId] CCCD descriptor not found!")
+                                        NativeLogStream.error(TAG, "[$deviceId] CCCD descriptor not found!")
                                         characteristic.descriptors.forEach { desc ->
-                                            Log.e(TAG, "[$deviceId]    - ${desc.uuid}")
+                                            NativeLogStream.error(TAG, "[$deviceId]    - ${desc.uuid}")
                                         }
                                     }
                                 }
@@ -779,7 +807,7 @@ class QLConnection(
                     Log.w(TAG, "[$deviceId] Prime service not found")
                 }
             } else {
-                Log.e(TAG, "[$deviceId] Service discovery failed with status: $status")
+                NativeLogStream.error(TAG, "[$deviceId] Service discovery failed with status: $status")
             }
         }
 
@@ -800,7 +828,7 @@ class QLConnection(
                 pendingWriteData = null
                 writeRetryCount = 0
             } else {
-                Log.e(
+                NativeLogStream.error(
                     TAG,
                     "[$deviceId] WRITE ERROR: char=${characteristic?.uuid}, status=$status, retry=$writeRetryCount/$MAX_WRITE_RETRIES"
                 )
@@ -814,7 +842,7 @@ class QLConnection(
                             pendingWriteData?.let { data ->
                                 val success = gatt.writeCharacteristic(characteristic, data, characteristic.writeType)
                                 if (success != BluetoothStatusCodes.SUCCESS) {
-                                    Log.e(TAG, "[$deviceId] writeCharacteristic error: $success")
+                                    NativeLogStream.error(TAG, "[$deviceId] writeCharacteristic error: $success")
                                 }
                                 success == BluetoothStatusCodes.SUCCESS
                             } ?: false
@@ -825,13 +853,13 @@ class QLConnection(
                             gatt.writeCharacteristic(characteristic)
                         }
                         if (!writeSuccess) {
-                            Log.e(TAG, "[$deviceId] Failed to write characteristic on retry")
+                            NativeLogStream.error(TAG, "[$deviceId] Failed to write characteristic on retry")
                         }
                     }
                     return
                 }
 
-                Log.e(TAG, "[$deviceId] Write failed after $MAX_WRITE_RETRIES retries")
+                NativeLogStream.error(TAG, "[$deviceId] Write failed after $MAX_WRITE_RETRIES retries")
                 pendingWriteData = null
                 writeRetryCount = 0
             }
@@ -851,7 +879,7 @@ class QLConnection(
                         sendBinaryData(data)
                     }
                 } else {
-                    Log.e(TAG, "[$deviceId] Read failed with status: $status")
+                    NativeLogStream.error(TAG, "[$deviceId] Read failed with status: $status")
                 }
             }
         }
@@ -903,7 +931,7 @@ class QLConnection(
                 if (status == BluetoothGatt.GATT_SUCCESS) {
                     Log.d(TAG, "[$deviceId] CCCD write successful - Notifications enabled")
                 } else {
-                    Log.e(TAG, "[$deviceId] CCCD write failed with status: $status")
+                    NativeLogStream.error(TAG, "[$deviceId] CCCD write failed with status: $status")
                 }
             }
         }

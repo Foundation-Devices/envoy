@@ -27,6 +27,7 @@ import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.result.contract.ActivityResultContracts.StartActivityForResult
 import androidx.core.app.ActivityCompat
+import com.foundationdevices.envoy.NativeLogStream
 import io.flutter.plugin.common.BinaryMessenger
 import io.flutter.plugin.common.EventChannel
 import io.flutter.plugin.common.MethodCall
@@ -197,7 +198,7 @@ class BluetoothChannel(
         val connectedDevices = try {
             bluetoothManager.getConnectedDevices(BluetoothProfile.GATT)
         } catch (e: Exception) {
-            Log.e(TAG, "Error getting connected BLE devices: ${e.message}", e)
+            NativeLogStream.error(TAG, "Error getting connected BLE devices: ${e.message}", e)
             result.error("ACCESSORIES_ERROR", "Failed to get connected BLE devices", null)
             return
         }
@@ -309,7 +310,7 @@ class BluetoothChannel(
 
             result.success(true)
         } catch (e: Exception) {
-            Log.e(TAG, "Error preparing device: ${e.message}", e)
+            NativeLogStream.error(TAG, "Error preparing device: ${e.message}", e)
             result.error("PREPARE_ERROR", "Failed to prepare device: ${e.message}", null)
         }
     }
@@ -352,7 +353,7 @@ class BluetoothChannel(
             qlConnection.connect(remoteDevice)
             result.success(true)
         } catch (e: Exception) {
-            Log.e(TAG, "Error reconnecting to device: ${e.message}")
+            NativeLogStream.error(TAG, "Error reconnecting to device: ${e.message}")
             result.error("RECONNECT_ERROR", "Failed to reconnect: ${e.message}", null)
         }
     }
@@ -418,10 +419,10 @@ class BluetoothChannel(
                 }
             }, 15000)
         } catch (e: SecurityException) {
-            Log.e(TAG, "startDeviceScan: FAILED - Security exception: ${e.message}")
+            NativeLogStream.error(TAG, "startDeviceScan: FAILED - Security exception: ${e.message}")
             result.error("SECURITY_ERROR", "Missing scan permission: ${e.message}", null)
         } catch (e: Exception) {
-            Log.e(TAG, "startDeviceScan: FAILED - Exception: ${e.message}")
+            NativeLogStream.error(TAG, "startDeviceScan: FAILED - Exception: ${e.message}")
             result.error("SCAN_ERROR", "Failed to start scan: ${e.message}", null)
         }
     }
@@ -488,7 +489,7 @@ class BluetoothChannel(
     @SuppressLint("MissingPermission")
     private fun connectToDevice(device: BluetoothDevice) {
         if (!checkBluetoothPermissions()) {
-            Log.e(TAG, "connectToDevice: FAILED - Missing Bluetooth permissions")
+            NativeLogStream.error(TAG, "connectToDevice: FAILED - Missing Bluetooth permissions")
             return
         }
 

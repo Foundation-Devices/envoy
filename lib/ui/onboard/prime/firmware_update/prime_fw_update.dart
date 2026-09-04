@@ -581,46 +581,44 @@ class _PrimeFwDownloadProgressState
                 const Padding(padding: EdgeInsets.all(EnvoySpacing.small)),
                 Consumer(
                   builder: (context, ref, child) {
-                    final progressAsync = ref.watch(fwTransferProgress);
-                    return progressAsync.map(
-                      data: (progressAsync) {
-                        return Column(
-                          children: [
-                            EnvoyGradientProgress(
-                              progress: progressAsync.value.progress,
-                            ),
-                            const Padding(
-                              padding: EdgeInsets.all(EnvoySpacing.small),
-                            ),
-                            if (ref.watch(fwDownloadStateProvider).state ==
-                                EnvoyStepState.FINISHED)
-                              Builder(builder: (context) {
-                                final remainingTime =
-                                    progressAsync.value.remainingTime;
-                                final String label;
-                                if (remainingTime.isEmpty) {
-                                  label =
-                                      S().firmware_downloadingUpdate_estimating;
-                                } else if (remainingTime ==
-                                    S().firmware_downloadingUpdate_aboutOneMin) {
-                                  label = remainingTime;
-                                } else {
-                                  label = S()
-                                      .firmware_downloadingUpdate_timeRemaining(
-                                          remainingTime);
-                                }
-                                return Text(
-                                  label,
-                                  style: EnvoyTypography.explainer.copyWith(
-                                    fontSize: 14,
-                                  ),
-                                );
-                              }),
-                          ],
-                        );
-                      },
-                      error: (_) => SizedBox.shrink(),
-                      loading: (_) => SizedBox.shrink(),
+                    final updateStep = ref.watch(primeUpdateStateProvider);
+                    final downloadProgress =
+                        ref.watch(fwDownloadProgress).valueOrNull ?? 0.0;
+                    final transferProgress =
+                        ref.watch(fwTransferProgress).valueOrNull;
+                    final progress = updateStep == PrimeFwUpdateStep.downloading
+                        ? downloadProgress
+                        : transferProgress?.progress ?? 0.0;
+
+                    return Column(
+                      children: [
+                        EnvoyGradientProgress(progress: progress),
+                        const Padding(
+                          padding: EdgeInsets.all(EnvoySpacing.small),
+                        ),
+                        if (updateStep == PrimeFwUpdateStep.transferring)
+                          Builder(builder: (context) {
+                            final remainingTime =
+                                transferProgress?.remainingTime ?? "";
+                            final String label;
+                            if (remainingTime.isEmpty) {
+                              label = S().firmware_downloadingUpdate_estimating;
+                            } else if (remainingTime ==
+                                S().firmware_downloadingUpdate_aboutOneMin) {
+                              label = remainingTime;
+                            } else {
+                              label = S()
+                                  .firmware_downloadingUpdate_timeRemaining(
+                                      remainingTime);
+                            }
+                            return Text(
+                              label,
+                              style: EnvoyTypography.explainer.copyWith(
+                                fontSize: 14,
+                              ),
+                            );
+                          }),
+                      ],
                     );
                   },
                 ),

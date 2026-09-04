@@ -27,7 +27,6 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  flutter_platform_widgets: ^9.0.0
   flutter_localizations:
     sdk: flutter
   intl: ^0.20.2
@@ -63,7 +62,6 @@ dependencies:
   cbor: ^4.1.0
   uuid: ^4.4.2
   google_fonts: ^6.1.0
-  carousel_slider: ^5.1.1
   url_launcher: ^6.2.5
   email_validator: ^3.0.0
   json_annotation: ^4.8.1
@@ -75,7 +73,6 @@ dependencies:
       url: https://github.com/foundation-devices/webfeed.git
       ref: 22b45ac97e335f2564e94ff54657eb0fd0199245
   flutter_svg: ^2.2.0
-  bip32: ^2.0.0
   package_info_plus: ^8.1.2
   permission_handler: ^12.0.1
   flutter_html:
@@ -106,7 +103,6 @@ dependencies:
   html: any
   crypto: any
   typed_data: any
-  latlng: any
   http: ^1.2.1
   persistent_bottom_nav_bar: ^6.2.1
   flutter_map: ^8.2.1
@@ -129,8 +125,6 @@ dev_dependencies:
   flutter_test:
     sdk: flutter
   integration_test:
-    sdk: flutter
-  flutter_driver:
     sdk: flutter
   build_runner: ^2.10.0
   json_serializable: ^6.11.0

@@ -35,6 +35,46 @@ class FwTransferProgress {
   FwTransferProgress({required this.progress, required this.remainingTime});
 }
 
+List<api.QuantumLinkMessage> buildFirmwareChunks(
+  List<Uint8List> patches, {
+  required int chunkSize,
+}) {
+  if (chunkSize <= 0) {
+    throw ArgumentError.value(chunkSize, 'chunkSize', 'Must be positive');
+  }
+  if (patches.length > 255) {
+    throw ArgumentError.value(
+      patches.length,
+      'patches',
+      'Cannot exceed 255 patches',
+    );
+  }
+
+  final messages = <api.QuantumLinkMessage>[];
+  for (final (patchIndex, patch) in patches.indexed) {
+    final totalChunks = (patch.length + chunkSize - 1) ~/ chunkSize;
+    for (var chunkIndex = 0; chunkIndex < totalChunks; chunkIndex++) {
+      final start = chunkIndex * chunkSize;
+      final end =
+          start + chunkSize < patch.length ? start + chunkSize : patch.length;
+      messages.add(
+        api.QuantumLinkMessage.firmwareFetchEvent(
+          api.FirmwareFetchEvent.chunk(
+            api.FirmwareChunk(
+              patchIndex: patchIndex,
+              totalPatches: patches.length,
+              chunkIndex: chunkIndex,
+              totalChunks: totalChunks,
+              data: Uint8List.sublistView(patch, start, end),
+            ),
+          ),
+        ),
+      );
+    }
+  }
+  return messages;
+}
+
 class FwUpdateHandler extends PassportMessageHandler {
   FwUpdateHandler(super.connection);
 
@@ -54,7 +94,6 @@ class FwUpdateHandler extends PassportMessageHandler {
   // Transfer rate estimator
   // reset this every time a new transfer starts
   final _transferEstimator = TransferRateEstimator();
-  StreamSubscription<WriteProgress>? _writeProgressSubscription;
   ControlledQueue<api.QuantumLinkMessage>? _chunkQueue;
   Future<void>? _firmwareFetchTask;
   DownloadCancellationToken? _firmwareDownloadCancellationToken;
@@ -66,6 +105,7 @@ class FwUpdateHandler extends PassportMessageHandler {
   final _downloadState = StreamController<FwUpdateState>.broadcast();
   final _transferState = StreamController<FwUpdateState>.broadcast();
   final _primeFwUpdate = StreamController<PrimeFwUpdateStep>.broadcast();
+  final _downloadProgress = StreamController<double>.broadcast();
   final _transferProgress = StreamController<FwTransferProgress>.broadcast();
   final _settingsUpdateStarted = StreamController<void>.broadcast();
 
@@ -74,6 +114,9 @@ class FwUpdateHandler extends PassportMessageHandler {
 
   Stream<FwTransferProgress> get transferProgress =>
       _transferProgress.stream.asBroadcastStream();
+
+  Stream<double> get downloadProgress =>
+      _downloadProgress.stream.asBroadcastStream();
 
   Stream<PrimeFwUpdateStep> get primeFwUpdate =>
       _primeFwUpdate.stream.asBroadcastStream().replayLatest(_latestStep);
@@ -209,6 +252,7 @@ class FwUpdateHandler extends PassportMessageHandler {
       _transferProgress.add(
         FwTransferProgress(progress: 0.0, remainingTime: ""),
       );
+      _downloadProgress.add(0.0);
       _updateFwUpdateState(PrimeFwUpdateStep.downloading);
       _updateDownloadState(
         S().firmware_downloadingUpdate_header,
@@ -241,6 +285,9 @@ class FwUpdateHandler extends PassportMessageHandler {
       _finishFirmwareFetchRequest(requestId);
     } else {
       List<Uint8List> patchBinaries = [];
+      final totalDownloadBytes = _getTotalPatchBytes(patches);
+      var completedDownloadBytes = 0;
+      var highWaterDownloadBytes = 0;
 
       try {
         for (final patch in patches) {
@@ -250,10 +297,22 @@ class FwUpdateHandler extends PassportMessageHandler {
           final binary = await Server().fetchPrimePatchBinary(
             patch,
             cancellationToken: cancellationToken,
+            onProgress: (progress) {
+              if (!_isCurrentFirmwareFetchRequest(requestId)) return;
+              final downloadedBytes =
+                  completedDownloadBytes + progress.downloaded.toInt();
+              if (downloadedBytes <= highWaterDownloadBytes) return;
+              highWaterDownloadBytes = downloadedBytes;
+              _downloadProgress.add(
+                (downloadedBytes / totalDownloadBytes).clamp(0.0, 1.0),
+              );
+            },
           );
           if (!_isCurrentFirmwareFetchRequest(requestId)) return;
           patchBinaries.add(binary);
+          completedDownloadBytes += patch.size;
         }
+        _downloadProgress.add(1.0);
         _firmwareDownloadCancellationToken = null;
         EnvoyReport().log(
           "fw_update_handler",
@@ -281,6 +340,7 @@ class FwUpdateHandler extends PassportMessageHandler {
 
       try {
         if (!_isCurrentFirmwareFetchRequest(requestId)) return;
+        _updateFwUpdateState(PrimeFwUpdateStep.transferring);
         final chunks = await _prepareFirmwarePayload(
           patchBinaries,
           requestId: requestId,
@@ -299,7 +359,6 @@ class FwUpdateHandler extends PassportMessageHandler {
           throw StateError('Failed to notify Prime that transfer is starting');
         }
 
-        _updateFwUpdateState(PrimeFwUpdateStep.transferring);
         await _sendFirmwarePayload(
           queue: ControlledQueue(chunks),
           requestId: requestId,
@@ -359,8 +418,6 @@ class FwUpdateHandler extends PassportMessageHandler {
     _transferEstimator.reset();
     _highWaterProgress = 0.0;
 
-    await _writeProgressSubscription?.cancel();
-
     if (qlConnection.senderXid == null || qlConnection.recipientXid == null) {
       EnvoyReport().log(
         "fw_update_handler",
@@ -382,11 +439,10 @@ class FwUpdateHandler extends PassportMessageHandler {
       "fw_update_handler",
       "Encoding ${patches.length} patch(es) into BLE chunks (chunkSize=$bleChunkSize)",
     );
-    final chunks = await api.encodeToChunks(
-      payload: patches,
-      sender: qlConnection.senderXid!,
-      recipient: qlConnection.recipientXid!,
-      chunkSize: bleChunkSize,
+    await Future<void>.delayed(Duration.zero);
+    final chunks = buildFirmwareChunks(
+      patches,
+      chunkSize: bleChunkSize.toInt(),
     );
     if (!_isCurrentFirmwareFetchRequest(requestId)) return null;
 
@@ -658,6 +714,9 @@ class FwUpdateHandler extends PassportMessageHandler {
         FwTransferProgress(progress: 0, remainingTime: ""),
       );
     }
+    if (!_downloadProgress.isClosed) {
+      _downloadProgress.sink.add(0);
+    }
     newVersion = "";
     totalPatchBytes = 0;
   }
@@ -665,11 +724,11 @@ class FwUpdateHandler extends PassportMessageHandler {
   @override
   void dispose() {
     _chunkQueue?.dispose();
-    _writeProgressSubscription?.cancel();
     _fetchState.close();
     _downloadState.close();
     _transferState.close();
     _primeFwUpdate.close();
+    _downloadProgress.close();
     _transferProgress.close();
     _settingsUpdateStarted.close();
     super.dispose();

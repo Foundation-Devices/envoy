@@ -28,6 +28,10 @@ class EnvoyReport extends ChangeNotifier {
   static final RegExp _extendedKeyPattern = RegExp(
     r'(?:xprv|tprv|xpub|tpub)[1-9A-HJ-NP-Za-km-z]{107}',
   );
+  static final RegExp _unknownFramePattern = RegExp(
+    r'^\s*(?:#?\d+:?\s*)?(?:<unknown\s*>|\[REDACTED\])\s*$',
+    caseSensitive: false,
+  );
   Database? _db;
   final StoreRef<int, Map<String, Object?>> _logsStore =
       intMapStoreFactory.store("logs");
@@ -159,9 +163,11 @@ class EnvoyReport extends ChangeNotifier {
     return logs;
   }
 
-  static String _redact(String value) {
-    return value.replaceAll(_extendedKeyPattern, _redactedExtendedKey);
-  }
+  static String _redact(String value) => value
+      .split('\n')
+      .where((line) => !_unknownFramePattern.hasMatch(line))
+      .join('\n')
+      .replaceAll(_extendedKeyPattern, _redactedExtendedKey);
 
   static String? _redactNullable(String? value) {
     return value == null ? null : _redact(value);
@@ -180,7 +186,8 @@ class EnvoyReport extends ChangeNotifier {
     } else {
       stackTrace = FlutterError.demangleStackTrace(stackTrace);
     }
-    Iterable<String> lines = stackTrace.toString().trimRight().split('\n');
+    Iterable<String> lines =
+        _redact(stackTrace.toString()).trimRight().split('\n');
     if (kIsWeb && lines.isNotEmpty) {
       // is addressed.
       lines = lines.skipWhile((String line) {
@@ -189,14 +196,10 @@ class EnvoyReport extends ChangeNotifier {
             line.contains('dart:sdk_internal');
       });
     }
+    lines = lines.skipWhile((value) => value.trim().isEmpty);
     if (maxFrames != null) {
       lines = lines.take(maxFrames);
     }
-    // skip empty lines
-    // skip lines that contain <unknown> FRAME from FRB
-    lines = lines
-        .skipWhile((value) => value.toLowerCase().contains("<unknown>"))
-        .skipWhile((value) => value.trim().isEmpty);
     // only show the first 50 lines
     // lines = lines.toList().reversed.take(50).toList().reversed;
     return lines.toList();

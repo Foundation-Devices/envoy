@@ -95,6 +95,7 @@ class Server {
   Future<Uint8List> fetchPrimePatchBinary(
     PrimePatch patch, {
     required DownloadCancellationToken cancellationToken,
+    void Function(Progress progress)? onProgress,
   }) async {
     final digest = patch.signedSha256.toLowerCase();
     if (!RegExp(r'^[0-9a-f]{64}$').hasMatch(digest)) {
@@ -118,6 +119,7 @@ class Server {
         expectedSize: patch.size,
         expectedSha256: digest,
         cancellationToken: cancellationToken,
+        onProgress: onProgress,
       );
       return file.readAsBytes();
     } catch (e, stack) {

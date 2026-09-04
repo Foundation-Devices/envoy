@@ -7,10 +7,12 @@ package com.foundationdevices.envoy
 import android.content.Context
 import android.os.Handler
 import android.os.Looper
+import android.util.Log
 import io.flutter.plugin.common.BinaryMessenger
 import io.flutter.plugin.common.EventChannel
 import org.json.JSONArray
 import org.json.JSONObject
+import java.util.concurrent.Executors
 
 // Sends native logs to Dart. Do not put secrets here.
 object NativeLogStream : EventChannel.StreamHandler {
@@ -22,6 +24,7 @@ object NativeLogStream : EventChannel.StreamHandler {
     private const val MAX_MESSAGE_LENGTH = 1024
 
     private val mainHandler = Handler(Looper.getMainLooper())
+    private val persistenceExecutor = Executors.newSingleThreadExecutor()
     private var applicationContext: Context? = null
     private var eventSink: EventChannel.EventSink? = null
 
@@ -39,6 +42,24 @@ object NativeLogStream : EventChannel.StreamHandler {
             )
         )
         mainHandler.post(::publishPendingEvents)
+    }
+
+    fun error(category: String, message: String, throwable: Throwable? = null) {
+        if (throwable == null) {
+            Log.e(category, message)
+        } else {
+            Log.e(category, message, throwable)
+        }
+        applicationContext?.let { context ->
+            persistenceExecutor.execute {
+                val reportMessage = if (throwable == null) {
+                    message
+                } else {
+                    "$message\n${Log.getStackTraceString(throwable)}"
+                }
+                log(context, category, reportMessage)
+            }
+        }
     }
 
     override fun onListen(arguments: Any?, events: EventChannel.EventSink?) {
@@ -79,7 +100,7 @@ object NativeLogStream : EventChannel.StreamHandler {
         }
         // Send each event once, then clear the queue.
         events.forEach(sink::success)
-        preferences.edit().remove(PENDING_EVENTS_KEY).commit()
+        preferences.edit().remove(PENDING_EVENTS_KEY).apply()
     }
 
     private fun decode(encoded: String?): List<Map<String, String>> {

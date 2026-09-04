@@ -11,6 +11,7 @@ import 'package:envoy/ble/quantum_link_router.dart';
 import 'package:envoy/business/devices.dart';
 import 'package:envoy/channels/ble_status.dart';
 import 'package:envoy/channels/bluetooth_channel.dart';
+import 'package:envoy/channels/serialized_operation_queue.dart';
 import 'package:envoy/ui/widgets/envoy_step_item.dart';
 import 'package:envoy/util/bug_report_helper.dart';
 import 'package:envoy/util/console.dart';
@@ -418,8 +419,8 @@ class QLConnection with EnvoyMessageWriter {
       return;
     }
 
-    if (getDevice() == null) {
-      kPrint("[$deviceId] Skipping auto-reconnect, paired device not found");
+    if (getDevice() == null && (_qlIdentity == null || _recipientXid == null)) {
+      kPrint("[$deviceId] Skipping auto-reconnect, QL identity not found");
       return;
     }
 
@@ -438,8 +439,8 @@ class QLConnection with EnvoyMessageWriter {
     }
 
     final device = getDevice();
-    if (device == null) {
-      kPrint("[$deviceId] Skipping auto-reconnect, paired device not found");
+    if (device == null && (_qlIdentity == null || _recipientXid == null)) {
+      kPrint("[$deviceId] Skipping auto-reconnect, QL identity not found");
       return;
     }
 
@@ -447,7 +448,9 @@ class QLConnection with EnvoyMessageWriter {
     var nativeReconnectStarted = false;
     try {
       kPrint("[$deviceId] Auto-reconnecting BLE");
-      await reconnect(device);
+      if (device != null) {
+        await reconnect(device);
+      }
       if (_qlIdentity == null || _recipientXid == null) {
         return;
       }
@@ -640,31 +643,46 @@ class QLConnection with EnvoyMessageWriter {
 
   @override
   Future<bool> writeMessage(api.QuantumLinkMessage message) async {
-    return _serializeWrite(() async {
-      final data = await encodeMessage(message: message);
-      kPrint("Encoded message! Size: ${data.length}");
-      if (Platform.isIOS || Platform.isAndroid) {
-        final success = await writeAll(data);
-        if (!success) {
-          kPrint(
-            "[$deviceId] BLE write failed for message type: ${message.runtimeType}",
+    return _writeQueue.enqueue(
+      () async {
+        final data = await encodeMessage(message: message);
+        kPrint("Encoded message! Size: ${data.length}");
+        if (Platform.isIOS || Platform.isAndroid) {
+          final success = await writeAll(data);
+          if (!success) {
+            kPrint(
+              "[$deviceId] BLE write failed for message type: ${message.runtimeType}",
+            );
+          }
+          return success;
+        } else {
+          throw UnimplementedError(
+            "Bluetooth write not implemented for this platform",
           );
         }
-        return success;
-      } else {
-        throw UnimplementedError(
-          "Bluetooth write not implemented for this platform",
-        );
-      }
-    }).timeout(
-      const Duration(seconds: 10),
-      onTimeout: () {
+      },
+      timeout: const Duration(seconds: 10),
+      onTimeout: () async {
         EnvoyReport().log(
           "QLConnection",
           "Timeout writing message of type ${message.runtimeType} to device $deviceId",
         );
         kPrint(
             "[$deviceId] Timeout writing message of type ${message.runtimeType}");
+        _abortFirmwareTransferOnDisconnect();
+        _writeQueue.completePending(false);
+        try {
+          await _methodChannel
+              .invokeMethod<void>('resetAfterWriteTimeout')
+              .timeout(const Duration(seconds: 2));
+        } catch (e, stack) {
+          debugPrintStack(
+            label: "[$deviceId] Failed to reset BLE after write timeout: $e",
+            stackTrace: stack,
+          );
+        }
+        // Also reject anything queued while native recovery was in flight.
+        _writeQueue.completePending(false);
         return false;
       },
     );
@@ -679,19 +697,8 @@ class QLConnection with EnvoyMessageWriter {
     return Stream.empty();
   }
 
-  Future<void> _writeChain = Future.value();
-
-  Future<T> _serializeWrite<T>(Future<T> Function() op) {
-    final completer = Completer<T>();
-    _writeChain = _writeChain.then((_) async {
-      try {
-        completer.complete(await op());
-      } catch (e, st) {
-        completer.completeError(e, st);
-      }
-    });
-    return completer.future;
-  }
+  final SerializedOperationQueue<bool> _writeQueue =
+      SerializedOperationQueue<bool>();
 
   Future<List<Uint8List>> encodeMessage({
     required api.QuantumLinkMessage message,

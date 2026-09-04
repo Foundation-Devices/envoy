@@ -13,7 +13,6 @@ import 'package:envoy/business/envoy_seed.dart';
 import 'package:envoy/business/exchange_rate.dart';
 import 'package:envoy/business/keys_manager.dart';
 import 'package:envoy/business/local_storage.dart';
-import 'package:envoy/business/map_data.dart';
 import 'package:envoy/business/notifications.dart';
 import 'package:envoy/business/prime_shard.dart';
 import 'package:envoy/business/scheduler.dart';
@@ -35,7 +34,6 @@ import 'package:envoy/util/envoy_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
-import 'package:flutter_map_tile_caching/flutter_map_tile_caching.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:http_tor/http_tor.dart';
@@ -113,8 +111,10 @@ Future<void> initSingletons({bool integrationTestsRunning = false}) async {
   await KeysManager.init();
   await EnvoySeed.init();
   await PrimeShard.init();
-  await FMTCObjectBoxBackend().initialise();
-  await const FMTCStore('mapStore').manage.create();
+  //Map data. to be removed
+  // await FMTCObjectBoxBackend().initialise();
+  // await const FMTCStore('mapStore').manage.create();
+  // MapData.init();
 
   // start() fails asynchronously, so a try/catch around the call can never
   // see bootstrap errors; observe them on the future instead.
@@ -129,7 +129,6 @@ Future<void> initSingletons({bool integrationTestsRunning = false}) async {
   Fees.restore();
   Notifications.init();
   FeedManager.init();
-  MapData.init();
   ConnectivityManager.init();
 }
 

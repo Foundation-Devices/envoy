@@ -75,6 +75,12 @@ final fwTransferProgress = StreamProvider<FwTransferProgress>((ref) {
   return device.qlHandler.fwUpdateHandler.transferProgress;
 });
 
+final fwDownloadProgress = StreamProvider<double>((ref) {
+  final device = ref.watch(onboardingDeviceProvider);
+  if (device == null) return const Stream.empty();
+  return device.qlHandler.fwUpdateHandler.downloadProgress;
+});
+
 class BluetoothManager extends WidgetsBindingObserver {
   //holds registered handlers.
   final PassportMessageRouter _messageRouter = PassportMessageRouter();
