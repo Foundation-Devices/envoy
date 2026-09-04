@@ -4,6 +4,7 @@
 
 // ignore_for_file: constant_identifier_names
 
+import 'dart:async';
 import 'dart:math';
 import 'package:envoy/account/accounts_manager.dart';
 import 'package:envoy/business/connectivity_manager.dart';
@@ -11,6 +12,7 @@ import 'package:envoy/business/envoy_seed.dart';
 import 'package:envoy/business/exchange_rate.dart';
 import 'package:envoy/business/node_url.dart';
 import 'package:envoy/ui/amount_entry.dart';
+import 'package:envoy/util/bug_report_helper.dart';
 import 'package:envoy/util/console.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -279,7 +281,13 @@ class Settings extends ChangeNotifier {
     usingTor = torEnabled;
     if (torEnabled) {
       ConnectivityManager().startTorGracePeriod();
-      Tor.instance.enable();
+      unawaited(Tor.instance.enable().catchError((Object e, StackTrace stack) {
+        kPrint("Error enabling Tor: $e", stackTrace: stack);
+        EnvoyReport()
+            .log("tor", "Tor failed to enable: $e", stackTrace: stack)
+            .ignore();
+        unawaited(ConnectivityManager().checkTor());
+      }));
     } else {
       Tor.instance.disable();
     }

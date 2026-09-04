@@ -7,6 +7,7 @@ import 'package:collection/collection.dart';
 import 'package:envoy/business/tor_restart_policy.dart';
 import 'package:envoy/util/bug_report_helper.dart';
 import 'package:envoy/util/console.dart';
+import 'package:flutter/foundation.dart';
 import 'package:http_tor/http_tor.dart';
 import 'package:tor/tor.dart';
 import 'package:envoy/business/settings.dart';
@@ -39,6 +40,13 @@ enum PublicServer {
 
 const Duration _tempDisablementTimeout = Duration(hours: 24);
 
+@visibleForTesting
+Duration? torTemporaryDisablementRemaining(
+        DateTime? disabledUntil, DateTime now) =>
+    disabledUntil != null && disabledUntil.isAfter(now)
+        ? disabledUntil.difference(now)
+        : null;
+
 class ConnectivityManager {
   bool get torEnabled {
     if (torTemporarilyDisabled) {
@@ -57,6 +65,8 @@ class ConnectivityManager {
 
   // Number of failed attempts before restarting Tor.
   static const int maxFailedTorAttempts = 5;
+  static const Duration _torStopTimeout = Duration(seconds: 15);
+  static const Duration _torStartTimeout = Duration(seconds: 90);
   final TorRestartPolicy _torRestartPolicy =
       TorRestartPolicy(failureThreshold: maxFailedTorAttempts);
   bool _restartSuppressionReported = false;
@@ -72,6 +82,12 @@ class ConnectivityManager {
   int _consecutiveNguFailures = 0;
   static const int _maxFailuresBeforeUnreachable = 3;
 
+  @visibleForTesting
+  ({int electrum, int ngu}) get serviceFailureCounters => (
+        electrum: _consecutiveElectrumFailures,
+        ngu: _consecutiveNguFailures,
+      );
+
   // Grace period after enabling Tor to allow circuits to stabilize
   DateTime? _torEnabledTimestamp;
   static const Duration _torGracePeriod = Duration(seconds: 45);
@@ -86,6 +102,7 @@ class ConnectivityManager {
 
   /// Coalesces overlapping Tor health checks into one probe.
   Future<void>? _torCheckInFlight;
+  Timer? _torRecoveryTimer;
 
   DateTime? torTemporarilyDisabledTimeStamp;
 
@@ -128,6 +145,7 @@ class ConnectivityManager {
   }
 
   void dispose() {
+    _torRecoveryTimer?.cancel();
     events.close();
   }
 
@@ -155,13 +173,14 @@ class ConnectivityManager {
   /// Call this when the app resumes from background, since the OS may have
   /// suspended networking while backgrounded, causing stale failures to
   /// accumulate and trigger false-positive "server down" toasts on resume.
+  /// Preserve the last observed service states until a real request changes
+  /// them; resuming the app is not evidence that either service recovered.
+  /// The Tor restart policy is deliberately left untouched: forgiving it on
+  /// every resume kept pushing automatic recovery further away.
   void resetFailureCounters() {
-    _recordTorSuccess();
     _consecutiveElectrumFailures = 0;
     _consecutiveNguFailures = 0;
     failedFoundationServerAttempts = 0;
-    electrumConnected = true;
-    nguConnected = true;
   }
 
   void electrumSuccess({required bool viaTor}) {
@@ -241,12 +260,12 @@ class ConnectivityManager {
   }
 
   Future<void> _checkTorOnce() async {
-    if (!torEnabled || nguConnected || electrumConnected) return;
+    if (_shouldSkipTorCheck()) return;
 
     final reachable = await _isTorReachable();
 
     // A service may have recovered while the probe was running.
-    if (!torEnabled || nguConnected || electrumConnected) return;
+    if (_shouldSkipTorCheck()) return;
 
     if (reachable) {
       _recordTorSuccess();
@@ -254,35 +273,61 @@ class ConnectivityManager {
     }
 
     final restartWasAlreadyAttempted = _torRestartPolicy.restartAttempted;
-    final shouldRestart = _torRestartPolicy.recordFailure();
+    final shouldRestart = Tor.instance.bootstrapped
+        ? _torRestartPolicy.recordFailure()
+        : _torRestartPolicy.recordConfirmedFailure();
     events.add(ConnectivityManagerEvent.torConnectedDoesntWork);
 
     if (shouldRestart) {
+      _restartSuppressionReported = false;
       unawaited(EnvoyReport().log(
         "Tor recovery",
-        "Tor health probe failed $maxFailedTorAttempts consecutive times; "
-            "starting one automatic restart. port=${Tor.instance.port}; "
+        "Tor health probe reached $maxFailedTorAttempts consecutive failures; "
+            "starting an automatic restart. "
+            "restartCooldown=${TorRestartPolicy.restartCooldown.inSeconds}s; "
+            "port=${Tor.instance.port}; "
             "NGU=${nguConnected ? 'reachable' : 'unreachable'}; "
             "Electrum=${electrumConnected ? 'reachable' : 'unreachable'}; "
             "lastError=${_lastTorProbeFailure ?? 'unknown'}",
       ));
       await _restartTor();
-    } else if (restartWasAlreadyAttempted && !_restartSuppressionReported) {
-      _restartSuppressionReported = true;
-      unawaited(EnvoyReport().log(
-        "Tor recovery",
-        "Tor remains unreachable after the automatic restart attempt; "
-            "suppressing further automatic restarts until Tor-backed traffic "
-            "succeeds. port=${Tor.instance.port}; "
-            "lastError=${_lastTorProbeFailure ?? 'unknown'}",
-      ));
+    } else if (restartWasAlreadyAttempted) {
+      _scheduleTorRecovery();
+      if (!_restartSuppressionReported) {
+        _restartSuppressionReported = true;
+        unawaited(EnvoyReport().log(
+          "Tor recovery",
+          "Tor remains unreachable after the automatic restart attempt; "
+              "suppressing another automatic restart during the "
+              "${TorRestartPolicy.restartCooldown.inSeconds}s cooldown. "
+              "port=${Tor.instance.port}; "
+              "lastError=${_lastTorProbeFailure ?? 'unknown'}",
+        ));
+      }
     }
   }
 
+  bool _shouldSkipTorCheck() {
+    if (!torEnabled || Tor.instance.starting) {
+      _deferTorRecoveryIfNeeded();
+      return true;
+    }
+    return Tor.instance.bootstrapped && (nguConnected || electrumConnected);
+  }
+
   Future<bool> _isTorReachable() async {
+    // HttpTor waits in isReady() until bootstrap completes. Avoid creating a
+    // poller that survives this probe's timeout when bootstrap is the failure.
+    if (!Tor.instance.bootstrapped) {
+      _lastTorProbeFailure = "Tor is not bootstrapped";
+      return false;
+    }
+
     try {
-      final r = await HttpTor().get(
-          "http://sanityunhavm6aolhyye4h6kbdlxjmc7zw2y7nadbni6vd43agm7xvid.onion");
+      final r = await HttpTor()
+          .get(
+              "http://sanityunhavm6aolhyye4h6kbdlxjmc7zw2y7nadbni6vd43agm7xvid.onion")
+          .timeout(const Duration(seconds: 90));
       if (r.statusCode == 200) {
         _lastTorProbeFailure = null;
         return true;
@@ -299,9 +344,40 @@ class ConnectivityManager {
   }
 
   void _recordTorSuccess() {
+    _torRecoveryTimer?.cancel();
+    _torRecoveryTimer = null;
     _torRestartPolicy.recordSuccess();
     _restartSuppressionReported = false;
     _lastTorProbeFailure = null;
+  }
+
+  void _deferTorRecoveryIfNeeded() {
+    if (_torRecoveryTimer != null) return;
+
+    if (_torRestartPolicy.restartAttempted && torEnabled) {
+      _scheduleTorRecovery(delay: TorRestartPolicy.restartCooldown);
+    }
+  }
+
+  void _scheduleTorRecovery({Duration? delay}) {
+    _torRecoveryTimer?.cancel();
+    _torRecoveryTimer = Timer(
+      delay ?? _torRestartPolicy.restartCooldownRemaining,
+      () {
+        _torRecoveryTimer = null;
+
+        final disablementRemaining = torTemporaryDisablementRemaining(
+          torTemporarilyDisabledTimeStamp,
+          DateTime.now(),
+        );
+        if (disablementRemaining != null) {
+          _scheduleTorRecovery(delay: disablementRemaining);
+          return;
+        }
+
+        unawaited(checkTor());
+      },
+    );
   }
 
   String _summarizeError(Object error) {
@@ -323,14 +399,26 @@ class ConnectivityManager {
   }
 
   Future<void> _restartTor() async {
-    if (_isRestartingTor || !torEnabled) {
+    if (_isRestartingTor || !torEnabled || Tor.instance.starting) {
       return;
     }
 
     _isRestartingTor = true;
     final previousPort = Tor.instance.port;
     try {
-      await Tor.instance.stop();
+      // stop() clears the route before it can fail, so skipping the start
+      // below would leave Tor enabled but never bootstrapped - a state where
+      // isReady() parks every Tor-routed request indefinitely.
+      try {
+        await Tor.instance.stop().timeout(_torStopTimeout);
+      } catch (e, stackTrace) {
+        unawaited(EnvoyReport().log(
+          "Tor recovery",
+          "Tor teardown failed; starting a replacement route anyway. "
+              "oldPort=$previousPort; error=${_summarizeError(e)}",
+          stackTrace: stackTrace,
+        ));
+      }
       final stoppedPort = Tor.instance.port;
       await Future.delayed(const Duration(milliseconds: 200));
 
@@ -343,24 +431,67 @@ class ConnectivityManager {
         return;
       }
 
-      await Tor.instance.start();
+      final start = Tor.instance.start();
+      try {
+        await start.timeout(_torStartTimeout);
+      } on TimeoutException catch (e, stackTrace) {
+        _beginTorGracePeriod();
+        unawaited(EnvoyReport().log(
+          "Tor recovery",
+          "Automatic Tor restart is still bootstrapping after "
+              "${_torStartTimeout.inSeconds}s. oldPort=$previousPort; "
+              "currentPort=${Tor.instance.port}; error=${_summarizeError(e)}",
+          stackTrace: stackTrace,
+        ));
+        unawaited(_observeTorStart(start, previousPort));
+        return;
+      }
+
       unawaited(EnvoyReport().log(
         "Tor recovery",
         "Automatic Tor restart completed. oldPort=$previousPort; "
             "stoppedPort=$stoppedPort; newPort=${Tor.instance.port}; "
-            "further restarts remain suppressed until Tor-backed traffic "
-            "succeeds",
+            "another automatic restart is allowed after the "
+            "${TorRestartPolicy.restartCooldown.inSeconds}s cooldown unless "
+            "Tor-backed traffic succeeds first",
       ));
       _beginTorGracePeriod();
     } catch (e, stackTrace) {
-      unawaited(EnvoyReport().log(
-        "Tor recovery",
-        "Automatic Tor restart failed. oldPort=$previousPort; "
-            "currentPort=${Tor.instance.port}; error=${_summarizeError(e)}",
-        stackTrace: stackTrace,
-      ));
+      _handleTorRestartFailure(e, stackTrace, previousPort);
     } finally {
       _isRestartingTor = false;
     }
+  }
+
+  Future<void> _observeTorStart(Future<void> start, int previousPort) async {
+    try {
+      await start;
+      if (!torEnabled) return;
+
+      unawaited(EnvoyReport().log(
+        "Tor recovery",
+        "Automatic Tor restart completed after the foreground timeout. "
+            "oldPort=$previousPort; newPort=${Tor.instance.port}",
+      ));
+      _beginTorGracePeriod();
+    } catch (e, stackTrace) {
+      if (!torEnabled) return;
+      _handleTorRestartFailure(e, stackTrace, previousPort);
+    }
+  }
+
+  void _handleTorRestartFailure(
+    Object error,
+    StackTrace stackTrace,
+    int previousPort,
+  ) {
+    _lastTorProbeFailure = _summarizeError(error);
+    _scheduleTorRecovery();
+    unawaited(EnvoyReport().log(
+      "Tor recovery",
+      "Automatic Tor restart failed. oldPort=$previousPort; "
+          "currentPort=${Tor.instance.port}; error=$_lastTorProbeFailure",
+      stackTrace: stackTrace,
+    ));
   }
 }

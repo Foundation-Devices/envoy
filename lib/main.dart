@@ -116,11 +116,15 @@ Future<void> initSingletons({bool integrationTestsRunning = false}) async {
   await FMTCObjectBoxBackend().initialise();
   await const FMTCStore('mapStore').manage.create();
 
-  try {
-    Tor.instance.start();
-  } on Exception catch (e, stack) {
+  // start() fails asynchronously, so a try/catch around the call can never
+  // see bootstrap errors; observe them on the future instead.
+  unawaited(Tor.instance.start().catchError((Object e, StackTrace stack) {
     kPrint("Error starting Tor: $e", stackTrace: stack);
-  }
+    EnvoyReport()
+        .log("tor", "Tor failed to start: $e", stackTrace: stack)
+        .ignore();
+    unawaited(ConnectivityManager().checkTor());
+  }));
 
   Fees.restore();
   Notifications.init();
