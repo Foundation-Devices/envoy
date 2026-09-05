@@ -28,9 +28,14 @@ class GetFileRequest {
 
 class FileDownload {
   final Stream<http.Progress> progress;
+  final Future<void> completed;
   final void Function() cancel;
 
-  FileDownload({required this.progress, required this.cancel});
+  FileDownload({
+    required this.progress,
+    required this.completed,
+    required this.cancel,
+  });
 }
 
 class HttpTor {
@@ -193,9 +198,11 @@ class HttpTor {
       torPort: tor.port,
       progressStream: progressStream,
     );
+    final completed = download.wait()..ignore();
 
     return FileDownload(
       progress: progressStream.field0.stream,
+      completed: completed,
       cancel: download.cancel,
     );
   }
