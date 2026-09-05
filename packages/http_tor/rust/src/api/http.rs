@@ -13,8 +13,7 @@ use reqwest::header::{
 use reqwest::StatusCode;
 use std::collections::HashMap;
 use std::fmt::Write as FmtWrite;
-use std::fs::File as StdFile;
-use std::io::{ErrorKind, Write as IoWrite};
+use std::io::ErrorKind;
 use std::path::{Path, PathBuf};
 use std::str::FromStr;
 use std::sync::{Arc, Weak};
@@ -22,8 +21,8 @@ use std::time::Duration;
 use tokio::fs::{self, OpenOptions};
 use tokio::io::{AsyncReadExt, AsyncWriteExt};
 use tokio::runtime::{Builder, Runtime};
-use tokio::sync::Mutex;
-use tokio::task::JoinHandle;
+use tokio::sync::{Mutex, OnceCell};
+use tokio::task::{AbortHandle, JoinHandle};
 use tokio::time;
 use tokio_util::sync::CancellationToken;
 
@@ -82,6 +81,13 @@ struct DownloadPolicy {
     overall_timeout: Duration,
 }
 
+#[derive(Clone, Copy)]
+struct FileDownloadPolicy {
+    connect_timeout: Duration,
+    response_timeout: Duration,
+    stall_timeout: Duration,
+}
+
 fn download_policy(overall_timeout: Duration) -> DownloadPolicy {
     DownloadPolicy {
         connect_timeout: DOWNLOAD_CONNECT_TIMEOUT,
@@ -90,6 +96,14 @@ fn download_policy(overall_timeout: Duration) -> DownloadPolicy {
         retry_delay: DOWNLOAD_RETRY_DELAY,
         max_attempts: DOWNLOAD_MAX_ATTEMPTS,
         overall_timeout,
+    }
+}
+
+fn file_download_policy() -> FileDownloadPolicy {
+    FileDownloadPolicy {
+        connect_timeout: DOWNLOAD_CONNECT_TIMEOUT,
+        response_timeout: DOWNLOAD_RESPONSE_TIMEOUT,
+        stall_timeout: DOWNLOAD_STALL_TIMEOUT,
     }
 }
 
@@ -103,12 +117,41 @@ lazy_static! {
 }
 
 pub struct Download {
-    pub handle: Arc<JoinHandle<Result<(), anyhow::Error>>>,
+    abort_handle: AbortHandle,
+    handle: Arc<Mutex<JoinHandle<Result<()>>>>,
+    completion: Arc<OnceCell<Result<(), String>>>,
 }
 
 impl Download {
+    fn new(handle: JoinHandle<Result<()>>) -> Self {
+        Self {
+            abort_handle: handle.abort_handle(),
+            handle: Arc::new(Mutex::new(handle)),
+            completion: Arc::new(OnceCell::new()),
+        }
+    }
+
     pub fn cancel(&self) {
-        self.handle.abort();
+        self.abort_handle.abort();
+    }
+
+    pub async fn wait(&self) -> Result<()> {
+        let completion = self
+            .completion
+            .get_or_init(|| async {
+                let mut handle = self.handle.lock().await;
+                match (&mut *handle).await {
+                    Ok(result) => result.map_err(|error| format!("{error:?}")),
+                    Err(error) if error.is_cancelled() => Err("Download cancelled".to_owned()),
+                    Err(error) => Err(format!("Download task failed: {error}")),
+                }
+            })
+            .await;
+
+        match completion {
+            Ok(()) => Ok(()),
+            Err(error) => Err(anyhow!(error.clone())),
+        }
     }
 }
 
@@ -579,55 +622,107 @@ pub async fn get_file(
     progress_stream: ProgressStream,
 ) -> Download {
     let rt = RUNTIME.as_ref().unwrap();
-    let handle = rt.spawn(async move {
-        let client: reqwest::Client = if tor_port > 0 {
-            let proxy = reqwest::Proxy::all(format!("socks5h://127.0.0.1:{}", tor_port))?;
-            reqwest::Client::builder()
-                .connect_timeout(CONNECT_TIMEOUT)
-                .timeout(REQUEST_TIMEOUT)
-                .proxy(proxy)
-                .build()?
-        } else {
-            reqwest::Client::builder()
-                .connect_timeout(CONNECT_TIMEOUT)
-                .timeout(REQUEST_TIMEOUT)
-                .no_proxy()
-                .build()?
+    let handle = rt.spawn(download_file_inner(
+        PathBuf::from(path),
+        url,
+        tor_port,
+        Some(progress_stream),
+        file_download_policy(),
+    ));
+
+    Download::new(handle)
+}
+
+async fn download_file_inner(
+    path: PathBuf,
+    url: String,
+    tor_port: i32,
+    progress_stream: Option<ProgressStream>,
+    policy: FileDownloadPolicy,
+) -> Result<()> {
+    let client: reqwest::Client = if tor_port > 0 {
+        let proxy = reqwest::Proxy::all(format!("socks5h://127.0.0.1:{tor_port}"))?;
+        reqwest::Client::builder()
+            .connect_timeout(policy.connect_timeout)
+            .proxy(proxy)
+            .build()?
+    } else {
+        reqwest::Client::builder()
+            .connect_timeout(policy.connect_timeout)
+            .no_proxy()
+            .build()?
+    };
+
+    let mut response = time::timeout(policy.response_timeout, client.get(&url).send())
+        .await
+        .context("Timed out waiting for download response")??
+        .error_for_status()
+        .context("Download server returned an error response")?;
+    let advertised_total = response.content_length();
+    let mut file = OpenOptions::new()
+        .create(true)
+        .truncate(true)
+        .write(true)
+        .open(&path)
+        .await
+        .with_context(|| format!("Failed to open download destination {}", path.display()))?;
+    let mut downloaded = 0_u64;
+    let mut last_published = 0_u64;
+
+    loop {
+        let chunk = match time::timeout(policy.stall_timeout, response.chunk()).await {
+            Err(error) => return Err(error).context("Download stalled while waiting for data"),
+            Ok(Err(error)) => {
+                if let Some(total) = advertised_total {
+                    bail!("Download ended after {downloaded} bytes, expected {total}: {error}");
+                }
+                return Err(error).context("Failed while reading download data");
+            }
+            Ok(Ok(chunk)) => chunk,
+        };
+        let Some(chunk) = chunk else {
+            break;
         };
 
-        let mut res = client.get(&url).send().await?;
-        let total_size = res
-            .content_length()
-            .ok_or_else(|| anyhow!("Failed to get content length"))?;
-        let mut file = StdFile::create(path)?;
-        let mut downloaded: u64 = 0;
-
-        while let Some(chunk) = res.chunk().await? {
-            file.write_all(&chunk)?;
-            let new_size = std::cmp::min(downloaded + (chunk.len() as u64), total_size);
-            downloaded = new_size;
-
-            // Send progress to Dart via StreamSink
-            // Handle the StreamSink error explicitly since it doesn't implement std::error::Error
-            if let Err(_e) = progress_stream.0.add(Progress {
-                downloaded,
-                total: total_size,
-            }) {
-                // Progress update failed, but we can continue with the download
-                // Optionally log the error if you have a logging framework set up
-                // log::warn!("Failed to send progress update: {:?}", _e);
+        file.write_all(&chunk)
+            .await
+            .with_context(|| format!("Failed to write download destination {}", path.display()))?;
+        downloaded = downloaded
+            .checked_add(chunk.len() as u64)
+            .ok_or_else(|| anyhow!("Downloaded byte count overflow"))?;
+        if downloaded.saturating_sub(last_published) >= DOWNLOAD_PROGRESS_STEP
+            || advertised_total == Some(downloaded)
+        {
+            if let Some(progress_stream) = &progress_stream {
+                let _ = progress_stream.0.add(Progress {
+                    downloaded,
+                    total: advertised_total.unwrap_or(0),
+                });
+                last_published = downloaded;
             }
-
-            // An opportunity to yield to other tasks
-            time::sleep(Duration::from_secs(0)).await;
         }
-
-        Ok(())
-    });
-
-    Download {
-        handle: Arc::new(handle),
     }
+
+    if let Some(total) = advertised_total {
+        ensure!(
+            downloaded == total,
+            "Download ended after {downloaded} bytes, expected {total}"
+        );
+    }
+    file.flush()
+        .await
+        .with_context(|| format!("Failed to flush download destination {}", path.display()))?;
+
+    // Unknown-length responses use zero during streaming. Publish the actual
+    // total at EOF so callers can deterministically recognize completion.
+    if let Some(progress_stream) = &progress_stream {
+        let _ = progress_stream.0.add(Progress {
+            downloaded,
+            total: advertised_total.unwrap_or(downloaded),
+        });
+    }
+
+    Ok(())
 }
 
 /// Make an HTTP request
@@ -743,6 +838,14 @@ mod tests {
             retry_delay: Duration::from_millis(1),
             max_attempts: 2,
             overall_timeout: Duration::from_secs(20),
+        }
+    }
+
+    fn test_file_policy() -> FileDownloadPolicy {
+        FileDownloadPolicy {
+            connect_timeout: Duration::from_secs(1),
+            response_timeout: Duration::from_secs(1),
+            stall_timeout: Duration::from_millis(400),
         }
     }
 
@@ -1251,6 +1354,141 @@ mod tests {
             "the body must make progress beyond the 400 ms stall timeout"
         );
         cleanup(&path).await;
+    }
+
+    #[tokio::test]
+    async fn legacy_download_accepts_an_unknown_content_length() {
+        let contents = b"streamed-without-content-length";
+        let listener = TcpListener::bind("127.0.0.1:0").await.unwrap();
+        let address = listener.local_addr().unwrap();
+        let server = tokio::spawn(async move {
+            let (mut stream, _) = listener.accept().await.unwrap();
+            read_request(&mut stream).await;
+            stream
+                .write_all(b"HTTP/1.1 200 OK\r\nConnection: close\r\n\r\n")
+                .await
+                .unwrap();
+            stream.write_all(contents).await.unwrap();
+        });
+
+        let path = test_path("legacy-unknown-length");
+        download_file_inner(
+            path.clone(),
+            format!("http://{address}/video"),
+            -1,
+            None,
+            test_file_policy(),
+        )
+        .await
+        .unwrap();
+
+        server.await.unwrap();
+        assert_eq!(fs::read(&path).await.unwrap(), contents);
+        cleanup(&path).await;
+    }
+
+    #[tokio::test]
+    async fn legacy_download_rejects_http_errors_before_truncating() {
+        let listener = TcpListener::bind("127.0.0.1:0").await.unwrap();
+        let address = listener.local_addr().unwrap();
+        let server = tokio::spawn(async move {
+            let (mut stream, _) = listener.accept().await.unwrap();
+            read_request(&mut stream).await;
+            write_response(&mut stream, "404 Not Found", "", b"missing").await;
+        });
+
+        let path = test_path("legacy-http-error");
+        fs::write(&path, b"existing-file").await.unwrap();
+        let error = download_file_inner(
+            path.clone(),
+            format!("http://{address}/video"),
+            -1,
+            None,
+            test_file_policy(),
+        )
+        .await
+        .unwrap_err();
+
+        server.await.unwrap();
+        assert!(error.to_string().contains("error response"));
+        assert_eq!(fs::read(&path).await.unwrap(), b"existing-file");
+        cleanup(&path).await;
+    }
+
+    #[tokio::test]
+    async fn legacy_download_wait_propagates_task_errors() {
+        let download = Download::new(tokio::spawn(async {
+            Err(anyhow!("simulated stream failure"))
+        }));
+
+        let first_error = download.wait().await.unwrap_err();
+        let second_error = download.wait().await.unwrap_err();
+
+        assert!(first_error.to_string().contains("simulated stream failure"));
+        assert_eq!(first_error.to_string(), second_error.to_string());
+    }
+
+    #[tokio::test]
+    async fn legacy_download_wait_reports_a_short_response_body() {
+        let contents = b"short-body";
+        let expected_size = contents.len() + 10;
+        let listener = TcpListener::bind("127.0.0.1:0").await.unwrap();
+        let address = listener.local_addr().unwrap();
+        let server = tokio::spawn(async move {
+            let (mut stream, _) = listener.accept().await.unwrap();
+            read_request(&mut stream).await;
+            stream
+                .write_all(
+                    format!(
+                        "HTTP/1.1 200 OK\r\nContent-Length: {expected_size}\r\nConnection: close\r\n\r\n"
+                    )
+                    .as_bytes(),
+                )
+                .await
+                .unwrap();
+            stream.write_all(contents).await.unwrap();
+        });
+
+        let path = test_path("legacy-short-body");
+        let download = Download::new(tokio::spawn(download_file_inner(
+            path.clone(),
+            format!("http://{address}/video"),
+            -1,
+            None,
+            test_file_policy(),
+        )));
+        let error = download.wait().await.unwrap_err();
+
+        server.await.unwrap();
+        assert!(error
+            .to_string()
+            .contains(&format!("expected {expected_size}")));
+        cleanup(&path).await;
+    }
+
+    #[tokio::test]
+    async fn legacy_download_wait_reports_cancellation() {
+        let download = Download::new(tokio::spawn(async {
+            time::sleep(Duration::from_secs(60)).await;
+            Ok(())
+        }));
+
+        download.cancel();
+        let error = download.wait().await.unwrap_err();
+
+        assert!(error.to_string().contains("cancelled"));
+    }
+
+    #[tokio::test]
+    async fn legacy_download_wait_can_resume_after_caller_cancellation() {
+        let download = Download::new(tokio::spawn(async {
+            time::sleep(Duration::from_millis(50)).await;
+            Ok(())
+        }));
+
+        let timed_out = time::timeout(Duration::from_millis(1), download.wait()).await;
+        assert!(timed_out.is_err());
+        download.wait().await.unwrap();
     }
 }
 

@@ -2,9 +2,6 @@
 #
 # SPDX-License-Identifier: GPL-3.0-or-later
 
-rust_preamble: | 
-  use tokio::task::JoinHandle;
-  use anyhow::Error;
 rust_input: crate::api
 rust_root: rust/
 dart_output: lib/src/rust

@@ -66,7 +66,7 @@ class RustLib extends BaseEntrypoint<RustLibApi, RustLibApiImpl, RustLibWire> {
   String get codegenVersion => '2.11.1';
 
   @override
-  int get rustContentHash => -130592199;
+  int get rustContentHash => 311763210;
 
   static const kDefaultExternalLibraryLoaderConfig =
       ExternalLibraryLoaderConfig(
@@ -83,16 +83,9 @@ abstract class RustLibApi extends BaseApi {
 
   DownloadCancellationToken crateApiHttpDownloadCancellationTokenNew();
 
-  ArcJoinHandleResultError crateApiHttpDownloadAutoAccessorGetHandle({
-    required Download that,
-  });
-
-  void crateApiHttpDownloadAutoAccessorSetHandle({
-    required Download that,
-    required ArcJoinHandleResultError handle,
-  });
-
   Future<void> crateApiHttpDownloadCancel({required Download that});
+
+  Future<void> crateApiHttpDownloadWait({required Download that});
 
   Future<void> crateApiHttpDownloadVerifiedFile({
     required String path,
@@ -124,15 +117,6 @@ abstract class RustLibApi extends BaseApi {
     required Map<String, String> headers,
     required bool extendedTimeout,
   });
-
-  RustArcIncrementStrongCountFnType
-  get rust_arc_increment_strong_count_ArcJoinHandleResultError;
-
-  RustArcDecrementStrongCountFnType
-  get rust_arc_decrement_strong_count_ArcJoinHandleResultError;
-
-  CrossPlatformFinalizerArg
-  get rust_arc_decrement_strong_count_ArcJoinHandleResultErrorPtr;
 
   RustArcIncrementStrongCountFnType
   get rust_arc_increment_strong_count_Download;
@@ -218,74 +202,6 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       );
 
   @override
-  ArcJoinHandleResultError crateApiHttpDownloadAutoAccessorGetHandle({
-    required Download that,
-  }) {
-    return handler.executeSync(
-      SyncTask(
-        callFfi: () {
-          final serializer = SseSerializer(generalizedFrbRustBinding);
-          sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerDownload(
-            that,
-            serializer,
-          );
-          return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 3)!;
-        },
-        codec: SseCodec(
-          decodeSuccessData:
-              sse_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerArcJoinHandleResultError,
-          decodeErrorData: null,
-        ),
-        constMeta: kCrateApiHttpDownloadAutoAccessorGetHandleConstMeta,
-        argValues: [that],
-        apiImpl: this,
-      ),
-    );
-  }
-
-  TaskConstMeta get kCrateApiHttpDownloadAutoAccessorGetHandleConstMeta =>
-      const TaskConstMeta(
-        debugName: "Download_auto_accessor_get_handle",
-        argNames: ["that"],
-      );
-
-  @override
-  void crateApiHttpDownloadAutoAccessorSetHandle({
-    required Download that,
-    required ArcJoinHandleResultError handle,
-  }) {
-    return handler.executeSync(
-      SyncTask(
-        callFfi: () {
-          final serializer = SseSerializer(generalizedFrbRustBinding);
-          sse_encode_Auto_RefMut_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerDownload(
-            that,
-            serializer,
-          );
-          sse_encode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerArcJoinHandleResultError(
-            handle,
-            serializer,
-          );
-          return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 4)!;
-        },
-        codec: SseCodec(
-          decodeSuccessData: sse_decode_unit,
-          decodeErrorData: null,
-        ),
-        constMeta: kCrateApiHttpDownloadAutoAccessorSetHandleConstMeta,
-        argValues: [that, handle],
-        apiImpl: this,
-      ),
-    );
-  }
-
-  TaskConstMeta get kCrateApiHttpDownloadAutoAccessorSetHandleConstMeta =>
-      const TaskConstMeta(
-        debugName: "Download_auto_accessor_set_handle",
-        argNames: ["that", "handle"],
-      );
-
-  @override
   Future<void> crateApiHttpDownloadCancel({required Download that}) {
     return handler.executeNormal(
       NormalTask(
@@ -298,7 +214,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
           pdeCallFfi(
             generalizedFrbRustBinding,
             serializer,
-            funcId: 5,
+            funcId: 3,
             port: port_,
           );
         },
@@ -315,6 +231,37 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
 
   TaskConstMeta get kCrateApiHttpDownloadCancelConstMeta =>
       const TaskConstMeta(debugName: "Download_cancel", argNames: ["that"]);
+
+  @override
+  Future<void> crateApiHttpDownloadWait({required Download that}) {
+    return handler.executeNormal(
+      NormalTask(
+        callFfi: (port_) {
+          final serializer = SseSerializer(generalizedFrbRustBinding);
+          sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerDownload(
+            that,
+            serializer,
+          );
+          pdeCallFfi(
+            generalizedFrbRustBinding,
+            serializer,
+            funcId: 4,
+            port: port_,
+          );
+        },
+        codec: SseCodec(
+          decodeSuccessData: sse_decode_unit,
+          decodeErrorData: sse_decode_AnyhowException,
+        ),
+        constMeta: kCrateApiHttpDownloadWaitConstMeta,
+        argValues: [that],
+        apiImpl: this,
+      ),
+    );
+  }
+
+  TaskConstMeta get kCrateApiHttpDownloadWaitConstMeta =>
+      const TaskConstMeta(debugName: "Download_wait", argNames: ["that"]);
 
   @override
   Future<void> crateApiHttpDownloadVerifiedFile({
@@ -345,7 +292,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
           pdeCallFfi(
             generalizedFrbRustBinding,
             serializer,
-            funcId: 6,
+            funcId: 5,
             port: port_,
           );
         },
@@ -402,7 +349,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
           pdeCallFfi(
             generalizedFrbRustBinding,
             serializer,
-            funcId: 7,
+            funcId: 6,
             port: port_,
           );
         },
@@ -433,7 +380,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
           pdeCallFfi(
             generalizedFrbRustBinding,
             serializer,
-            funcId: 8,
+            funcId: 7,
             port: port_,
           );
         },
@@ -460,7 +407,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
           pdeCallFfi(
             generalizedFrbRustBinding,
             serializer,
-            funcId: 9,
+            funcId: 8,
             port: port_,
           );
         },
@@ -500,7 +447,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
           pdeCallFfi(
             generalizedFrbRustBinding,
             serializer,
-            funcId: 10,
+            funcId: 9,
             port: port_,
           );
         },
@@ -519,14 +466,6 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
     debugName: "request",
     argNames: ["verb", "url", "torPort", "body", "headers", "extendedTimeout"],
   );
-
-  RustArcIncrementStrongCountFnType
-  get rust_arc_increment_strong_count_ArcJoinHandleResultError => wire
-      .rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerArcJoinHandleResultError;
-
-  RustArcDecrementStrongCountFnType
-  get rust_arc_decrement_strong_count_ArcJoinHandleResultError => wire
-      .rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerArcJoinHandleResultError;
 
   RustArcIncrementStrongCountFnType
   get rust_arc_increment_strong_count_Download => wire
@@ -551,17 +490,6 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
-  ArcJoinHandleResultError
-  dco_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerArcJoinHandleResultError(
-    dynamic raw,
-  ) {
-    // Codec=Dco (DartCObject based), see doc to use other codecs
-    return ArcJoinHandleResultErrorImpl.frbInternalDcoDecode(
-      raw as List<dynamic>,
-    );
-  }
-
-  @protected
   Download
   dco_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerDownload(
     dynamic raw,
@@ -579,15 +507,6 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
     return DownloadCancellationTokenImpl.frbInternalDcoDecode(
       raw as List<dynamic>,
     );
-  }
-
-  @protected
-  Download
-  dco_decode_Auto_RefMut_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerDownload(
-    dynamic raw,
-  ) {
-    // Codec=Dco (DartCObject based), see doc to use other codecs
-    return DownloadImpl.frbInternalDcoDecode(raw as List<dynamic>);
   }
 
   @protected
@@ -617,17 +536,6 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       dco_decode_list_record_string_string(
         raw,
       ).map((e) => MapEntry(e.$1, e.$2)),
-    );
-  }
-
-  @protected
-  ArcJoinHandleResultError
-  dco_decode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerArcJoinHandleResultError(
-    dynamic raw,
-  ) {
-    // Codec=Dco (DartCObject based), see doc to use other codecs
-    return ArcJoinHandleResultErrorImpl.frbInternalDcoDecode(
-      raw as List<dynamic>,
     );
   }
 
@@ -787,18 +695,6 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
-  ArcJoinHandleResultError
-  sse_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerArcJoinHandleResultError(
-    SseDeserializer deserializer,
-  ) {
-    // Codec=Sse (Serialization based), see doc to use other codecs
-    return ArcJoinHandleResultErrorImpl.frbInternalSseDecode(
-      sse_decode_usize(deserializer),
-      sse_decode_i_32(deserializer),
-    );
-  }
-
-  @protected
   Download
   sse_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerDownload(
     SseDeserializer deserializer,
@@ -817,18 +713,6 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   ) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     return DownloadCancellationTokenImpl.frbInternalSseDecode(
-      sse_decode_usize(deserializer),
-      sse_decode_i_32(deserializer),
-    );
-  }
-
-  @protected
-  Download
-  sse_decode_Auto_RefMut_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerDownload(
-    SseDeserializer deserializer,
-  ) {
-    // Codec=Sse (Serialization based), see doc to use other codecs
-    return DownloadImpl.frbInternalSseDecode(
       sse_decode_usize(deserializer),
       sse_decode_i_32(deserializer),
     );
@@ -865,18 +749,6 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
     // Codec=Sse (Serialization based), see doc to use other codecs
     var inner = sse_decode_list_record_string_string(deserializer);
     return Map.fromEntries(inner.map((e) => MapEntry(e.$1, e.$2)));
-  }
-
-  @protected
-  ArcJoinHandleResultError
-  sse_decode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerArcJoinHandleResultError(
-    SseDeserializer deserializer,
-  ) {
-    // Codec=Sse (Serialization based), see doc to use other codecs
-    return ArcJoinHandleResultErrorImpl.frbInternalSseDecode(
-      sse_decode_usize(deserializer),
-      sse_decode_i_32(deserializer),
-    );
   }
 
   @protected
@@ -1055,19 +927,6 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
 
   @protected
   void
-  sse_encode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerArcJoinHandleResultError(
-    ArcJoinHandleResultError self,
-    SseSerializer serializer,
-  ) {
-    // Codec=Sse (Serialization based), see doc to use other codecs
-    sse_encode_usize(
-      (self as ArcJoinHandleResultErrorImpl).frbInternalSseEncode(move: true),
-      serializer,
-    );
-  }
-
-  @protected
-  void
   sse_encode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerDownload(
     Download self,
     SseSerializer serializer,
@@ -1088,19 +947,6 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
     // Codec=Sse (Serialization based), see doc to use other codecs
     sse_encode_usize(
       (self as DownloadCancellationTokenImpl).frbInternalSseEncode(move: true),
-      serializer,
-    );
-  }
-
-  @protected
-  void
-  sse_encode_Auto_RefMut_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerDownload(
-    Download self,
-    SseSerializer serializer,
-  ) {
-    // Codec=Sse (Serialization based), see doc to use other codecs
-    sse_encode_usize(
-      (self as DownloadImpl).frbInternalSseEncode(move: false),
       serializer,
     );
   }
@@ -1139,19 +985,6 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
     // Codec=Sse (Serialization based), see doc to use other codecs
     sse_encode_list_record_string_string(
       self.entries.map((e) => (e.key, e.value)).toList(),
-      serializer,
-    );
-  }
-
-  @protected
-  void
-  sse_encode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerArcJoinHandleResultError(
-    ArcJoinHandleResultError self,
-    SseSerializer serializer,
-  ) {
-    // Codec=Sse (Serialization based), see doc to use other codecs
-    sse_encode_usize(
-      (self as ArcJoinHandleResultErrorImpl).frbInternalSseEncode(move: null),
       serializer,
     );
   }
@@ -1332,35 +1165,6 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
 }
 
 @sealed
-class ArcJoinHandleResultErrorImpl extends RustOpaque
-    implements ArcJoinHandleResultError {
-  // Not to be used by end users
-  ArcJoinHandleResultErrorImpl.frbInternalDcoDecode(List<dynamic> wire)
-    : super.frbInternalDcoDecode(wire, _kStaticData);
-
-  // Not to be used by end users
-  ArcJoinHandleResultErrorImpl.frbInternalSseDecode(
-    BigInt ptr,
-    int externalSizeOnNative,
-  ) : super.frbInternalSseDecode(ptr, externalSizeOnNative, _kStaticData);
-
-  static final _kStaticData = RustArcStaticData(
-    rustArcIncrementStrongCount: RustLib
-        .instance
-        .api
-        .rust_arc_increment_strong_count_ArcJoinHandleResultError,
-    rustArcDecrementStrongCount: RustLib
-        .instance
-        .api
-        .rust_arc_decrement_strong_count_ArcJoinHandleResultError,
-    rustArcDecrementStrongCountPtr: RustLib
-        .instance
-        .api
-        .rust_arc_decrement_strong_count_ArcJoinHandleResultErrorPtr,
-  );
-}
-
-@sealed
 class DownloadCancellationTokenImpl extends RustOpaque
     implements DownloadCancellationToken {
   // Not to be used by end users
@@ -1411,12 +1215,9 @@ class DownloadImpl extends RustOpaque implements Download {
         RustLib.instance.api.rust_arc_decrement_strong_count_DownloadPtr,
   );
 
-  ArcJoinHandleResultError get handle => RustLib.instance.api
-      .crateApiHttpDownloadAutoAccessorGetHandle(that: this);
-
-  set handle(ArcJoinHandleResultError handle) => RustLib.instance.api
-      .crateApiHttpDownloadAutoAccessorSetHandle(that: this, handle: handle);
-
   Future<void> cancel() =>
       RustLib.instance.api.crateApiHttpDownloadCancel(that: this);
+
+  Future<void> wait() =>
+      RustLib.instance.api.crateApiHttpDownloadWait(that: this);
 }
