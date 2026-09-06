@@ -1208,32 +1208,18 @@ pub fn get_server_features(
     proxy: Option<String>,
     validate_domain: bool,
 ) -> ServerFeatures {
-    // Mirror ngwallet's utils::build_electrum_client logic: when routing
-    // through a proxy (Tor) domain validation is always skipped, since the
-    // connection is anonymised and cert-pinning is meaningless over SOCKS5.
-    let effective_validate_domain = proxy.is_none() && validate_domain;
-
-    let config = match proxy {
-        Some(proxy_addr) => {
-            let socks = Socks5Config::new(&proxy_addr);
-            ConfigBuilder::new()
-                .timeout(Some(30))
-                .socks5(Some(socks))
-                .validate_domain(false)
-                .build()
-        }
-        None => ConfigBuilder::new()
-            .timeout(Some(30))
-            .validate_domain(effective_validate_domain)
-            .build(),
-    };
+    let config = ConfigBuilder::new()
+        .timeout(Some(30))
+        .socks5(proxy.as_deref().map(Socks5Config::new))
+        .validate_domain(validate_domain)
+        .build();
 
     let client = match Client::from_config(&server, config) {
         Ok(c) => c,
         Err(e) => {
-            let cert = effective_validate_domain && is_cert_error(&e.to_string());
+            let cert = validate_domain && is_cert_error(&e.to_string());
             error!(
-                "[get_server_features] connect failed (server={server}, validate_domain={effective_validate_domain}, cert_error={cert}): {e}"
+                "[get_server_features] connect failed (server={server}, validate_domain={validate_domain}, cert_error={cert}): {e}"
             );
             return ServerFeatures {
                 server_version: None,
@@ -1264,9 +1250,9 @@ pub fn get_server_features(
             }
         }
         Err(e) => {
-            let cert = effective_validate_domain && is_cert_error(&e.to_string());
+            let cert = validate_domain && is_cert_error(&e.to_string());
             error!(
-                "[get_server_features] server_features() failed (server={server}, validate_domain={effective_validate_domain}, cert_error={cert}): {e}"
+                "[get_server_features] server_features() failed (server={server}, validate_domain={validate_domain}, cert_error={cert}): {e}"
             );
             ServerFeatures {
                 server_version: None,

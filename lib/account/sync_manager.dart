@@ -5,24 +5,18 @@
 import 'dart:async';
 
 import 'package:envoy/account/accounts_manager.dart';
+import 'package:envoy/account/electrum_route.dart';
 import 'package:envoy/account/electrum_sync_health.dart';
+import 'package:envoy/account/electrum_sync_schedule.dart';
 import 'package:envoy/business/connectivity_manager.dart';
 import 'package:envoy/business/settings.dart';
 import 'package:envoy/util/bug_report_helper.dart';
 import 'package:envoy/util/console.dart';
 import 'package:envoy/util/envoy_storage.dart';
-import 'package:envoy/util/list_utils.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:ngwallet/ngwallet.dart';
 import 'package:tor/tor.dart';
 
 sealed class WalletProgress {}
-
-typedef _ElectrumSyncResult = ({
-  Network network,
-  bool viaTor,
-  ElectrumSyncReachability reachability,
-});
 
 class Scanning extends WalletProgress {
   final String id;
@@ -38,60 +32,49 @@ class Syncing extends WalletProgress {
 
 class None extends WalletProgress {}
 
-/// Outcome of a single-descriptor [SyncManager._performFullScan].
-enum FullScanOutcome {
-  /// Scan completed and the update was applied.
-  success,
+enum _RefreshKind { sync, scan, automatic, unscanned }
 
-  /// Skipped because a scan for this descriptor is already running. Not a
-  /// failure — the in-flight scan will report its own outcome.
-  skipped,
-
-  /// Scan could not run or errored (Tor not ready, disposed request, missing
-  /// handler, scan/apply error).
-  failure,
-}
-
-typedef _FullScanResult = ({
-  FullScanOutcome outcome,
-  _ElectrumSyncResult health,
+typedef _RefreshResult = ({
+  Network network,
+  String? server,
+  ElectrumRoute? route,
+  bool viaTor,
+  ElectrumSyncReachability reachability,
+  bool success,
+  bool fullScan,
 });
 
+class _ElectrumWorkChanged implements Exception {
+  const _ElectrumWorkChanged();
+}
+
 class SyncManager {
-  static const int _syncInterval = 10;
+  static const _maxConcurrentTorRequests = 3;
+  static const _backgroundWait = Duration(seconds: 30);
+  static const _manualScanWait = Duration(minutes: 15);
+  static const _scanJoinWait = Duration(seconds: 3);
 
-  final bool _enableLogging = false;
-  Function(EnvoyAccount, bool)? _onAccFullScanFinished;
+  // Ownership includes local preparation, admission, network I/O and applying
+  // the update. Register it before the first await; no separate request queue.
+  final Map<(String, AddressType),
+      ({_RefreshKind kind, Future<_RefreshResult> future})> _operations = {};
+  final _torRequests = ElectrumRequestGate(
+    maxConcurrent: _maxConcurrentTorRequests,
+  );
+  final _probeCooldown = ElectrumProbeCooldown();
+  int _probeIndex = 0;
+  final Set<(String, AddressType, int, String)> _reportedLocalFailures = {};
 
-  // Track sync and scan requests
-  final Map<(EnvoyAccount, AddressType), SyncRequest> _syncRequests = {};
-  final Map<(EnvoyAccount, AddressType), FullScanRequest> _fullScanRequests =
-      {};
-
-  // Track active operations to prevent duplicates
-  final Set<(String, AddressType)> _activeSyncOperations = {};
-  final Set<(String, AddressType)> _activeFullScanOperations = {};
-
-  Function(EnvoyAccount)? _onUpdateFinished;
-  late Timer _syncTimer;
-
-  final StreamController<WalletProgress> _currentLoading =
-      StreamController<WalletProgress>.broadcast();
-
-  Stream<WalletProgress> get currentLoading => _currentLoading.stream;
-
-  // Per-account full-scan tracking. The global `_currentLoading` stream is
-  // shared across all accounts and gets clobbered by unrelated `Syncing`
-  // events from the periodic `_syncAll`, so the UI can't rely on it to know
-  // whether a specific account is being rescanned. This set is set once in
-  // `initiateAccountFullScan` and cleared only when *all* descriptors finish.
+  void Function(EnvoyAccount, bool)? _onAccFullScanFinished;
+  Timer? _syncTimer;
+  final _currentLoading = StreamController<WalletProgress>.broadcast();
   final Set<String> _fullScanningAccountIds = {};
-  final StreamController<Set<String>> _fullScanningAccountsController =
+  final _fullScanningAccountsController =
       StreamController<Set<String>>.broadcast();
 
+  Stream<WalletProgress> get currentLoading => _currentLoading.stream;
   Stream<Set<String>> get fullScanningAccountsStream =>
       _fullScanningAccountsController.stream;
-
   Set<String> get fullScanningAccounts =>
       Set.unmodifiable(_fullScanningAccountIds);
 
@@ -99,699 +82,528 @@ class SyncManager {
       _fullScanningAccountIds.contains(accountId);
 
   void _emitFullScanningAccounts() {
-    _fullScanningAccountsController
-        .add(Set<String>.from(_fullScanningAccountIds));
+    if (!_fullScanningAccountsController.isClosed) {
+      _fullScanningAccountsController.add(Set.of(_fullScanningAccountIds));
+    }
   }
 
   static final SyncManager _instance = SyncManager._internal();
-
   SyncManager._internal();
-
-  factory SyncManager() {
-    return _instance;
-  }
+  factory SyncManager() => _instance;
 
   void startSync() {
-    _syncTimer =
-        Timer.periodic(const Duration(seconds: _syncInterval), (timer) {
-      if (NgAccountManager().accounts.isEmpty) {
-        return;
+    _syncTimer?.cancel();
+    _syncTimer = Timer.periodic(const Duration(seconds: 10), (_) {
+      if (NgAccountManager().accounts.isNotEmpty) {
+        unawaited(sync());
       }
-      //wait for any active operations to finish
-      if (_activeSyncOperations.isEmpty) {
-        _syncAll();
-      }
-
-      dumpProgress();
     });
   }
 
-  // Expose sync for integration tests
-  Future<void> sync() async {
-    if (_enableLogging) {
-      kPrint("SyncManager: Manual sync() called");
-    }
-    await _syncAll();
-  }
-
-// Sync a single account
-  Future<void> syncAccount(EnvoyAccount account) async {
-    final handler = account.handler;
-    if (handler == null) return;
-
-    final server = Settings().electrumAddress(account.network);
-    int? port = Settings().getTorPort(account.network, server);
-    try {
-      _ElectrumSyncResult result(
-        ElectrumSyncReachability reachability,
-      ) =>
-          (
-            network: account.network,
-            viaTor: port != null,
-            reachability: reachability,
-          );
-
-      final futures = account.descriptors.map((descriptor) async {
-        try {
-          final request = await handler.syncRequest(
-            addressType: descriptor.addressType,
-          );
-          final reachability = await _performWalletSync(
-            account,
-            server,
-            request,
-            port,
-            descriptor.addressType,
-          );
-          return result(reachability);
-        } catch (e, stack) {
-          debugPrintStack(stackTrace: stack);
-          if (_enableLogging) {
-            kPrint(
-              "SyncManager: unable to prepare sync for ${descriptor.addressType}: $e",
-            );
-          }
-          return result(ElectrumSyncReachability.notAttempted);
-        }
-      });
-
-      // Actually wait for all descriptor syncs
-      final results = await Future.wait(futures);
-      _reportElectrumSyncReachability(results);
-
-      // Notify listeners that this account finished syncing
-      _onUpdateFinished?.call(account);
-
-      if (_enableLogging) {
-        kPrint("SyncManager: Single Account Sync Finished ${account.name}");
-      }
-    } catch (e) {
-      if (_enableLogging) {
-        kPrint("SyncManager: single error $e");
-      }
-    }
-  }
-
-  void onUpdateFinished(Function(EnvoyAccount) onUpdateFinished) {
-    _onUpdateFinished = onUpdateFinished;
-  }
-
-  Future<void> _syncAll() async {
-    bool syncTestnet = Settings().showTestnetAccounts();
-    bool syncSignet = Settings().showSignetAccounts();
-    final accounts = NgAccountManager().accounts;
-
-    for (var account in accounts) {
-      // Skip accounts based on network settings
-      if ((!syncTestnet && account.network == Network.testnet4) ||
-          (!syncTestnet && account.network == Network.testnet) ||
-          (!syncSignet && account.network == Network.signet)) {
-        if (_enableLogging) {
-          kPrint("Skipping account ${account.name} | ${account.network}");
-        }
-        continue;
-      }
-
-      if (account.handler != null) {
-        for (var descriptor in account.descriptors) {
-          final accountKey = (account.id, descriptor.addressType);
-
-          // Skip if already being processed
-          if (_activeSyncOperations.contains(accountKey) ||
-              _activeFullScanOperations.contains(accountKey)) {
-            continue;
-          }
-
-          // Check if account is scanned
-          bool isScanned = await EnvoyStorage()
-              .getAccountScanStatus(account.id, descriptor.addressType);
-
-          if (isScanned) {
-            if (_syncRequests.containsKey((account, descriptor.addressType))) {
-              continue;
-            }
-            final request = await account.handler!
-                .syncRequest(addressType: descriptor.addressType);
-            _syncRequests[(account, descriptor.addressType)] = request;
-          } else if (_fullScanRequests[(account, descriptor.addressType)] ==
-              null) {
-            FullScanRequest request = await account.handler!
-                .requestFullScan(addressType: descriptor.addressType);
-            _fullScanRequests[(account, descriptor.addressType)] = request;
-          }
-        }
-      }
-    }
-
-    // Start sync and scan operations in parallel
-    final resultBatches = await Future.wait([_startSync(), _startFullScan()]);
-    _reportElectrumSyncReachability(resultBatches.expand((batch) => batch));
-  }
+  // Descriptor ownership prevents overlap without holding up unrelated wallets.
+  Future<void> sync() => _syncAll();
 
   Future<void> initiateFullScan() async {
     final accounts = NgAccountManager().accounts;
-    _fullScanRequests.clear();
+    final results = await Future.wait([
+      for (final account in accounts)
+        for (final descriptor in account.descriptors)
+          _refreshDescriptor(
+              account, descriptor.addressType, _RefreshKind.unscanned),
+    ]);
+    _reportReachability(results);
+  }
 
-    for (var account in accounts) {
-      for (var descriptor in account.descriptors) {
-        bool isScanned = await EnvoyStorage()
-            .getAccountScanStatus(account.id, descriptor.addressType);
+  Future<void> syncAccount(EnvoyAccount account) async {
+    if (account.handler == null) return;
+    final results = await Future.wait([
+      for (final descriptor in account.descriptors)
+        _refreshDescriptor(account, descriptor.addressType, _RefreshKind.sync),
+    ]);
+    _reportReachability(results);
+  }
 
-        if (!isScanned) {
-          final accountKey = (account.id, descriptor.addressType);
-          if (_activeFullScanOperations.contains(accountKey)) {
-            continue;
-          }
+  void onFullScanFinished(void Function(EnvoyAccount, bool) callback) {
+    _onAccFullScanFinished = callback;
+  }
 
-          FullScanRequest request = await account.handler!
-              .requestFullScan(addressType: descriptor.addressType);
-          _fullScanRequests[(account, descriptor.addressType)] = request;
+  Future<void> _syncAll() async {
+    final settings = Settings();
+    final probeOnly = !ConnectivityManager().electrumConnected;
+    final endpoint = settings.electrumAddress(Network.bitcoin);
+    final accounts = NgAccountManager().accounts;
+    final mainnetRefreshActive = accounts.any((account) =>
+        account.network == Network.bitcoin &&
+        account.descriptors.any((descriptor) =>
+            _operations.containsKey((account.id, descriptor.addressType))));
+    final candidates = <({EnvoyAccount account, AddressType addressType})>[];
+    for (final account in accounts) {
+      if (isAccountFullScanning(account.id) || account.handler == null) {
+        continue;
+      }
+      if ((!settings.showTestnetAccounts() &&
+              (account.network == Network.testnet ||
+                  account.network == Network.testnet4)) ||
+          (!settings.showSignetAccounts() &&
+              account.network == Network.signet)) {
+        continue;
+      }
+      for (final descriptor in account.descriptors) {
+        if (!_operations.containsKey((account.id, descriptor.addressType))) {
+          candidates
+              .add((account: account, addressType: descriptor.addressType));
         }
       }
     }
 
-    final results = await _startFullScan();
-    _reportElectrumSyncReachability(results);
+    final selection = selectElectrumSyncCandidates(
+      candidates: candidates,
+      isMainnet: (candidate) => candidate.account.network == Network.bitcoin,
+      mainnetProbeOnly: probeOnly,
+      mainnetProbeAllowed:
+          !mainnetRefreshActive && _probeCooldown.canProbe(endpoint),
+      probeIndex: _probeIndex,
+      connectedRotationStep: _maxConcurrentTorRequests,
+    );
+    _probeIndex = selection.nextProbeIndex;
+    kPrint('[ElectrumSync] periodic candidates=${candidates.length} '
+        'selected=${selection.selected.length} probeOnly=$probeOnly '
+        'probeSelected=${selection.probeSelected}');
+    final results = await Future.wait([
+      for (final candidate in selection.selected)
+        _refreshDescriptor(
+          candidate.account,
+          candidate.addressType,
+          _RefreshKind.automatic,
+        ),
+    ]);
+    final reachability = _reportReachability(results);
+    if (!ConnectivityManager().electrumConnected &&
+        (reachability == ElectrumSyncReachability.unreachable ||
+            (probeOnly && selection.probeSelected))) {
+      _probeCooldown.recordFailure(endpoint);
+      kPrint('[ElectrumSync] probe-cooldown '
+          'seconds=${_probeCooldown.cooldown.inSeconds}');
+    }
   }
 
   Future<void> initiateAccountFullScan(
-    EnvoyAccount account,
-    int stopGap,
-  ) async {
-    // Clear previous queued full-scan requests for this account only
-    _fullScanRequests.removeWhere(
-      (key, _) => key.$1.id == account.id,
-    );
-
-    bool anyFailure = false;
-    bool anySkipped = false;
-    final healthResults = <_ElectrumSyncResult>[];
-    // Hold the per-account "scanning" flag for the full duration so the UI
-    // doesn't flicker off between descriptors or when the shared progress
-    // stream emits an unrelated `Syncing` event.
-    _fullScanningAccountIds.add(account.id);
+      EnvoyAccount account, int stopGap) async {
+    if (!_fullScanningAccountIds.add(account.id)) return;
     _emitFullScanningAccounts();
-
+    final waitBudget = ElectrumPermitWaitBudget(_manualScanWait);
+    final results = <_RefreshResult>[];
     try {
-      for (var descriptor in account.descriptors) {
-        final handler = account.handler;
-        if (handler == null) {
-          anyFailure = true;
-          continue;
-        }
-
-        final request =
-            await handler.requestFullScan(addressType: descriptor.addressType);
-
-        final result = await _performFullScan(
-          handler,
+      for (final descriptor in account.descriptors) {
+        results.add(await _refreshDescriptor(
+          account,
           descriptor.addressType,
-          request,
+          _RefreshKind.scan,
           stopGap: stopGap,
-        );
-        healthResults.add(result.health);
-        switch (result.outcome) {
-          case FullScanOutcome.failure:
-            anyFailure = true;
-          case FullScanOutcome.skipped:
-            // Another scan for this descriptor is already in flight; this
-            // rescan didn't actually run it and can't know its result.
-            anySkipped = true;
-          case FullScanOutcome.success:
-            break;
-        }
+          waitBudget: waitBudget,
+        ));
       }
-    } catch (e, stack) {
-      debugPrintStack(stackTrace: stack);
-      anyFailure = true;
     } finally {
-      _reportElectrumSyncReachability(healthResults);
+      _reportReachability(results);
       _fullScanningAccountIds.remove(account.id);
       _emitFullScanningAccounts();
-      // Report failure if anything failed. Otherwise report success only when
-      // every descriptor actually completed — if any was skipped because a
-      // scan was already running, suppress the callback rather than claim a
-      // premature success the in-flight scan hasn't earned yet.
-      if (anyFailure) {
-        _onAccFullScanFinished?.call(account, false);
-      } else if (!anySkipped) {
-        _onAccFullScanFinished?.call(account, true);
-      }
+      _onAccFullScanFinished?.call(
+        account,
+        results.length == account.descriptors.length &&
+            results.every((result) => result.success),
+      );
     }
   }
 
-  bool isAccountFullScanInProgress(EnvoyAccount account) {
-    final id = account.id;
-    return _activeFullScanOperations.any((e) => e.$1 == id);
-  }
+  _RefreshResult _notAttempted(EnvoyAccount account) => (
+        network: account.network,
+        server: null,
+        route: null,
+        viaTor: false,
+        reachability: ElectrumSyncReachability.notAttempted,
+        success: false,
+        fullScan: false,
+      );
 
-  void onFullScanFinished(
-    void Function(EnvoyAccount account, bool success) cb,
-  ) {
-    _onAccFullScanFinished = cb;
-  }
-
-  Future<List<_ElectrumSyncResult>> _startSync() async {
-    final entries = _syncRequests.entries.toList();
-    final futures = <Future<_ElectrumSyncResult>>[];
-
-    for (final entry in entries) {
-      final account = entry.key.$1;
-      final type = entry.key.$2;
-      final accountKey = (account.id, type);
-
-      // Skip if already being processed
-      if (_activeSyncOperations.contains(accountKey)) {
-        continue;
+  Future<_RefreshResult> _refreshDescriptor(
+    EnvoyAccount account,
+    AddressType addressType,
+    _RefreshKind kind, {
+    int? stopGap,
+    ElectrumPermitWaitBudget? waitBudget,
+  }) async {
+    final manualScan = stopGap != null;
+    if (!manualScan && isAccountFullScanning(account.id)) {
+      _trace(account, addressType, 'skip kind=${kind.name} reason=manual-scan');
+      return _notAttempted(account);
+    }
+    final key = (account.id, addressType);
+    final active = _operations[key];
+    if (active != null) {
+      _trace(
+          account,
+          addressType,
+          'owner-active kind=${kind.name} owner=${active.kind.name} '
+          'action=${kind == _RefreshKind.automatic || kind == _RefreshKind.unscanned ? 'skip' : 'join'}');
+      if (kind == _RefreshKind.automatic || kind == _RefreshKind.unscanned) {
+        return _notAttempted(account);
       }
-
-      final request = _syncRequests[entry.key];
-      if (request == null || account.handler == null) {
-        _syncRequests.remove(entry.key);
-        continue;
-      }
-
-      _activeSyncOperations.add(accountKey);
-
-      final server = Settings().electrumAddress(account.network);
-      int? port = Settings().getTorPort(account.network, server);
-      Future<_ElectrumSyncResult> sync() async {
-        try {
-          final reachability = await _performWalletSync(
-            account,
-            server,
-            request,
-            port,
-            type,
-          );
-          return (
-            network: account.network,
-            viaTor: port != null,
-            reachability: reachability,
-          );
-        } catch (e, stack) {
-          debugPrintStack(stackTrace: stack);
-          if (account.network == Network.bitcoin) {
-            EnvoyReport().log(
-              "Unexpected sync setup error $type - ${account.name} | ${account.network}",
-              e.toString(),
-            );
-          } else {
-            kPrint(
-              "Unexpected sync setup error $type - ${account.name} | ${account.network}: $e",
-            );
+      try {
+        if (manualScan) {
+          await waitBudget!.waitForOwner(active.future);
+        } else if (active.kind == _RefreshKind.sync) {
+          await active.future;
+          // Only the owner contributes a health observation.
+          return _notAttempted(account);
+        } else {
+          final result = await active.future.timeout(_scanJoinWait);
+          if (active.kind != _RefreshKind.unscanned && !result.fullScan) {
+            return _notAttempted(account);
           }
-          return (
-            network: account.network,
-            viaTor: port != null,
-            reachability: ElectrumSyncReachability.notAttempted,
-          );
-        } finally {
-          _activeSyncOperations.remove(accountKey);
-          _syncRequests.remove(entry.key);
-          _onUpdateFinished?.call(account);
+        }
+      } on TimeoutException {
+        // A timeout only releases this waiter, never the native owner.
+        _trace(
+            account, addressType, 'owner-wait-timeout ownerStillRunning=true');
+        return _notAttempted(account);
+      }
+      return _refreshDescriptor(account, addressType, kind,
+          stopGap: stopGap, waitBudget: waitBudget);
+    }
+
+    final completion = Completer<_RefreshResult>();
+    _operations[key] = (kind: kind, future: completion.future);
+    final elapsed = Stopwatch()..start();
+    _trace(account, addressType, 'begin kind=${kind.name} stopGap=$stopGap');
+    var result = _notAttempted(account);
+    try {
+      result = await _performRefresh(
+        account,
+        addressType,
+        kind,
+        stopGap: stopGap,
+        waitBudget: waitBudget ?? ElectrumPermitWaitBudget(_backgroundWait),
+      );
+    } catch (error) {
+      _logError(account, addressType, 'preparing refresh', error);
+    } finally {
+      _operations.remove(key);
+      completion.complete(result);
+      _trace(
+          account,
+          addressType,
+          'complete success=${result.success} fullScan=${result.fullScan} '
+          'health=${result.reachability.name} elapsedMs=${elapsed.elapsedMilliseconds}');
+    }
+    return result;
+  }
+
+  Future<_RefreshResult> _performRefresh(
+    EnvoyAccount account,
+    AddressType addressType,
+    _RefreshKind kind, {
+    int? stopGap,
+    required ElectrumPermitWaitBudget waitBudget,
+  }) async {
+    final handler = account.handler;
+    final server = Settings().electrumAddress(account.network);
+    var route = _electrumRoute(account.network, server);
+    if (handler == null || !route.isReady) {
+      _trace(
+          account,
+          addressType,
+          'skip reason=${handler == null ? 'missing-handler' : 'tor-unavailable'} '
+          'route=${_routeLabel(route)}');
+      return _notAttempted(account);
+    }
+
+    bool isCurrent() =>
+        !_currentLoading.isClosed &&
+        !handler.isDisposed &&
+        identical(account.handler, handler) &&
+        Settings().electrumAddress(account.network) == server;
+
+    final fullScan = kind == _RefreshKind.scan ||
+        ((kind == _RefreshKind.automatic || kind == _RefreshKind.unscanned) &&
+            !await EnvoyStorage()
+                .getAccountScanStatus(account.id, addressType));
+    if (kind == _RefreshKind.unscanned && !fullScan) {
+      _trace(account, addressType, 'skip reason=already-scanned');
+      return _notAttempted(account);
+    }
+    if (!isCurrent() ||
+        (stopGap == null && isAccountFullScanning(account.id))) {
+      _trace(
+          account, addressType, 'skip reason=work-changed-before-preparation');
+      return _notAttempted(account);
+    }
+    final key = (account.id, addressType);
+    _operations[key] = (
+      kind: fullScan ? _RefreshKind.scan : _RefreshKind.sync,
+      future: _operations[key]!.future,
+    );
+    _currentLoading.add(fullScan ? Scanning(account.id) : Syncing(account.id));
+    _RefreshResult result(ElectrumSyncReachability health,
+            {bool success = false}) =>
+        (
+          network: account.network,
+          server: server,
+          route: route,
+          viaTor: route.requiresTor,
+          reachability: health,
+          success: success,
+          fullScan: fullScan,
+        );
+
+    WalletUpdate? update;
+    try {
+      for (var attempt = 0; attempt < 2; attempt++) {
+        var attempted = false;
+        void checkCurrent() {
+          if (!isCurrent() ||
+              (stopGap == null && isAccountFullScanning(account.id)) ||
+              !route.isSameRoute(_electrumRoute(account.network, server))) {
+            throw const _ElectrumWorkChanged();
+          }
+        }
+
+        Future<WalletUpdate> request() async {
+          checkCurrent();
+          // Construct the one-shot handle only after admission. Every retry
+          // gets a fresh handle; abandoned handles are released locally.
+          FullScanRequest? scanRequest;
+          SyncRequest? syncRequest;
+          try {
+            final validateDomain = Settings().validateDomain(
+              server,
+              viaTor: route.port != null,
+            );
+            if (fullScan) {
+              scanRequest =
+                  await handler.requestFullScan(addressType: addressType);
+              checkCurrent();
+              if (scanRequest.isDisposed) throw const _ElectrumWorkChanged();
+              attempted = true;
+              _trace(
+                  account,
+                  addressType,
+                  'network-start request=${identityHashCode(request)} '
+                  'scan=true validateDomain=$validateDomain');
+              return await EnvoyAccountHandler.scanWallet(
+                scanRequest: scanRequest,
+                electrumServer: server,
+                torPort: route.port,
+                stopGap: stopGap,
+                validateDomain: validateDomain,
+              );
+            }
+            syncRequest = await handler.syncRequest(addressType: addressType);
+            checkCurrent();
+            if (syncRequest.isDisposed) throw const _ElectrumWorkChanged();
+            attempted = true;
+            _trace(
+                account,
+                addressType,
+                'network-start request=${identityHashCode(request)} '
+                'scan=false validateDomain=$validateDomain');
+            return await EnvoyAccountHandler.syncWallet(
+              syncRequest: syncRequest,
+              electrumServer: server,
+              torPort: route.port,
+              validateDomain: validateDomain,
+            );
+          } finally {
+            if (scanRequest != null && !scanRequest.isDisposed) {
+              scanRequest.dispose();
+            }
+            if (syncRequest != null && !syncRequest.isDisposed) {
+              syncRequest.dispose();
+            }
+          }
+        }
+
+        try {
+          _trace(
+              account,
+              addressType,
+              'attempt=${attempt + 1}/2 request=${identityHashCode(request)} '
+              'route=${_routeLabel(route)} priority=${stopGap != null} '
+              'waitBudgetMs=${waitBudget.remaining.inMilliseconds}');
+          update = await (route.requiresTor
+              ? _torRequests.run(
+                  (server, route.port, route.generation),
+                  request,
+                  waitBudget: waitBudget,
+                  prioritize: stopGap != null,
+                )
+              : request());
+          _trace(account, addressType,
+              'network-complete request=${identityHashCode(request)}');
+          break;
+        } catch (error) {
+          if (!isCurrent()) {
+            _trace(account, addressType,
+                'discard reason=handler-or-endpoint-changed');
+            return _notAttempted(account);
+          }
+          // FRB consumes the handle before I/O, even on a network error.
+          // Only ngwallet's explicit missing-request error is a local failure.
+          final missingRequest =
+              error.toString().contains('No Scan request found') ||
+                  error.toString().contains('No sync request found');
+          if (missingRequest) {
+            _trace(
+                account, addressType, 'discard reason=missing-local-request');
+            if (fullScan) {
+              _logError(
+                  account,
+                  addressType,
+                  attempt == 0
+                      ? 'missing scan request'
+                      : 'missing retry request',
+                  error,
+                  generation: route.generation);
+            }
+            return _notAttempted(account);
+          }
+          final replacement = _electrumRoute(account.network, server);
+          if (attempt == 0 && route.canRetryOn(replacement)) {
+            _trace(
+                account,
+                addressType,
+                'retry reason=replaced-route old=${_routeLabel(route)} '
+                'new=${_routeLabel(replacement)} freshRequest=true');
+            route = replacement;
+            continue;
+          }
+          if (!route.isSameRoute(replacement)) {
+            _trace(
+                account,
+                addressType,
+                'discard reason=replaced-route old=${_routeLabel(route)} '
+                'new=${_routeLabel(replacement)} health=notAttempted');
+            _logError(account, addressType, 'discarding replaced-route failure',
+                '$error | old route: ${route.port}/${route.generation}, current route: ${replacement.port}/${replacement.generation}',
+                generation: replacement.generation);
+            return _notAttempted(account);
+          }
+          if (error is ElectrumRequestPermitTimeout ||
+              error is _ElectrumWorkChanged) {
+            _trace(account, addressType,
+                'skip reason=${error is ElectrumRequestPermitTimeout ? 'queue-timeout' : 'work-changed'}');
+            return _notAttempted(account);
+          }
+          _trace(account, addressType,
+              'failed attempted=$attempted errorType=${error.runtimeType}');
+          _logError(
+              account, addressType, fullScan ? 'scanning' : 'syncing', error);
+          return result(attempted
+              ? ElectrumSyncReachability.unreachable
+              : ElectrumSyncReachability.notAttempted);
         }
       }
 
-      futures.add(sync());
+      // A response from an old route may update this wallet, but cannot prove
+      // the currently selected endpoint or replacement route is reachable.
+      final health = Settings().electrumAddress(account.network) == server &&
+              route.isSameRoute(_electrumRoute(account.network, server))
+          ? ElectrumSyncReachability.reachable
+          : ElectrumSyncReachability.notAttempted;
+      if (handler.isDisposed || !identical(account.handler, handler)) {
+        _trace(account, addressType, 'discard-update reason=retired-handler');
+        return result(health);
+      }
+      try {
+        await handler.applyUpdate(update: update!, addressType: addressType);
+        if (fullScan) {
+          await EnvoyStorage()
+              .setAccountScanStatus(account.id, addressType, true);
+        } else {
+          await handler.sendUpdate();
+        }
+        return result(health, success: true);
+      } catch (error) {
+        _trace(account, addressType,
+            'apply-failed errorType=${error.runtimeType}');
+        _logError(account, addressType, 'applying update', error);
+        return result(health);
+      }
+    } finally {
+      if (update != null && !update.isDisposed) update.dispose();
+      if (!_currentLoading.isClosed) _currentLoading.add(None());
     }
-
-    return Future.wait(futures);
   }
 
-  void _reportElectrumSyncReachability(Iterable<_ElectrumSyncResult> results) {
-    final mainnetResults =
-        results.where((result) => result.network == Network.bitcoin).toList();
+  ElectrumRoute _electrumRoute(Network network, String server) => ElectrumRoute(
+        requiresTor: !Settings().onTorWhitelist(server),
+        port: Settings().getTorPort(network, server),
+        generation: Tor.instance.routeGeneration,
+      );
 
-    // A descriptor batch is one reachability observation: any response proves
-    // Electrum is reachable, while an all-failed batch counts as one strike.
+  ElectrumSyncReachability _reportReachability(
+      Iterable<_RefreshResult> results) {
+    final server = Settings().electrumAddress(Network.bitcoin);
+    final route = _electrumRoute(Network.bitcoin, server);
+    // Results may have waited for other descriptors or for updates to apply.
+    final mainnet = results
+        .where((r) =>
+            r.network == Network.bitcoin &&
+            r.server == server &&
+            r.route?.isSameRoute(route) == true)
+        .toList();
     final reachability = aggregateElectrumSyncReachability(
-      mainnetResults.map((result) => result.reachability),
+      mainnet.map((r) => r.reachability),
     );
-
     switch (reachability) {
       case ElectrumSyncReachability.reachable:
-        final reachedViaTor = mainnetResults.any(
-          (result) =>
-              result.viaTor &&
-              result.reachability == ElectrumSyncReachability.reachable,
-        );
-        ConnectivityManager().electrumSuccess(viaTor: reachedViaTor);
+        _probeCooldown.recordSuccess();
+        ConnectivityManager().electrumSuccess(
+            viaTor: mainnet.any((r) =>
+                r.viaTor &&
+                r.reachability == ElectrumSyncReachability.reachable));
       case ElectrumSyncReachability.unreachable:
         ConnectivityManager().electrumFailure();
       case ElectrumSyncReachability.notAttempted:
         break;
     }
+    kPrint('[ElectrumSync] health result=${reachability.name} '
+        'mainnetResults=${mainnet.length} '
+        'connected=${ConnectivityManager().electrumConnected}');
+    return reachability;
   }
 
-  Future<List<_ElectrumSyncResult>> _startFullScan() async {
-    final entries = _fullScanRequests.entries.toList();
-    final futures = <Future<_ElectrumSyncResult?>>[];
+  String _routeLabel(ElectrumRoute route) => route.requiresTor
+      ? 'tor(port=${route.port},generation=${route.generation})'
+      : 'direct';
 
-    for (final entry in entries) {
-      final account = entry.key.$1;
-      final type = entry.key.$2;
-      final accountKey = (account.id, type);
-
-      // Skip if already being processed
-      if (_activeFullScanOperations.contains(accountKey)) {
-        continue;
-      }
-
-      Future<_ElectrumSyncResult?> sync() async {
-        try {
-          final fullScanRequest = _fullScanRequests[entry.key];
-          final handler = account.handler;
-          if (fullScanRequest == null || handler == null) {
-            return null;
-          }
-
-          final result = await _performFullScan(handler, type, fullScanRequest);
-          return result.health;
-        } catch (e, stack) {
-          debugPrintStack(stackTrace: stack);
-          if (_enableLogging) {
-            kPrint(
-                "Error fullScan account ${account.name} | ${account.network}: $e");
-          }
-          EnvoyReport().log(
-              "Error fullScan account ${account.name} | ${account.network}",
-              e.toString());
-          return null;
-        } finally {
-          _fullScanRequests.remove(entry.key);
-          _onUpdateFinished?.call(account);
-        }
-      }
-
-      futures.add(sync());
-    }
-
-    final results = await Future.wait(futures);
-    return results.whereType<_ElectrumSyncResult>().toList();
+  void _trace(EnvoyAccount account, AddressType addressType, String message) {
+    // Session-local identity avoids logging account IDs, names or descriptors.
+    kPrint('[ElectrumSync] wallet=${identityHashCode(account)} '
+        'type=${addressType.name} network=${account.network} $message');
   }
 
-  /// The UI outcome and Electrum reachability are reported independently so
-  /// local apply failures cannot masquerade as network failures.
-  Future<_FullScanResult> _performFullScan(
-    EnvoyAccountHandler handler,
-    AddressType addressType,
-    FullScanRequest fullScanRequest, {
-    int? stopGap,
-  }) async {
-    final account = await handler.state();
-    final server = Settings().electrumAddress(account.network);
-    final port = Settings().getTorPort(account.network, server);
-    final viaTor = port != null;
-    _FullScanResult scanResult(
-      FullScanOutcome outcome,
-      ElectrumSyncReachability reachability,
-    ) =>
-        (
-          outcome: outcome,
-          health: (
-            network: account.network,
-            viaTor: viaTor,
-            reachability: reachability,
-          ),
-        );
-
-    if (_activeFullScanOperations.contains((account.id, addressType))) {
-      return scanResult(
-        FullScanOutcome.skipped,
-        ElectrumSyncReachability.notAttempted,
-      );
+  void _logError(EnvoyAccount account, AddressType addressType,
+      String operation, Object error,
+      {int? generation}) {
+    if (generation != null) {
+      _reportedLocalFailures.removeWhere((key) => key.$3 < generation);
+      if (!_reportedLocalFailures
+          .add((account.id, addressType, generation, operation))) {
+        return;
+      }
     }
-    _activeFullScanOperations.add((account.id, addressType));
-
-    if (_enableLogging) {
-      kPrint(
-          "🔍 PerformFullScan $addressType - ${account.name} | ${account.network} | $server | Tor: ${port != null} | request_disposed:${fullScanRequest.isDisposed}");
-    }
-
-    try {
-      if (fullScanRequest.isDisposed || _currentLoading.isClosed) {
-        if (_enableLogging) {
-          kPrint("FullScanRequest is disposed");
-        }
-        return scanResult(
-          FullScanOutcome.failure,
-          ElectrumSyncReachability.notAttempted,
-        );
-      }
-      if (Settings().usingTor && Tor.instance.port == -1) {
-        if (_enableLogging) {
-          kPrint(
-              "Skipping Scan because Tor is not ready yet $addressType - ${account.name} | ${account.network} | $server | Tor: $port");
-        }
-        return scanResult(
-          FullScanOutcome.failure,
-          ElectrumSyncReachability.notAttempted,
-        );
-      }
-
-      _currentLoading.sink.add(Scanning(account.id));
-
-      late final WalletUpdate update;
-      try {
-        update = await EnvoyAccountHandler.scanWallet(
-          scanRequest: fullScanRequest,
-          electrumServer: server,
-          torPort: port,
-          stopGap: stopGap,
-          validateDomain: Settings().validateDomain(server),
-        );
-      } catch (e, stack) {
-        debugPrintStack(stackTrace: stack);
-        // ngwallet emits this message when its one-shot Rust scan request is
-        // missing; keep it distinct from an Electrum connection failure.
-        final scanRequestMissing =
-            e.toString().contains("No Scan request found");
-        if (fullScanRequest.isDisposed || scanRequestMissing) {
-          return scanResult(
-            FullScanOutcome.failure,
-            ElectrumSyncReachability.notAttempted,
-          );
-        }
-        EnvoyReport().log(
-          "Error scanning $addressType - ${account.name} | ${account.network} | $server | Tor: $port",
-          e.toString(),
-        );
-        return scanResult(
-          FullScanOutcome.failure,
-          ElectrumSyncReachability.unreachable,
-        );
-      }
-
-      final liveHandler = account.handler;
-      if (liveHandler == null) {
-        if (_enableLogging) {
-          kPrint(
-              "FullScan completed but handler is null, cannot apply update $addressType - ${account.name}");
-        }
-        EnvoyReport().log(
-          "Cannot apply Electrum scan $addressType - ${account.name} | ${account.network}",
-          "Account handler is no longer available",
-        );
-        return scanResult(
-          FullScanOutcome.failure,
-          ElectrumSyncReachability.reachable,
-        );
-      }
-
-      try {
-        await liveHandler.applyUpdate(
-          update: update,
-          addressType: addressType,
-        );
-        await EnvoyStorage()
-            .setAccountScanStatus(account.id, addressType, true);
-      } catch (e, stack) {
-        debugPrintStack(stackTrace: stack);
-        EnvoyReport().log(
-          "Error applying Electrum scan $addressType - ${account.name} | ${account.network}",
-          e.toString(),
-        );
-        return scanResult(
-          FullScanOutcome.failure,
-          ElectrumSyncReachability.reachable,
-        );
-      }
-
-      if (_enableLogging) {
-        kPrint(
-            "✨Finished FullScan $addressType - ${account.name} | ${account.network} | $server | Tor: ${port != null}");
-      }
-      return scanResult(
-        FullScanOutcome.success,
-        ElectrumSyncReachability.reachable,
-      );
-    } finally {
-      if (!_currentLoading.isClosed) {
-        _currentLoading.sink.add(None());
-      }
-      _activeFullScanOperations.remove((account.id, addressType));
-    }
-  }
-
-  Future<ElectrumSyncReachability> _performWalletSync(
-    EnvoyAccount account,
-    String server,
-    SyncRequest syncRequest,
-    int? port,
-    AddressType addressType,
-  ) async {
-    if (Settings().usingTor && Tor.instance.port == -1) {
-      if (_enableLogging) {
-        kPrint(
-          "Skipping sync because Tor is not ready yet $addressType - ${account.name} | ${account.network} | $server | Tor: $port",
-        );
-      }
-      return ElectrumSyncReachability.notAttempted;
-    }
-    if (syncRequest.isDisposed || _currentLoading.isClosed) {
-      if (_enableLogging) {
-        kPrint(
-          "Skipping disposed sync request $addressType - ${account.name} | ${account.network}",
-        );
-      }
-      return ElectrumSyncReachability.notAttempted;
-    }
-
-    _currentLoading.sink.add(Syncing(account.id));
-    final time = DateTime.now();
-    if (_enableLogging) {
-      kPrint(
-        "⏳Syncing account $addressType - ${account.name}| ${account.network} | $server  |Tor : $port",
-      );
-    }
-
-    try {
-      late final WalletUpdate update;
-      try {
-        update = await EnvoyAccountHandler.syncWallet(
-          syncRequest: syncRequest,
-          electrumServer: server,
-          torPort: port,
-          validateDomain: Settings().validateDomain(server),
-        );
-      } catch (e, stack) {
-        debugPrintStack(stackTrace: stack);
-        // The Rust request can be empty even while its Dart handle is alive.
-        if (syncRequest.isDisposed ||
-            e.toString().contains("No sync request found")) {
-          return ElectrumSyncReachability.notAttempted;
-        }
-        if (_enableLogging) {
-          kPrint(
-            "Error syncing $addressType - ${account.name} | ${account.network} | $server | Tor: $port $e",
-          );
-        }
-        // Less noisy logging for non-mainnet networks.
-        if (account.network == Network.bitcoin) {
-          EnvoyReport().log(
-            "Error syncing $addressType - ${account.name} | ${account.network} | $server | Tor: $port",
-            e.toString(),
-          );
-        } else {
-          kPrint(
-            "Unable to reach Electrum for sync $addressType - ${account.name} | ${account.network} | $server | Tor: $port",
-          );
-        }
-        return ElectrumSyncReachability.unreachable;
-      }
-
-      final duration = DateTime.now().difference(time);
-      final handler = account.handler;
-      if (handler != null) {
-        try {
-          await handler.applyUpdate(
-            update: update,
-            addressType: addressType,
-          );
-
-          await handler.sendUpdate();
-
-          if (_enableLogging) {
-            kPrint(
-              "✨Finished Sync ${addressType.toString().split('.').last} - ${account.name} | ${account.network} | $server | Tor: ${port != null} | Time: ${duration.inMilliseconds / 1000} seconds",
-            );
-          }
-        } catch (e, stack) {
-          debugPrintStack(stackTrace: stack);
-          if (_enableLogging) {
-            kPrint("❌ Error applying update: $e");
-          }
-          EnvoyReport().log(
-            "Error applying Electrum update $addressType - ${account.name} | ${account.network}",
-            e.toString(),
-          );
-        }
-      } else {
-        if (_enableLogging) {
-          kPrint("Sync failed because account handler is null");
-        }
-        EnvoyReport().log(
-          "Cannot apply Electrum update $addressType - ${account.name} | ${account.network}",
-          "Account handler is no longer available",
-        );
-      }
-      return ElectrumSyncReachability.reachable;
-    } finally {
-      if (!_currentLoading.isClosed) {
-        _currentLoading.sink.add(None());
-      }
+    final context =
+        'Electrum $operation $addressType | ${account.name} | ${account.network}';
+    if (account.network == Network.bitcoin) {
+      EnvoyReport().log(context, error.toString());
+    } else {
+      kPrint(context);
     }
   }
 
   void dispose() {
-    if (_enableLogging) {
-      kPrint("SyncManager: Disposing and cancelling timer");
-    }
-    _syncTimer.cancel();
+    _syncTimer?.cancel();
     _currentLoading.close();
     _fullScanningAccountsController.close();
-  }
-
-  /// Dumps the current progress of sync and scan operations to the log
-  String dumpProgress() {
-    final StringBuffer buffer = StringBuffer();
-
-    buffer.writeln('=== SyncManager Progress Dump ===');
-    buffer.writeln('Active sync operations: ${_activeSyncOperations.length}');
-    buffer.writeln(
-        'Active full scan operations: ${_activeFullScanOperations.length}');
-    buffer.writeln('Pending sync requests: ${_syncRequests.length}');
-    buffer.writeln('Pending full scan requests: ${_fullScanRequests.length}');
-
-    if (_activeSyncOperations.isNotEmpty) {
-      buffer.writeln('\nActive sync operations:');
-      for (final op in _activeSyncOperations) {
-        final account =
-            NgAccountManager().accounts.firstWhereOrNull((a) => a.id == op.$1);
-        if (account != null) {
-          buffer.writeln(
-              '  - Account Name: ${account.name}, Address Type: ${op.$2}, Network: ${account.network}');
-        }
-      }
-    }
-
-    if (_activeFullScanOperations.isNotEmpty) {
-      buffer.writeln('\nActive full scan operations:');
-      for (final op in _activeFullScanOperations) {
-        final account =
-            NgAccountManager().accounts.firstWhereOrNull((a) => a.id == op.$1);
-        if (account != null) {
-          buffer.writeln(
-              '  - Account Name: ${account.name}, Address Type: ${op.$2}, Network: ${account.network}');
-        }
-      }
-    }
-
-    final String result = buffer.toString();
-    if (_enableLogging) {
-      kPrint(result);
-    }
-    return result;
   }
 }

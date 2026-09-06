@@ -2,6 +2,8 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
+import 'dart:async';
+
 import 'package:envoy/account/accounts_manager.dart';
 import 'package:envoy/account/envoy_transaction.dart';
 import 'package:envoy/account/sync_manager.dart';
@@ -535,36 +537,78 @@ class TransactionModeNotifier extends StateNotifier<TransactionModel> {
         draftTransaction: state.draftTransaction!,
         electrumServer: server,
         torPort: port,
-        validateDomain: Settings().validateDomain(server),
+        validateDomain: Settings().validateDomain(
+          server,
+          viaTor: port != null,
+        ),
       );
       await handler.updateBroadcastState(
         draftTransaction: state.draftTransaction!,
       );
-      syncManager.syncAccount(account);
-
       final feeRate = state.transactionParams?.feeRate ??
           FeeRateSatPerKvb(field0: BigInt.from(1000));
-      if (Settings().subSatFeeEnabled &&
+      final requiresSubSatConfirmation = Settings().subSatFeeEnabled &&
           !Settings().usingDefaultElectrumServer &&
-          FeeRate.fromBigInt(feeRate.field0).isSubSat) {
+          FeeRate.fromBigInt(feeRate.field0).isSubSat;
+      if (requiresSubSatConfirmation) {
         // Sub-sat txs may be silently dropped by the node if minrelaytxfee
-        // is too high. Poll the wallet tx list for up to ~15s to confirm.
+        // is too high. Keep the original ~20s wall-clock polling budget.
         final txId = state.draftTransaction!.transaction.txId;
+        final deadline = DateTime.now().add(const Duration(seconds: 20));
         bool found = false;
-        for (int i = 0; i < 8 && !found; i++) {
-          await Future.delayed(const Duration(seconds: 2));
-          syncManager.syncAccount(account);
-          await Future.delayed(const Duration(milliseconds: 500));
+        // A user-requested rescan owns this account's wallet refresh. Do not
+        // report a successful broadcast as failed merely because confirmation
+        // polling cannot start another descriptor sync during that scan.
+        for (int i = 0;
+            i < 8 && !found && !syncManager.isAccountFullScanning(account.id);
+            i++) {
+          if (i > 0) {
+            final remaining = deadline.difference(DateTime.now());
+            if (remaining <= Duration.zero) {
+              break;
+            }
+            await Future.delayed(
+              remaining < const Duration(seconds: 2)
+                  ? remaining
+                  : const Duration(seconds: 2),
+            );
+          }
+          final remaining = deadline.difference(DateTime.now());
+          if (remaining <= Duration.zero) {
+            break;
+          }
+          final attemptBudget = remaining < const Duration(seconds: 5)
+              ? remaining
+              : const Duration(seconds: 5);
+          try {
+            await syncManager.syncAccount(account).timeout(attemptBudget);
+          } on TimeoutException {
+            continue;
+          }
+          final propagationBudget = deadline.difference(DateTime.now());
+          if (propagationBudget > Duration.zero) {
+            await Future.delayed(
+              propagationBudget < const Duration(milliseconds: 500)
+                  ? propagationBudget
+                  : const Duration(milliseconds: 500),
+            );
+          }
           final txs = ref.read(transactionsProvider(account.id));
           if (txs.any((tx) => tx.txId == txId)) {
             found = true;
           }
         }
         if (!found) {
+          final txs = ref.read(transactionsProvider(account.id));
+          found = txs.any((tx) => tx.txId == txId);
+        }
+        if (!found && !syncManager.isAccountFullScanning(account.id)) {
           state = state.clone()
             ..broadcastProgress = BroadcastProgress.subsatFailed;
           return false;
         }
+      } else {
+        unawaited(syncManager.syncAccount(account));
       }
 
       state = state.clone()..broadcastProgress = BroadcastProgress.success;

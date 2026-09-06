@@ -363,11 +363,11 @@ packages:
     dependency: "direct main"
     description:
       path: "."
-      ref: "437577ae14d23ff377f48b31c07c3948b101f406"
-      resolved-ref: "437577ae14d23ff377f48b31c07c3948b101f406"
+      ref: "13e9a28661a078f1e4bf64ffccfac850e6acdf8e"
+      resolved-ref: "13e9a28661a078f1e4bf64ffccfac850e6acdf8e"
       url: "https://github.com/Foundation-Devices/tor.git"
     source: git
-    version: "0.2.0"
+    version: "0.2.1"
   vector_math:
     dependency: transitive
     description:

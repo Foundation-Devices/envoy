@@ -215,23 +215,27 @@ class _ElectrumServerEntryState extends ConsumerState<ElectrumServerEntry> {
   void _tryGetServerFeatures(String address, bool useTor) async {
     final proxy = useTor ? "127.0.0.1:${Tor.instance.port}" : null;
 
-    // First attempt: respect the per-server cert-validation setting.
-    final shouldValidate = Settings().validateDomain(address);
-    if (shouldValidate) {
+    var validateDomain = Settings().validateDomain(
+      address,
+      viaTor: useTor,
+    );
+
+    const maxRetries = 3;
+    int attempt = 0;
+    while (attempt <= maxRetries) {
       try {
-        final validated = await getServerFeatures(
+        final features = await getServerFeatures(
           server: address,
           proxy: proxy,
-          validateDomain: true,
+          validateDomain: validateDomain,
         );
 
-        if (validated.serverVersion != null && validated.genesisHash != null) {
-          _handleFeaturesSuccess(validated, viaTor: useTor);
+        final isValid =
+            features.serverVersion != null && features.genesisHash != null;
+        if (isValid) {
+          _handleFeaturesSuccess(features, viaTor: useTor);
           return;
-        }
-
-        if (validated.certError) {
-          // Cert validation failed – ask the user whether to proceed anyway
+        } else if (validateDomain && features.certError) {
           final proceed = await _showCertErrorDialog();
           if (!proceed) {
             ConnectivityManager().electrumFailure();
@@ -245,28 +249,11 @@ class _ElectrumServerEntryState extends ConsumerState<ElectrumServerEntry> {
             }
             return;
           }
-          // Persist the user's choice so future connections skip validation
+
           Settings().addSkipCertValidation(address);
-        }
-      } catch (_) {}
-    }
-
-    // Connect without cert validation: either cert error accepted by user,
-    // or the validated attempt failed for a non-cert reason.
-    const maxRetries = 3;
-    for (int attempt = 0; attempt <= maxRetries; attempt++) {
-      try {
-        final features = await getServerFeatures(
-          server: address,
-          proxy: proxy,
-          validateDomain: false,
-        );
-
-        final isValid =
-            features.serverVersion != null && features.genesisHash != null;
-        if (isValid) {
-          _handleFeaturesSuccess(features, viaTor: useTor);
-          return;
+          validateDomain = false;
+          attempt = 0;
+          continue;
         } else if (attempt == maxRetries) {
           ConnectivityManager().electrumFailure();
           if (mounted) {
@@ -294,7 +281,10 @@ class _ElectrumServerEntryState extends ConsumerState<ElectrumServerEntry> {
         }
       }
 
-      await Future.delayed(const Duration(seconds: 1));
+      attempt++;
+      if (attempt <= maxRetries) {
+        await Future.delayed(const Duration(seconds: 1));
+      }
     }
   }
 
