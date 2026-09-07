@@ -44,7 +44,7 @@ dependencies:
   tor:
     git:
       url: https://github.com/Foundation-Devices/tor.git
-      ref: 13e9a28661a078f1e4bf64ffccfac850e6acdf8e
+      ref: 91a4cd5a7e6edf9d2da02aa8425aba562996fc7d
   schedulers:
     git:
       url: https://github.com/foundation-devices/schedulers_dart.git

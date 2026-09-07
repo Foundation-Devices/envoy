@@ -599,18 +599,36 @@ class _TorApi extends Fake implements tor_ffi.RustLibApi {
   int _port = 19050;
 
   @override
+  tor_api.TorBootstrapCancellationToken
+      crateApiTorTorBootstrapCancellationTokenNew() => _TorCancellationToken();
+
+  @override
   Future<tor_api.TorInstance> crateApiTorStartTor({
     required int socksPort,
     required String stateDir,
     required String cacheDir,
+    required tor_api.TorBootstrapCancellationToken cancellationToken,
   }) async =>
       _TorInstance(_port++);
 
   @override
+  Future<String?> crateApiTorWaitForProxyExit(
+          {required tor_api.TorProxyMonitor monitor}) =>
+      (monitor as _TorProxy).exit.future;
+
+  @override
   Future<void> crateApiTorStopProxy(
       {required tor_api.TorProxyHandle proxy}) async {
+    (proxy as _TorProxy).exit.complete(null);
     proxy.dispose();
   }
+}
+
+class _TorCancellationToken extends Fake
+    with _NativeHandle
+    implements tor_api.TorBootstrapCancellationToken {
+  @override
+  void cancel() {}
 }
 
 class _TorInstance extends Fake
@@ -623,6 +641,8 @@ class _TorInstance extends Fake
   tor_api.TorClientWrapper get client => _TorClient();
   @override
   final _TorProxy proxy = _TorProxy();
+  @override
+  tor_api.TorProxyMonitor get proxyMonitor => proxy;
 }
 
 class _TorClient extends Fake
@@ -631,4 +651,6 @@ class _TorClient extends Fake
 
 class _TorProxy extends Fake
     with _NativeHandle
-    implements tor_api.TorProxyHandle {}
+    implements tor_api.TorProxyHandle, tor_api.TorProxyMonitor {
+  final exit = Completer<String?>();
+}
