@@ -179,8 +179,7 @@ class SyncManager {
     ]);
     final reachability = _reportReachability(results);
     if (!ConnectivityManager().electrumConnected &&
-        (reachability == ElectrumSyncReachability.unreachable ||
-            (probeOnly && selection.probeSelected))) {
+        reachability == ElectrumSyncReachability.unreachable) {
       _probeCooldown.recordFailure(endpoint);
       kPrint('[ElectrumSync] probe-cooldown '
           'seconds=${_probeCooldown.cooldown.inSeconds}');

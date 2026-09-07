@@ -415,6 +415,22 @@ void main() {
     expect(callsWhileProbing, 1);
   });
 
+  test('a probe skipped while Tor is unavailable does not delay recovery',
+      () async {
+    Settings().usingTor = true;
+    await Tor.instance.enable();
+    await Tor.instance.stop();
+
+    await SyncManager().sync();
+    expect(api.syncCalls, isEmpty);
+    expect(ConnectivityManager().serviceFailureCounters.electrum, 0);
+
+    await Tor.instance.start();
+    await SyncManager().sync();
+    expect(api.syncCalls, hasLength(1));
+    expect(ConnectivityManager().electrumConnected, isTrue);
+  });
+
   test('disconnected periodic rounds probe one descriptor and respect cooldown',
       () async {
     api.sync = (_) async => throw Exception('Electrum sync failed: timed out');
