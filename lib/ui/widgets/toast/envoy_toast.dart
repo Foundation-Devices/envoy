@@ -13,8 +13,8 @@ import 'package:flutter/material.dart';
 
 typedef OnTap = void Function(EnvoyToast toast);
 
-//Store the last toast
-EnvoyToast<dynamic>? _toast;
+// Track every open toast, including those underneath another notification.
+final _activeToasts = <EnvoyToast<dynamic>>{};
 
 class EnvoyToast<T> extends StatefulWidget {
   late final EnvoyToastRoute<T?> envoyToastRoute;
@@ -62,22 +62,22 @@ class EnvoyToast<T> extends StatefulWidget {
   });
 
   Future<T?> show(BuildContext context, {bool rootNavigator = false}) async {
+    if (replaceExisting &&
+        _activeToasts.any((toast) => toast.message == message)) {
+      return null;
+    }
+
     envoyToastRoute =
         showToast<T>(context: context, toast: this) as EnvoyToastRoute<T?>;
-
-    // do not show toast if it is already showing with the same message
-    if (replaceExisting && _toast != null) {
-      if (_toast!.message == message) {
-        return null;
-      }
+    _activeToasts.add(this);
+    try {
+      return await Navigator.of(
+        context,
+        rootNavigator: rootNavigator,
+      ).push(envoyToastRoute as Route<T>);
+    } finally {
+      _activeToasts.remove(this);
     }
-    _toast = this;
-    T? result = await Navigator.of(
-      context,
-      rootNavigator: rootNavigator,
-    ).push(envoyToastRoute as Route<T>);
-    _toast = null;
-    return result;
   }
 
   // clear all previous toasts overlays

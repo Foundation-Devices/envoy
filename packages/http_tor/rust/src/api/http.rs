@@ -118,16 +118,16 @@ lazy_static! {
 
 pub struct Download {
     abort_handle: AbortHandle,
-    handle: Arc<Mutex<JoinHandle<Result<()>>>>,
-    completion: Arc<OnceCell<Result<(), String>>>,
+    handle: Mutex<JoinHandle<Result<()>>>,
+    completion: OnceCell<Result<(), String>>,
 }
 
 impl Download {
     fn new(handle: JoinHandle<Result<()>>) -> Self {
         Self {
             abort_handle: handle.abort_handle(),
-            handle: Arc::new(Mutex::new(handle)),
-            completion: Arc::new(OnceCell::new()),
+            handle: Mutex::new(handle),
+            completion: OnceCell::new(),
         }
     }
 
@@ -694,6 +694,10 @@ async fn download_file_inner(
             || advertised_total == Some(downloaded)
         {
             if let Some(progress_stream) = &progress_stream {
+                // The player can open the file as soon as it receives progress.
+                file.flush().await.with_context(|| {
+                    format!("Failed to flush download destination {}", path.display())
+                })?;
                 let _ = progress_stream.0.add(Progress {
                     downloaded,
                     total: advertised_total.unwrap_or(0),
@@ -876,7 +880,7 @@ mod tests {
         Some(String::from_utf8(request).unwrap())
     }
 
-    async fn read_request(stream: &mut TcpStream) -> String {
+    pub(super) async fn read_request(stream: &mut TcpStream) -> String {
         try_read_request(stream)
             .await
             .expect("client closed before sending HTTP headers")
