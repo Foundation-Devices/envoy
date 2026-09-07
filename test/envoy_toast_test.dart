@@ -64,4 +64,49 @@ void main() {
     EnvoyToast.dismissPreviousToasts(context);
     await tester.pumpAndSettle();
   });
+
+  testWidgets('Expired or disposed toasts can be shown again', (tester) async {
+    late BuildContext context;
+    Widget app() => MaterialApp(
+          home: Builder(
+            builder: (value) {
+              context = value;
+              return const Scaffold();
+            },
+          ),
+        );
+    void showToast(String message, {Duration? duration}) {
+      unawaited(EnvoyToast<void>(
+        replaceExisting: true,
+        message: message,
+        duration: duration,
+        builder: (_) => Text(message),
+      ).show(context));
+    }
+
+    await tester.pumpWidget(app());
+    showToast('Address copied', duration: const Duration(seconds: 2));
+    await tester.pumpAndSettle();
+    showToast('Tor not reachable');
+    await tester.pumpAndSettle();
+    await tester.pump(const Duration(seconds: 2));
+    await tester.pumpAndSettle();
+    expect(find.text('Address copied'), findsNothing);
+    expect(find.text('Tor not reachable'), findsOneWidget);
+    showToast('Address copied');
+    await tester.pumpAndSettle();
+    expect(find.text('Address copied'), findsOneWidget);
+
+    // Removing the navigator disposes routes without popping their futures.
+    await tester.pumpWidget(const SizedBox.shrink());
+    await tester.pumpAndSettle();
+    await tester.pumpWidget(app());
+    showToast('Address copied');
+    showToast('Tor not reachable');
+    await tester.pumpAndSettle();
+    expect(find.text('Address copied'), findsOneWidget);
+    expect(find.text('Tor not reachable'), findsOneWidget);
+    EnvoyToast.dismissPreviousToasts(context);
+    await tester.pumpAndSettle();
+  });
 }

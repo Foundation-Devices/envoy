@@ -70,13 +70,18 @@ class EnvoyToast<T> extends StatefulWidget {
     envoyToastRoute =
         showToast<T>(context: context, toast: this) as EnvoyToastRoute<T?>;
     _activeToasts.add(this);
+    // Navigator disposal does not complete the push future.
+    unawaited(envoyToastRoute.completed.then((_) {
+      _activeToasts.remove(this);
+    }));
     try {
       return await Navigator.of(
         context,
         rootNavigator: rootNavigator,
       ).push(envoyToastRoute as Route<T>);
-    } finally {
+    } catch (_) {
       _activeToasts.remove(this);
+      rethrow;
     }
   }
 
