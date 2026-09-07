@@ -8,6 +8,7 @@ import 'dart:async';
 import 'dart:math';
 import 'package:envoy/account/accounts_manager.dart';
 import 'package:envoy/business/connectivity_manager.dart';
+import 'package:envoy/business/electrum_tls_policy.dart';
 import 'package:envoy/business/envoy_seed.dart';
 import 'package:envoy/business/exchange_rate.dart';
 import 'package:envoy/business/node_url.dart';
@@ -239,20 +240,38 @@ class Settings extends ChangeNotifier {
   @JsonKey(defaultValue: ["ssl://electrum.bitaroo.net:50002"])
   List<String> skipCertValidationServers = [PublicServer.bitaroo.address];
 
-  bool validateDomain(String server) {
-    return !skipCertValidationServers.contains(server);
+  bool validateDomain(String server, {required bool viaTor}) {
+    return shouldValidateElectrumCertificate(
+      server: server,
+      viaTor: viaTor,
+      hasCertificateException: hasElectrumCertificateException(
+        server: server,
+        exceptions: skipCertValidationServers,
+      ),
+    );
   }
 
   void addSkipCertValidation(String server) {
-    if (!skipCertValidationServers.contains(server)) {
-      skipCertValidationServers.add(server);
+    if (!hasElectrumCertificateException(
+      server: server,
+      exceptions: skipCertValidationServers,
+    )) {
+      skipCertValidationServers.add(
+        normalizeElectrumCertificateServer(server),
+      );
       notifyListeners();
       store();
     }
   }
 
   void removeSkipCertValidation(String server) {
-    if (skipCertValidationServers.remove(server)) {
+    final normalizedServer = normalizeElectrumCertificateServer(server);
+    final oldLength = skipCertValidationServers.length;
+    skipCertValidationServers.removeWhere(
+      (exception) =>
+          normalizeElectrumCertificateServer(exception) == normalizedServer,
+    );
+    if (skipCertValidationServers.length != oldLength) {
       notifyListeners();
       store();
     }

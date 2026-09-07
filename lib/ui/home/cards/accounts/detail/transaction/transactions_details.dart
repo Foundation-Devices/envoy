@@ -107,7 +107,10 @@ class _TransactionsDetailsWidgetState
           txid: widget.tx.txId,
           electrumServer: server,
           torPort: port,
-          validateDomain: Settings().validateDomain(server),
+          validateDomain: Settings().validateDomain(
+            server,
+            viaTor: port != null,
+          ),
         );
         if (fee != null) {
           await widget.account.handler?.updateTxFee(

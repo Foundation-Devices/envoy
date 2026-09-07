@@ -139,6 +139,9 @@ class ConnectivityManager {
     kPrint("Instance of ConnectivityManager created!");
 
     Tor.instance.events.stream.listen((event) {
+      kPrint('[ElectrumSync] tor-state eventPort=$event '
+          'currentPort=${Tor.instance.port} generation=${Tor.instance.routeGeneration} '
+          'enabled=${Tor.instance.enabled} bootstrapped=${Tor.instance.bootstrapped}');
       // Nudge listeners
       events.add(ConnectivityManagerEvent.torStatusChange);
     });
@@ -198,12 +201,13 @@ class ConnectivityManager {
     // A restart can leave old requests completing against the stopped route.
     // Ignore those results while the replacement route settles.
     if (_inTorGracePeriod) {
+      kPrint('[ElectrumSync] service-failure ignored reason=tor-grace-period');
       return;
     }
 
     _consecutiveElectrumFailures++;
     kPrint(
-        "Electrum failure strike $_consecutiveElectrumFailures/$_maxFailuresBeforeUnreachable");
+        '[ElectrumSync] service-failure strikes=$_consecutiveElectrumFailures/$_maxFailuresBeforeUnreachable');
 
     if (_consecutiveElectrumFailures >= _maxFailuresBeforeUnreachable) {
       electrumConnected = false;

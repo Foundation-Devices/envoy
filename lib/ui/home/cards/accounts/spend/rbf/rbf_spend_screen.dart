@@ -658,7 +658,10 @@ class _RBFSpendScreenState extends ConsumerState<RBFSpendScreen> {
         draftTransaction: draftTransaction,
         electrumServer: server,
         torPort: port,
-        validateDomain: Settings().validateDomain(server),
+        validateDomain: Settings().validateDomain(
+          server,
+          viaTor: port != null,
+        ),
       );
       await handler.updateBroadcastState(draftTransaction: draftTransaction);
 

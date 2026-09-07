@@ -605,7 +605,10 @@ class _CancelTransactionProgressState
         draftTransaction: cancelTx,
         electrumServer: server,
         torPort: port,
-        validateDomain: Settings().validateDomain(server),
+        validateDomain: Settings().validateDomain(
+          server,
+          viaTor: port != null,
+        ),
       );
       await handler.updateBroadcastState(draftTransaction: cancelTx);
       await EnvoyStorage().addCancelState(
