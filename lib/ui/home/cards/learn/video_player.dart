@@ -31,6 +31,7 @@ class _FullScreenVideoPlayerState extends State<FullScreenVideoPlayer>
 
   vp.VideoPlayerController? _controller;
   late Future<void> _initializeVideoPlayerFuture;
+  Object? _downloadError;
   File? _streamFile;
   bool _showTorExplainer = false;
   bool _isPlaying = true;
@@ -52,8 +53,10 @@ class _FullScreenVideoPlayerState extends State<FullScreenVideoPlayer>
   double _downloadProgressUi = 0; // throttled UI progress [0..1]
   DateTime? _lastDownloadUiUpdateAt;
 
-  static const _isMaestroTest =
-      bool.fromEnvironment('IS_MAESTRO_TEST', defaultValue: false);
+  static const _isMaestroTest = bool.fromEnvironment(
+    'IS_MAESTRO_TEST',
+    defaultValue: false,
+  );
   Timer? _updatePositionTimer;
   Timer? _hideTopBarTimer;
   Timer? _showTimelineTimer;
@@ -149,45 +152,45 @@ class _FullScreenVideoPlayerState extends State<FullScreenVideoPlayer>
       }
 
       _cancelDownload = download.cancel;
-      _downloadProgressSubscription =
-          download.progress.listen((progress) async {
-        if (!mounted || _playerExited) {
-          return;
-        }
-
-        final double completion = progress.total == BigInt.zero
-            ? 0
-            : (progress.downloaded.toDouble() / progress.total.toDouble())
-                .clamp(0, 1)
-                .toDouble();
-        _updateDownloadProgress(completion, force: completion == 1);
-
-        // Start playback once there is enough local buffer for smoother startup.
-        if ((progress.downloaded.toInt() > _playThreshold ||
-                progress.downloaded >= progress.total) &&
-            _controller == null) {
-          final controller = vp.VideoPlayerController.file(
-            streamFile,
-            videoPlayerOptions: vp.VideoPlayerOptions(
-              allowBackgroundPlayback: false,
-            ),
-          );
-
-          _controller = controller;
-          _initializeVideoPlayerFuture =
-              controller.initialize().then((_) async {
-            await _onControllerInitialized(controller);
-          });
-
-          if (!completer.isCompleted) {
-            completer.complete(_initializeVideoPlayerFuture);
+      _downloadProgressSubscription = download.progress.listen(
+        (progress) {
+          if (!mounted || _playerExited) {
+            return;
           }
-        }
-      }, onError: (Object error, StackTrace stackTrace) {
-        if (!completer.isCompleted) {
-          completer.completeError(error, stackTrace);
-        }
-      });
+
+          final double completion = progress.total == BigInt.zero
+              ? 0
+              : (progress.downloaded.toDouble() / progress.total.toDouble())
+                  .clamp(0, 1)
+                  .toDouble();
+          _updateDownloadProgress(completion, force: completion == 1);
+
+          // Start playback once there is enough local buffer for smoother startup.
+          if ((progress.downloaded.toInt() > _playThreshold ||
+                  (progress.total > BigInt.zero &&
+                      progress.downloaded >= progress.total)) &&
+              _controller == null) {
+            _initializeController(streamFile, completer);
+          }
+        },
+        onError: (Object error, StackTrace stackTrace) {
+          _handleDownloadError(error, stackTrace, completer);
+        },
+      );
+      unawaited(
+        download.completed.then(
+          (_) {
+            if (!mounted || _playerExited) {
+              return;
+            }
+            _updateDownloadProgress(1, force: true);
+            _initializeController(streamFile, completer);
+          },
+          onError: (Object error, StackTrace stackTrace) {
+            _handleDownloadError(error, stackTrace, completer);
+          },
+        ),
+      );
     }).catchError((Object error, StackTrace stackTrace) {
       if (!completer.isCompleted) {
         completer.completeError(error, stackTrace);
@@ -197,14 +200,76 @@ class _FullScreenVideoPlayerState extends State<FullScreenVideoPlayer>
     _initializeVideoPlayerFuture = completer.future;
   }
 
+  void _handleDownloadError(
+    Object error,
+    StackTrace stackTrace,
+    Completer<void> completer,
+  ) {
+    if (!mounted || _playerExited) {
+      return;
+    }
+    if (!completer.isCompleted) {
+      completer.completeError(error, stackTrace);
+      return;
+    }
+
+    if (_downloadError != null) {
+      return;
+    }
+
+    final controller = _controller;
+    if (controller != null) {
+      unawaited(controller.pause().catchError((_) {}));
+    }
+    _updatePositionTimer?.cancel();
+    _updatePositionTimer = null;
+    _showTimelineTimer?.cancel();
+    _showTimelineTimer = null;
+    _hideTopBarTimer?.cancel();
+    _hideTopBarTimer = null;
+    setState(() {
+      _downloadError = error;
+      _isPlaying = false;
+      _visibleTimeline = true;
+      _showTorExplainer = false;
+    });
+    _syncPlayPauseIcon(false);
+  }
+
+  void _initializeController(File streamFile, Completer<void> completer) {
+    if (!mounted || _playerExited || _controller != null) {
+      return;
+    }
+
+    final controller = vp.VideoPlayerController.file(
+      streamFile,
+      videoPlayerOptions: vp.VideoPlayerOptions(allowBackgroundPlayback: false),
+    );
+    _controller = controller;
+    _initializeVideoPlayerFuture = controller.initialize().then((_) async {
+      await _onControllerInitialized(controller);
+    });
+
+    if (!completer.isCompleted) {
+      completer.complete(_initializeVideoPlayerFuture);
+    }
+  }
+
   Future<void> _onControllerInitialized(
-      vp.VideoPlayerController controller) async {
-    if (_playerExited) {
+    vp.VideoPlayerController controller,
+  ) async {
+    if (_playerExited || _downloadError != null) {
       return;
     }
 
     await controller.play();
     if (!mounted || _playerExited) {
+      return;
+    }
+    if (_downloadError != null) {
+      try {
+        await controller.pause();
+      } catch (_) {}
       return;
     }
 
@@ -232,16 +297,13 @@ class _FullScreenVideoPlayerState extends State<FullScreenVideoPlayer>
       });
     }
 
-    _showTimelineTimer = Timer(
-      Duration(seconds: _isMaestroTest ? 20 : 5),
-      () {
-        if (mounted && !_playerExited) {
-          setState(() {
-            _visibleTimeline = false;
-          });
-        }
-      },
-    );
+    _showTimelineTimer = Timer(Duration(seconds: _isMaestroTest ? 20 : 5), () {
+      if (mounted && !_playerExited) {
+        setState(() {
+          _visibleTimeline = false;
+        });
+      }
+    });
   }
 
   Future<void> restoreSystemUIOverlays() async {
@@ -291,10 +353,12 @@ class _FullScreenVideoPlayerState extends State<FullScreenVideoPlayer>
   }
 
   void periodicallyHideBar() {
-    _hideTopBarTimer =
-        Timer.periodic(Duration(seconds: _isMaestroTest ? 15 : 5), (_) async {
-      restoreSystemUIOverlays();
-    });
+    _hideTopBarTimer = Timer.periodic(
+      Duration(seconds: _isMaestroTest ? 15 : 5),
+      (_) async {
+        restoreSystemUIOverlays();
+      },
+    );
   }
 
   @override
@@ -404,178 +468,180 @@ class _FullScreenVideoPlayerState extends State<FullScreenVideoPlayer>
         child: Stack(
           children: [
             FutureBuilder(
-                future: _initializeVideoPlayerFuture,
-                builder: (context, snapshot) {
-                  if (snapshot.hasError) {
-                    return const Center(
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Icon(
-                            Icons.error_outline,
-                            color: Colors.white70,
-                            size: 52,
-                          ),
-                          SizedBox(height: 12),
-                          Text(
-                            'Unable to load video',
-                            style: TextStyle(color: Colors.white70),
-                          ),
-                        ],
-                      ),
-                    );
-                  }
-
-                  final controller = _controller;
-                  final initialized =
-                      snapshot.connectionState == ConnectionState.done &&
-                          controller != null &&
-                          controller.value.isInitialized;
-                  if (initialized) {
-                    // Keep slider range stable by using metadata duration.
-                    final maxDuration = _metadataDurationSeconds();
-                    final sliderValue =
-                        _playerProgress.clamp(0, maxDuration).toDouble();
-
-                    return Stack(
-                      children: [
-                        InteractiveViewer(
-                          maxScale: 2.5,
-                          minScale: .5,
-                          child: Center(
-                            child: AspectRatio(
-                              aspectRatio: controller.value.aspectRatio > 0
-                                  ? controller.value.aspectRatio
-                                  : 16 / 9,
-                              child: vp.VideoPlayer(controller),
-                            ),
-                          ),
-                        ),
-                        Center(
-                          child: !_isWaitingForPendingSeek
-                              ? AnimatedOpacity(
-                                  duration: const Duration(milliseconds: 180),
-                                  opacity: _isPlaying ? 0.0 : 1.0,
-                                  child: AnimatedIcon(
-                                    icon: AnimatedIcons.play_pause,
-                                    progress: _playPauseIconController,
-                                    color: Colors.white,
-                                    size: 100.0,
-                                    semanticLabel:
-                                        _isPlaying ? 'Pause' : 'Play',
-                                  ),
-                                )
-                              : const SizedBox.shrink(),
-                        ),
-                        if (_isWaitingForPendingSeek)
-                          const Positioned.fill(
-                            child: IgnorePointer(
-                              child: Center(
-                                child: CircularProgressIndicator(
-                                  color: Colors.white,
-                                ),
-                              ),
-                            ),
-                          ),
-                        Positioned(
-                          left: 0,
-                          right: 0,
-                          top: 0,
-                          bottom: 0,
-                          child: GestureDetector(
-                            onTap: () {
-                              showTimeline();
-                            },
-                          ),
-                        ),
-                        Positioned(
-                          left: 0,
-                          right: 0,
-                          top: 100,
-                          bottom: 100,
-                          child: GestureDetector(
-                            onTap: () async {
-                              await _togglePlayPause();
-                              showTimeline();
-                            },
-                          ),
-                        ),
-                        if (_visibleTimeline)
-                          Positioned(
-                            bottom: 20,
-                            left: 20,
-                            right: 20,
-                            child: Stack(
-                              alignment: Alignment.center,
-                              children: [
-                                Padding(
-                                  padding: const EdgeInsets.symmetric(
-                                    horizontal: 25.0,
-                                  ),
-                                  child: LinearProgressIndicator(
-                                    color: Colors.white70,
-                                    backgroundColor: Colors.grey,
-                                    value: _downloadProgressUi,
-                                    borderRadius: BorderRadius.circular(50),
-                                  ),
-                                ),
-                                Slider(
-                                  allowedInteraction:
-                                      SliderInteraction.tapAndSlide,
-                                  activeColor: EnvoyColors.darkTeal,
-                                  inactiveColor: Colors.transparent,
-                                  min: 0,
-                                  value: sliderValue,
-                                  max: maxDuration,
-                                  onChanged: (value) {
-                                    setState(() {
-                                      _playerProgress = value;
-                                    });
-                                  },
-                                  onChangeEnd: (double newValue) async {
-                                    await _handleSeekRequest(newValue);
-                                  },
-                                ),
-                              ],
-                            ),
-                          ),
-                      ],
-                    );
-                  }
-
-                  // If the VideoPlayerController is still initializing, show a
-                  // loading spinner.
-                  return Center(
+              future: _initializeVideoPlayerFuture,
+              builder: (context, snapshot) {
+                if (snapshot.hasError || _downloadError != null) {
+                  return const Center(
                     child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
+                      mainAxisSize: MainAxisSize.min,
                       children: [
-                        CircularProgressIndicator(
-                          color: EnvoyColors.darkTeal,
-                          value: _downloadProgressUi > 0
-                              ? _downloadProgressUi
-                              : null,
+                        Icon(
+                          Icons.error_outline,
+                          color: Colors.white70,
+                          size: 52,
                         ),
-                        if (ConnectivityManager().torEnabled)
-                          Padding(
-                            padding: const EdgeInsets.all(16.0),
-                            child: AnimatedOpacity(
-                              duration: const Duration(milliseconds: 1000),
-                              opacity: _showTorExplainer ? 1.0 : 0.0,
-                              child: Text(
-                                ConnectivityManager().torEnabled &&
-                                        !ConnectivityManager()
-                                            .torCircuitEstablished
-                                    ? S().video_connectingToTorNetwork
-                                    : S().video_loadingTorText,
-                                style: const TextStyle(color: Colors.white70),
-                              ),
-                            ),
-                          ),
+                        SizedBox(height: 12),
+                        Text(
+                          'Unable to load video',
+                          style: TextStyle(color: Colors.white70),
+                        ),
                       ],
                     ),
                   );
-                }),
-            if (_visibleTimeline || _playerProgress == 0)
+                }
+
+                final controller = _controller;
+                final initialized =
+                    snapshot.connectionState == ConnectionState.done &&
+                        controller != null &&
+                        controller.value.isInitialized;
+                if (initialized) {
+                  // Keep slider range stable by using metadata duration.
+                  final maxDuration = _metadataDurationSeconds();
+                  final sliderValue =
+                      _playerProgress.clamp(0, maxDuration).toDouble();
+
+                  return Stack(
+                    children: [
+                      InteractiveViewer(
+                        maxScale: 2.5,
+                        minScale: .5,
+                        child: Center(
+                          child: AspectRatio(
+                            aspectRatio: controller.value.aspectRatio > 0
+                                ? controller.value.aspectRatio
+                                : 16 / 9,
+                            child: vp.VideoPlayer(controller),
+                          ),
+                        ),
+                      ),
+                      Center(
+                        child: !_isWaitingForPendingSeek
+                            ? AnimatedOpacity(
+                                duration: const Duration(milliseconds: 180),
+                                opacity: _isPlaying ? 0.0 : 1.0,
+                                child: AnimatedIcon(
+                                  icon: AnimatedIcons.play_pause,
+                                  progress: _playPauseIconController,
+                                  color: Colors.white,
+                                  size: 100.0,
+                                  semanticLabel: _isPlaying ? 'Pause' : 'Play',
+                                ),
+                              )
+                            : const SizedBox.shrink(),
+                      ),
+                      if (_isWaitingForPendingSeek)
+                        const Positioned.fill(
+                          child: IgnorePointer(
+                            child: Center(
+                              child: CircularProgressIndicator(
+                                color: Colors.white,
+                              ),
+                            ),
+                          ),
+                        ),
+                      Positioned(
+                        left: 0,
+                        right: 0,
+                        top: 0,
+                        bottom: 0,
+                        child: GestureDetector(
+                          onTap: () {
+                            showTimeline();
+                          },
+                        ),
+                      ),
+                      Positioned(
+                        left: 0,
+                        right: 0,
+                        top: 100,
+                        bottom: 100,
+                        child: GestureDetector(
+                          onTap: () async {
+                            await _togglePlayPause();
+                            showTimeline();
+                          },
+                        ),
+                      ),
+                      if (_visibleTimeline)
+                        Positioned(
+                          bottom: 20,
+                          left: 20,
+                          right: 20,
+                          child: Stack(
+                            alignment: Alignment.center,
+                            children: [
+                              Padding(
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 25.0,
+                                ),
+                                child: LinearProgressIndicator(
+                                  color: Colors.white70,
+                                  backgroundColor: Colors.grey,
+                                  value: _downloadProgressUi,
+                                  borderRadius: BorderRadius.circular(50),
+                                ),
+                              ),
+                              Slider(
+                                allowedInteraction:
+                                    SliderInteraction.tapAndSlide,
+                                activeColor: EnvoyColors.darkTeal,
+                                inactiveColor: Colors.transparent,
+                                min: 0,
+                                value: sliderValue,
+                                max: maxDuration,
+                                onChanged: (value) {
+                                  setState(() {
+                                    _playerProgress = value;
+                                  });
+                                },
+                                onChangeEnd: (double newValue) async {
+                                  await _handleSeekRequest(newValue);
+                                },
+                              ),
+                            ],
+                          ),
+                        ),
+                    ],
+                  );
+                }
+
+                // If the VideoPlayerController is still initializing, show a
+                // loading spinner.
+                return Center(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      CircularProgressIndicator(
+                        color: EnvoyColors.darkTeal,
+                        value: _downloadProgressUi > 0
+                            ? _downloadProgressUi
+                            : null,
+                      ),
+                      if (ConnectivityManager().torEnabled)
+                        Padding(
+                          padding: const EdgeInsets.all(16.0),
+                          child: AnimatedOpacity(
+                            duration: const Duration(milliseconds: 1000),
+                            opacity: _showTorExplainer ? 1.0 : 0.0,
+                            child: Text(
+                              ConnectivityManager().torEnabled &&
+                                      !ConnectivityManager()
+                                          .torCircuitEstablished
+                                  ? S().video_connectingToTorNetwork
+                                  : S().video_loadingTorText,
+                              style: const TextStyle(color: Colors.white70),
+                            ),
+                          ),
+                        ),
+                    ],
+                  ),
+                );
+              },
+            ),
+            if (_downloadError != null ||
+                _visibleTimeline ||
+                _playerProgress == 0)
               Positioned(
                 top: 20,
                 left: 20,
