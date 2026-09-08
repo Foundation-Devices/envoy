@@ -645,7 +645,9 @@ class QLConnection with EnvoyMessageWriter {
   Future<bool> writeMessage(api.QuantumLinkMessage message) async {
     return _writeQueue.enqueue(
       () async {
+        if (_readController.isClosed) return false;
         final data = await encodeMessage(message: message);
+        if (_readController.isClosed) return false;
         kPrint("Encoded message! Size: ${data.length}");
         if (Platform.isIOS || Platform.isAndroid) {
           final success = await writeAll(data);
@@ -669,7 +671,12 @@ class QLConnection with EnvoyMessageWriter {
         );
         kPrint(
             "[$deviceId] Timeout writing message of type ${message.runtimeType}");
-        _abortFirmwareTransferOnDisconnect();
+        // The native write queue is shared by device ID and can outlive this
+        // Dart instance. Always reset a stalled native write, but do not emit
+        // firmware events into a handler that has already been disposed.
+        if (!_readController.isClosed) {
+          _abortFirmwareTransferOnDisconnect();
+        }
         _writeQueue.completePending(false);
         try {
           await _methodChannel
@@ -731,6 +738,8 @@ class QLConnection with EnvoyMessageWriter {
 
   /// Dispose of stream subscriptions and cleanup
   void dispose() {
+    _firmwareTransferInProgress = false;
+    _writeQueue.completePending(false);
     _cancelPairingRetry();
     _deviceStatusSubscription?.cancel();
     _qlActivityMonitorTimer?.cancel();

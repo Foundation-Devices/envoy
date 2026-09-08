@@ -14,6 +14,7 @@ enum PrimeFwUpdateStep {
   installing,
   rebooting,
   finished,
+  notAvailable,
   error,
   idle,
 }

@@ -35,7 +35,10 @@ class Server {
     }
   }
 
-  Future<List<PrimePatch>> fetchPrimePatches(String currentVersion) async {
+  Future<List<PrimePatch>> fetchPrimePatches(
+    String currentVersion, {
+    bool foreground = false,
+  }) async {
     final channel = Settings().selectedBetaChannel;
     final channelParam =
         channel != null ? '&channel=${Uri.encodeQueryComponent(channel)}' : '';
@@ -43,7 +46,8 @@ class Server {
       kPrint(
           "Fetching beta prime patches, url: '$_serverAddress/prime/patches?version=$currentVersion$channelParam'");
     }
-    final response = await http!.get(
+    final get = foreground ? http!.getForeground : http!.get;
+    final response = await get(
       '$_serverAddress/prime/patches?version=$currentVersion$channelParam',
     );
 

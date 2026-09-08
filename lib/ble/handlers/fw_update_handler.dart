@@ -7,6 +7,7 @@ import 'dart:async';
 import 'dart:typed_data';
 
 import 'package:envoy/ble/bluetooth_manager.dart';
+import 'package:envoy/ble/handlers/firmware_update_check_queue.dart';
 import 'package:envoy/ble/quantum_link_router.dart';
 import 'package:envoy/business/server.dart';
 import 'package:envoy/channels/ble_status.dart';
@@ -17,7 +18,6 @@ import 'package:envoy/util/bug_report_helper.dart';
 import 'package:envoy/util/console.dart';
 import 'package:envoy/util/stream_replay_cache.dart';
 import 'package:envoy/util/transfer_rate_estimator.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:foundation_api/foundation_api.dart' as api;
 import 'package:http_tor/http_tor.dart';
 
@@ -96,12 +96,27 @@ class FwUpdateHandler extends PassportMessageHandler {
   final _transferEstimator = TransferRateEstimator();
   ControlledQueue<api.QuantumLinkMessage>? _chunkQueue;
   Future<void>? _firmwareFetchTask;
+  Future<bool>? _firmwarePreparationAcknowledgement;
   DownloadCancellationToken? _firmwareDownloadCancellationToken;
+  bool _firmwarePreparationInProgress = false;
   int _firmwareFetchRequestId = 0;
+  // A user-blocking check uses HttpTor's foreground lane and bootstrap budget.
+  static final _firmwareUpdateFetchTimeout =
+      HttpTor.foregroundTorRequestTimeout;
+  static final _firmwareUpdateCheckTimeout =
+      _firmwareUpdateFetchTimeout + const Duration(minutes: 2);
+  final _firmwareUpdateChecks = FirmwareUpdateCheckQueue();
+  FwUpdateState? _activeFirmwareUpdateCheckLoadingState;
+  bool _firmwareUpdateCheckRunning = false;
+  bool _disposed = false;
+  int _firmwareUpdateGeneration = 0;
+  bool _firmwareFetchActive = false;
+  bool _firmwareTransferPaused = false;
 
   // High-water mark to prevent progress regression during chunk retries
   double _highWaterProgress = 0.0;
   final _fetchState = StreamController<FwUpdateState>.broadcast();
+  FwUpdateState? _latestFetchState;
   final _downloadState = StreamController<FwUpdateState>.broadcast();
   final _transferState = StreamController<FwUpdateState>.broadcast();
   final _primeFwUpdate = StreamController<PrimeFwUpdateStep>.broadcast();
@@ -182,25 +197,30 @@ class FwUpdateHandler extends PassportMessageHandler {
   Future<void> handleMessage(api.QuantumLinkMessage message) async {
     switch (message) {
       case api.QuantumLinkMessage_FirmwareUpdateCheckRequest updateRequest:
-        currentVersion = updateRequest.field0.currentVersion;
-        _handleFwUpdateCheckRequest(currentVersion);
+        _queueFirmwareUpdateCheck(updateRequest.field0.currentVersion);
       case api.QuantumLinkMessage_FirmwareFetchRequest fetchRequest:
         final api.FirmwareFetchRequest firmwareFetchRequest =
             fetchRequest.field0;
         if (firmwareFetchRequest.chunkOffset case final offset?) {
           kPrint("Restarting chunkQueue from offset $offset");
-          final resumed = _chunkQueue?.restartFrom(offset.toInt());
+          final queue = _chunkQueue;
+          final resumed = queue?.restartFrom(offset.toInt());
+          if (queue != null) {
+            _setFirmwareTransferLifecycle(active: true, paused: false);
+            _updateFwUpdateState(PrimeFwUpdateStep.transferring);
+            qlConnection.setFirmwareTransferInProgress(true);
+          }
           if (resumed != null) {
             // Queue had already finished — re-request high BLE priority
             // and track the new send loop.
             kPrint(
               "Queue was completed, re-launching send loop from offset $offset",
             );
-            qlConnection.setFirmwareTransferInProgress(true);
+            final requestId = _firmwareFetchRequestId;
             await qlConnection.requestHighConnectionPriority();
             unawaited(
               resumed.whenComplete(() async {
-                qlConnection.setFirmwareTransferInProgress(false);
+                _finishFirmwareFetchRequest(requestId);
                 await qlConnection.requestBalancedConnectionPriority();
               }),
             );
@@ -215,15 +235,81 @@ class FwUpdateHandler extends PassportMessageHandler {
     }
   }
 
+  void _queueFirmwareUpdateCheck(String requestedVersion) {
+    if (_disposed) return;
+    currentVersion = requestedVersion;
+    _firmwareUpdateChecks.add(requestedVersion);
+    if (!_firmwareUpdateCheckRunning) {
+      unawaited(_drainFirmwareUpdateChecks());
+    }
+  }
+
+  Future<void> _drainFirmwareUpdateChecks() async {
+    if (_firmwareUpdateCheckRunning || _disposed) return;
+    _firmwareUpdateCheckRunning = true;
+    try {
+      while (!_disposed) {
+        final request = _firmwareUpdateChecks.takeNext();
+        if (request == null) break;
+        var delivery = FirmwareUpdateCheckDelivery.abandoned;
+        try {
+          delivery = await _handleFwUpdateCheckRequest(
+            request.id,
+            request.currentVersion,
+          ).timeout(_firmwareUpdateCheckTimeout);
+        } on TimeoutException catch (error, stackTrace) {
+          if (_disposed) return;
+          EnvoyReport().log(
+            "fw_update_handler",
+            "Firmware update check timed out: $error",
+            stackTrace: stackTrace,
+          );
+          if (_isCurrentFirmwareUpdateCheck(request.id) &&
+              !_firmwareUpdateInProgress &&
+              identical(
+                _latestFetchState,
+                _activeFirmwareUpdateCheckLoadingState,
+              )) {
+            _updateFetchState(
+              S().firmware_updateError_downloadFailed,
+              EnvoyStepState.ERROR,
+            );
+          }
+        } catch (error, stackTrace) {
+          if (_disposed) return;
+          EnvoyReport().log(
+            "fw_update_handler",
+            "Unhandled queued firmware check error: $error",
+            stackTrace: stackTrace,
+          );
+        } finally {
+          _activeFirmwareUpdateCheckLoadingState = null;
+          _firmwareUpdateChecks.complete(request, delivery);
+        }
+      }
+    } finally {
+      _firmwareUpdateCheckRunning = false;
+    }
+  }
+
+  bool _isCurrentFirmwareUpdateCheck(int requestId) =>
+      !_disposed && _firmwareUpdateChecks.isCurrent(requestId);
+
   void _startFirmwareFetch(String currentVersion) {
     if (_firmwareFetchTask != null) {
       EnvoyReport().log(
         "fw_update_handler",
         "Firmware fetch already in progress; coalescing duplicate request",
       );
+      if (_firmwarePreparationInProgress) {
+        unawaited(
+          _acknowledgeFirmwarePreparation(_firmwareFetchRequestId),
+        );
+      }
       return;
     }
 
+    this.currentVersion = currentVersion;
     final requestId = _startFirmwareFetchRequest();
     final task = _handleFirmwareFetchRequest(currentVersion, requestId);
     _firmwareFetchTask = task;
@@ -258,12 +344,13 @@ class FwUpdateHandler extends PassportMessageHandler {
         S().firmware_downloadingUpdate_header,
         EnvoyStepState.LOADING,
       );
+      await _acknowledgeFirmwarePreparation(requestId);
+      if (!_isCurrentFirmwareFetchRequest(requestId)) return;
       patches = await Server().fetchPrimePatches(currentVersion);
       if (!_isCurrentFirmwareFetchRequest(requestId)) return;
     } catch (e, stack) {
       if (!_isCurrentFirmwareFetchRequest(requestId)) return;
-      kPrint("failed to fetch patches: $e");
-      debugPrintStack(stackTrace: stack);
+      _updateFwUpdateState(PrimeFwUpdateStep.error);
       _updateDownloadState(
         S().firmware_updateError_downloadFailed,
         EnvoyStepState.ERROR,
@@ -272,17 +359,31 @@ class FwUpdateHandler extends PassportMessageHandler {
         S().firmware_updateError_downloadFailed,
         requestId: requestId,
       );
+      EnvoyReport().log(
+        "fw_update_handler",
+        "Failed to fetch firmware patches: $e",
+        stackTrace: stack,
+      );
       return;
     }
 
     if (patches.isEmpty) {
-      _availablePatches = const [];
-      EnvoyReport().log(
-        "fw_update_handler",
-        "No updates available — notifying device",
+      _firmwarePreparationInProgress = false;
+      final delivered = await sendFirmwareFetchEvent(
+        api.FirmwareFetchEvent.updateNotAvailable(),
+        requestId: requestId,
       );
-      await sendFirmwareFetchEvent(api.FirmwareFetchEvent.updateNotAvailable());
+      if (!_isCurrentFirmwareFetchRequest(requestId)) return;
+      if (!delivered) {
+        _updateFwUpdateState(PrimeFwUpdateStep.error);
+        _cancelFirmwareFetchRequest();
+        return;
+      }
+      _availablePatches = const [];
+      newVersion = "";
+      totalPatchBytes = 0;
       _finishFirmwareFetchRequest(requestId);
+      _updateFwUpdateState(PrimeFwUpdateStep.notAvailable);
     } else {
       List<Uint8List> patchBinaries = [];
       final totalDownloadBytes = _getTotalPatchBytes(patches);
@@ -351,8 +452,10 @@ class FwUpdateHandler extends PassportMessageHandler {
 
         // Prime starts its no-data watchdog when it receives `starting`, so
         // only send the event once the first BLE chunk can follow immediately.
+        _firmwarePreparationInProgress = false;
         final startingSent = await sendFirmwareFetchEvent(
           api.FirmwareFetchEvent.starting(updateAvailableMessage(patches)),
+          requestId: requestId,
         );
         if (!_isCurrentFirmwareFetchRequest(requestId)) return;
         if (!startingSent) {
@@ -379,7 +482,9 @@ class FwUpdateHandler extends PassportMessageHandler {
 
   int _startFirmwareFetchRequest() {
     _cancelFirmwareFetchRequest();
+    _setFirmwareTransferLifecycle(active: true, paused: false);
     _firmwareDownloadCancellationToken = DownloadCancellationToken();
+    _firmwarePreparationInProgress = true;
     qlConnection.setFirmwareTransferInProgress(true);
     EnvoyReport().log(
       "fw_update_handler",
@@ -392,19 +497,27 @@ class FwUpdateHandler extends PassportMessageHandler {
     return requestId == _firmwareFetchRequestId;
   }
 
-  void _cancelFirmwareFetchRequest() {
+  void _cancelFirmwareFetchRequest({bool updateConnectionState = true}) {
     _firmwareFetchRequestId++;
+    _setFirmwareTransferLifecycle(active: false, paused: true);
     _firmwareDownloadCancellationToken?.cancel();
     _firmwareDownloadCancellationToken = null;
     _firmwareFetchTask = null;
+    _firmwarePreparationAcknowledgement = null;
+    _firmwarePreparationInProgress = false;
     _chunkQueue?.stop();
     _chunkQueue = null;
-    qlConnection.setFirmwareTransferInProgress(false);
-    unawaited(qlConnection.requestBalancedConnectionPriority());
+    if (updateConnectionState) {
+      qlConnection.setFirmwareTransferInProgress(false);
+      unawaited(qlConnection.requestBalancedConnectionPriority());
+    }
   }
 
   void _finishFirmwareFetchRequest(int requestId) {
     if (!_isCurrentFirmwareFetchRequest(requestId)) return;
+    _setFirmwareTransferLifecycle(
+        active: false, paused: _firmwareTransferPaused);
+    _firmwarePreparationInProgress = false;
     qlConnection.setFirmwareTransferInProgress(false);
   }
 
@@ -461,9 +574,10 @@ class FwUpdateHandler extends PassportMessageHandler {
 
       // Publish a resumable queue only once its sender is about to start. A
       // disconnect before this point cancels preparation instead of exposing
-      // a queue that cannot yet service a chunk-offset request.
+      // a queue that cannot yet service a chunk-offset request. Keep the fetch
+      // task active until this queue finishes so retries cannot start a second
+      // transfer alongside it.
       _chunkQueue = queue;
-      _firmwareFetchTask = null;
       kPrint("All FW chunks queued for sending. Total chunks: $totalChunks");
 
       await queue.start((index, api.QuantumLinkMessage message) async {
@@ -499,60 +613,168 @@ class FwUpdateHandler extends PassportMessageHandler {
   }
 
   //Checks for firmware updates
-  Future<void> _handleFwUpdateCheckRequest(String currentVersion) async {
-    _updateFetchState(
+  Future<FirmwareUpdateCheckDelivery> _handleFwUpdateCheckRequest(
+    int requestId,
+    String currentVersion,
+  ) async {
+    if (!_isCurrentFirmwareUpdateCheck(requestId)) {
+      return FirmwareUpdateCheckDelivery.abandoned;
+    }
+    final updateGeneration = _firmwareUpdateGeneration;
+    final checkLoadingState = _updateFetchState(
       S().onboarding_connectionChecking_forUpdates,
       EnvoyStepState.LOADING,
     );
+    _activeFirmwareUpdateCheckLoadingState = checkLoadingState;
     try {
-      final patches = await Server().fetchPrimePatches(currentVersion);
+      final patches = await Server()
+          .fetchPrimePatches(currentVersion, foreground: true)
+          .timeout(_firmwareUpdateFetchTimeout);
+      if (!_isCurrentFirmwareUpdateCheck(requestId)) {
+        return FirmwareUpdateCheckDelivery.abandoned;
+      }
 
       final stepUpdate = patches.isNotEmpty
           ? S().onboarding_connectionUpdatesAvailable_updatesAvailable
           : S().onboarding_connectionNoUpdates_noUpdates;
 
-      _updateFetchState(
-        S().onboarding_connectionChecking_forUpdates,
-        EnvoyStepState.LOADING,
-      );
+      late final FirmwareUpdateCheckDelivery delivery;
       if (patches.isEmpty) {
-        _availablePatches = const [];
-        _updateFetchState(stepUpdate, EnvoyStepState.FINISHED);
-        qlConnection.writeMessage(
+        delivery = await _sendFirmwareUpdateCheckResponse(
           api.QuantumLinkMessage.firmwareUpdateCheckResponse(
             api.FirmwareUpdateCheckResponse_NotAvailable(),
           ),
+          requestId: requestId,
         );
+        if (_isCurrentFirmwareUpdateCheck(requestId) &&
+            delivery == FirmwareUpdateCheckDelivery.sent &&
+            updateGeneration == _firmwareUpdateGeneration &&
+            !_firmwareUpdateInProgress &&
+            _latestStep != PrimeFwUpdateStep.finished) {
+          // A post-install check must not replace the success confirmation
+          // or clear the version it displays. A stale error may be replaced.
+          _availablePatches = const [];
+          newVersion = "";
+          totalPatchBytes = 0;
+          _replaceFwUpdateState(PrimeFwUpdateStep.notAvailable);
+        }
       } else {
-        newVersion = patches.last.version;
         final response = api.QuantumLinkMessage.firmwareUpdateCheckResponse(
           api.FirmwareUpdateCheckResponse.available(
-            updateAvailableMessage(patches),
+            _buildUpdateAvailableMessage(patches),
           ),
         );
-        await qlConnection.writeMessage(response);
+        delivery = await _sendFirmwareUpdateCheckResponse(
+          response,
+          requestId: requestId,
+        );
 
-        if (qlConnection.getDevice()?.onboardingComplete == true) {
-          _settingsUpdateStarted.add(null);
+        if (_isCurrentFirmwareUpdateCheck(requestId) &&
+            delivery == FirmwareUpdateCheckDelivery.sent &&
+            updateGeneration == _firmwareUpdateGeneration &&
+            !_firmwareUpdateInProgress) {
+          _storeAvailablePatchMetadata(patches);
+          final isSettingsUpdate =
+              qlConnection.getDevice()?.onboardingComplete == true;
+          if (isSettingsUpdate ||
+              _latestStep == PrimeFwUpdateStep.notAvailable ||
+              _latestStep == PrimeFwUpdateStep.error) {
+            _replaceFwUpdateState(PrimeFwUpdateStep.idle);
+          }
+          if (isSettingsUpdate) {
+            _settingsUpdateStarted.add(null);
+          }
         }
       }
-      _updateFetchState(stepUpdate, EnvoyStepState.FINISHED);
+      if (!_isCurrentFirmwareUpdateCheck(requestId) ||
+          !identical(_latestFetchState, checkLoadingState)) {
+        return delivery;
+      }
+      switch (delivery) {
+        case FirmwareUpdateCheckDelivery.sent:
+          _updateFetchState(stepUpdate, EnvoyStepState.FINISHED);
+        case FirmwareUpdateCheckDelivery.failed:
+          _updateFetchState(
+            S().firmware_updateError_receivingFailed,
+            EnvoyStepState.ERROR,
+          );
+        case FirmwareUpdateCheckDelivery.abandoned:
+          break;
+      }
+      return delivery;
     } catch (e, stack) {
+      if (_disposed) return FirmwareUpdateCheckDelivery.abandoned;
       EnvoyReport().log(
         "fw_update_handler",
         "Failed to check for updates: $e",
         stackTrace: stack,
       );
-      _updateFwUpdateState(PrimeFwUpdateStep.error);
-      await _handleFirmwareError(S().firmware_updateError_downloadFailed);
+      if (!_isCurrentFirmwareUpdateCheck(requestId)) {
+        return FirmwareUpdateCheckDelivery.abandoned;
+      }
+      if (_firmwareUpdateInProgress ||
+          !identical(_latestFetchState, checkLoadingState)) {
+        return FirmwareUpdateCheckDelivery.failed;
+      }
+      _updateFetchState(
+        S().firmware_updateError_downloadFailed,
+        EnvoyStepState.ERROR,
+      );
+      return FirmwareUpdateCheckDelivery.failed;
     }
   }
 
-  Future<void> _handleFirmwareError(String errorBody) async {
+  Future<FirmwareUpdateCheckDelivery> _sendFirmwareUpdateCheckResponse(
+    api.QuantumLinkMessage response, {
+    required int requestId,
+  }) async {
+    const attempts = 2;
+    bool canDeliver() => _isCurrentFirmwareUpdateCheck(requestId);
+
+    for (var attempt = 1; attempt <= attempts; attempt++) {
+      if (!canDeliver()) {
+        return FirmwareUpdateCheckDelivery.abandoned;
+      }
+      try {
+        if (await qlConnection.writeMessage(response)) {
+          return FirmwareUpdateCheckDelivery.sent;
+        }
+        EnvoyReport().log(
+          "fw_update_handler",
+          "Failed to send firmware update check response (attempt $attempt/$attempts)",
+        );
+      } catch (e, stack) {
+        EnvoyReport().log(
+          "fw_update_handler",
+          "Failed to send firmware update check response (attempt $attempt/$attempts): $e",
+          stackTrace: stack,
+        );
+        return canDeliver()
+            ? FirmwareUpdateCheckDelivery.failed
+            : FirmwareUpdateCheckDelivery.abandoned;
+      }
+      if (attempt < attempts) {
+        if (!canDeliver()) {
+          return FirmwareUpdateCheckDelivery.abandoned;
+        }
+        await Future<void>.delayed(const Duration(seconds: 1));
+      }
+    }
+    return canDeliver()
+        ? FirmwareUpdateCheckDelivery.failed
+        : FirmwareUpdateCheckDelivery.abandoned;
+  }
+
+  Future<void> _handleFirmwareError(
+    String errorBody, {
+    required int requestId,
+  }) async {
+    if (!_isCurrentFirmwareFetchRequest(requestId)) return;
     _updateFetchState(errorBody, EnvoyStepState.ERROR);
 
     await sendFirmwareFetchEvent(
       api.FirmwareFetchEvent.error(error: errorBody),
+      requestId: requestId,
     );
   }
 
@@ -560,8 +782,10 @@ class FwUpdateHandler extends PassportMessageHandler {
     String errorBody, {
     required int requestId,
   }) async {
+    if (!_isCurrentFirmwareFetchRequest(requestId)) return;
+    _firmwarePreparationInProgress = false;
     try {
-      await _handleFirmwareError(errorBody);
+      await _handleFirmwareError(errorBody, requestId: requestId);
     } catch (error, stackTrace) {
       EnvoyReport().log(
         "fw_update_handler",
@@ -573,43 +797,184 @@ class FwUpdateHandler extends PassportMessageHandler {
     }
   }
 
-  Future<bool> sendFirmwareFetchEvent(api.FirmwareFetchEvent event) async {
-    return qlConnection.writeMessage(
-      api.QuantumLinkMessage.firmwareFetchEvent(event),
+  Future<bool> sendFirmwareFetchEvent(
+    api.FirmwareFetchEvent event, {
+    required int requestId,
+  }) async {
+    if (!_isCurrentFirmwareFetchRequest(requestId)) return false;
+    const attempts = 2;
+    final message = api.QuantumLinkMessage.firmwareFetchEvent(event);
+    for (var attempt = 1; attempt <= attempts; attempt++) {
+      if (!_isCurrentFirmwareFetchRequest(requestId)) return false;
+      try {
+        if (await qlConnection.writeMessage(message)) return true;
+        EnvoyReport().log(
+          "fw_update_handler",
+          "Failed to send firmware fetch event (attempt $attempt/$attempts)",
+        );
+      } catch (e, stack) {
+        EnvoyReport().log(
+          "fw_update_handler",
+          "Failed to send firmware fetch event (attempt $attempt/$attempts): $e",
+          stackTrace: stack,
+        );
+        return false;
+      }
+      if (attempt < attempts) {
+        await Future<void>.delayed(const Duration(seconds: 1));
+      }
+    }
+    return false;
+  }
+
+  Future<void> _acknowledgeFirmwarePreparation(int requestId) async {
+    if (!_isCurrentFirmwareFetchRequest(requestId)) return;
+
+    final isNewAcknowledgement = _firmwarePreparationAcknowledgement == null;
+    final acknowledgement = _firmwarePreparationAcknowledgement ??=
+        _startFirmwarePreparationAcknowledgement();
+
+    try {
+      final sent = await acknowledgement;
+      if (!_isCurrentFirmwareFetchRequest(requestId)) return;
+      if (!sent && isNewAcknowledgement) {
+        EnvoyReport().log(
+          "fw_update_handler",
+          "Failed to acknowledge firmware preparation",
+        );
+      }
+    } catch (error, stackTrace) {
+      if (!isNewAcknowledgement) return;
+      EnvoyReport().log(
+        "fw_update_handler",
+        "Failed to acknowledge firmware preparation: $error",
+        stackTrace: stackTrace,
+      );
+    }
+  }
+
+  Future<bool> _startFirmwarePreparationAcknowledgement() {
+    // QLConnection owns write deadlines and native BLE recovery. Keep this
+    // future cached through queueing and recovery so retries cannot enqueue
+    // another acknowledgement while the original operation still owns it.
+    final completion = qlConnection.writeMessage(
+      api.QuantumLinkMessage.firmwareFetchEvent(
+        const api.FirmwareFetchEvent.downloading(),
+      ),
     );
+    final acknowledgement = completion.timeout(
+      const Duration(seconds: 10),
+      onTimeout: () {
+        EnvoyReport().log(
+          "fw_update_handler",
+          "Firmware preparation acknowledgement still pending after 10 seconds",
+        );
+        return false;
+      },
+    );
+    unawaited(
+      completion.then<void>(
+        (_) => _clearFirmwarePreparationAcknowledgement(acknowledgement),
+        onError: (_, __) =>
+            _clearFirmwarePreparationAcknowledgement(acknowledgement),
+      ),
+    );
+    return acknowledgement;
+  }
+
+  void _clearFirmwarePreparationAcknowledgement(
+    Future<bool> acknowledgement,
+  ) {
+    if (identical(_firmwarePreparationAcknowledgement, acknowledgement)) {
+      _firmwarePreparationAcknowledgement = null;
+    }
   }
 
   api.FirmwareUpdateAvailable updateAvailableMessage(List<PrimePatch> patches) {
+    _storeAvailablePatchMetadata(patches);
+    return _buildUpdateAvailableMessage(patches);
+  }
+
+  void _storeAvailablePatchMetadata(List<PrimePatch> patches) {
     _availablePatches = List.unmodifiable(patches);
-    final latest = patches.last;
     totalPatchBytes = _getTotalPatchBytes(patches);
+    newVersion = patches.last.version;
+  }
+
+  api.FirmwareUpdateAvailable _buildUpdateAvailableMessage(
+    List<PrimePatch> patches,
+  ) {
+    final latest = patches.last;
+    final patchBytes = _getTotalPatchBytes(patches);
     EnvoyReport().log(
       "fw_update_handler",
-      "Firmware payload size: patches=${patches.length}, total size=${_formatMegabytes(totalPatchBytes)} MB}",
+      "Firmware payload size: patches=${patches.length}, total size=${_formatMegabytes(patchBytes)} MB}",
     );
     final changelog = patches.reversed.fold(
       "",
       (acc, p) => "$acc\n${p.changelog}",
     );
-    newVersion = latest.version;
     return api.FirmwareUpdateAvailable(
       version: latest.version,
       changelog: changelog,
       timestamp: latest.releaseDate.millisecondsSinceEpoch,
-      totalSize: totalPatchBytes,
+      totalSize: patchBytes,
       patchCount: patches.length,
     );
   }
 
   //UI state updates
-  void _updateFetchState(String message, EnvoyStepState state) {
-    _fetchState.sink.add(FwUpdateState(message: message, step: state));
+  FwUpdateState _updateFetchState(String message, EnvoyStepState state) {
+    final fetchState = FwUpdateState(message: message, step: state);
+    _latestFetchState = fetchState;
+    _fetchState.sink.add(fetchState);
+    return fetchState;
   }
 
   void _updateFwUpdateState(PrimeFwUpdateStep step) {
+    _firmwareUpdateGeneration++;
     _latestStep = step;
     _completedUpdateStates.add(step);
     _primeFwUpdate.sink.add(step);
+  }
+
+  bool get _firmwareUpdateInProgress =>
+      _firmwareFetchActive ||
+      switch (_latestStep) {
+        PrimeFwUpdateStep.downloading ||
+        PrimeFwUpdateStep.transferring =>
+          !_firmwareTransferPaused,
+        PrimeFwUpdateStep.verifying ||
+        PrimeFwUpdateStep.installing ||
+        PrimeFwUpdateStep.rebooting =>
+          true,
+        PrimeFwUpdateStep.idle ||
+        PrimeFwUpdateStep.notAvailable ||
+        PrimeFwUpdateStep.finished ||
+        PrimeFwUpdateStep.error =>
+          false,
+      };
+
+  void _replaceFwUpdateState(PrimeFwUpdateStep step) {
+    _firmwareUpdateGeneration++;
+    _completedUpdateStates.clear();
+    _latestStep = step;
+    if (step != PrimeFwUpdateStep.idle) {
+      _completedUpdateStates.add(step);
+    }
+    _primeFwUpdate.sink.add(step);
+  }
+
+  void _setFirmwareTransferLifecycle({
+    required bool active,
+    required bool paused,
+  }) {
+    if (_firmwareFetchActive == active && _firmwareTransferPaused == paused) {
+      return;
+    }
+    _firmwareFetchActive = active;
+    _firmwareTransferPaused = paused;
+    _firmwareUpdateGeneration++;
   }
 
   void _updateDownloadState(String message, EnvoyStepState state) {
@@ -700,7 +1065,7 @@ class FwUpdateHandler extends PassportMessageHandler {
   }
 
   void reset() {
-    _updateFwUpdateState(PrimeFwUpdateStep.idle);
+    _replaceFwUpdateState(PrimeFwUpdateStep.idle);
     _updateFetchState(
       S().onboarding_connectionIntro_checkForUpdates,
       EnvoyStepState.IDLE,
@@ -723,7 +1088,10 @@ class FwUpdateHandler extends PassportMessageHandler {
 
   @override
   void dispose() {
-    _chunkQueue?.dispose();
+    _disposed = true;
+    _firmwareUpdateChecks.clear();
+    _activeFirmwareUpdateCheckLoadingState = null;
+    _cancelFirmwareFetchRequest(updateConnectionState: false);
     _fetchState.close();
     _downloadState.close();
     _transferState.close();
@@ -739,12 +1107,29 @@ class FwUpdateHandler extends PassportMessageHandler {
   }
 
   void pauseFirmwareTransferForDisconnect() {
+    if (_primeFwUpdate.isClosed) return;
     if (_chunkQueue == null) {
+      // Preparation has no chunk offset to resume. Native write recovery must
+      // still cancel it, but the UI needs a terminal result, not stale loading.
       _cancelFirmwareFetchRequest();
+      _updateFwUpdateState(PrimeFwUpdateStep.error);
+      _updateDownloadState(
+        S().firmware_updateError_downloadFailed,
+        EnvoyStepState.ERROR,
+      );
+      _updateFetchState(
+        S().firmware_updateError_downloadFailed,
+        EnvoyStepState.ERROR,
+      );
+      EnvoyReport().log(
+        "fw_update_handler",
+        "Firmware preparation cancelled because the BLE connection was lost",
+      );
       return;
     }
 
     _chunkQueue?.stop();
+    _setFirmwareTransferLifecycle(active: false, paused: true);
     qlConnection.setFirmwareTransferInProgress(false);
   }
 }

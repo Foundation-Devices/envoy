@@ -312,6 +312,7 @@ class _OnboardPrimeFwUpdateState extends ConsumerState<OnboardPrimeFwUpdate> {
                   context: context,
                   child: switch (primeUpdateState) {
                     PrimeFwUpdateStep.idle ||
+                    PrimeFwUpdateStep.notAvailable ||
                     PrimeFwUpdateStep.downloading ||
                     PrimeFwUpdateStep.transferring =>
                       downloadImage,
@@ -345,6 +346,8 @@ class _OnboardPrimeFwUpdateState extends ConsumerState<OnboardPrimeFwUpdate> {
                             PrimeFwUpdateStep.finished => _updateFinishedWidget(
                                 context,
                               ),
+                            PrimeFwUpdateStep.notAvailable =>
+                              _updateNotAvailableWidget(context),
                             PrimeFwUpdateStep.error => _updateErrorWidget(
                                 context,
                               ),
@@ -433,6 +436,60 @@ class _OnboardPrimeFwUpdateState extends ConsumerState<OnboardPrimeFwUpdate> {
     );
   }
 
+  Widget _updateNotAvailableWidget(BuildContext context) {
+    final currentVersion = ref
+            .watch(onboardingDeviceProvider)
+            ?.qlHandler
+            .fwUpdateHandler
+            .currentVersion ??
+        "";
+
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Column(
+          children: [
+            if (currentVersion.isNotEmpty)
+              Text(
+                "KeyOS v$currentVersion",
+                textAlign: TextAlign.center,
+                style: EnvoyTypography.body.copyWith(
+                  color: EnvoyColors.textSecondary,
+                ),
+              ),
+            if (!_isSettingsUpdate) ...[
+              const SizedBox(height: EnvoySpacing.medium3),
+              Text(
+                S().firmware_updateSuccess_content2,
+                textAlign: TextAlign.center,
+                style: EnvoyTypography.body.copyWith(
+                  color: EnvoyColors.textSecondary,
+                ),
+              ),
+            ],
+          ],
+        ),
+        // During onboarding Prime's OnboardingState owns route advancement,
+        // just as it does after a successful installation.
+        if (_isSettingsUpdate)
+          Padding(
+            padding: const EdgeInsets.only(bottom: EnvoySpacing.medium2),
+            child: EnvoyButton(
+              S().component_done,
+              type: EnvoyButtonTypes.primary,
+              onTap: () {
+                resetOnboardingPrimeProviders(
+                  ProviderScope.containerOf(context),
+                );
+                ref.read(onboardingDeviceProvider.notifier).state = null;
+                context.go(ROUTE_ACCOUNTS_HOME);
+              },
+            ),
+          ),
+      ],
+    );
+  }
+
   Widget _updateIntroWidget(BuildContext context) {
     final fwHandler =
         ref.watch(onboardingDeviceProvider)?.qlHandler.fwUpdateHandler;
@@ -508,6 +565,8 @@ class _OnboardPrimeFwUpdateState extends ConsumerState<OnboardPrimeFwUpdate> {
       PrimeFwUpdateStep.rebooting =>
         S().firmware_updatingDownload_header,
       PrimeFwUpdateStep.finished => S().firmware_updateSuccess_header,
+      PrimeFwUpdateStep.notAvailable =>
+        S().onboarding_connectionNoUpdates_noUpdates,
       PrimeFwUpdateStep.error => S().firmware_updateError_header,
     };
   }
