@@ -126,7 +126,7 @@ class _AnimatedBottomOverlayState extends ConsumerState<AnimatedBottomOverlay>
                 scale: 1.0,
                 child: SizedBox(
                   height: _animation.value,
-                  width: MediaQuery.of(context).size.width,
+                  width: 480,
                   child: Container(
                     decoration: BoxDecoration(
                       boxShadow: [
@@ -545,7 +545,8 @@ class _EnvoyCardButtonState extends State<EnvoyCardButton> {
 
   @override
   Widget build(BuildContext context) {
-    double cardButtonWidth = MediaQuery.of(context).size.width * 0.9;
+    double cardButtonWidth =
+        MediaQuery.sizeOf(context).width.clamp(0.0, 480.0).toDouble() * 0.9;
     const cardRadius = EnvoySpacing.medium2;
     double imageSize = cardButtonWidth * 0.32;
 

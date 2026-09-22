@@ -277,28 +277,26 @@ class _OnboardPrimeFwUpdateState extends ConsumerState<OnboardPrimeFwUpdate> {
         }
       },
       child: OnboardPageBackground(
+        topBarLeading: IconButton(
+          icon: const Icon(Icons.close, color: Colors.black),
+          onPressed: () async {
+            if (_isSettingsUpdate) {
+              // No disconnect needed — device is already paired. Go home directly.
+              final shouldExit = await showExitWarning(context);
+              if (shouldExit && context.mounted) {
+                context.go(ROUTE_ACCOUNTS_HOME);
+              }
+            } else {
+              final shouldExit = await showExitWarningOnboarding(context);
+              if (shouldExit && context.mounted) {
+                context.go(ROUTE_ACCOUNTS_HOME);
+              }
+            }
+          },
+        ),
         child: EnvoyScaffold(
           removeAppBarPadding: true,
-          topBarLeading: Padding(
-            padding: const EdgeInsets.all(12),
-            child: IconButton(
-              icon: const Icon(Icons.close, color: Colors.black),
-              onPressed: () async {
-                if (_isSettingsUpdate) {
-                  // No disconnect needed — device is already paired. Go home directly.
-                  final shouldExit = await showExitWarning(context);
-                  if (shouldExit && context.mounted) {
-                    context.go(ROUTE_ACCOUNTS_HOME);
-                  }
-                } else {
-                  final shouldExit = await showExitWarningOnboarding(context);
-                  if (shouldExit && context.mounted) {
-                    context.go(ROUTE_ACCOUNTS_HOME);
-                  }
-                }
-              },
-            ),
-          ),
+          topBarLeading: const SizedBox.shrink(),
           child: Container(
             padding: const EdgeInsets.symmetric(
               horizontal: EnvoySpacing.small,

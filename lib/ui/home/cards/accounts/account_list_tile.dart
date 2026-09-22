@@ -332,9 +332,21 @@ class _AccountListTileState extends ConsumerState<AccountListTile> {
       ),
     );
 
+    final animatedCard = AnimatedOpacity(
+      duration: const Duration(milliseconds: 180),
+      curve: Curves.easeOutCubic,
+      opacity: widget.inactive ? 0.55 : 1,
+      child: AnimatedScale(
+        duration: const Duration(milliseconds: 180),
+        curve: Curves.easeOutCubic,
+        scale: widget.inactive ? 0.96 : 1,
+        child: card,
+      ),
+    );
+
     return widget.useHero
-        ? Hero(tag: "account_card_${account.id}", child: card)
-        : card;
+        ? Hero(tag: "account_card_${account.id}", child: animatedCard)
+        : animatedCard;
   }
 }
 

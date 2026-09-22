@@ -42,7 +42,15 @@ final homeRouter = StatefulShellRoute.indexedStack(
         GoRoute(
           path: ROUTE_PRIVACY,
           pageBuilder: (context, state) {
-            return const MaterialPage(child: PrivacyCard());
+            return const MaterialPage(
+              child: Center(
+                child: SizedBox(
+                  width: 480,
+                  height: double.infinity,
+                  child: PrivacyCard(),
+                ),
+              ),
+            );
           },
         ),
       ],

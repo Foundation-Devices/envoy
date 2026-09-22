@@ -29,7 +29,7 @@ class QrTab extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final Color color = fromHex(account.color);
-    return Container(
+    final tab = Container(
       decoration: BoxDecoration(
         borderRadius: const BorderRadius.all(Radius.circular(20)),
         border: Border.all(
@@ -156,6 +156,13 @@ class QrTab extends StatelessWidget {
             ],
           ),
         ),
+      ),
+    );
+    return Align(
+      alignment: Alignment.topCenter,
+      child: ConstrainedBox(
+        constraints: const BoxConstraints(maxWidth: 480),
+        child: tab,
       ),
     );
   }

@@ -12,6 +12,7 @@ import 'package:envoy/ui/home/setup_overlay.dart';
 import 'package:envoy/ui/onboard/prime/prime_routes.dart';
 import 'package:envoy/ui/onboard/routes/onboard_routes.dart';
 import 'package:envoy/ui/routes/routes.dart';
+import 'package:envoy/ui/shield.dart';
 import 'package:envoy/ui/theme/envoy_colors.dart';
 import 'package:envoy/ui/theme/envoy_spacing.dart';
 import 'package:envoy/ui/theme/envoy_typography.dart';
@@ -98,8 +99,129 @@ class _WelcomeScreenState extends ConsumerState<WelcomeScreen> {
     final bool isOnboardingComplete =
         LocalStorage().prefs.getBool(PREFS_ONBOARDED) ?? false;
 
+    final header = GestureDetector(
+      onTap: () {
+        registerEscapeTap(EscapeHatchTap.logo);
+      },
+      onLongPress: () {
+        if (escapeHatchAccessed) {
+          Settings().skipPrimeSecurityCheck = true;
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text(S().menu_toast_securityCheckDisabled)),
+          );
+        }
+      },
+      child: Semantics(
+        label: "ENVOY",
+        container: true,
+        child: SizedBox(
+          height: min(MediaQuery.sizeOf(context).height * 0.25, 200.0),
+          child: Image.asset("assets/envoy_logo_with_title.png"),
+        ),
+      ),
+    );
+    final shield = Stack(
+      fit: StackFit.passthrough,
+      children: [
+        const Positioned.fill(child: Shield(child: SizedBox.shrink())),
+        Padding(
+          padding: const EdgeInsets.fromLTRB(
+            EnvoySpacing.medium2,
+            EnvoySpacing.medium3,
+            EnvoySpacing.medium2,
+            EnvoySpacing.large2,
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              GestureDetector(
+                onLongPress: () {
+                  ref.read(devModeEnabledProvider.notifier).state = true;
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                        content: Text(S().menu_toast_developerModeEnabled)),
+                  );
+                },
+                child: Text(
+                  S().welcome_screen_heading,
+                  style: EnvoyTypography.heading,
+                  textAlign: TextAlign.center,
+                ),
+              ),
+              const SizedBox(height: EnvoySpacing.medium1),
+              ConstrainedBox(
+                constraints: const BoxConstraints(maxWidth: 480),
+                child: GestureDetector(
+                  onTap: () {
+                    registerEscapeTap(EscapeHatchTap.text);
+                  },
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: EnvoySpacing.xs,
+                    ),
+                    child: Text(
+                      //TODO: sync latest copy and button links
+                      S().onboarding_welcome_content,
+                      style: EnvoyTypography.info.copyWith(
+                        color: EnvoyColors.textTertiary,
+                      ),
+                      textAlign: TextAlign.center,
+                    ),
+                  ),
+                ),
+              ),
+              const SizedBox(height: EnvoySpacing.medium3),
+              ConstrainedBox(
+                constraints: const BoxConstraints(maxWidth: 392),
+                child: Row(
+                  mainAxisSize: MainAxisSize.max,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  spacing: EnvoySpacing.medium2,
+                  children: [
+                    Expanded(
+                      flex: 1,
+                      child: EnvoyWelcomeButton(
+                        asset: Image.asset(
+                          'assets/welcome_envoy_sm.png',
+                          fit: BoxFit.cover,
+                        ),
+                        title: S().onboarding_welcome_createMobileWallet,
+                        onTap: () {
+                          context.pushNamed(
+                            ONBOARD_ENVOY_SETUP,
+                            queryParameters: {"setupEnvoy": "1"},
+                          );
+                        },
+                      ),
+                    ),
+                    Expanded(
+                      flex: 1,
+                      child: EnvoyWelcomeButton(
+                        asset: Image.asset(
+                          'assets/passport_and_prime.png',
+                          fit: BoxFit.cover,
+                        ),
+                        title: S().onboarding_welcome_setUpPassport,
+                        onTap: () {
+                          WakelockPlus.enable();
+                          showScanner(context);
+                          // context.goNamed(ONBOARD_PASSPORT_SCAN);
+                        },
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ),
+      ],
+    );
+
     return PopScope(
-      child: EnvoyPatternScaffold(
+      child: Scaffold(
+        backgroundColor: Colors.black,
+        extendBodyBehindAppBar: true,
         appBar: AppBar(
           backgroundColor: Colors.transparent,
           leading: isOnboardingComplete && GoRouter.of(context).canPop()
@@ -125,133 +247,52 @@ class _WelcomeScreenState extends ConsumerState<WelcomeScreen> {
             ),
           ],
         ),
-        heroTag: "shield",
-        header: GestureDetector(
-          onTap: () {
-            registerEscapeTap(EscapeHatchTap.logo);
-          },
-          onLongPress: () {
-            if (escapeHatchAccessed) {
-              Settings().skipPrimeSecurityCheck = true;
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(content: Text(S().menu_toast_securityCheckDisabled)),
-              );
-            }
-          },
-          child: Semantics(
-            label: "ENVOY",
-            container: true,
-            child: SizedBox(
-              height: MediaQuery.of(context).size.height * 0.25,
-              child: Image.asset("assets/envoy_logo_with_title.png"),
-            ),
-          ),
-        ),
-        shield: Padding(
-          padding: const EdgeInsets.symmetric(
-            vertical: EnvoySpacing.xs,
-            horizontal: EnvoySpacing.medium1,
-          ),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Flexible(
-                child: SingleChildScrollView(
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: EnvoySpacing.medium1,
-                      vertical: EnvoySpacing.xs,
-                    ),
+        body: Stack(
+          children: [
+            const Positioned.fill(child: ScaffoldBackGround()),
+            SafeArea(
+              bottom: false,
+              child: LayoutBuilder(
+                builder: (context, constraints) => SingleChildScrollView(
+                  child: ConstrainedBox(
+                    constraints:
+                        BoxConstraints(minHeight: constraints.maxHeight),
                     child: Column(
                       mainAxisSize: MainAxisSize.min,
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      mainAxisAlignment: MainAxisAlignment.end,
                       children: [
                         const SizedBox(height: EnvoySpacing.medium1),
-                        GestureDetector(
-                          onLongPress: () {
-                            ref.read(devModeEnabledProvider.notifier).state =
-                                true;
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(
-                                  content: Text(
-                                      S().menu_toast_developerModeEnabled)),
-                            );
-                          },
-                          child: Text(
-                            S().welcome_screen_heading,
-                            style: EnvoyTypography.heading,
-                            textAlign: TextAlign.center,
+                        header,
+                        const SizedBox(height: EnvoySpacing.medium1),
+                        Container(
+                          width: double.infinity,
+                          padding: EdgeInsets.only(
+                            bottom: MediaQuery.paddingOf(context).bottom + 6,
                           ),
-                        ),
-                        const Padding(
-                          padding: EdgeInsets.all(EnvoySpacing.small),
-                        ),
-                        GestureDetector(
-                          onTap: () {
-                            registerEscapeTap(EscapeHatchTap.text);
-                          },
-                          child: Padding(
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: EnvoySpacing.xs,
-                            ),
-                            child: Text(
-                              //TODO: sync latest copy and button links
-                              S().onboarding_welcome_content,
-                              style: EnvoyTypography.info.copyWith(
-                                color: EnvoyColors.textTertiary,
-                              ),
-                              textAlign: TextAlign.center,
+                          decoration: const BoxDecoration(
+                            gradient: LinearGradient(
+                              colors: [
+                                Colors.transparent,
+                                Color(0xff686868),
+                                Colors.white
+                              ],
+                              begin: Alignment.topCenter,
+                              end: Alignment.bottomCenter,
                             ),
                           ),
+                          child: Hero(
+                            tag: "shield",
+                            child: Material(
+                                type: MaterialType.transparency, child: shield),
+                          ),
                         ),
-                        const SizedBox(height: EnvoySpacing.medium3),
                       ],
                     ),
                   ),
                 ),
               ),
-              Row(
-                mainAxisSize: MainAxisSize.max,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                spacing: EnvoySpacing.medium2,
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
-                children: [
-                  Expanded(
-                    flex: 1,
-                    child: EnvoyWelcomeButton(
-                      asset: Image.asset(
-                        'assets/welcome_envoy_sm.png',
-                        fit: BoxFit.cover,
-                      ),
-                      title: S().onboarding_welcome_createMobileWallet,
-                      onTap: () {
-                        context.pushNamed(
-                          ONBOARD_ENVOY_SETUP,
-                          queryParameters: {"setupEnvoy": "1"},
-                        );
-                      },
-                    ),
-                  ),
-                  Expanded(
-                    flex: 1,
-                    child: EnvoyWelcomeButton(
-                      asset: Image.asset(
-                        'assets/passport_and_prime.png',
-                        fit: BoxFit.cover,
-                      ),
-                      title: S().onboarding_welcome_setUpPassport,
-                      onTap: () {
-                        WakelockPlus.enable();
-                        showScanner(context);
-                        // context.goNamed(ONBOARD_PASSPORT_SCAN);
-                      },
-                    ),
-                  ),
-                ],
-              ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );

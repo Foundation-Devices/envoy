@@ -375,75 +375,80 @@ class _RBFSpendScreenState extends ConsumerState<RBFSpendScreen> {
     return Padding(
       key: const Key("progress"),
       padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 14),
-      child: Scaffold(
-        backgroundColor: Colors.transparent,
-        body: CustomScrollView(
-          slivers: [
-            SliverToBoxAdapter(
-              child: SizedBox(
-                height: 260,
-                child: _isInitialized && _controller != null
-                    ? rive.RiveWidget(
-                        controller: _controller!,
-                        fit: rive.Fit.contain,
-                      )
-                    : const SizedBox(),
-              ),
-            ),
-            const SliverPadding(padding: EdgeInsets.all(28)),
-            SliverToBoxAdapter(
-              child: Builder(
-                builder: (context) {
-                  String title = S().replaceByFee_boost_confirm_heading;
-                  String subTitle =
-                      S().stalls_before_sending_tx_scanning_subheading;
-                  if (_broadcastProgress != BroadcastProgress.inProgress) {
-                    if (_broadcastProgress == BroadcastProgress.success) {
-                      title = S().replaceByFee_boost_success_header;
-                      subTitle = S()
-                          .stalls_before_sending_tx_scanning_broadcasting_success_subheading;
-                    } else {
-                      title = S().replaceByFee_boost_fail_header;
-                      subTitle = S()
-                          .stalls_before_sending_tx_scanning_broadcasting_fail_subheading;
-                    }
-                  }
-                  return Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 24),
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Text(
-                          title,
-                          textAlign: TextAlign.center,
-                          style: EnvoyTypography.heading,
-                        ),
-                        const Padding(padding: EdgeInsets.all(18)),
-                        Text(
-                          subTitle,
-                          textAlign: TextAlign.center,
-                          style: Theme.of(context)
-                              .textTheme
-                              .bodySmall
-                              ?.copyWith(fontWeight: FontWeight.w500),
-                        ),
-                      ],
-                    ),
-                  );
-                },
-              ),
-            ),
-            SliverFillRemaining(
-              hasScrollBody: false,
-              child: Padding(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 18,
-                  vertical: 44,
+      child: Center(
+        child: SizedBox(
+          width: 480,
+          child: Scaffold(
+            backgroundColor: Colors.transparent,
+            body: CustomScrollView(
+              slivers: [
+                SliverToBoxAdapter(
+                  child: SizedBox(
+                    height: 260,
+                    child: _isInitialized && _controller != null
+                        ? rive.RiveWidget(
+                            controller: _controller!,
+                            fit: rive.Fit.contain,
+                          )
+                        : const SizedBox(),
+                  ),
                 ),
-                child: _ctaButtons(context),
-              ),
+                const SliverPadding(padding: EdgeInsets.all(28)),
+                SliverToBoxAdapter(
+                  child: Builder(
+                    builder: (context) {
+                      String title = S().replaceByFee_boost_confirm_heading;
+                      String subTitle =
+                          S().stalls_before_sending_tx_scanning_subheading;
+                      if (_broadcastProgress != BroadcastProgress.inProgress) {
+                        if (_broadcastProgress == BroadcastProgress.success) {
+                          title = S().replaceByFee_boost_success_header;
+                          subTitle = S()
+                              .stalls_before_sending_tx_scanning_broadcasting_success_subheading;
+                        } else {
+                          title = S().replaceByFee_boost_fail_header;
+                          subTitle = S()
+                              .stalls_before_sending_tx_scanning_broadcasting_fail_subheading;
+                        }
+                      }
+                      return Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 24),
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Text(
+                              title,
+                              textAlign: TextAlign.center,
+                              style: EnvoyTypography.heading,
+                            ),
+                            const Padding(padding: EdgeInsets.all(18)),
+                            Text(
+                              subTitle,
+                              textAlign: TextAlign.center,
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .bodySmall
+                                  ?.copyWith(fontWeight: FontWeight.w500),
+                            ),
+                          ],
+                        ),
+                      );
+                    },
+                  ),
+                ),
+                SliverFillRemaining(
+                  hasScrollBody: false,
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 18,
+                      vertical: 44,
+                    ),
+                    child: _ctaButtons(context),
+                  ),
+                ),
+              ],
             ),
-          ],
+          ),
         ),
       ),
     );

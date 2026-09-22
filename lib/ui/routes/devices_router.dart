@@ -7,6 +7,7 @@ import 'package:envoy/ui/home/cards/devices/device_card.dart';
 import 'package:envoy/ui/home/cards/devices/devices_card.dart';
 import 'package:envoy/ui/routes/accounts_router.dart';
 import 'package:envoy/ui/state/home_page_state.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
@@ -29,8 +30,15 @@ final devicesRouter = StatefulShellBranch(
         }
         return true;
       },
-      pageBuilder: (context, state) =>
-          wrapWithEnvoyPageAnimation(child: const DevicesCard()),
+      pageBuilder: (context, state) => wrapWithEnvoyPageAnimation(
+        child: const Center(
+          child: SizedBox(
+            width: 480,
+            height: double.infinity,
+            child: DevicesCard(),
+          ),
+        ),
+      ),
       routes: [
         GoRoute(
           path: _DEVICE_DETAIL,
@@ -41,7 +49,15 @@ final devicesRouter = StatefulShellBranch(
             } else {
               device = state.extra as Device;
             }
-            return wrapWithEnvoyPageAnimation(child: DeviceCard(device));
+            return wrapWithEnvoyPageAnimation(
+              child: Center(
+                child: SizedBox(
+                  width: 480,
+                  height: double.infinity,
+                  child: DeviceCard(device),
+                ),
+              ),
+            );
           },
         ),
       ],

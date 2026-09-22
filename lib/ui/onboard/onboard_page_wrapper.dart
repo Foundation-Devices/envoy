@@ -9,8 +9,13 @@ import 'package:envoy/ui/theme/envoy_spacing.dart';
 
 class OnboardPageBackground extends StatelessWidget {
   final Widget child;
+  final Widget? topBarLeading;
 
-  const OnboardPageBackground({super.key, required this.child});
+  const OnboardPageBackground({
+    super.key,
+    required this.child,
+    this.topBarLeading,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -37,11 +42,23 @@ class OnboardPageBackground extends StatelessWidget {
                   top: EnvoySpacing.medium1,
                   bottom: EnvoySpacing.medium2,
                 ),
-                child: SizedBox.expand(child: child),
+                child: Center(
+                  child: SizedBox(
+                    width: 480,
+                    height: double.infinity,
+                    child: child,
+                  ),
+                ),
               ),
             ),
           ),
         ),
+        if (topBarLeading != null)
+          Positioned(
+            top: shieldTop + EnvoySpacing.medium1,
+            left: 5 + EnvoySpacing.medium1,
+            child: Material(color: Colors.transparent, child: topBarLeading!),
+          ),
       ],
     );
   }

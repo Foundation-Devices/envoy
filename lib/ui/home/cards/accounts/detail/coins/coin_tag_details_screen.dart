@@ -214,7 +214,10 @@ class _CoinTagWidgetState extends ConsumerState<CoinTagDetailsScreen> {
                     )
                   : Align(
                       alignment: Alignment.topCenter,
-                      child: coinTagDetails(context),
+                      child: SizedBox(
+                        width: 480,
+                        child: coinTagDetails(context),
+                      ),
                     ),
             ),
           ),

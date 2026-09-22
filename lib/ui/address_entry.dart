@@ -112,35 +112,40 @@ class _AddressEntryState extends ConsumerState<AddressEntry> {
                   // Text field
                   Expanded(
                     child: Padding(
-                      padding: EdgeInsets.only(
-                          top: _verticalPadding, bottom: _verticalPadding),
-                      child: TextFormField(
-                        enabled: widget.canEdit,
-                        controller: widget.controller,
-                        style: EnvoyTypography.body,
-                        keyboardType: TextInputType.multiline,
-                        textInputAction: TextInputAction.done,
-                        minLines: 1,
-                        maxLines: null,
-                        onFieldSubmitted: (_) =>
-                            FocusScope.of(context).unfocus(),
-                        onChanged: (value) async {
-                          widget.onAddressChanged?.call(value);
-                          setState(() {});
-                        },
-                        textAlignVertical: TextAlignVertical.top,
-                        decoration: InputDecoration(
-                          hintText: S().send_keyboard_enterAddress,
-                          hintStyle: EnvoyTypography.body.copyWith(
-                            color: EnvoyColors.textTertiary,
+                      padding: const EdgeInsets.symmetric(
+                        vertical: EnvoySpacing.small,
+                      ),
+                      child: SizedBox(
+                        height: 40,
+                        child: TextFormField(
+                          enabled: widget.canEdit,
+                          controller: widget.controller,
+                          style: EnvoyTypography.body,
+                          keyboardType: TextInputType.text,
+                          textInputAction: TextInputAction.done,
+                          expands: true,
+                          minLines: null,
+                          maxLines: null,
+                          onFieldSubmitted: (_) =>
+                              FocusScope.of(context).unfocus(),
+                          onChanged: (value) async {
+                            widget.onAddressChanged?.call(value);
+                            setState(() {});
+                          },
+                          textAlignVertical: TextAlignVertical.center,
+                          decoration: InputDecoration(
+                            hintText: S().send_keyboard_enterAddress,
+                            hintStyle: EnvoyTypography.body.copyWith(
+                              color: EnvoyColors.textTertiary,
+                            ),
+                            border: InputBorder.none,
+                            focusedBorder: InputBorder.none,
+                            enabledBorder: InputBorder.none,
+                            errorBorder: InputBorder.none,
+                            disabledBorder: InputBorder.none,
+                            isDense: true,
+                            contentPadding: EdgeInsets.zero,
                           ),
-                          border: InputBorder.none,
-                          focusedBorder: InputBorder.none,
-                          enabledBorder: InputBorder.none,
-                          errorBorder: InputBorder.none,
-                          disabledBorder: InputBorder.none,
-                          isDense: true,
-                          contentPadding: EdgeInsets.zero,
                         ),
                       ),
                     ),

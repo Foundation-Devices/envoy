@@ -146,20 +146,21 @@ class _PrimeContinuingSetupState extends ConsumerState<PrimeContinuingSetup> {
         }
       },
       child: OnboardPageBackground(
+        topBarLeading: IconButton(
+          icon: const EnvoyIcon(EnvoyIcons.chevron_left, color: Colors.black),
+          onPressed: () async {
+            if (context.canPop()) {
+              final shouldExit = await showExitWarning(context);
+              if (shouldExit && context.mounted) {
+                context.go(ROUTE_ACCOUNTS_HOME);
+              }
+            }
+          },
+        ),
         child: EnvoyScaffold(
           removeAppBarPadding: true,
           topBarActions: const [],
-          topBarLeading: IconButton(
-            icon: const EnvoyIcon(EnvoyIcons.chevron_left, color: Colors.black),
-            onPressed: () async {
-              if (context.canPop()) {
-                final shouldExit = await showExitWarning(context);
-                if (shouldExit && context.mounted) {
-                  context.go(ROUTE_ACCOUNTS_HOME);
-                }
-              }
-            },
-          ),
+          topBarLeading: const SizedBox.shrink(),
           child: Container(
             padding: const EdgeInsets.symmetric(
               horizontal: EnvoySpacing.small,

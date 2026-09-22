@@ -100,13 +100,14 @@ class _LabelSwitchState extends State<LabelSwitch> {
           AnimatedAlign(
             duration: const Duration(milliseconds: 200),
             alignment: isTrue ? Alignment.centerLeft : Alignment.centerRight,
-            child: Container(
-              width:
-                  MediaQuery.of(context).size.width / 2 - 32, // or fixed width
-              height: double.infinity,
-              decoration: BoxDecoration(
-                color: EnvoyColors.accentPrimary,
-                borderRadius: BorderRadius.circular(EnvoySpacing.medium3),
+            child: FractionallySizedBox(
+              widthFactor: 0.5,
+              child: Container(
+                height: double.infinity,
+                decoration: BoxDecoration(
+                  color: EnvoyColors.accentPrimary,
+                  borderRadius: BorderRadius.circular(EnvoySpacing.medium3),
+                ),
               ),
             ),
           ),

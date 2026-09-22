@@ -119,7 +119,8 @@ class _AdvancedSettingsOptionsState
                 child: Shield(
                   child: Align(
                     alignment: Alignment.topCenter,
-                    child: Padding(
+                    child: Container(
+                      constraints: const BoxConstraints(maxWidth: 480),
                       padding: const EdgeInsets.only(
                         bottom: EnvoySpacing.xs,
                       ),
