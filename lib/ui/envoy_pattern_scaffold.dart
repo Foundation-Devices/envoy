@@ -68,7 +68,13 @@ class _EnvoyPatternScaffoldState extends State<EnvoyPatternScaffold> {
     Widget shield = Shield(
       child: Padding(
         padding: const EdgeInsets.only(right: 8, left: 8, top: 8, bottom: 40),
-        child: SizedBox.expand(child: widget.shield),
+        child: Center(
+          child: SizedBox(
+            width: 480,
+            height: double.infinity,
+            child: widget.shield,
+          ),
+        ),
       ),
     );
     return Scaffold(
@@ -77,7 +83,10 @@ class _EnvoyPatternScaffoldState extends State<EnvoyPatternScaffold> {
       appBar: widget.appBar,
       primary: widget.appBar != null,
       backgroundColor: Colors.black,
-      floatingActionButton: widget.header ?? Container(),
+      floatingActionButton: ConstrainedBox(
+        constraints: const BoxConstraints(maxWidth: 320, maxHeight: 320),
+        child: widget.header ?? Container(),
+      ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
       body: Stack(
         clipBehavior: Clip.none,
@@ -233,7 +242,7 @@ class GradientPainter extends CustomPainter {
       ).createShader(
         Rect.fromCircle(
           center: Offset(size.width / 2, size.height / gradientHeight),
-          radius: min(size.width, size.width * gradientRadius),
+          radius: min(size.width, 430) * gradientRadius,
         ),
       );
 

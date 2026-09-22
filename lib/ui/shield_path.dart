@@ -29,7 +29,9 @@ class ShieldClipper extends CustomClipper<Path> {
     double degToRad(double deg) => deg * (pi / 180.0);
 
     var path = Path();
-    double arcSize = size.width / arcSizeRatio;
+    // Keep phone-sized corners and crest depth on wider windows.
+    double shapeWidth = min(size.width, 430.0);
+    double arcSize = shapeWidth / arcSizeRatio;
     double padding = isBlurShield ? (-11.5) : 1.2;
     double topShieldPadding = isBlurShield ? 0 : 1.2;
 
@@ -37,7 +39,11 @@ class ShieldClipper extends CustomClipper<Path> {
     double arcAngle = (180 - shieldCrestAngle) / 2;
 
     double shieldCrestOffset =
-        (size.width - (2 * padding)) * tan(degToRad(arcAngle)) / 2;
+        (shapeWidth - (2 * padding)) * tan(degToRad(arcAngle)) / 2;
+    if (size.width > shapeWidth) {
+      arcAngle =
+          atan2(2 * shieldCrestOffset, size.width - 2 * padding) * 180 / pi;
+    }
 
     path.arcTo(
       Rect.fromLTWH(padding, topShieldPadding, arcSize, arcSize),
