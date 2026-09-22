@@ -11,4 +11,5 @@ class EnvoyEasing {
   static Cubic easeOut = const Cubic(0, 0, 0.58, 1);
   static Cubic easeInOut = const Cubic(0.42, 0, 0.58, 1);
   static Cubic defaultEasing = const Cubic(0.25, 0.1, 0.25, 1);
+  static const Cubic easeDrawer = Cubic(0.32, 0.72, 0, 1);
 }
