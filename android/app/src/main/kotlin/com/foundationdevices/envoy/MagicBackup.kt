@@ -371,6 +371,10 @@ internal class MagicBackupSeedStore(private val context: Context) {
         }
         // Do not keep a software-only key.
         if (!hardwareBacked) {
+            if (allowSoftwareBackedMagicBackupKey(BuildConfig.DEBUG, Build.HARDWARE)) {
+                Log.w(TAG, "Using a software-backed Magic Backup key on the emulator")
+                return
+            }
             keyStore().deleteEntry(KEY_ALIAS)
             throw GeneralSecurityException("Magic Backup key is not hardware-backed")
         }
@@ -399,3 +403,9 @@ internal class MagicBackupSeedStore(private val context: Context) {
                 .toByteArray(StandardCharsets.UTF_8)
     }
 }
+
+// Emulators may not provide hardware-backed Keystore keys. Goldfish and Ranchu are the
+// hardware names used by Android emulators. Keep this exception limited to debug emulator
+// builds; profile and release builds always reject software-backed keys.
+internal fun allowSoftwareBackedMagicBackupKey(isDebug: Boolean, hardware: String): Boolean =
+    isDebug && (hardware == "goldfish" || hardware == "ranchu")
