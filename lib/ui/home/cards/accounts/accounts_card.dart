@@ -437,6 +437,7 @@ class _DefaultAccountsListState extends ConsumerState<DefaultAccountsList> {
             data: account.id,
             maxSimultaneousDrags: 1,
             onDragStarted: () => setState(() => _onReOrderStart = true),
+            onDragUpdate: (details) => _autoScrollGrid(details.globalPosition),
             onDragEnd: (_) {
               if (mounted) setState(() => _onReOrderStart = false);
             },
@@ -464,6 +465,24 @@ class _DefaultAccountsListState extends ConsumerState<DefaultAccountsList> {
         },
       );
     });
+  }
+
+  void _autoScrollGrid(Offset globalPosition) {
+    if (!_scrollController.hasClients) return;
+
+    final renderBox = context.findRenderObject() as RenderBox?;
+    if (renderBox == null) return;
+
+    final nextOffset = gridAutoScrollOffset(
+      currentOffset: _scrollController.offset,
+      minOffset: _scrollController.position.minScrollExtent,
+      maxOffset: _scrollController.position.maxScrollExtent,
+      pointerY: renderBox.globalToLocal(globalPosition).dy,
+      viewportHeight: renderBox.size.height,
+    );
+    if (nextOffset != _scrollController.offset) {
+      _scrollController.jumpTo(nextOffset);
+    }
   }
 
   List<EnvoyAccount> _orderedAccounts(
@@ -540,6 +559,24 @@ List<String> reorderAccountIds({
   reordered.insert(newIndex, item);
   reordered.addAll(fullOrder.where((id) => !reordered.contains(id)));
   return reordered;
+}
+
+@visibleForTesting
+double gridAutoScrollOffset({
+  required double currentOffset,
+  required double minOffset,
+  required double maxOffset,
+  required double pointerY,
+  required double viewportHeight,
+}) {
+  const edge = 80.0;
+  const step = 24.0;
+  final delta = pointerY < edge
+      ? -step
+      : pointerY > viewportHeight - edge
+          ? step
+          : 0.0;
+  return (currentOffset + delta).clamp(minOffset, maxOffset).toDouble();
 }
 
 /// Widget for displaying passphrase accounts (no reordering)

@@ -105,8 +105,14 @@ class _CardSwipeWrapperState extends ConsumerState<CardSwipeWrapper>
 
   @override
   Widget build(BuildContext context) {
-    final size = MediaQuery.of(context).size;
+    return LayoutBuilder(
+      builder: (context, constraints) => _buildCard(
+        Size(constraints.maxWidth, widget.height),
+      ),
+    );
+  }
 
+  Widget _buildCard(Size size) {
     return Stack(
       children: [
         Container(

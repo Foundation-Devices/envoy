@@ -639,21 +639,24 @@ class _FullScreenVideoPlayerState extends State<FullScreenVideoPlayer>
                 );
               },
             ),
-            Positioned(
-              top: 20,
-              left: 20,
-              child: Semantics(
-                container: true,
-                identifier: 'video_back',
-                button: true,
-                child: BackButton(
-                  color: Colors.white,
-                  onPressed: () async {
-                    await _closeAndPop();
-                  },
+            if (_downloadError != null ||
+                _visibleTimeline ||
+                _playerProgress == 0)
+              Positioned(
+                top: 20,
+                left: 20,
+                child: Semantics(
+                  container: true,
+                  identifier: 'video_back',
+                  button: true,
+                  child: BackButton(
+                    color: Colors.white,
+                    onPressed: () async {
+                      await _closeAndPop();
+                    },
+                  ),
                 ),
               ),
-            ),
             // Black curtains
             Positioned.fill(
               child: IgnorePointer(
