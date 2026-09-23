@@ -63,12 +63,11 @@ import 'package:ngwallet/ngwallet.dart';
 //ignore: must_be_immutable
 class AccountCard extends ConsumerStatefulWidget {
   final bool showUtxoPage;
-  final bool showAccountHeader;
 
-  AccountCard({
+  const AccountCard({
+    super.key,
     this.showUtxoPage = false,
-    this.showAccountHeader = true,
-  }) : super(key: UniqueKey());
+  });
 
   // @override
   // String? title = S().manage_account_address_heading.toUpperCase();
@@ -239,24 +238,24 @@ class _AccountCardState extends ConsumerState<AccountCard>
                 width: double.infinity,
                 child: Column(
                   children: [
-                    if (widget.showAccountHeader)
-                      Padding(
-                        padding: const EdgeInsets.only(
-                          top: 20,
-                          bottom: 0,
-                          left: 20,
-                          right: 20,
-                        ),
-                        child: AccountListTile(
-                          account,
-                          onTap: () {
-                            Navigator.pop(context);
-                            ref.read(homePageAccountsProvider.notifier).state =
-                                HomePageAccountsState(
-                                    HomePageAccountsNavigationState.list);
-                          },
-                        ),
+                    Padding(
+                      padding: const EdgeInsets.only(
+                        top: 20,
+                        bottom: 0,
+                        left: 20,
+                        right: 20,
                       ),
+                      child: AccountListTile(
+                        account,
+                        onTap: () {
+                          Navigator.pop(context);
+                          ref.read(homePageAccountsProvider.notifier).state =
+                              HomePageAccountsState(
+                            HomePageAccountsNavigationState.list,
+                          );
+                        },
+                      ),
+                    ),
                     scanInProgress ? RescanningIndicator() : SizedBox.shrink(),
                     AnimatedSwitcher(
                       duration: const Duration(milliseconds: 200),

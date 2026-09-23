@@ -11,7 +11,6 @@ import 'package:envoy/ui/components/linear_gradient.dart';
 import 'package:envoy/ui/envoy_button.dart';
 import 'package:envoy/ui/home/cards/accounts/account_list_tile.dart';
 import 'package:envoy/ui/home/cards/accounts/accounts_state.dart';
-import 'package:envoy/ui/home/cards/accounts/detail/account_card.dart';
 import 'package:envoy/ui/home/cards/accounts/detail/filter_state.dart';
 import 'package:envoy/ui/home/cards/accounts/empty_accounts_card.dart';
 import 'package:envoy/ui/home/cards/devices/devices_card.dart';
@@ -32,12 +31,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:ngwallet/ngwallet.dart';
 
-const double accountMasterDetailBreakpoint = 780;
+const double _accountsGridBreakpoint = 780;
 
 class AccountsCard extends ConsumerStatefulWidget {
-  final bool listOnly;
-
-  const AccountsCard({super.key, this.listOnly = false});
+  const AccountsCard({super.key});
 
   @override
   ConsumerState<AccountsCard> createState() => _AccountsCardState();
@@ -56,139 +53,91 @@ class _AccountsCardState extends ConsumerState<AccountsCard>
     final showDefaultAccounts = ref.watch(showDefaultAccountProvider);
     final hasPassphraseAccounts =
         ref.watch(primePassphraseAccountsProvider).isNotEmpty;
-    final selectedAccount = ref.watch(selectedAccountProvider);
 
     return LayoutBuilder(
-      builder: (context, constraints) {
-        final masterDetail = widget.listOnly ||
-            constraints.maxWidth >= accountMasterDetailBreakpoint;
-        final accountList = _buildAccountList(
-          showDefaultAccounts: showDefaultAccounts,
-          hasPassphraseAccounts: hasPassphraseAccounts,
-          masterDetail: masterDetail,
-        );
-
-        if (widget.listOnly || !masterDetail) return accountList;
-
-        final listWidth = (constraints.maxWidth * 0.4).clamp(320.0, 480.0);
-        return Row(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            SizedBox(width: listWidth, child: accountList),
-            const VerticalDivider(
-              width: 1,
-              thickness: 1,
-              color: EnvoyColors.border2,
-            ),
-            Expanded(
-              child: selectedAccount == null
-                  ? Center(
-                      child: Text(
-                        S().header_chooseAccount,
-                        style: EnvoyTypography.body.copyWith(
-                          color: EnvoyColors.textTertiary,
+      builder: (context, constraints) => Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          AnimatedSize(
+            duration: const Duration(milliseconds: 300),
+            curve: Curves.easeInOut,
+            alignment: Alignment.topCenter,
+            clipBehavior: Clip.none,
+            child: AnimatedSwitcher(
+              duration: const Duration(milliseconds: 300),
+              switchInCurve: Curves.easeOut,
+              switchOutCurve: Curves.easeIn,
+              transitionBuilder: (child, animation) {
+                return FadeTransition(
+                  opacity: animation,
+                  child: SlideTransition(
+                    position: Tween<Offset>(
+                      begin: const Offset(0, -0.5),
+                      end: Offset.zero,
+                    ).animate(CurvedAnimation(
+                      parent: animation,
+                      curve: Curves.easeOut,
+                    )),
+                    child: child,
+                  ),
+                );
+              },
+              child: hasPassphraseAccounts
+                  ? Padding(
+                      key: const ValueKey('passphrase-pill'),
+                      padding: const EdgeInsets.only(
+                        left: 20,
+                        right: 20,
+                        top: EnvoySpacing.medium2,
+                      ),
+                      child: SizedBox(
+                        width: 440,
+                        child: LabelSwitch(
+                          initialValue: showDefaultAccounts,
+                          onChanged: (bool newValue) {
+                            ref
+                                .read(showDefaultAccountProvider.notifier)
+                                .state = newValue;
+                          },
+                          trueOption: LabelSwitchOption(
+                            label: S().accounts_switchDefault,
+                          ),
+                          falseOption: LabelSwitchOption(
+                            label: S().accounts_switchPassphrase,
+                            icon: EnvoyIcons.passphrase_shield,
+                          ),
                         ),
                       ),
                     )
-                  : AccountCard(showAccountHeader: false),
+                  : const SizedBox.shrink(key: ValueKey('empty')),
             ),
-          ],
-        );
-      },
-    );
-  }
-
-  Widget _buildAccountList({
-    required bool showDefaultAccounts,
-    required bool hasPassphraseAccounts,
-    required bool masterDetail,
-  }) {
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        AnimatedSize(
-          duration: const Duration(milliseconds: 300),
-          curve: Curves.easeInOut,
-          alignment: Alignment.topCenter,
-          clipBehavior: Clip.none,
-          child: AnimatedSwitcher(
-            duration: const Duration(milliseconds: 300),
-            switchInCurve: Curves.easeOut,
-            switchOutCurve: Curves.easeIn,
-            transitionBuilder: (child, animation) {
-              return FadeTransition(
-                opacity: animation,
-                child: SlideTransition(
-                  position: Tween<Offset>(
-                    begin: const Offset(0, -0.5),
-                    end: Offset.zero,
-                  ).animate(CurvedAnimation(
-                    parent: animation,
-                    curve: Curves.easeOut,
-                  )),
-                  child: child,
-                ),
-              );
-            },
-            child: hasPassphraseAccounts
-                ? Padding(
-                    key: const ValueKey('passphrase-pill'),
-                    padding: const EdgeInsets.only(
-                      left: 20,
-                      right: 20,
-                      top: EnvoySpacing.medium2,
-                    ),
-                    child: SizedBox(
-                      width: 440,
-                      child: LabelSwitch(
-                        initialValue: showDefaultAccounts,
-                        onChanged: (bool newValue) {
-                          ref.read(selectedAccountProvider.notifier).state =
-                              null;
-                          ref.read(showDefaultAccountProvider.notifier).state =
-                              newValue;
-                          if (widget.listOnly) {
-                            context.go(ROUTE_ACCOUNTS_HOME);
-                          }
-                        },
-                        trueOption: LabelSwitchOption(
-                          label: S().accounts_switchDefault,
-                        ),
-                        falseOption: LabelSwitchOption(
-                          label: S().accounts_switchPassphrase,
-                          icon: EnvoyIcons.passphrase_shield,
-                        ),
-                      ),
-                    ),
-                  )
-                : const SizedBox.shrink(key: ValueKey('empty')),
           ),
-        ),
-        Flexible(
-          child: AnimatedSwitcher(
-            duration: const Duration(milliseconds: 300),
-            layoutBuilder:
-                (Widget? currentChild, List<Widget> previousChildren) {
-              return Stack(
-                alignment: Alignment.topCenter,
-                children: <Widget>[
-                  ...previousChildren,
-                  if (currentChild != null) currentChild,
-                ],
-              );
-            },
-            child: showDefaultAccounts
-                ? DefaultAccountsList(
-                    key: const ValueKey('default'),
-                    masterDetail: masterDetail,
-                  )
-                : PassphraseAccountsList(
-                    key: const ValueKey('passphrase'),
-                    masterDetail: masterDetail,
-                  ),
+          Flexible(
+            child: AnimatedSwitcher(
+              duration: const Duration(milliseconds: 300),
+              layoutBuilder:
+                  (Widget? currentChild, List<Widget> previousChildren) {
+                return Stack(
+                  alignment: Alignment.topCenter,
+                  children: <Widget>[
+                    ...previousChildren,
+                    if (currentChild != null) currentChild,
+                  ],
+                );
+              },
+              child: showDefaultAccounts
+                  ? DefaultAccountsList(
+                      key: const ValueKey('default'),
+                      availableWidth: constraints.maxWidth,
+                    )
+                  : PassphraseAccountsList(
+                      key: const ValueKey('passphrase'),
+                      availableWidth: constraints.maxWidth,
+                    ),
+            ),
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 
@@ -198,9 +147,12 @@ class _AccountsCardState extends ConsumerState<AccountsCard>
 
 /// Widget for displaying default (non-passphrase) accounts with reordering support
 class DefaultAccountsList extends ConsumerStatefulWidget {
-  final bool masterDetail;
+  final double availableWidth;
 
-  const DefaultAccountsList({super.key, this.masterDetail = false});
+  const DefaultAccountsList({
+    super.key,
+    required this.availableWidth,
+  });
 
   @override
   ConsumerState<DefaultAccountsList> createState() =>
@@ -348,9 +300,49 @@ class _DefaultAccountsListState extends ConsumerState<DefaultAccountsList> {
       );
     }
 
-    final selectedAccountId = widget.masterDetail
-        ? ref.watch(selectedAccountProvider.select((account) => account?.id))
-        : null;
+    final useGrid = widget.availableWidth >= _accountsGridBreakpoint;
+    if (useGrid) {
+      return Align(
+        alignment: Alignment.topCenter,
+        child: SizedBox(
+          width: double.infinity,
+          child: ScrollGradientMask(
+            start: 0.00,
+            topGradientValue: 0.045,
+            bottomGradientValue: 0.955,
+            end: 0.977,
+            child: ListView(
+              controller: _scrollController,
+              physics: const BouncingScrollPhysics(),
+              padding: const EdgeInsets.fromLTRB(20, 20, 20, 0),
+              children: [
+                GridView(
+                  primary: false,
+                  padding: EdgeInsets.zero,
+                  shrinkWrap: true,
+                  physics: const NeverScrollableScrollPhysics(),
+                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: 2,
+                    mainAxisExtent: 124,
+                    crossAxisSpacing: EnvoySpacing.medium1,
+                  ),
+                  children: _buildGridItems(
+                    accounts,
+                    _accountsOrder,
+                    (widget.availableWidth - 56) / 2,
+                  ),
+                ),
+                Opacity(
+                  opacity: _onReOrderStart ? 0 : 1,
+                  child: const AccountPrompts(),
+                ),
+                const SizedBox(height: 80),
+              ],
+            ),
+          ),
+        ),
+      );
+    }
 
     final scrollView = ScrollGradientMask(
       start: 0.00,
@@ -394,31 +386,9 @@ class _DefaultAccountsListState extends ConsumerState<DefaultAccountsList> {
             _onReOrderStart = true;
           });
         },
-        onReorderItem: (oldIndex, newIndex) async {
-          final order = List<String>.from(_accountsOrder);
-          final currentVisibleAccountsId = accounts.map((e) => e.id).toList();
-          final toReorder =
-              order.where(currentVisibleAccountsId.contains).toList();
-          setState(() {
-            final item = toReorder.removeAt(oldIndex);
-            toReorder.insert(newIndex, item);
-            for (final element in order) {
-              if (!toReorder.contains(element)) {
-                toReorder.add(element);
-              }
-            }
-            _accountsOrder = toReorder;
-            Future.microtask(
-              () => NgAccountManager().updateAccountOrder(toReorder),
-            );
-          });
-          await EnvoyStorage().addPromptState(DismissiblePrompt.dragAndDrop);
-        },
-        children: _buildListItems(
-          accounts,
-          _accountsOrder,
-          selectedAccountId,
-        ),
+        onReorderItem: (oldIndex, newIndex) =>
+            _reorderAccounts(oldIndex, newIndex, accounts),
+        children: _buildListItems(accounts, _accountsOrder),
       ),
     );
 
@@ -431,18 +401,69 @@ class _DefaultAccountsListState extends ConsumerState<DefaultAccountsList> {
   List<Widget> _buildListItems(
     List<EnvoyAccount> accounts,
     List<String> accountsOrder,
-    String? selectedAccountId,
   ) {
     return _orderedAccounts(accounts, accountsOrder)
         .map(
           (account) => _buildAccountItem(
             account,
             key: ValueKey(account.id),
-            inactive:
-                selectedAccountId != null && selectedAccountId != account.id,
           ),
         )
         .toList();
+  }
+
+  List<Widget> _buildGridItems(
+    List<EnvoyAccount> accounts,
+    List<String> accountsOrder,
+    double cardWidth,
+  ) {
+    final orderedAccounts = _orderedAccounts(accounts, accountsOrder);
+
+    return List.generate(orderedAccounts.length, (index) {
+      final account = orderedAccounts[index];
+      return DragTarget<String>(
+        key: ValueKey(account.id),
+        onWillAcceptWithDetails: (details) => details.data != account.id,
+        onAcceptWithDetails: (details) {
+          final oldIndex = orderedAccounts.indexWhere(
+            (candidate) => candidate.id == details.data,
+          );
+          if (oldIndex != -1) {
+            _reorderAccounts(oldIndex, index, accounts);
+          }
+        },
+        builder: (context, candidateData, rejectedData) {
+          return LongPressDraggable<String>(
+            data: account.id,
+            maxSimultaneousDrags: 1,
+            onDragStarted: () => setState(() => _onReOrderStart = true),
+            onDragEnd: (_) {
+              if (mounted) setState(() => _onReOrderStart = false);
+            },
+            feedback: Material(
+              color: Colors.transparent,
+              child: SizedBox(
+                width: cardWidth,
+                child: _buildAccountItem(
+                  account,
+                  draggable: false,
+                  useHero: false,
+                ),
+              ),
+            ),
+            childWhenDragging: Opacity(
+              opacity: 0.25,
+              child: _buildAccountItem(account, useHero: false),
+            ),
+            child: AnimatedScale(
+              duration: const Duration(milliseconds: 120),
+              scale: candidateData.isEmpty ? 1 : 0.97,
+              child: _buildAccountItem(account),
+            ),
+          );
+        },
+      );
+    });
   }
 
   List<EnvoyAccount> _orderedAccounts(
@@ -464,14 +485,16 @@ class _DefaultAccountsListState extends ConsumerState<DefaultAccountsList> {
   Widget _buildAccountItem(
     EnvoyAccount account, {
     Key? key,
-    bool inactive = false,
+    bool draggable = true,
+    bool useHero = true,
   }) {
     return SizedBox(
       key: key,
       height: _accountHeight,
       child: AccountListTile(
         account,
-        inactive: inactive,
+        draggable: draggable,
+        useHero: useHero,
         onTap: () async {
           clearFilterState(ref);
           ref.read(selectedAccountProvider.notifier).state = account;
@@ -480,13 +503,53 @@ class _DefaultAccountsListState extends ConsumerState<DefaultAccountsList> {
       ),
     );
   }
+
+  Future<void> _reorderAccounts(
+    int oldIndex,
+    int newIndex,
+    List<EnvoyAccount> accounts,
+  ) async {
+    if (oldIndex == newIndex) return;
+
+    final visibleOrder = reorderAccountIds(
+      order: _accountsOrder,
+      visibleIds: accounts.map((account) => account.id).toList(),
+      oldIndex: oldIndex,
+      newIndex: newIndex,
+    );
+
+    setState(() => _accountsOrder = visibleOrder);
+    Future.microtask(
+      () => NgAccountManager().updateAccountOrder(visibleOrder),
+    );
+    await EnvoyStorage().addPromptState(DismissiblePrompt.dragAndDrop);
+  }
+}
+
+@visibleForTesting
+List<String> reorderAccountIds({
+  required List<String> order,
+  required List<String> visibleIds,
+  required int oldIndex,
+  required int newIndex,
+}) {
+  final fullOrder = order.isEmpty ? visibleIds : order;
+  final visible = visibleIds.toSet();
+  final reordered = fullOrder.where(visible.contains).toList();
+  final item = reordered.removeAt(oldIndex);
+  reordered.insert(newIndex, item);
+  reordered.addAll(fullOrder.where((id) => !reordered.contains(id)));
+  return reordered;
 }
 
 /// Widget for displaying passphrase accounts (no reordering)
 class PassphraseAccountsList extends ConsumerWidget {
-  final bool masterDetail;
+  final double availableWidth;
 
-  const PassphraseAccountsList({super.key, this.masterDetail = false});
+  const PassphraseAccountsList({
+    super.key,
+    required this.availableWidth,
+  });
 
   static const double _accountHeight = 124;
 
@@ -495,9 +558,6 @@ class PassphraseAccountsList extends ConsumerWidget {
     final List<EnvoyAccount> accounts = ref.watch(
       primePassphraseAccountsProvider,
     );
-    final selectedAccountId = masterDetail
-        ? ref.watch(selectedAccountProvider.select((account) => account?.id))
-        : null;
 
     if (accounts.isEmpty) {
       return Align(
@@ -507,6 +567,42 @@ class PassphraseAccountsList extends ConsumerWidget {
           child: Padding(
             padding: const EdgeInsets.all(EnvoySpacing.medium2),
             child: EmptyAccountsCard(),
+          ),
+        ),
+      );
+    }
+
+    if (availableWidth >= _accountsGridBreakpoint) {
+      return Align(
+        alignment: Alignment.topCenter,
+        child: SizedBox(
+          width: double.infinity,
+          child: ScrollGradientMask(
+            start: 0.00,
+            topGradientValue: 0.045,
+            bottomGradientValue: 0.955,
+            end: 1.0,
+            child: GridView.builder(
+              padding: const EdgeInsets.fromLTRB(20, 20, 20, 80),
+              physics: const BouncingScrollPhysics(),
+              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 2,
+                mainAxisExtent: _accountHeight,
+                crossAxisSpacing: 12,
+              ),
+              itemCount: accounts.length,
+              itemBuilder: (context, index) {
+                final account = accounts[index];
+                return AccountListTile(
+                  account,
+                  onTap: () async {
+                    clearFilterState(ref);
+                    ref.read(selectedAccountProvider.notifier).state = account;
+                    context.go(ROUTE_ACCOUNT_DETAIL, extra: account);
+                  },
+                );
+              },
+            ),
           ),
         ),
       );
@@ -535,8 +631,6 @@ class PassphraseAccountsList extends ConsumerWidget {
                 height: _accountHeight,
                 child: AccountListTile(
                   account,
-                  inactive: selectedAccountId != null &&
-                      selectedAccountId != account.id,
                   onTap: () async {
                     clearFilterState(ref);
                     ref.read(selectedAccountProvider.notifier).state = account;
@@ -548,45 +642,6 @@ class PassphraseAccountsList extends ConsumerWidget {
           ),
         ),
       ),
-    );
-  }
-}
-
-class AccountMasterDetailLayout extends StatelessWidget {
-  final Widget detail;
-  final Widget? expandedDetail;
-
-  const AccountMasterDetailLayout({
-    super.key,
-    required this.detail,
-    this.expandedDetail,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return LayoutBuilder(
-      builder: (context, constraints) {
-        if (constraints.maxWidth < accountMasterDetailBreakpoint) {
-          return detail;
-        }
-
-        final listWidth = (constraints.maxWidth * 0.4).clamp(320.0, 480.0);
-        return Row(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            SizedBox(
-              width: listWidth,
-              child: const AccountsCard(listOnly: true),
-            ),
-            const VerticalDivider(
-              width: 1,
-              thickness: 1,
-              color: EnvoyColors.border2,
-            ),
-            Expanded(child: expandedDetail ?? detail),
-          ],
-        );
-      },
     );
   }
 }

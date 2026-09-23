@@ -161,10 +161,12 @@ class _QrScannerState extends State<QrScanner>
                 else
                   const SizedBox(),
               Positioned(
-                top: EnvoySpacing.medium3,
+                top: 0,
                 left: 0,
                 right: 0,
                 child: SafeArea(
+                  bottom: false,
+                  minimum: const EdgeInsets.only(top: EnvoySpacing.medium3),
                   child: Material(
                     color: Colors.transparent,
                     child: Row(

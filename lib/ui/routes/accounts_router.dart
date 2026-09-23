@@ -118,18 +118,6 @@ Page wrapWithEnvoyPageAnimation({
   );
 }
 
-Page _wrapAccountDetailPage({
-  required Widget detail,
-  Widget? expandedDetail,
-}) {
-  return wrapWithEnvoyPageAnimation(
-    child: AccountMasterDetailLayout(
-      detail: detail,
-      expandedDetail: expandedDetail,
-    ),
-  );
-}
-
 final accountsRouter = StatefulShellBranch(
   restorationScopeId: 'accountsHomeRouterScope',
   initialLocation: ROUTE_ACCOUNTS_HOME,
@@ -183,13 +171,25 @@ final accountsRouter = StatefulShellBranch(
               ///TODO: show a dialog to confirm the user wants to exit the selection mode;
               return false;
             }
-            ProviderScope.containerOf(
-              context,
-            ).read(accountToggleStateProvider.notifier).state =
-                AccountToggleState.tx;
-            ProviderScope.containerOf(
-              context,
-            ).read(selectedAccountProvider.notifier).state = null;
+            final router = GoRouter.of(context);
+            final exitingAccountId =
+                providerContainer.read(selectedAccountProvider)?.id;
+            Future.delayed(const Duration(milliseconds: 360), () {
+              final currentPath =
+                  router.routerDelegate.currentConfiguration.uri.path;
+              final currentAccountId =
+                  providerContainer.read(selectedAccountProvider)?.id;
+              if (currentPath == ROUTE_ACCOUNT_DETAIL ||
+                  currentPath.startsWith('$ROUTE_ACCOUNT_DETAIL/') ||
+                  currentAccountId != exitingAccountId) {
+                return;
+              }
+              providerContainer
+                  .read(accountToggleStateProvider.notifier)
+                  .state = AccountToggleState.tx;
+              providerContainer.read(selectedAccountProvider.notifier).state =
+                  null;
+            });
             return true;
           },
           path: _ACCOUNT_DETAIL,
@@ -220,8 +220,8 @@ final accountsRouter = StatefulShellBranch(
                 } else {
                   transferAddress = null;
                 }
-                return _wrapAccountDetailPage(
-                  detail: Center(
+                return wrapWithEnvoyPageAnimation(
+                  child: Center(
                     child: SizedBox(
                       width: 480,
                       height: double.infinity,
@@ -242,8 +242,8 @@ final accountsRouter = StatefulShellBranch(
                             name: ACCOUNT_SEND_SCAN_PSBT,
                             path: "scan",
                             pageBuilder: (context, state) {
-                              return _wrapAccountDetailPage(
-                                detail: Center(
+                              return wrapWithEnvoyPageAnimation(
+                                child: Center(
                                   child: SizedBox(
                                     width: 480,
                                     height: double.infinity,
@@ -258,8 +258,8 @@ final accountsRouter = StatefulShellBranch(
                                 name: ACCOUNT_SEND_SCAN_QR,
                                 path: "qr_review",
                                 pageBuilder: (context, state) {
-                                  return _wrapAccountDetailPage(
-                                    detail: Center(
+                                  return wrapWithEnvoyPageAnimation(
+                                    child: Center(
                                       child: SizedBox(
                                         width: 480,
                                         height: double.infinity,
@@ -284,15 +284,15 @@ final accountsRouter = StatefulShellBranch(
                       },
                       path: _ACCOUNT_SEND_REVIEW,
                       pageBuilder: (context, state) {
-                        return _wrapAccountDetailPage(
-                          detail: TxReview(),
+                        return wrapWithEnvoyPageAnimation(
+                          child: TxReview(),
                         );
                       },
                     ),
                   ],
                   pageBuilder: (context, state) {
-                    return _wrapAccountDetailPage(
-                      detail: TxReview(),
+                    return wrapWithEnvoyPageAnimation(
+                      child: TxReview(),
                     );
                   },
                 ),
@@ -309,11 +309,11 @@ final accountsRouter = StatefulShellBranch(
                   if (account == null) {
                     throw Exception("Account not found");
                   }
-                  return _wrapAccountDetailPage(
-                    detail: SelectAccountTransfer(account),
+                  return wrapWithEnvoyPageAnimation(
+                    child: SelectAccountTransfer(account),
                   );
                 } catch (e) {
-                  return _wrapAccountDetailPage(detail: Container());
+                  return wrapWithEnvoyPageAnimation(child: Container());
                 }
               },
             ),
@@ -327,12 +327,12 @@ final accountsRouter = StatefulShellBranch(
                   if (account == null) {
                     throw Exception("Account not found");
                   }
-                  return _wrapAccountDetailPage(
-                    detail: AddressExplorerCard(account),
+                  return wrapWithEnvoyPageAnimation(
+                    child: AddressExplorerCard(account),
                   );
                 } catch (e) {
-                  return _wrapAccountDetailPage(
-                    detail: Container(
+                  return wrapWithEnvoyPageAnimation(
+                    child: Container(
                       padding: const EdgeInsets.all(20),
                       child: Center(child: Text("Account not found")),
                     ),
@@ -347,8 +347,8 @@ final accountsRouter = StatefulShellBranch(
                       final extra = state.extra as Map<String, dynamic>;
                       final account = extra['account'] as EnvoyAccount;
                       final addressInfo = extra['addressInfo'] as AddressInfo;
-                      return _wrapAccountDetailPage(
-                        detail: Center(
+                      return wrapWithEnvoyPageAnimation(
+                        child: Center(
                           child: SizedBox(
                             width: 480,
                             height: double.infinity,
@@ -360,8 +360,8 @@ final accountsRouter = StatefulShellBranch(
                         ),
                       );
                     } catch (e) {
-                      return _wrapAccountDetailPage(
-                        detail: Container(
+                      return wrapWithEnvoyPageAnimation(
+                        child: Container(
                           padding: const EdgeInsets.all(20),
                           child: Center(child: Text("Address not found")),
                         ),
@@ -382,8 +382,8 @@ final accountsRouter = StatefulShellBranch(
                   if (account == null) {
                     throw Exception("Account not found");
                   }
-                  return _wrapAccountDetailPage(
-                    detail: Center(
+                  return wrapWithEnvoyPageAnimation(
+                    child: Center(
                       child: SizedBox(
                         width: 480,
                         height: double.infinity,
@@ -392,7 +392,7 @@ final accountsRouter = StatefulShellBranch(
                     ),
                   );
                 } catch (e) {
-                  return _wrapAccountDetailPage(detail: Container());
+                  return wrapWithEnvoyPageAnimation(child: Container());
                 }
               },
             ),
@@ -407,12 +407,12 @@ final accountsRouter = StatefulShellBranch(
                   if (account == null) {
                     throw Exception("Account not found");
                   }
-                  return _wrapAccountDetailPage(
-                    detail: DescriptorCard(account),
+                  return wrapWithEnvoyPageAnimation(
+                    child: DescriptorCard(account),
                   );
                 } catch (e) {
-                  return _wrapAccountDetailPage(
-                    detail: Container(
+                  return wrapWithEnvoyPageAnimation(
+                    child: Container(
                       padding: const EdgeInsets.all(20),
                       child: Center(child: Text("Account not found")),
                     ),
@@ -442,8 +442,8 @@ final accountsRouter = StatefulShellBranch(
                   if (account == null) {
                     throw Exception("Account not found");
                   }
-                  return _wrapAccountDetailPage(
-                    detail: Center(
+                  return wrapWithEnvoyPageAnimation(
+                    child: Center(
                       child: SizedBox(
                         width: 480,
                         height: double.infinity,
@@ -455,8 +455,8 @@ final accountsRouter = StatefulShellBranch(
                     ),
                   );
                 } catch (e) {
-                  return _wrapAccountDetailPage(
-                    detail: Container(
+                  return wrapWithEnvoyPageAnimation(
+                    child: Container(
                       padding: const EdgeInsets.all(20),
                       child: Center(child: Text("Account not found")),
                     ),
@@ -469,8 +469,8 @@ final accountsRouter = StatefulShellBranch(
                   pageBuilder: (context, state) {
                     try {
                       final extra = state.extra as SignMessageResultData;
-                      return _wrapAccountDetailPage(
-                        detail: Center(
+                      return wrapWithEnvoyPageAnimation(
+                        child: Center(
                           child: SizedBox(
                             width: 480,
                             height: double.infinity,
@@ -479,8 +479,8 @@ final accountsRouter = StatefulShellBranch(
                         ),
                       );
                     } catch (e) {
-                      return _wrapAccountDetailPage(
-                        detail: Container(
+                      return wrapWithEnvoyPageAnimation(
+                        child: Container(
                           padding: const EdgeInsets.all(20),
                           child: Center(child: Text("Error")),
                         ),
@@ -493,8 +493,8 @@ final accountsRouter = StatefulShellBranch(
                       pageBuilder: (context, state) {
                         try {
                           final extra = state.extra as SignMessageResultData;
-                          return _wrapAccountDetailPage(
-                            detail: Center(
+                          return wrapWithEnvoyPageAnimation(
+                            child: Center(
                               child: SizedBox(
                                 width: 480,
                                 height: double.infinity,
@@ -503,8 +503,8 @@ final accountsRouter = StatefulShellBranch(
                             ),
                           );
                         } catch (e) {
-                          return _wrapAccountDetailPage(
-                            detail: Container(
+                          return wrapWithEnvoyPageAnimation(
+                            child: Container(
                               padding: const EdgeInsets.all(20),
                               child: Center(child: Text("Error")),
                             ),
@@ -518,15 +518,14 @@ final accountsRouter = StatefulShellBranch(
             ),
           ],
           pageBuilder: (context, state) {
-            return _wrapAccountDetailPage(
-              detail: Center(
+            return wrapWithEnvoyPageAnimation(
+              child: Center(
                 child: SizedBox(
                   width: 480,
                   height: double.infinity,
                   child: AccountCard(),
                 ),
               ),
-              expandedDetail: AccountCard(showAccountHeader: false),
             );
           },
         ),
