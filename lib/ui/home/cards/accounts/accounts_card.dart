@@ -31,8 +31,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:ngwallet/ngwallet.dart';
 
-const double _accountsGridBreakpoint = 780;
-
 class AccountsCard extends ConsumerStatefulWidget {
   const AccountsCard({super.key});
 
@@ -129,10 +127,12 @@ class _AccountsCardState extends ConsumerState<AccountsCard>
                   ? DefaultAccountsList(
                       key: const ValueKey('default'),
                       availableWidth: constraints.maxWidth,
+                      availableHeight: constraints.maxHeight,
                     )
                   : PassphraseAccountsList(
                       key: const ValueKey('passphrase'),
                       availableWidth: constraints.maxWidth,
+                      availableHeight: constraints.maxHeight,
                     ),
             ),
           ),
@@ -148,10 +148,12 @@ class _AccountsCardState extends ConsumerState<AccountsCard>
 /// Widget for displaying default (non-passphrase) accounts with reordering support
 class DefaultAccountsList extends ConsumerStatefulWidget {
   final double availableWidth;
+  final double availableHeight;
 
   const DefaultAccountsList({
     super.key,
     required this.availableWidth,
+    required this.availableHeight,
   });
 
   @override
@@ -300,7 +302,11 @@ class _DefaultAccountsListState extends ConsumerState<DefaultAccountsList> {
       );
     }
 
-    final useGrid = widget.availableWidth >= _accountsGridBreakpoint;
+    final useGrid = useAccountsGrid(
+      accountCount: accounts.length,
+      availableWidth: widget.availableWidth,
+      availableHeight: widget.availableHeight,
+    );
     if (useGrid) {
       return Align(
         alignment: Alignment.topCenter,
@@ -579,13 +585,24 @@ double gridAutoScrollOffset({
   return (currentOffset + delta).clamp(minOffset, maxOffset).toDouble();
 }
 
+@visibleForTesting
+bool useAccountsGrid({
+  required int accountCount,
+  required double availableWidth,
+  required double availableHeight,
+}) {
+  return accountCount > 1 && availableWidth > availableHeight;
+}
+
 /// Widget for displaying passphrase accounts (no reordering)
 class PassphraseAccountsList extends ConsumerWidget {
   final double availableWidth;
+  final double availableHeight;
 
   const PassphraseAccountsList({
     super.key,
     required this.availableWidth,
+    required this.availableHeight,
   });
 
   static const double _accountHeight = 124;
@@ -609,7 +626,11 @@ class PassphraseAccountsList extends ConsumerWidget {
       );
     }
 
-    if (availableWidth >= _accountsGridBreakpoint) {
+    if (useAccountsGrid(
+      accountCount: accounts.length,
+      availableWidth: availableWidth,
+      availableHeight: availableHeight,
+    )) {
       return Align(
         alignment: Alignment.topCenter,
         child: SizedBox(
