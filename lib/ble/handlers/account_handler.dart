@@ -52,7 +52,6 @@ class BleAccountHandler extends PassportMessageHandler {
     // stays fresh even when the BTC price hasn't moved.
     _rateRefreshTimer = Timer.periodic(const Duration(seconds: 30), (_) async {
       if (!qlConnection.isQLActive()) return;
-      await sendExchangeRate();
       await sendExchangeRateHistory();
     });
   }
@@ -363,10 +362,9 @@ class BleAccountHandler extends PassportMessageHandler {
     try {
       _fetchingHistory = true;
       // Fetch Prime's currency independently of Envoy's selected currency.
-      final source = await ExchangeRate().fetchHistoryForCode(currencyCode);
-      if (source == null || !source.isUsableFor(currencyCode)) {
-        return false;
-      }
+      final source = (await ExchangeRate().fetchHistoryForCode(currencyCode)) ??
+          (cachedHistory.isUsableFor(currencyCode) ? cachedHistory : null);
+      if (source == null) return false;
 
       // Convert Dart RatePoint -> API PricePoint
       final apiPoints = source.points.map((p) {
