@@ -26,4 +26,64 @@ void main() {
       ['b', 'c', 'a', 'hidden'],
     );
   });
+
+  test('grid drag scrolls only near viewport edges', () {
+    expect(
+      gridAutoScrollOffset(
+        currentOffset: 100,
+        minOffset: 0,
+        maxOffset: 200,
+        pointerY: 20,
+        viewportHeight: 400,
+      ),
+      76,
+    );
+    expect(
+      gridAutoScrollOffset(
+        currentOffset: 100,
+        minOffset: 0,
+        maxOffset: 200,
+        pointerY: 200,
+        viewportHeight: 400,
+      ),
+      100,
+    );
+    expect(
+      gridAutoScrollOffset(
+        currentOffset: 190,
+        minOffset: 0,
+        maxOffset: 200,
+        pointerY: 390,
+        viewportHeight: 400,
+      ),
+      200,
+    );
+  });
+
+  test('account grid requires multiple accounts in landscape', () {
+    expect(
+      useAccountsGrid(
+        accountCount: 1,
+        availableWidth: 800,
+        availableHeight: 500,
+      ),
+      isFalse,
+    );
+    expect(
+      useAccountsGrid(
+        accountCount: 2,
+        availableWidth: 800,
+        availableHeight: 500,
+      ),
+      isTrue,
+    );
+    expect(
+      useAccountsGrid(
+        accountCount: 2,
+        availableWidth: 500,
+        availableHeight: 800,
+      ),
+      isFalse,
+    );
+  });
 }

@@ -7,6 +7,7 @@
 import 'dart:async';
 import 'dart:convert';
 import 'package:envoy/business/connectivity_manager.dart';
+import 'package:envoy/business/rate_refresh_request.dart';
 import 'package:envoy/util/bug_report_helper.dart';
 import 'package:envoy/util/console.dart';
 import 'package:envoy/util/envoy_storage.dart';
@@ -100,7 +101,7 @@ class ExchangeRate extends ChangeNotifier {
   double? _usdRate;
   DateTime? _usdRateTimestamp;
 
-  bool _isFetchingData = false;
+  final _nonUsdRateRequest = RateRefreshRequest();
 
   double? get usdRate => _usdRate;
 
@@ -150,11 +151,7 @@ class ExchangeRate extends ChangeNotifier {
 
     // Refresh from time to time
     Timer.periodic(const Duration(seconds: 30), (_) async {
-      if (!_isFetchingData &&
-          _selectedCurrency != null &&
-          _selectedCurrency!.code != "USD") {
-        await _getNonUsdRate(true);
-      }
+      await _getNonUsdRate(true);
     });
 
     // *Always* get USD
@@ -232,54 +229,51 @@ class ExchangeRate extends ChangeNotifier {
 
   Future<void> _getNonUsdRate(bool triggeredByTimer) async {
     // We have a separate function for USD
-    if (_selectedCurrency == null) {
+    final selectedCurrencyCode = _selectedCurrency?.code;
+    if (selectedCurrencyCode == null || selectedCurrencyCode == "USD") {
       return;
     }
-
-    // Exit if a fetch is already in progress and it's not a manual fetch
-    if (_isFetchingData && triggeredByTimer) {
-      return;
-    }
-    _isFetchingData = true;
-
-    String selectedCurrencyCode = _selectedCurrency!.code;
-    double selectedRate = 0;
 
     try {
-      if (selectedCurrencyCode != "USD") {
-        selectedRate = await _getRateForCode(selectedCurrencyCode);
-        await _fetchRateHistory(selectedCurrencyCode);
+      await _nonUsdRateRequest.run(
+        triggeredByTimer: triggeredByTimer,
+        fetch: (isCurrentRequest) async {
+          bool isCurrent() =>
+              isCurrentRequest() &&
+              selectedCurrencyCode == _selectedCurrency?.code;
 
-        if (selectedCurrencyCode == _selectedCurrency?.code) {
+          final selectedRate = await _getRateForCode(selectedCurrencyCode);
+          if (!isCurrent()) return;
+          // A slow history request must not hide a freshly fetched price.
           _selectedCurrencyRate = selectedRate;
           notifyListeners();
-        } else {
-          // If the currency code has changed during the fetch, reenter
-          _getNonUsdRate(false);
-          return;
-        }
-      }
-    } on Exception catch (e) {
-      EnvoyReport().log("connectivity", e.toString());
-      _isFetchingData = false;
-      return;
-    }
+          await _fetchRateHistory(selectedCurrencyCode, shouldApply: isCurrent);
+          if (!isCurrent()) return;
 
-    _storeRate(selectedRate, selectedCurrencyCode, _usdRate);
-    _isFetchingData = false;
+          _storeRate(selectedRate, selectedCurrencyCode, _usdRate);
+        },
+      );
+    } catch (e, stack) {
+      // Dynamic response parsing can throw Errors as well as Exceptions.
+      EnvoyReport().log("connectivity", e.toString(), stackTrace: stack);
+    }
   }
 
   Future<void> _getUsdRate() async {
     try {
       final selected = _selectedCurrency?.code;
       if (selected == null || selected == "USD") {
-        await _fetchRateHistory("USD");
+        await _fetchRateHistory(
+          "USD",
+          shouldApply: () =>
+              _selectedCurrency == null || _selectedCurrency?.code == "USD",
+        );
       }
       _usdRate = await _getRateForCode("USD");
       _usdRateTimestamp = DateTime.now();
       _storeRate(_selectedCurrencyRate, _selectedCurrency?.code, _usdRate);
-    } on Exception catch (e) {
-      EnvoyReport().log("connectivity", e.toString());
+    } catch (e, stack) {
+      EnvoyReport().log("connectivity", e.toString(), stackTrace: stack);
     }
   }
 
@@ -305,44 +299,60 @@ class ExchangeRate extends ChangeNotifier {
     }
   }
 
-  Future<void> _fetchRateHistory(String currency) async {
+  Future<void> _fetchRateHistory(
+    String currency, {
+    required bool Function() shouldApply,
+  }) async {
     try {
       final response = await _http.get('$_serverAddress/history/$currency');
 
       if (response.statusCode != 200) {
-        kPrint("History fetch failed");
+        kPrint(
+            "History fetch failed for $currency: HTTP ${response.statusCode}");
         return;
       }
 
       final jsonData = jsonDecode(response.body);
 
-      _history = ExchangeRateHistory.fromJson({
+      final history = ExchangeRateHistory.fromJson({
         "currency": jsonData['fiat'],
         "points": jsonData["points"],
       });
+      if (!history.isUsableFor(currency)) {
+        kPrint("Invalid history for $currency");
+        return;
+      }
 
+      if (!shouldApply()) return;
+      _history = history;
       notifyListeners();
     } catch (e) {
-      kPrint("Failed to fetch history: $e");
+      kPrint("History fetch failed for $currency: $e");
     }
   }
 
-  /// Fetches a 100-point history for [currencyCode] without mutating the
+  /// Fetches history for [currencyCode] without mutating the
   /// cached `_history`, so Envoy's own fiat selection isn't disturbed.
   Future<ExchangeRateHistory?> fetchHistoryForCode(String currencyCode) async {
     try {
       final response = await _http.get('$_serverAddress/history/$currencyCode');
       if (response.statusCode != 200) {
-        kPrint("History fetch failed for $currencyCode");
+        kPrint(
+            "History fetch failed for $currencyCode: HTTP ${response.statusCode}");
         return null;
       }
       final jsonData = jsonDecode(response.body);
-      return ExchangeRateHistory.fromJson({
+      final history = ExchangeRateHistory.fromJson({
         "currency": jsonData['fiat'],
         "points": jsonData["points"],
       });
+      if (!history.isUsableFor(currencyCode)) {
+        kPrint("Invalid history for $currencyCode");
+        return null;
+      }
+      return history;
     } catch (e) {
-      kPrint("Failed to fetch history for $currencyCode: $e");
+      kPrint("History fetch failed for $currencyCode: $e");
       return null;
     }
   }
@@ -482,6 +492,8 @@ class RatePoint {
 class ExchangeRateHistory {
   final String currency;
   final List<RatePoint> points;
+
+  bool isUsableFor(String code) => currency == code && points.isNotEmpty;
 
   ExchangeRateHistory({required this.currency, required this.points});
 
