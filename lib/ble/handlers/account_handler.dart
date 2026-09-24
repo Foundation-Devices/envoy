@@ -50,13 +50,10 @@ class BleAccountHandler extends PassportMessageHandler {
     setupExchangeRateListener();
     // Re-push the rate periodically so Prime's "Last Update" indicator
     // stays fresh even when the BTC price hasn't moved.
-    _rateRefreshTimer = Timer.periodic(const Duration(seconds: 30), (_) {
+    _rateRefreshTimer = Timer.periodic(const Duration(seconds: 30), (_) async {
       if (!qlConnection.isQLActive()) return;
-      if (_sendingData) {
-        _resendRateOnReady = true;
-        return;
-      }
-      unawaited(sendExchangeRate());
+      await sendExchangeRate();
+      await sendExchangeRateHistory();
     });
   }
 
@@ -73,13 +70,13 @@ class BleAccountHandler extends PassportMessageHandler {
 
   void setupExchangeRateListener() {
     _onExchangeRateChanged = () async {
-      if (lastExchangeRateHash != ExchangeRate().history.hashCode) {
+      final historyHash = ExchangeRate().history.hashCode;
+      if (lastExchangeRateHash != historyHash) {
+        await sendExchangeRate();
         final result = await sendExchangeRateHistory();
         if (result == true) {
-          lastExchangeRateHash = ExchangeRate().history.hashCode;
+          lastExchangeRateHash = historyHash;
         }
-
-        await sendExchangeRate();
       }
     };
     ExchangeRate().addListener(_onExchangeRateChanged);
@@ -136,7 +133,7 @@ class BleAccountHandler extends PassportMessageHandler {
     } else {
       unawaited(sendExchangeRate());
     }
-    // Also push a fresh chart in the new currency; bails if a send is in flight.
+    // Also push a fresh chart in the new currency.
     unawaited(sendExchangeRateHistory());
   }
 
@@ -277,6 +274,7 @@ class BleAccountHandler extends PassportMessageHandler {
   }
 
   bool _sendingData = false;
+  bool _fetchingHistory = false;
   bool _resendRateOnReady = false;
 
   void resetSendingState() {
@@ -348,7 +346,7 @@ class BleAccountHandler extends PassportMessageHandler {
   }
 
   Future<bool> sendExchangeRateHistory() async {
-    if (_sendingData) return false;
+    if (_fetchingHistory) return false;
 
     final device = qlConnection.getDevice();
     if (device?.onboardingComplete != true) {
@@ -357,21 +355,16 @@ class BleAccountHandler extends PassportMessageHandler {
     }
 
     final primeCurrency = device?.primeFiatCurrency;
+    final cachedHistory = ExchangeRate().history;
+    final currencyCode = (primeCurrency != null && primeCurrency.isNotEmpty)
+        ? primeCurrency
+        : (cachedHistory.currency.isNotEmpty ? cachedHistory.currency : "USD");
 
     try {
-      _sendingData = true;
-
-      final ExchangeRateHistory? source;
-      if (primeCurrency != null &&
-          primeCurrency.isNotEmpty &&
-          primeCurrency != ExchangeRate().history.currency) {
-        // Fetch a fresh series for Prime's currency without disturbing Envoy's UI.
-        source = await ExchangeRate().fetchHistoryForCode(primeCurrency);
-      } else {
-        source = ExchangeRate().history;
-      }
-      if (source == null || source.points.isEmpty) {
-        kPrint("No exchange rate history to send.");
+      _fetchingHistory = true;
+      // Fetch Prime's currency independently of Envoy's selected currency.
+      final source = await ExchangeRate().fetchHistoryForCode(currencyCode);
+      if (source == null || !source.isUsableFor(currencyCode)) {
         return false;
       }
 
@@ -391,16 +384,13 @@ class BleAccountHandler extends PassportMessageHandler {
       final result = await qlConnection.writeMessage(
         api.QuantumLinkMessage.exchangeRateHistory(historyMessage),
       );
-      kPrint(
-        "Sent ${apiPoints.length} exchange rate points for currency ${source.currency}",
-      );
+      if (!result) kPrint("Failed to send exchange rate history.");
       return result;
     } catch (e) {
-      kPrint('Failed to send exchange rate history: $e');
+      kPrint("Failed to send exchange rate history: $e");
       return false;
     } finally {
-      _sendingData = false;
-      _scheduleResendIfPending();
+      _fetchingHistory = false;
     }
   }
 }
