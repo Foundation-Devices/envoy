@@ -52,6 +52,7 @@ class BleAccountHandler extends PassportMessageHandler {
     // stays fresh even when the BTC price hasn't moved.
     _rateRefreshTimer = Timer.periodic(const Duration(seconds: 30), (_) async {
       if (!qlConnection.isQLActive()) return;
+      await sendExchangeRate();
       await sendExchangeRateHistory();
     });
   }
