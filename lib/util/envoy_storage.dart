@@ -4,15 +4,14 @@
 
 import 'dart:async';
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:envoy/account/envoy_transaction.dart';
 import 'package:envoy/business/blog_post.dart';
 import 'package:envoy/business/coins.dart';
-import 'package:envoy/business/country.dart';
 import 'package:envoy/business/envoy_seed.dart';
 import 'package:envoy/business/media.dart';
 import 'package:envoy/business/prime_device.dart';
-import 'package:envoy/business/server.dart';
 import 'package:envoy/business/video.dart';
 import 'package:envoy/ui/home/cards/accounts/detail/transaction/cancel_transaction.dart';
 import 'package:envoy/ui/state/home_page_state.dart';
@@ -101,12 +100,16 @@ const String tagsStoreName = "tags";
 const String preferencesStoreName = "preferences";
 const String blogPostsStoreName = "blog_posts";
 const String exchangeRateStoreName = "exchange_rate";
-const String locationsStoreName = "locations";
-const String selectedCountryStoreName = "countries";
-const String apiKeysStoreName = "api_keys";
 const String primeDataStoreName = "prime";
 const String quantumLinkIdentityStoreName = "ql_identity";
 const String txFirstSeenStoreName = "tx_first_seen";
+const Set<String> _legacyBuyBitcoinStoreNames = {
+  "locations",
+  "countries",
+  "api_keys",
+};
+const String _legacyBuyBitcoinCleanupCompleteKey =
+    "legacy_buy_bitcoin_cleanup_complete";
 
 ///keeps track of the prime account full scan status, and migration,
 ///no backup for this store
@@ -135,8 +138,6 @@ class EnvoyStorage {
         key, () => StreamController<bool>.broadcast());
   }
 
-  StoreRef<int, Map<String, dynamic>> countryStore =
-      intMapStoreFactory.store(selectedCountryStoreName);
   StoreRef<String, String> txNotesStore =
       StoreRef<String, String>(txNotesStoreName);
   StoreRef<String, Map> pendingTxStore =
@@ -170,11 +171,6 @@ class EnvoyStorage {
   StoreRef<String, Map> exchangeRateStore =
       StoreRef<String, Map>(exchangeRateStoreName);
 
-  StoreRef<int, String> locationStore =
-      StoreRef<int, String>(locationsStoreName);
-
-  StoreRef<int, String> apiKeysStore = StoreRef<int, String>(apiKeysStoreName);
-
   StoreRef<String, Map<String, dynamic>> primeStore =
       StoreRef<String, Map<String, dynamic>>(primeDataStoreName);
 
@@ -192,7 +188,7 @@ class EnvoyStorage {
   StoreRef<String, dynamic> noBackUpPrefsStore =
       StoreRef<String, dynamic>(noBackUpPrefsStoreName);
 
-  // Store everything except videos, blogs and locations
+  // Stores included in backup
   Map<String, StoreRef> storesToBackUp = {};
 
   static final EnvoyStorage _instance = EnvoyStorage._();
@@ -233,6 +229,8 @@ class EnvoyStorage {
       }
     });
 
+    await _removeLegacyBuyBitcoinData(appDocumentDir);
+
     await _updatePreferencesCache(_db);
 
     EnvoyStorage().preferencesStore.addOnChangesListener(_db,
@@ -253,7 +251,6 @@ class EnvoyStorage {
       primeDataStoreName: primeStore,
       inputTagHistoryStoreName: tagHistoryStore,
       quantumLinkIdentityStoreName: quantumLinkIdentityStore,
-      selectedCountryStoreName: countryStore,
     };
 
     for (var store in storesToBackUp.values) {
@@ -263,26 +260,81 @@ class EnvoyStorage {
       });
     }
     removeOutstandingAztecoPendingTxs();
-    clearLocationStore();
-  }
-
-  Future<void> updateCountry(String code, String name, String division) async {
-    await countryStore
-        .record(0)
-        .put(_db, Country(code, name, division).toJson());
-  }
-
-  Future<Country?> getCountry() async {
-    final record = await countryStore.findFirst(_db);
-    if (record != null) {
-      return Country.fromJson(record.value);
-    }
-    return null;
   }
 
   Future<void> removeOutstandingAztecoPendingTxs() async {
     const String key = "azteco";
     deletePendingTx(key);
+  }
+
+  Future<void> _removeLegacyBuyBitcoinData(Directory appDocumentDir) async {
+    var databaseCleanupComplete = false;
+    try {
+      databaseCleanupComplete = await StoreRef.main()
+              .record(_legacyBuyBitcoinCleanupCompleteKey)
+              .get(_db) ==
+          true;
+    } catch (error, stackTrace) {
+      kPrint(
+        "Couldn't read legacy Buy Bitcoin cleanup state: $error",
+        stackTrace: stackTrace,
+      );
+    }
+
+    if (!databaseCleanupComplete) {
+      var databaseCleanupSucceeded = true;
+
+      for (final storeName in _legacyBuyBitcoinStoreNames) {
+        try {
+          await StoreRef<dynamic, dynamic>(storeName).delete(_db);
+        } catch (error, stackTrace) {
+          databaseCleanupSucceeded = false;
+          kPrint(
+            "Couldn't remove legacy Buy Bitcoin store $storeName: $error",
+            stackTrace: stackTrace,
+          );
+        }
+      }
+
+      try {
+        await _db.compact();
+      } catch (error, stackTrace) {
+        databaseCleanupSucceeded = false;
+        kPrint(
+          "Couldn't compact legacy Buy Bitcoin database records: $error",
+          stackTrace: stackTrace,
+        );
+      }
+
+      if (databaseCleanupSucceeded) {
+        try {
+          await StoreRef.main()
+              .record(_legacyBuyBitcoinCleanupCompleteKey)
+              .put(_db, true);
+        } catch (error, stackTrace) {
+          kPrint(
+            "Couldn't save legacy Buy Bitcoin cleanup state: $error",
+            stackTrace: stackTrace,
+          );
+        }
+      }
+    }
+
+    final legacyAtmData = File(join(appDocumentDir.path, "atm_data.json"));
+    final legacyMapCache = Directory(join(appDocumentDir.path, "fmtc"));
+
+    for (final entity in [legacyAtmData, legacyMapCache]) {
+      try {
+        if (await entity.exists()) {
+          await entity.delete(recursive: true);
+        }
+      } catch (error, stackTrace) {
+        kPrint(
+          "Couldn't remove legacy Buy Bitcoin data at ${entity.path}: $error",
+          stackTrace: stackTrace,
+        );
+      }
+    }
   }
 
   void _possiblyBackUp() {
@@ -744,10 +796,14 @@ class EnvoyStorage {
       return;
     }
 
-    // Remove 'firmware' store if it exists
+    // Remove stores that should not be restored from older backups.
     if (map['stores'] is List) {
       map['stores'] = (map['stores'] as List)
-          .where((store) => store['name'] != firmwareStoreName)
+          .where(
+            (store) =>
+                store['name'] != firmwareStoreName &&
+                !_legacyBuyBitcoinStoreNames.contains(store['name']),
+          )
           .toList();
     }
 
@@ -974,25 +1030,6 @@ class EnvoyStorage {
 
     RBFState rbf = RBFState.fromJson(data.value as Map<String, Object?>);
     return rbf;
-  }
-
-  Future<bool> clearLocationStore() async {
-    var cleared = await locationStore.delete(_db);
-    return cleared > 0;
-  }
-
-  Future<bool> storeApiKeys(ApiKeys keys) async {
-    await apiKeysStore.record(0).put(_db, jsonEncode(keys.toJson()));
-    return true;
-  }
-
-  Future<ApiKeys?> getApiKeys() async {
-    var finder = Finder(filter: Filter.byKey(0));
-    var keys = await apiKeysStore.findFirst(_db, finder: finder);
-    if (keys != null) {
-      return ApiKeys.fromJson(jsonDecode(keys.value));
-    }
-    return null;
   }
 
   Future<bool> savePrime(PrimeDevice prime) async {

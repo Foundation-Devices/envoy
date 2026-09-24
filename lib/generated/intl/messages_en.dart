@@ -382,10 +382,6 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Firmware"),
         "buy_bitcoin_accountSelection_chooseAccount":
             MessageLookupByLibrary.simpleMessage("Choose different account"),
-        "buy_bitcoin_accountSelection_heading":
-            MessageLookupByLibrary.simpleMessage(
-          "Where should the Bitcoin be sent?",
-        ),
         "buy_bitcoin_accountSelection_subheading":
             MessageLookupByLibrary.simpleMessage(
           "Your Bitcoin will be sent to this address:",
@@ -395,115 +391,6 @@ class MessageLookup extends MessageLookupByLibrary {
           "Verify Address with Passport",
         ),
         "buy_bitcoin_accountSelection_verify_modal_heading": m2,
-        "buy_bitcoin_buyOptions_atms_heading":
-            MessageLookupByLibrary.simpleMessage(
-          "How would you like to buy?",
-        ),
-        "buy_bitcoin_buyOptions_atms_map_modal_openingHours":
-            MessageLookupByLibrary.simpleMessage("Opening Hours:"),
-        "buy_bitcoin_buyOptions_atms_modal_subheading":
-            MessageLookupByLibrary.simpleMessage(
-          "Different ATM providers require varying amounts of personal information. This info is never shared with Foundation.",
-        ),
-        "buy_bitcoin_buyOptions_atms_subheading":
-            MessageLookupByLibrary.simpleMessage(
-          "Find a Bitcoin ATM in your local area to purchase Bitcoin with cash.",
-        ),
-        "buy_bitcoin_buyOptions_card_atms":
-            MessageLookupByLibrary.simpleMessage(
-          "ATMs",
-        ),
-        "buy_bitcoin_buyOptions_card_peerToPeer":
-            MessageLookupByLibrary.simpleMessage("Peer to Peer"),
-        "buy_bitcoin_buyOptions_card_vouchers":
-            MessageLookupByLibrary.simpleMessage("Vouchers"),
-        "buy_bitcoin_buyOptions_modal_address":
-            MessageLookupByLibrary.simpleMessage("Address"),
-        "buy_bitcoin_buyOptions_modal_bankingInfo":
-            MessageLookupByLibrary.simpleMessage("Banking Info"),
-        "buy_bitcoin_buyOptions_modal_email":
-            MessageLookupByLibrary.simpleMessage(
-          "Email",
-        ),
-        "buy_bitcoin_buyOptions_modal_identification":
-            MessageLookupByLibrary.simpleMessage("Identification"),
-        "buy_bitcoin_buyOptions_modal_poweredBy":
-            MessageLookupByLibrary.simpleMessage("Powered by "),
-        "buy_bitcoin_buyOptions_notSupported_subheading":
-            MessageLookupByLibrary.simpleMessage(
-          "Check out these other ways to purchase Bitcoin.",
-        ),
-        "buy_bitcoin_buyOptions_peerToPeer_modal_subheading":
-            MessageLookupByLibrary.simpleMessage(
-          "Most trades require no info sharing, but your trade partner may learn your banking info. This info is never shared with Foundation.",
-        ),
-        "buy_bitcoin_buyOptions_peerToPeer_options_agoraDesk":
-            MessageLookupByLibrary.simpleMessage("AgoraDesk"),
-        "buy_bitcoin_buyOptions_peerToPeer_options_agoraDesk_subheading":
-            MessageLookupByLibrary.simpleMessage(
-          "Non-custodial, peer-to-peer Bitcoin purchases.",
-        ),
-        "buy_bitcoin_buyOptions_peerToPeer_options_bisq":
-            MessageLookupByLibrary.simpleMessage("Bisq"),
-        "buy_bitcoin_buyOptions_peerToPeer_options_bisq_subheading":
-            MessageLookupByLibrary.simpleMessage(
-          "Non-custodial, peer-to-peer Bitcoin purchases.",
-        ),
-        "buy_bitcoin_buyOptions_peerToPeer_options_card_hodlHodl":
-            MessageLookupByLibrary.simpleMessage("Hodl Hodl"),
-        "buy_bitcoin_buyOptions_peerToPeer_options_card_hodlHodl_subheading":
-            MessageLookupByLibrary.simpleMessage(
-          "Non-custodial, peer-to-peer Bitcoin purchases.",
-        ),
-        "buy_bitcoin_buyOptions_peerToPeer_options_heading":
-            MessageLookupByLibrary.simpleMessage("Select an option"),
-        "buy_bitcoin_buyOptions_peerToPeer_options_peach":
-            MessageLookupByLibrary.simpleMessage("Peach"),
-        "buy_bitcoin_buyOptions_peerToPeer_options_peach_subheading":
-            MessageLookupByLibrary.simpleMessage(
-          "Non-custodial, peer-to-peer Bitcoin purchases.",
-        ),
-        "buy_bitcoin_buyOptions_peerToPeer_options_robosats":
-            MessageLookupByLibrary.simpleMessage("Robosats"),
-        "buy_bitcoin_buyOptions_peerToPeer_options_robosats_subheading":
-            MessageLookupByLibrary.simpleMessage(
-          "Non-custodial, Lightning native, peer-to-peer Bitcoin purchases.",
-        ),
-        "buy_bitcoin_buyOptions_peerToPeer_subheading":
-            MessageLookupByLibrary.simpleMessage(
-          "Buy Bitcoin outside of Envoy, without middlemen. Requires more steps, but can be more private.",
-        ),
-        "buy_bitcoin_buyOptions_vouchers_modal_subheading":
-            MessageLookupByLibrary.simpleMessage(
-          "Different vendors will require varying amounts of personal information. This info is never shared with Foundation.",
-        ),
-        "buy_bitcoin_buyOptions_vouchers_subheading":
-            MessageLookupByLibrary.simpleMessage(
-          "Purchase Bitcoin vouchers online or in person. Redeem using the scanner inside any account.",
-        ),
-        "buy_bitcoin_defineLocation_heading":
-            MessageLookupByLibrary.simpleMessage(
-          "Your Region",
-        ),
-        "buy_bitcoin_defineLocation_subheading":
-            MessageLookupByLibrary.simpleMessage(
-          "Select your region so Envoy can display the purchase options available to you.  This info will never leave Envoy.",
-        ),
-        "buy_bitcoin_details_menu_editRegion":
-            MessageLookupByLibrary.simpleMessage(
-          "EDIT REGION",
-        ),
-        "buy_bitcoin_mapLoadingError_header":
-            MessageLookupByLibrary.simpleMessage(
-          "Couldn\'t load map",
-        ),
-        "buy_bitcoin_mapLoadingError_subheader":
-            MessageLookupByLibrary.simpleMessage(
-          "Envoy is currently unable to load map data. Check your connection or try again later.",
-        ),
-        "buy_defineLocation_selectState": MessageLookupByLibrary.simpleMessage(
-          "Select State",
-        ),
         "camera_toast_couldntDecodeUr": MessageLookupByLibrary.simpleMessage(
           "Couldn’t decode UR.",
         ),
@@ -1021,9 +908,6 @@ class MessageLookup extends MessageLookupByLibrary {
         "envoy_faq_answer_23": MessageLookupByLibrary.simpleMessage(
           "Yes. From version 1.4.0, Envoy allows for fully customized miner fees as well as two quick select fee options of ‘Standard’ and ‘Faster’. \'Standard\' aims to get your transaction finalized within 60 minutes and \'Faster\' within 10 minutes. These are estimates based on the network congestion at the time the transaction is built and you will always be shown the cost of both options before finalizing the transaction.",
         ),
-        "envoy_faq_answer_24": MessageLookupByLibrary.simpleMessage(
-          "Yes! From v1.7.0 you can now purchase Bitcoin within Envoy and have it automatically deposited to your mobile account, or any connected Passport accounts. Just click on the buy button from the main Accounts screen.",
-        ),
         "envoy_faq_answer_3": MessageLookupByLibrary.simpleMessage(
           "Envoy is a simple Bitcoin wallet with powerful account management and privacy features, including Magic Backups.Use Envoy alongside your Passport hardware wallet for setup, firmware updates, and more.",
         ),
@@ -1104,9 +988,6 @@ class MessageLookup extends MessageLookupByLibrary {
         ),
         "envoy_faq_question_23": MessageLookupByLibrary.simpleMessage(
           "Does Envoy allow custom miner fee selection?",
-        ),
-        "envoy_faq_question_24": MessageLookupByLibrary.simpleMessage(
-          "Can I buy Bitcoin in Envoy?",
         ),
         "envoy_faq_question_3": MessageLookupByLibrary.simpleMessage(
           "What can Envoy do?",
@@ -1549,8 +1430,6 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage(
           "Verifying Update",
         ),
-        "header_buyBitcoin":
-            MessageLookupByLibrary.simpleMessage("Buy Bitcoin"),
         "header_chooseAccount": MessageLookupByLibrary.simpleMessage(
           "CHOOSE ACCOUNT",
         ),
@@ -2158,12 +2037,10 @@ class MessageLookup extends MessageLookupByLibrary {
         ),
         "onboarding_connectionIntroErrorChallenge_content":
             MessageLookupByLibrary.simpleMessage(
-          "Passport could not complete the security check. Make sure it is nearby and that your phone's date and time are set automatically, then try again.",
+          "Passport could not complete the security check. Make sure it is nearby and that your phone\'s date and time are set automatically, then try again.",
         ),
         "onboarding_connectionIntroErrorChallenge_securityCheckPending":
-            MessageLookupByLibrary.simpleMessage(
-          "Security Check Interrupted",
-        ),
+            MessageLookupByLibrary.simpleMessage("Security Check Interrupted"),
         "onboarding_connectionIntroErrorInternet_content":
             MessageLookupByLibrary.simpleMessage(
           "Unable to communicate with the security server. Check your internet connection and try again.",

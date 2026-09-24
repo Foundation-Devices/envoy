@@ -105,9 +105,6 @@ dependencies:
   typed_data: any
   http: ^1.2.1
   persistent_bottom_nav_bar: ^6.2.1
-  flutter_map: ^8.2.1
-  latlong2: ^0.9.1
-  flutter_map_tile_caching: ^10.1.1
   archive: ^4.0.7
   async: ^2.11.0
   stupid_simple_sheet: ^0.9.1+1

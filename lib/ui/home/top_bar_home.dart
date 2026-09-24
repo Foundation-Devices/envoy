@@ -14,13 +14,11 @@ import 'package:envoy/ui/routes/home_router.dart';
 import 'package:envoy/ui/routes/route_state.dart';
 import 'package:envoy/ui/routes/routes.dart';
 import 'package:envoy/ui/state/home_page_state.dart';
-import 'package:envoy/util/envoy_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:rive/rive.dart' as rive;
-import 'package:envoy/ui/home/cards/buy_bitcoin.dart';
 
 class HomeAppBar extends ConsumerStatefulWidget {
   final bool backGroundShown;
@@ -54,7 +52,6 @@ class _HomeAppBarState extends ConsumerState<HomeAppBar> {
     HomeShellOptions? homeShellState = ref.watch(homeShellOptionsProvider);
     bool modalShown = ref.watch(hideBottomNavProvider);
     bool optionsShown = ref.watch(homePageOptionsVisibilityProvider);
-    bool buyBTCRightAction = ref.watch(buyBTCPageProvider);
     bool backupRightAction = ref.watch(backupPageProvider);
 
     bool inEditMode =
@@ -95,9 +92,6 @@ class _HomeAppBarState extends ConsumerState<HomeAppBar> {
       }
       if (modalModeRoutes.contains(nextPath)) {
         ref.read(hideBottomNavProvider.notifier).state = true;
-        if (nextPath == ROUTE_BUY_BITCOIN) {
-          ref.read(buyBTCPageProvider.notifier).state = true;
-        }
       } else {
         ref.read(hideBottomNavProvider.notifier).state = false;
       }
@@ -165,24 +159,8 @@ class _HomeAppBarState extends ConsumerState<HomeAppBar> {
                   await Future.delayed(const Duration(milliseconds: 180));
                   HapticFeedback.lightImpact();
                 } else if (state == HamburgerState.back) {
-                  if (path == ROUTE_PEER_TO_PEER) {
-                    showBuyBitcoinOptions(ref);
-                    context.go(ROUTE_BUY_BITCOIN);
-                  }
-
-                  if (path == ROUTE_SELECT_REGION &&
-                      await EnvoyStorage().getCountry() != null) {
-                    if (context.mounted) {
-                      context.go(ROUTE_BUY_BITCOIN);
-                    }
-                  } else if (path == ROUTE_BUY_BITCOIN) {
-                    if (context.mounted) {
-                      GoRouter.of(context).go(ROUTE_ACCOUNTS_HOME);
-                    }
-                  } else {
-                    if (context.mounted && GoRouter.of(context).canPop()) {
-                      GoRouter.of(context).pop();
-                    }
+                  if (context.mounted && GoRouter.of(context).canPop()) {
+                    GoRouter.of(context).pop();
                   }
                 }
               }
@@ -229,13 +207,9 @@ class _HomeAppBarState extends ConsumerState<HomeAppBar> {
                 child: AnimatedSwitcher(
                     duration: _animationsDuration,
                     child: AbsorbPointer(
-                        absorbing: (backDropEnabled || modalShown) &&
-                            !buyBTCRightAction,
+                        absorbing: backDropEnabled || modalShown,
                         child: AnimatedOpacity(
-                            opacity: (backDropEnabled || modalShown) &&
-                                    !buyBTCRightAction
-                                ? 0.0
-                                : 1.0,
+                            opacity: backDropEnabled || modalShown ? 0.0 : 1.0,
                             duration: _animationsDuration,
                             child: AnimatedSwitcher(
                                 duration: _animationsDuration,
@@ -295,12 +269,6 @@ class _HomeAppBarState extends ConsumerState<HomeAppBar> {
     if (path.contains(ROUTE_ACCOUNT_SEND)) {
       return true;
     }
-    if (path.contains(ROUTE_SELECT_REGION)) {
-      return true;
-    }
-    if (path.contains(ROUTE_BUY_BITCOIN)) {
-      return true;
-    }
     if (settings != HomePageBackgroundState.menu &&
         settings != HomePageBackgroundState.hidden) {
       return true;
@@ -333,12 +301,6 @@ class _HomeAppBarState extends ConsumerState<HomeAppBar> {
         return S().manage_account_address_heading;
       case ROUTE_ACCOUNT_RECEIVE:
         return S().receive_qr_code_heading;
-      case ROUTE_BUY_BITCOIN:
-        return S().header_buyBitcoin;
-      case ROUTE_PEER_TO_PEER:
-        return S().header_buyBitcoin;
-      case ROUTE_SELECT_REGION:
-        return S().header_buyBitcoin;
       case ROUTE_ACCOUNT_TRANSFER:
         return S().bottomNav_transfer;
       case ROUTE_ACCOUNT_DESCRIPTOR:

@@ -392,9 +392,6 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Firmware"),
         "buy_bitcoin_accountSelection_chooseAccount":
             MessageLookupByLibrary.simpleMessage("Tria un altre compte"),
-        "buy_bitcoin_accountSelection_heading":
-            MessageLookupByLibrary.simpleMessage(
-                "On s\'ha d\'enviar el Bitcoin?"),
         "buy_bitcoin_accountSelection_subheading":
             MessageLookupByLibrary.simpleMessage(
           "El vostre Bitcoin s\'enviarà a aquesta adreça:",
@@ -404,115 +401,6 @@ class MessageLookup extends MessageLookupByLibrary {
           "Verifiqueu l\'adreça amb Passport",
         ),
         "buy_bitcoin_accountSelection_verify_modal_heading": m2,
-        "buy_bitcoin_buyOptions_atms_heading":
-            MessageLookupByLibrary.simpleMessage(
-          "Com t\'agradaria comprar?",
-        ),
-        "buy_bitcoin_buyOptions_atms_map_modal_openingHours":
-            MessageLookupByLibrary.simpleMessage("Horari d\'obertura:"),
-        "buy_bitcoin_buyOptions_atms_modal_subheading":
-            MessageLookupByLibrary.simpleMessage(
-          "Els diferents proveïdors de caixers automàtics requereixen quantitats variables d\'informació personal. Aquesta informació no es comparteix mai amb Foundation.",
-        ),
-        "buy_bitcoin_buyOptions_atms_subheading":
-            MessageLookupByLibrary.simpleMessage(
-          "Trobeu un caixer automàtic de Bitcoin a la vostra àrea local per comprar Bitcoin amb efectiu.",
-        ),
-        "buy_bitcoin_buyOptions_card_atms":
-            MessageLookupByLibrary.simpleMessage(
-          "Caixers automàtics",
-        ),
-        "buy_bitcoin_buyOptions_card_peerToPeer":
-            MessageLookupByLibrary.simpleMessage("Entre particulars"),
-        "buy_bitcoin_buyOptions_card_vouchers":
-            MessageLookupByLibrary.simpleMessage("Vals"),
-        "buy_bitcoin_buyOptions_modal_address":
-            MessageLookupByLibrary.simpleMessage("Direcció"),
-        "buy_bitcoin_buyOptions_modal_bankingInfo":
-            MessageLookupByLibrary.simpleMessage("Informació bancària"),
-        "buy_bitcoin_buyOptions_modal_email":
-            MessageLookupByLibrary.simpleMessage(
-          "Correu electrònic",
-        ),
-        "buy_bitcoin_buyOptions_modal_identification":
-            MessageLookupByLibrary.simpleMessage("Identificació"),
-        "buy_bitcoin_buyOptions_modal_poweredBy":
-            MessageLookupByLibrary.simpleMessage("Impulsat per "),
-        "buy_bitcoin_buyOptions_notSupported_subheading":
-            MessageLookupByLibrary.simpleMessage(
-          "Fes una ullada a aquestes altres formes de comprar Bitcoin.",
-        ),
-        "buy_bitcoin_buyOptions_peerToPeer_modal_subheading":
-            MessageLookupByLibrary.simpleMessage(
-          "La majoria de les operacions no requereixen compartir informació, però el vostre soci comercial pot conèixer la vostra informació bancària. Aquesta informació mai es comparteix amb Foundation.",
-        ),
-        "buy_bitcoin_buyOptions_peerToPeer_options_agoraDesk":
-            MessageLookupByLibrary.simpleMessage("AgoraDesk"),
-        "buy_bitcoin_buyOptions_peerToPeer_options_agoraDesk_subheading":
-            MessageLookupByLibrary.simpleMessage(
-          "Compres de Bitcoin sense custòdia, peer-to-peer.",
-        ),
-        "buy_bitcoin_buyOptions_peerToPeer_options_bisq":
-            MessageLookupByLibrary.simpleMessage("Bisq"),
-        "buy_bitcoin_buyOptions_peerToPeer_options_bisq_subheading":
-            MessageLookupByLibrary.simpleMessage(
-          "Compres de Bitcoin sense custòdia, peer-to-peer.",
-        ),
-        "buy_bitcoin_buyOptions_peerToPeer_options_card_hodlHodl":
-            MessageLookupByLibrary.simpleMessage("Hodl Hodl"),
-        "buy_bitcoin_buyOptions_peerToPeer_options_card_hodlHodl_subheading":
-            MessageLookupByLibrary.simpleMessage(
-          "Compres de Bitcoin sense custòdia, peer-to-peer.",
-        ),
-        "buy_bitcoin_buyOptions_peerToPeer_options_heading":
-            MessageLookupByLibrary.simpleMessage("Selecciona una opció"),
-        "buy_bitcoin_buyOptions_peerToPeer_options_peach":
-            MessageLookupByLibrary.simpleMessage("Peach"),
-        "buy_bitcoin_buyOptions_peerToPeer_options_peach_subheading":
-            MessageLookupByLibrary.simpleMessage(
-          "Compres de Bitcoin sense custòdia, peer-to-peer.",
-        ),
-        "buy_bitcoin_buyOptions_peerToPeer_options_robosats":
-            MessageLookupByLibrary.simpleMessage("Robosats"),
-        "buy_bitcoin_buyOptions_peerToPeer_options_robosats_subheading":
-            MessageLookupByLibrary.simpleMessage(
-          "Compres de Bitcoin sense custòdia, natives de Lightning, peer-to-peer.",
-        ),
-        "buy_bitcoin_buyOptions_peerToPeer_subheading":
-            MessageLookupByLibrary.simpleMessage(
-          "Comprar Bitcoin fora d\'Envoy, sense intermediaris. Requereix més passos, però pot ser més privat.",
-        ),
-        "buy_bitcoin_buyOptions_vouchers_modal_subheading":
-            MessageLookupByLibrary.simpleMessage(
-          "Els diferents proveïdors requeriran quantitats variables d\'informació personal. Aquesta informació no es comparteix mai amb Foundation.",
-        ),
-        "buy_bitcoin_buyOptions_vouchers_subheading":
-            MessageLookupByLibrary.simpleMessage(
-          "Compra vals de Bitcoin en línia o en persona. Bescanvia amb l\'escàner des de qualsevol compte.",
-        ),
-        "buy_bitcoin_defineLocation_heading":
-            MessageLookupByLibrary.simpleMessage(
-          "La teva Regió",
-        ),
-        "buy_bitcoin_defineLocation_subheading":
-            MessageLookupByLibrary.simpleMessage(
-          "Seleccioneu la vostra regió perquè Envoy pugui mostrar les opcions de compra disponibles.  Aquesta informació no sortirà mai d\'Envoy.",
-        ),
-        "buy_bitcoin_details_menu_editRegion":
-            MessageLookupByLibrary.simpleMessage(
-          "EDITA LA REGIÓ",
-        ),
-        "buy_bitcoin_mapLoadingError_header":
-            MessageLookupByLibrary.simpleMessage(
-          "No s\'ha pogut carregar el mapa",
-        ),
-        "buy_bitcoin_mapLoadingError_subheader":
-            MessageLookupByLibrary.simpleMessage(
-          "Actualment, Envoy no pot carregar les dades del mapa. Comprova la teva connexió o torna-ho a provar més tard.",
-        ),
-        "buy_defineLocation_selectState": MessageLookupByLibrary.simpleMessage(
-          "Selecciona estat",
-        ),
         "camera_toast_couldntDecodeUr": MessageLookupByLibrary.simpleMessage(
           "No es pot descodificar UR.",
         ),
@@ -1056,9 +944,6 @@ class MessageLookup extends MessageLookupByLibrary {
         "envoy_faq_answer_23": MessageLookupByLibrary.simpleMessage(
           "Sí. A partir de la versió 1.4.0, Envoy permet personalitzar totalment les comissions dels miners, així com dues opcions ràpides de selecció de comissions: \'Estàndard\' i \'Més ràpid\'. \'Estàndard\' té com a objectiu finalitzar la teva transacció en un termini de 60 minuts i \'Més ràpid\' en 10 minuts. Aquestes són estimacions basades en la congestió de la xarxa en el moment de construir la transacció i sempre et mostrarem el cost de les dues opcions abans de finalitzar la transacció.",
         ),
-        "envoy_faq_answer_24": MessageLookupByLibrary.simpleMessage(
-          "Sí! A partir de la v1.7.0 ara podeu comprar Bitcoin dins d\'Envoy i dipositar-lo automàticament al vostre compte mòbil o a qualsevol compte de Passport connectat. Només cal que feu clic al botó de compra des de la pantalla principal de comptes.",
-        ),
         "envoy_faq_answer_3": MessageLookupByLibrary.simpleMessage(
           "Envoy és una cartera Bitcoin senzilla amb potents funcions de privacitat i gestió de comptes, com ara les Còpies de Seguretat Màgiques. Utilitzeu Envoy juntament amb la vostra cartera Passport per a la configuració, actualitzacions de firmware i molt més.",
         ),
@@ -1139,9 +1024,6 @@ class MessageLookup extends MessageLookupByLibrary {
         ),
         "envoy_faq_question_23": MessageLookupByLibrary.simpleMessage(
           "Envoy permet la selecció personalitzada de tarifes de miners?",
-        ),
-        "envoy_faq_question_24": MessageLookupByLibrary.simpleMessage(
-          "Puc comprar Bitcoin a Envoy?",
         ),
         "envoy_faq_question_3": MessageLookupByLibrary.simpleMessage(
           "Què pot fer Envoy?",
@@ -1596,8 +1478,6 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage(
           "Verificant",
         ),
-        "header_buyBitcoin":
-            MessageLookupByLibrary.simpleMessage("Compra Bitcoin"),
         "header_chooseAccount": MessageLookupByLibrary.simpleMessage(
           "TRIA UN COMPTE",
         ),

@@ -180,16 +180,6 @@ class Server {
     }
   }
 
-  Future<ApiKeys> fetchApiKeys() async {
-    final response = await http!.get('$_serverAddress/keys');
-
-    if (response.statusCode == 202) {
-      return ApiKeys.fromJson(jsonDecode(response.body));
-    } else {
-      throw Exception('Failed to fetch API keys');
-    }
-  }
-
   Future<bool> checkForForceUpdate({bool foreground = false}) async {
     late final Response response;
     try {
@@ -303,24 +293,6 @@ class BetaChannel {
       latestVersion: json['latest_version'] as String,
       latestReleaseDate: DateTime.parse(json['latest_release_date'] as String),
     );
-  }
-}
-
-class ApiKeys {
-  final String mapsKey;
-  final String rampKey;
-
-  ApiKeys({required this.mapsKey, required this.rampKey});
-
-  factory ApiKeys.fromJson(Map<String, dynamic> json) {
-    final keys = json['keys'];
-    return ApiKeys(mapsKey: keys['maps_api'], rampKey: keys['ramp_api']);
-  }
-
-  Map<String, dynamic> toJson() {
-    return {
-      'keys': {'maps_api': mapsKey, 'ramp_api': rampKey},
-    };
   }
 }
 

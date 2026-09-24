@@ -11,7 +11,6 @@ import 'package:envoy/business/connectivity_manager.dart';
 import 'package:envoy/business/devices.dart';
 import 'package:envoy/business/envoy_seed.dart';
 import 'package:envoy/business/exchange_rate.dart';
-import 'package:envoy/business/keys_manager.dart';
 import 'package:envoy/business/local_storage.dart';
 import 'package:envoy/business/notifications.dart';
 import 'package:envoy/business/prime_shard.dart';
@@ -108,13 +107,8 @@ Future<void> initSingletons({bool integrationTestsRunning = false}) async {
   await HttpTor.init(Tor.instance, EnvoyScheduler().parallel);
   UpdatesManager.init();
   ScvServer.init();
-  await KeysManager.init();
   await EnvoySeed.init();
   await PrimeShard.init();
-  //Map data. to be removed
-  // await FMTCObjectBoxBackend().initialise();
-  // await const FMTCStore('mapStore').manage.create();
-  // MapData.init();
 
   // start() fails asynchronously, so a try/catch around the call can never
   // see bootstrap errors; observe them on the future instead.

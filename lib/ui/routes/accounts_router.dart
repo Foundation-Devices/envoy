@@ -22,9 +22,6 @@ import 'package:envoy/ui/home/cards/accounts/sign_message_card.dart';
 import 'package:envoy/ui/home/cards/accounts/spend/send_qr_review.dart';
 import 'package:envoy/ui/home/cards/accounts/spend/state/spend_state.dart';
 import 'package:envoy/ui/home/cards/accounts/spend/tx_review.dart';
-import 'package:envoy/ui/home/cards/buy_bitcoin.dart';
-import 'package:envoy/ui/home/cards/peer_to_peer_options.dart';
-import 'package:envoy/ui/home/cards/select_region.dart';
 import 'package:envoy/ui/home/home_state.dart';
 import 'package:envoy/ui/state/home_page_state.dart';
 import 'package:flutter/material.dart';
@@ -44,15 +41,6 @@ const ROUTE_ACCOUNTS_HOME = '/account';
 
 const _ACCOUNT_DETAIL = 'details';
 const ROUTE_ACCOUNT_DETAIL = '$ROUTE_ACCOUNTS_HOME/$_ACCOUNT_DETAIL';
-
-const _SELECT_REGION = 'region';
-const ROUTE_SELECT_REGION = '$ROUTE_ACCOUNTS_HOME/$_SELECT_REGION';
-
-const _BUY_BITCOIN = 'buy';
-const ROUTE_BUY_BITCOIN = '$ROUTE_SELECT_REGION/$_BUY_BITCOIN';
-
-const _PEER_TO_PEER = 'peer';
-const ROUTE_PEER_TO_PEER = '$ROUTE_BUY_BITCOIN/$_PEER_TO_PEER';
 
 const _ACCOUNT_TRANSFER = 'transfer';
 const ROUTE_ACCOUNT_TRANSFER = '$ROUTE_ACCOUNT_DETAIL/$_ACCOUNT_TRANSFER';
@@ -528,38 +516,6 @@ final accountsRouter = StatefulShellBranch(
               ),
             );
           },
-        ),
-        GoRoute(
-          path: _SELECT_REGION,
-          pageBuilder: (context, state) {
-            return wrapWithEnvoyPageAnimation(child: const SelectRegion());
-          },
-          routes: [
-            GoRoute(
-              path: _BUY_BITCOIN,
-              onExit: (context, GoRouterState state) {
-                ProviderScope.containerOf(
-                  context,
-                ).read(buyBTCPageProvider.notifier).state = false;
-                return true;
-              },
-              pageBuilder: (context, state) {
-                return wrapWithEnvoyPageAnimation(
-                  child: const BuyBitcoinCard(),
-                );
-              },
-              routes: [
-                GoRoute(
-                  path: _PEER_TO_PEER,
-                  pageBuilder: (context, state) {
-                    return wrapWithEnvoyPageAnimation(
-                      child: const PeerToPeerCard(),
-                    );
-                  },
-                ),
-              ],
-            ),
-          ],
         ),
       ],
     ),

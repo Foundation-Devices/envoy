@@ -7,7 +7,6 @@ import 'package:envoy/ui/theme/envoy_colors.dart';
 import 'package:envoy/ui/theme/envoy_icons.dart';
 import 'package:envoy/ui/theme/envoy_spacing.dart';
 import 'package:envoy/ui/theme/envoy_typography.dart';
-import 'package:envoy/generated/l10n.dart';
 
 class IconTab extends StatefulWidget {
   final String label;
@@ -18,7 +17,6 @@ class IconTab extends StatefulWidget {
   final bool bigTab;
   final String? description;
   final String? lockedInfoText;
-  final List<EnvoyIcons>? poweredByIcons;
 
   const IconTab({
     super.key,
@@ -30,7 +28,6 @@ class IconTab extends StatefulWidget {
     this.description,
     this.isLocked = false,
     this.lockedInfoText,
-    this.poweredByIcons,
   });
 
   @override
@@ -59,16 +56,8 @@ class IconTabState extends State<IconTab> {
     TextStyle disabledTextStyle =
         EnvoyTypography.info.copyWith(color: EnvoyColors.accentPrimary);
 
-    TextStyle poweredByStyle = EnvoyTypography.info.copyWith(
-        color: widget.isLocked
-            ? EnvoyColors.textTertiary
-            : EnvoyColors.textPrimary);
-
     Color iconColor =
         widget.isLocked ? EnvoyColors.textTertiary : EnvoyColors.textSecondary;
-    Color poweredByIconColor =
-        widget.isLocked ? EnvoyColors.textTertiary : EnvoyColors.textPrimary;
-
     return GestureDetector(
       onTap: () {
         widget.onSelect?.call(!widget.isSelected);
@@ -128,28 +117,6 @@ class IconTabState extends State<IconTab> {
                       style: disabledTextStyle,
                     ),
                   ],
-                ),
-              if (widget.poweredByIcons != null)
-                Padding(
-                  padding: const EdgeInsets.only(top: EnvoySpacing.medium1),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text(
-                        S().buy_bitcoin_buyOptions_modal_poweredBy,
-                        style: poweredByStyle,
-                      ),
-                      ...widget.poweredByIcons!.map((icon) => Padding(
-                            padding: const EdgeInsets.only(
-                                left: EnvoySpacing.xs / 2),
-                            child: EnvoyIcon(
-                              icon,
-                              size: EnvoyIconSize.extraSmall,
-                              color: poweredByIconColor,
-                            ),
-                          )),
-                    ],
-                  ),
                 ),
             ],
           ),
