@@ -59,7 +59,27 @@ class _AddressEntryState extends ConsumerState<AddressEntry> {
       widget.controller?.text = formatAddress(widget.initalAddress!);
     }
 
+    widget.controller?.addListener(_onControllerChanged);
     super.initState();
+  }
+
+  @override
+  void didUpdateWidget(covariant AddressEntry oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.controller != widget.controller) {
+      oldWidget.controller?.removeListener(_onControllerChanged);
+      widget.controller?.addListener(_onControllerChanged);
+    }
+  }
+
+  @override
+  void dispose() {
+    widget.controller?.removeListener(_onControllerChanged);
+    super.dispose();
+  }
+
+  void _onControllerChanged() {
+    if (mounted) setState(() {});
   }
 
   @override
@@ -112,35 +132,69 @@ class _AddressEntryState extends ConsumerState<AddressEntry> {
                   // Text field
                   Expanded(
                     child: Padding(
-                      padding: EdgeInsets.only(
-                          top: _verticalPadding, bottom: _verticalPadding),
-                      child: TextFormField(
-                        enabled: widget.canEdit,
-                        controller: widget.controller,
-                        style: EnvoyTypography.body,
-                        keyboardType: TextInputType.multiline,
-                        textInputAction: TextInputAction.done,
-                        minLines: 1,
-                        maxLines: null,
-                        onFieldSubmitted: (_) =>
-                            FocusScope.of(context).unfocus(),
-                        onChanged: (value) async {
-                          widget.onAddressChanged?.call(value);
-                          setState(() {});
-                        },
-                        textAlignVertical: TextAlignVertical.top,
-                        decoration: InputDecoration(
-                          hintText: S().send_keyboard_enterAddress,
-                          hintStyle: EnvoyTypography.body.copyWith(
-                            color: EnvoyColors.textTertiary,
+                      padding: const EdgeInsets.symmetric(
+                        vertical: EnvoySpacing.small,
+                      ),
+                      child: AnimatedContainer(
+                        duration: Duration(milliseconds: 1222),
+                        child: ConstrainedBox(
+                          constraints: const BoxConstraints(minHeight: 40),
+                          child: Stack(
+                            children: [
+                              TextFormField(
+                                enabled: widget.canEdit,
+                                controller: widget.controller,
+                                style: EnvoyTypography.body,
+                                keyboardType: TextInputType.text,
+                                textInputAction: TextInputAction.done,
+                                showCursor: false,
+                                minLines: 2,
+                                autofocus: false,
+                                maxLines: 4,
+                                onFieldSubmitted: (_) =>
+                                    FocusScope.of(context).unfocus(),
+                                onChanged: (value) {
+                                  widget.onAddressChanged?.call(value);
+                                },
+                                decoration: InputDecoration(
+                                  hintText: S().send_keyboard_enterAddress,
+                                  hintStyle: EnvoyTypography.body.copyWith(
+                                    color: Colors.transparent,
+                                  ),
+                                  border: InputBorder.none,
+                                  focusedBorder: InputBorder.none,
+                                  enabledBorder: InputBorder.none,
+                                  errorBorder: InputBorder.none,
+                                  disabledBorder: InputBorder.none,
+                                  isDense: true,
+                                  contentPadding: EdgeInsets.zero,
+                                ),
+                              ),
+                              Positioned.fill(
+                                child: IgnorePointer(
+                                  child: ValueListenableBuilder(
+                                    valueListenable: widget.controller!,
+                                    builder: (context, value, child) => value
+                                            .text.isEmpty
+                                        ? ExcludeSemantics(
+                                            child: Align(
+                                              alignment: Alignment.centerLeft,
+                                              child: Text(
+                                                S().send_keyboard_enterAddress,
+                                                style: EnvoyTypography.body
+                                                    .copyWith(
+                                                  color:
+                                                      EnvoyColors.textTertiary,
+                                                ),
+                                              ),
+                                            ),
+                                          )
+                                        : const SizedBox.shrink(),
+                                  ),
+                                ),
+                              ),
+                            ],
                           ),
-                          border: InputBorder.none,
-                          focusedBorder: InputBorder.none,
-                          enabledBorder: InputBorder.none,
-                          errorBorder: InputBorder.none,
-                          disabledBorder: InputBorder.none,
-                          isDense: true,
-                          contentPadding: EdgeInsets.zero,
                         ),
                       ),
                     ),
@@ -159,9 +213,8 @@ class _AddressEntryState extends ConsumerState<AddressEntry> {
                         ),
                       ),
                       onTap: () {
-                        setState(() {
-                          widget.controller?.text = "";
-                        });
+                        widget.controller?.clear();
+                        widget.onAddressChanged?.call("");
                       },
                     ),
 

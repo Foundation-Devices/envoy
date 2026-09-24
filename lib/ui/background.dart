@@ -103,18 +103,26 @@ class AppBackgroundState extends State<AppBackground> {
                 opacity: 0.92,
                 child: Transform.scale(
                   scaleY: 0.8,
-                  child: AnimatedContainer(
-                    duration: _animDuration,
-                    decoration: BoxDecoration(
-                      gradient: RadialGradient(
-                        radius: widget.showRadialGradient ? 1.8 : 2.1,
-                        center: Alignment.topCenter,
-                        colors: const [
-                          Colors.transparent,
-                          EnvoyColors.grey,
-                          Colors.white,
-                        ],
-                        stops: const [0.0, 0.60, 0.85],
+                  child: FittedBox(
+                    fit: BoxFit.fill,
+                    child: SizedBox(
+                      // Keep the phone gradient's vertical falloff when widened.
+                      width: min(parentWidth, 430),
+                      height: parentHeight,
+                      child: AnimatedContainer(
+                        duration: _animDuration,
+                        decoration: BoxDecoration(
+                          gradient: RadialGradient(
+                            radius: widget.showRadialGradient ? 1.8 : 2.1,
+                            center: Alignment.topCenter,
+                            colors: const [
+                              Colors.transparent,
+                              EnvoyColors.grey,
+                              Colors.white,
+                            ],
+                            stops: const [0.0, 0.60, 0.85],
+                          ),
+                        ),
                       ),
                     ),
                   ),

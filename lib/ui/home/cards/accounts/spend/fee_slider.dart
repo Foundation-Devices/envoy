@@ -559,6 +559,7 @@ final _selectedFeeStateProvider =
 class _FeeSliderState extends ConsumerState<FeeSlider> {
   double yOffset = 0.0;
   int? _lastHapticIndex;
+  final GlobalKey _sliderKey = GlobalKey();
 
   bool _disableHaptic = false;
   bool _initializationFinished = false;
@@ -793,6 +794,7 @@ class _FeeSliderState extends ConsumerState<FeeSlider> {
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 GestureDetector(
+                  key: _sliderKey,
                   onLongPressStart: _onLongPressStart,
                   onLongPressMoveUpdate: _onLongPressMoveUpdate,
                   onLongPressEnd: (_) => _commitDecimalSelection(),
@@ -989,7 +991,7 @@ class _FeeSliderState extends ConsumerState<FeeSlider> {
                       ],
                     ),
                   ),
-                ), // GestureDetector
+                ),
                 // const Spacer(),
                 // Padding(
                 //   padding:
@@ -1016,11 +1018,15 @@ class _FeeSliderState extends ConsumerState<FeeSlider> {
     );
   }
 
+  double get _sliderWidth =>
+      (_sliderKey.currentContext!.findRenderObject() as RenderBox).size.width;
+
   void _onLongPressStart(LongPressStartDetails details) {
     final selectedIndex = _controller.selectedItem;
-    final widgetCenterX = MediaQuery.of(context).size.width / 2;
-    final fingerX = details.localPosition.dx;
-    final itemOffset = ((fingerX - widgetCenterX) / 48).round();
+    final itemOffset = feeIndexOffsetForPosition(
+      position: details.localPosition.dx,
+      width: _sliderWidth,
+    );
     final pressedIndex =
         (selectedIndex + itemOffset).clamp(0, _effectiveFees.length - 1);
     final pressedFee = _effectiveFees[pressedIndex];
@@ -1033,10 +1039,10 @@ class _FeeSliderState extends ConsumerState<FeeSlider> {
     if (baseValue < 1) return;
 
     HapticFeedback.mediumImpact();
-    final width = MediaQuery.of(context).size.width;
-    final dx = details.localPosition.dx.clamp(0.0, width);
-    // 11 steps: 0=base, 1..9=decimals, 10=base+1
-    final step = ((dx / width) * 11).floor().clamp(0, 10);
+    final step = decimalFeeStepForPosition(
+      position: details.localPosition.dx,
+      width: _sliderWidth,
+    );
     final initialDecimal =
         double.parse((baseValue + step / 10.0).toStringAsFixed(1));
 
@@ -1049,10 +1055,10 @@ class _FeeSliderState extends ConsumerState<FeeSlider> {
 
   void _onLongPressMoveUpdate(LongPressMoveUpdateDetails details) {
     if (!_showDecimalPicker) return;
-    final width = MediaQuery.of(context).size.width;
-    final dx = details.localPosition.dx.clamp(0.0, width);
-    // 11 steps: 0=base, 1..9=decimals, 10=base+1
-    final step = ((dx / width) * 11).floor().clamp(0, 10);
+    final step = decimalFeeStepForPosition(
+      position: details.localPosition.dx,
+      width: _sliderWidth,
+    );
     final newValue =
         double.parse((_decimalBaseValue + step / 10.0).toStringAsFixed(1));
 
@@ -1181,4 +1187,22 @@ class _FeeSliderState extends ConsumerState<FeeSlider> {
     // surface the real fee / unfeasible-rate error in the chooser.
     _scheduleProbe(fee);
   }
+}
+
+@visibleForTesting
+int feeIndexOffsetForPosition({
+  required double position,
+  required double width,
+}) {
+  return ((position - width / 2) / 48).round();
+}
+
+@visibleForTesting
+int decimalFeeStepForPosition({
+  required double position,
+  required double width,
+}) {
+  final dx = position.clamp(0.0, width);
+  // 11 steps: 0=base, 1..9=decimals, 10=base+1.
+  return ((dx / width) * 11).floor().clamp(0, 10);
 }

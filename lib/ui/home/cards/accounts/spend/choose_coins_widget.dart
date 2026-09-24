@@ -114,7 +114,12 @@ class _ChooseCoinsWidget extends ConsumerState<ChooseCoinsWidget> {
               ]),
         if (!_coinsOpen)
           Padding(
-            padding: const EdgeInsets.only(top: EnvoySpacing.small),
+            padding: const EdgeInsets.only(
+              top: EnvoySpacing.small,
+              bottom: EnvoySpacing.medium1,
+              left: EnvoySpacing.small,
+              right: EnvoySpacing.small,
+            ),
             child: Row(
               children: [
                 Container(
@@ -136,27 +141,29 @@ class _ChooseCoinsWidget extends ConsumerState<ChooseCoinsWidget> {
                     ),
                   ),
                 ),
-                const SizedBox(width: EnvoySpacing.small),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      account.name,
-                      style: EnvoyTypography.subheading
-                          .copyWith(color: EnvoyColors.textPrimary),
-                    ),
-                    if (account.deviceSerial != null)
+                const SizedBox(width: EnvoySpacing.medium1),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
                       Text(
-                        Devices()
-                                .getDeviceBySerial(
-                                  account.deviceSerial!,
-                                )
-                                ?.name ??
-                            "",
-                        style: EnvoyTypography.info
+                        account.name,
+                        style: EnvoyTypography.subheading
                             .copyWith(color: EnvoyColors.textPrimary),
-                      )
-                  ],
+                      ),
+                      if (account.deviceSerial != null)
+                        Text(
+                          Devices()
+                                  .getDeviceBySerial(
+                                    account.deviceSerial!,
+                                  )
+                                  ?.name ??
+                              "",
+                          style: EnvoyTypography.info
+                              .copyWith(color: EnvoyColors.textPrimary),
+                        ),
+                    ],
+                  ),
                 )
               ],
             ),
@@ -164,7 +171,10 @@ class _ChooseCoinsWidget extends ConsumerState<ChooseCoinsWidget> {
         if (!_coinsOpen)
           Padding(
             padding: const EdgeInsets.only(
-                top: EnvoySpacing.small, bottom: EnvoySpacing.medium1),
+              left: EnvoySpacing.small,
+              right: EnvoySpacing.small,
+              bottom: EnvoySpacing.medium2,
+            ),
             child: hideBalance
                 ? Row(
                     children: [
@@ -178,7 +188,8 @@ class _ChooseCoinsWidget extends ConsumerState<ChooseCoinsWidget> {
                 : EnvoyAmount(
                     amountSats: liveAccountBalance,
                     amountWidgetStyle: AmountWidgetStyle.singleLine,
-                    account: account),
+                    account: account,
+                  ),
           ),
         CoinsListSpendState(
           account: account,
@@ -346,13 +357,20 @@ class _CoinsListState extends ConsumerState<CoinsListSpendState> {
                 Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    const Divider(),
-                    SizedBox(height: EnvoySpacing.medium1),
-                    CoinItemSpendWidget(
-                      tag: tag,
-                      onTap: () {
-                        _setOpenTag(tag);
-                      },
+                    const Divider(height: 1),
+                    Padding(
+                      padding: const EdgeInsets.only(
+                        top: EnvoySpacing.medium1,
+                        bottom: EnvoySpacing.medium2,
+                        left: EnvoySpacing.small,
+                        right: EnvoySpacing.small,
+                      ),
+                      child: CoinItemSpendWidget(
+                        tag: tag,
+                        onTap: () {
+                          _setOpenTag(tag);
+                        },
+                      ),
                     ),
                   ],
                 ),
@@ -382,15 +400,20 @@ class _CoinsListState extends ConsumerState<CoinsListSpendState> {
             children: [
               GestureDetector(
                 behavior: HitTestBehavior.opaque,
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    EnvoyIcon(
-                      EnvoyIcons.chevron_left,
-                      size: EnvoyIconSize.small,
-                    ),
-                    SizedBox(width: EnvoySpacing.small),
-                  ],
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(
+                    vertical: EnvoySpacing.medium1,
+                  ),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      EnvoyIcon(
+                        EnvoyIcons.chevron_left,
+                        size: EnvoyIconSize.small,
+                      ),
+                      SizedBox(width: EnvoySpacing.small),
+                    ],
+                  ),
                 ),
                 onTap: () => _setOpenTag(null),
               ),
@@ -401,8 +424,11 @@ class _CoinsListState extends ConsumerState<CoinsListSpendState> {
               ),
             ],
           ),
-          SizedBox(height: EnvoySpacing.small),
-          ChooseCoinsFromTagWidget(_openTag!),
+          SizedBox(height: EnvoySpacing.medium1),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: EnvoySpacing.small),
+            child: ChooseCoinsFromTagWidget(_openTag!),
+          ),
         ],
       ),
     );
@@ -430,12 +456,14 @@ class CoinItemSpendWidget extends ConsumerWidget {
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Row(
-              children: [
-                EnvoyIcon(EnvoyIcons.tag, size: EnvoyIconSize.small),
-                SizedBox(width: EnvoySpacing.xs),
-                coinTagPill(tag.name),
-              ],
+            Expanded(
+              child: Row(
+                children: [
+                  EnvoyIcon(EnvoyIcons.tag, size: EnvoyIconSize.small),
+                  SizedBox(width: EnvoySpacing.small),
+                  coinTagPill(tag.name),
+                ],
+              ),
             ),
             GestureDetector(
               onTap: onTap,
@@ -450,7 +478,9 @@ class CoinItemSpendWidget extends ConsumerWidget {
             ),
           ],
         ),
+        const SizedBox(height: EnvoySpacing.xs),
         CoinSubTitleText(tag, textColor: EnvoyColors.textPrimary),
+        const SizedBox(height: EnvoySpacing.medium1),
         CoinTagBalanceWidget(coinTag: tag, lockEnabled: false),
       ],
     );
@@ -486,16 +516,13 @@ class _ChooseCoinsFromTagWidget
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          SizedBox(
-            height: EnvoySpacing.small,
-          ),
           Row(
             children: [
               EnvoyIcon(
                 EnvoyIcons.tag,
                 size: EnvoyIconSize.small,
               ),
-              SizedBox(width: EnvoySpacing.xs),
+              SizedBox(width: EnvoySpacing.small),
               coinTagPill(widget.tag.name)
             ],
           ),
@@ -507,11 +534,11 @@ class _ChooseCoinsFromTagWidget
             textColor: EnvoyColors.textPrimary,
           ),
           SizedBox(
-            height: EnvoySpacing.xs,
+            height: EnvoySpacing.medium1,
           ),
           CoinTagBalanceWidget(coinTag: widget.tag, lockEnabled: false),
           SizedBox(
-            height: EnvoySpacing.small,
+            height: EnvoySpacing.medium2,
           ),
           if (widget.tag.utxo.length >= 2)
             Container(
@@ -522,17 +549,17 @@ class _ChooseCoinsFromTagWidget
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    Divider(),
+                    Divider(height: 1),
                     for (final coin in widget.tag.utxo)
-                      Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          CoinBalanceWidget(
-                            output: coin,
-                            coinTag: widget.tag,
-                            lockEnabled: false,
-                          ),
-                        ],
+                      Padding(
+                        padding: const EdgeInsets.symmetric(
+                          vertical: EnvoySpacing.small,
+                        ),
+                        child: CoinBalanceWidget(
+                          output: coin,
+                          coinTag: widget.tag,
+                          lockEnabled: false,
+                        ),
                       ),
                   ],
                 ),

@@ -29,6 +29,7 @@ class EnvoyInfoCard extends StatelessWidget {
     const double cardRadius = EnvoySpacing.medium2;
 
     return Container(
+      width: 480,
       padding: const EdgeInsets.symmetric(
         horizontal: EnvoySpacing.medium2,
         vertical: EnvoySpacing.medium2,

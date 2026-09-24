@@ -4,6 +4,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:envoy/ui/theme/envoy_spacing.dart';
+import 'package:envoy/util/easing.dart';
 
 class DraggableOverlay extends StatefulWidget {
   const DraggableOverlay({super.key, required this.child, this.closeResult});
@@ -37,6 +38,31 @@ class _DraggableOverlayState extends State<DraggableOverlay>
 
   @override
   Widget build(BuildContext context) {
+    final content = Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Padding(
+          padding: const EdgeInsets.symmetric(vertical: EnvoySpacing.medium1),
+          child: Container(
+            width: 40,
+            height: 4,
+            decoration: BoxDecoration(
+              color: Colors.grey,
+              borderRadius: BorderRadius.circular(2),
+            ),
+          ),
+        ),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: EnvoySpacing.medium1),
+          child: widget.child,
+        ),
+        SizedBox(
+          height:
+              EnvoySpacing.medium2 + MediaQuery.viewPaddingOf(context).bottom,
+        ),
+      ],
+    );
+
     return GestureDetector(
       onTap: _close,
       behavior: HitTestBehavior.opaque,
@@ -57,7 +83,7 @@ class _DraggableOverlayState extends State<DraggableOverlay>
             alignment: Alignment.bottomCenter,
             child: SizeTransition(
               sizeFactor: _controller,
-              alignment: const AlignmentDirectional(-1.0, -1.0),
+              alignment: const AlignmentDirectional(0, -1.0),
               child: GestureDetector(
                 onTap: () {},
 
@@ -74,38 +100,21 @@ class _DraggableOverlayState extends State<DraggableOverlay>
                   }
                 },
 
-                child: Material(
-                  borderRadius:
-                      const BorderRadius.vertical(top: Radius.circular(24)),
-                  color: Colors.white,
-                  clipBehavior: Clip.antiAlias,
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.symmetric(
-                          vertical: EnvoySpacing.medium1,
-                        ),
-                        child: Container(
-                          width: 40,
-                          height: 4,
-                          decoration: BoxDecoration(
-                            color: Colors.grey,
-                            borderRadius: BorderRadius.circular(2),
+                child: SizedBox(
+                  width: 480,
+                  child: Material(
+                    borderRadius:
+                        const BorderRadius.vertical(top: Radius.circular(24)),
+                    color: Colors.white,
+                    clipBehavior: Clip.antiAlias,
+                    child: MediaQuery.disableAnimationsOf(context)
+                        ? content
+                        : AnimatedSize(
+                            duration: const Duration(milliseconds: 220),
+                            curve: EnvoyEasing.easeDrawer,
+                            alignment: Alignment.bottomCenter,
+                            child: content,
                           ),
-                        ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: EnvoySpacing.medium1,
-                        ),
-                        child: widget.child,
-                      ),
-                      SizedBox(
-                        height: EnvoySpacing.medium2 +
-                            MediaQuery.viewPaddingOf(context).bottom,
-                      ),
-                    ],
                   ),
                 ),
               ),

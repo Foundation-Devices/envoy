@@ -82,7 +82,10 @@ class BlurDialogRoute<T> extends OverlayRoute<T> {
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(borderRadius),
                       ),
-                      child: Builder(builder: builder.build),
+                      child: ConstrainedBox(
+                        constraints: const BoxConstraints(maxWidth: 480),
+                        child: Builder(builder: builder.build),
+                      ),
                     ),
                   ),
                 ),

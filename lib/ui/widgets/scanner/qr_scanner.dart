@@ -19,9 +19,6 @@ import 'package:rive/rive.dart' as rive;
 
 bool _isScanDialogOpen = false;
 
-//QrScanner is a descendant of showModalBottomSheet with  isScrollControlled set to true,
-//which doesnt support safeArea, so we need to manually add padding to the top of the scanner,
-// https://github.com/flutter/flutter/issues/103585
 Future showScannerDialog({
   required BuildContext context,
   Widget? child,
@@ -29,18 +26,16 @@ Future showScannerDialog({
   required ScannerDecoder decoder,
   QrIntentInfoType infoType = QrIntentInfoType.qrCode,
 }) {
-  return showModalBottomSheet(
-    context: context,
-    isScrollControlled: true,
-    builder: (context) {
-      return QrScanner(
+  return Navigator.of(context, rootNavigator: true).push(
+    MaterialPageRoute(
+      fullscreenDialog: true,
+      builder: (context) => QrScanner(
         onBackPressed: onBackPressed,
         decoder: decoder,
         infoType: infoType,
         child: child,
-      );
-    },
-    useRootNavigator: true,
+      ),
+    ),
   );
 }
 
@@ -102,91 +97,106 @@ class _QrScannerState extends State<QrScanner>
   @override
   Widget build(BuildContext context) {
     super.build(context);
-    return Stack(
-      children: [
-        Container(color: Colors.black),
-        if (_viewReady)
-          Positioned.fill(
-            child: AnimatedOpacity(
-              duration: const Duration(milliseconds: 600),
-              opacity: _controller != null ? 1 : 0,
-              child: AnimatedScale(
-                scale: _controller != null ? 1 : 1.2,
-                curve: Curves.linear,
-                duration: const Duration(milliseconds: 900),
-                child: QRView(
-                  onQRViewCreated: (controller) =>
-                      _onQRViewCreated(controller, context),
-                  key: qrViewKey,
+    return ColoredBox(
+      color: Colors.black,
+      child: Center(
+        child: ConstrainedBox(
+          key: const ValueKey('scanner_content'),
+          constraints: const BoxConstraints(maxWidth: 480),
+          child: Stack(
+            fit: StackFit.expand,
+            children: [
+              Container(color: Colors.black),
+              if (_viewReady)
+                Positioned.fill(
+                  child: AnimatedOpacity(
+                    duration: const Duration(milliseconds: 600),
+                    opacity: _controller != null ? 1 : 0,
+                    child: AnimatedScale(
+                      scale: _controller != null ? 1 : 1.2,
+                      curve: Curves.linear,
+                      duration: const Duration(milliseconds: 900),
+                      child: QRView(
+                        onQRViewCreated: (controller) =>
+                            _onQRViewCreated(controller, context),
+                        key: qrViewKey,
+                      ),
+                    ),
+                  ),
+                ),
+              const AnimatedQrViewfinder(
+                size: 280,
+                strokeWidth: 4,
+                strokeColor: Colors.white,
+                cornerPadding: 65,
+              ),
+              Center(
+                child: SizedBox(
+                  height: 200,
+                  width: 200,
+                  child: TweenAnimationBuilder(
+                    duration: const Duration(milliseconds: 500),
+                    tween: Tween<double>(begin: 0.00, end: _progress),
+                    builder:
+                        (BuildContext context, double? value, Widget? child) {
+                      return CircularProgressIndicator(
+                        value: value,
+                        color: EnvoyColors.white80,
+                        strokeCap: StrokeCap.round,
+                        strokeWidth: 5,
+                      );
+                    },
+                  ),
                 ),
               ),
-            ),
-          ),
-        const AnimatedQrViewfinder(
-          size: 280,
-          strokeWidth: 4,
-          strokeColor: Colors.white,
-          cornerPadding: 65,
-        ),
-        Center(
-          child: SizedBox(
-            height: 200,
-            width: 200,
-            child: TweenAnimationBuilder(
-              duration: const Duration(milliseconds: 500),
-              tween: Tween<double>(begin: 0.00, end: _progress),
-              builder: (BuildContext context, double? value, Widget? child) {
-                return CircularProgressIndicator(
-                  value: value,
-                  color: EnvoyColors.white80,
-                  strokeCap: StrokeCap.round,
-                  strokeWidth: 5,
-                );
-              },
-            ),
-          ),
-        ),
-        Consumer(
-          builder: (context, ref, child) {
-            ref.read(animatedQrScannerRiveProvider);
-            return Container();
-          },
-        ),
-        if (_viewReady)
-          if (widget.child != null)
-            Positioned.fill(child: widget.child!)
-          else
-            const SizedBox(),
-        Positioned(
-          top: EnvoySpacing.medium3,
-          left: 0,
-          right: 0,
-          child: SafeArea(
-            child: Material(
-              color: Colors.transparent,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  IconButton(
-                    icon: const Icon(
-                      Icons.close_rounded,
-                      size: 25,
-                      color: Colors.white54,
-                    ),
-                    padding: const EdgeInsets.all(EnvoySpacing.medium2),
-                    onPressed: () => widget.onBackPressed(context),
-                  ),
-                  IconButton(
-                    icon: const Icon(Icons.info_outline, color: Colors.white54),
-                    padding: const EdgeInsets.all(EnvoySpacing.medium2),
-                    onPressed: () => showScanDialog(context, widget.infoType),
-                  ),
-                ],
+              Consumer(
+                builder: (context, ref, child) {
+                  ref.read(animatedQrScannerRiveProvider);
+                  return Container();
+                },
               ),
-            ),
+              if (_viewReady)
+                if (widget.child != null)
+                  Positioned.fill(child: widget.child!)
+                else
+                  const SizedBox(),
+              Positioned(
+                top: 0,
+                left: 0,
+                right: 0,
+                child: SafeArea(
+                  bottom: false,
+                  minimum: const EdgeInsets.only(top: EnvoySpacing.medium3),
+                  child: Material(
+                    color: Colors.transparent,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        IconButton(
+                          icon: const Icon(
+                            Icons.close_rounded,
+                            size: 25,
+                            color: Colors.white54,
+                          ),
+                          padding: const EdgeInsets.all(EnvoySpacing.medium2),
+                          onPressed: () => widget.onBackPressed(context),
+                        ),
+                        IconButton(
+                          icon: const Icon(Icons.info_outline,
+                              color: Colors.white54),
+                          padding: const EdgeInsets.all(EnvoySpacing.medium2),
+                          onPressed: () =>
+                              showScanDialog(context, widget.infoType),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+            ],
           ),
         ),
-      ],
+      ),
     );
   }
 

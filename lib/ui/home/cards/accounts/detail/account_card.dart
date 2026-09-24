@@ -64,7 +64,10 @@ import 'package:ngwallet/ngwallet.dart';
 class AccountCard extends ConsumerStatefulWidget {
   final bool showUtxoPage;
 
-  AccountCard({this.showUtxoPage = false}) : super(key: UniqueKey());
+  const AccountCard({
+    super.key,
+    this.showUtxoPage = false,
+  });
 
   // @override
   // String? title = S().manage_account_address_heading.toUpperCase();
@@ -81,6 +84,47 @@ class _AccountCardState extends ConsumerState<AccountCard>
 
   void _redraw() {
     setState(() {});
+  }
+
+  void _showAccountOptions() {
+    final selectedAccount = ref.read(selectedAccountProvider);
+    if (selectedAccount == null) return;
+
+    ref.read(homeShellOptionsProvider.notifier).state = HomeShellOptions(
+      optionsWidget: Container(),
+      rightAction: Consumer(
+        builder: (context, ref, child) {
+          return Semantics(
+            identifier: 'Account Options Button',
+            container: true,
+            button: true,
+            excludeSemantics: true,
+            child: GestureDetector(
+              behavior: HitTestBehavior.opaque,
+              onTap: () {
+                Navigator.of(context).push(
+                  PageRouteBuilder(
+                    transitionDuration: const Duration(milliseconds: 280),
+                    reverseTransitionDuration:
+                        const Duration(milliseconds: 280),
+                    opaque: false,
+                    barrierDismissible: true,
+                    pageBuilder: (_, __, ___) =>
+                        AccountOptions(selectedAccount),
+                  ),
+                );
+              },
+              child: Container(
+                height: 55,
+                width: 55,
+                color: Colors.transparent,
+                child: const Icon(Icons.more_horiz_outlined),
+              ),
+            ),
+          );
+        },
+      ),
+    );
   }
 
   @override
@@ -107,48 +151,11 @@ class _AccountCardState extends ConsumerState<AccountCard>
           ref.read(selectedAccountProvider) ?? NgAccountManager().accounts[0];
       ref.read(homePageTitleProvider.notifier).state = "";
 
-      String path = ref.watch(routePathProvider);
+      String path = ref.read(routePathProvider);
 
       // env211 - to eliminate right action in neighbouring screens
       path == ROUTE_ACCOUNT_DETAIL
-          ? ref.read(homeShellOptionsProvider.notifier).state =
-              HomeShellOptions(
-                  optionsWidget: Container(),
-                  rightAction: Consumer(
-                    builder: (context, ref, child) {
-                      return Semantics(
-                        identifier: 'Account Options Button',
-                        container: true,
-                        button: true,
-                        excludeSemantics: true,
-                        child: GestureDetector(
-                          behavior: HitTestBehavior.opaque,
-                          onTap: () {
-                            Navigator.of(context).push(
-                              PageRouteBuilder(
-                                transitionDuration:
-                                    const Duration(milliseconds: 280),
-                                reverseTransitionDuration:
-                                    const Duration(milliseconds: 280),
-                                opaque: false,
-                                barrierDismissible: true,
-                                pageBuilder: (_, __, ___) =>
-                                    AccountOptions(account),
-                              ),
-                            );
-                          },
-                          child: Container(
-                            height: 55,
-                            width: 55,
-                            color: Colors.transparent,
-                            child: Icon(
-                              Icons.more_horiz_outlined,
-                            ),
-                          ),
-                        ),
-                      );
-                    },
-                  ))
+          ? _showAccountOptions()
           : ref.read(homeShellOptionsProvider.notifier).state == null;
 
       bool showOverlay = ref.read(showSpendRequirementOverlayProvider);
@@ -171,6 +178,9 @@ class _AccountCardState extends ConsumerState<AccountCard>
 
   @override
   Widget build(BuildContext context) {
+    ref.listen<String>(routePathProvider, (_, path) {
+      if (path == ROUTE_ACCOUNT_DETAIL) _showAccountOptions();
+    });
     ref.watch(settingsProvider);
     final selectedId = ref.read(selectedAccountProvider)?.id ??
         NgAccountManager().accounts[0].id;
@@ -248,7 +258,8 @@ class _AccountCardState extends ConsumerState<AccountCard>
                           Navigator.pop(context);
                           ref.read(homePageAccountsProvider.notifier).state =
                               HomePageAccountsState(
-                                  HomePageAccountsNavigationState.list);
+                            HomePageAccountsNavigationState.list,
+                          );
                         },
                       ),
                     ),

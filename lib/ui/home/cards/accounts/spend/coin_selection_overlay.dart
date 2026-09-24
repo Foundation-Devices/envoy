@@ -390,7 +390,7 @@ class SpendRequirementOverlayState
                 scale: 1.0,
                 child: SizedBox(
                   height: 245,
-                  width: MediaQuery.of(context).size.width,
+                  width: 480,
                   child: Container(
                     decoration: BoxDecoration(
                       boxShadow: [

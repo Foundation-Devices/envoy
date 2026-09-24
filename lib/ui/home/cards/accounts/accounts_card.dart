@@ -52,78 +52,92 @@ class _AccountsCardState extends ConsumerState<AccountsCard>
     final hasPassphraseAccounts =
         ref.watch(primePassphraseAccountsProvider).isNotEmpty;
 
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        AnimatedSize(
-          duration: const Duration(milliseconds: 300),
-          curve: Curves.easeInOut,
-          alignment: Alignment.topCenter,
-          clipBehavior: Clip.none,
-          child: AnimatedSwitcher(
+    return LayoutBuilder(
+      builder: (context, constraints) => Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          AnimatedSize(
             duration: const Duration(milliseconds: 300),
-            switchInCurve: Curves.easeOut,
-            switchOutCurve: Curves.easeIn,
-            transitionBuilder: (child, animation) {
-              return FadeTransition(
-                opacity: animation,
-                child: SlideTransition(
-                  position: Tween<Offset>(
-                    begin: const Offset(0, -0.5),
-                    end: Offset.zero,
-                  ).animate(CurvedAnimation(
-                    parent: animation,
-                    curve: Curves.easeOut,
-                  )),
-                  child: child,
-                ),
-              );
-            },
-            child: hasPassphraseAccounts
-                ? Padding(
-                    key: const ValueKey('passphrase-pill'),
-                    padding: const EdgeInsets.only(
-                      left: 20,
-                      right: 20,
-                      top: EnvoySpacing.medium2,
-                    ),
-                    child: LabelSwitch(
-                      initialValue: showDefaultAccounts,
-                      onChanged: (bool newValue) {
-                        ref.read(showDefaultAccountProvider.notifier).state =
-                            newValue;
-                      },
-                      trueOption: LabelSwitchOption(
-                        label: S().accounts_switchDefault,
+            curve: Curves.easeInOut,
+            alignment: Alignment.topCenter,
+            clipBehavior: Clip.none,
+            child: AnimatedSwitcher(
+              duration: const Duration(milliseconds: 300),
+              switchInCurve: Curves.easeOut,
+              switchOutCurve: Curves.easeIn,
+              transitionBuilder: (child, animation) {
+                return FadeTransition(
+                  opacity: animation,
+                  child: SlideTransition(
+                    position: Tween<Offset>(
+                      begin: const Offset(0, -0.5),
+                      end: Offset.zero,
+                    ).animate(CurvedAnimation(
+                      parent: animation,
+                      curve: Curves.easeOut,
+                    )),
+                    child: child,
+                  ),
+                );
+              },
+              child: hasPassphraseAccounts
+                  ? Padding(
+                      key: const ValueKey('passphrase-pill'),
+                      padding: const EdgeInsets.only(
+                        left: 20,
+                        right: 20,
+                        top: EnvoySpacing.medium2,
                       ),
-                      falseOption: LabelSwitchOption(
-                        label: S().accounts_switchPassphrase,
-                        icon: EnvoyIcons.passphrase_shield,
+                      child: SizedBox(
+                        width: 440,
+                        child: LabelSwitch(
+                          initialValue: showDefaultAccounts,
+                          onChanged: (bool newValue) {
+                            ref
+                                .read(showDefaultAccountProvider.notifier)
+                                .state = newValue;
+                          },
+                          trueOption: LabelSwitchOption(
+                            label: S().accounts_switchDefault,
+                          ),
+                          falseOption: LabelSwitchOption(
+                            label: S().accounts_switchPassphrase,
+                            icon: EnvoyIcons.passphrase_shield,
+                          ),
+                        ),
                       ),
+                    )
+                  : const SizedBox.shrink(key: ValueKey('empty')),
+            ),
+          ),
+          Flexible(
+            child: AnimatedSwitcher(
+              duration: const Duration(milliseconds: 300),
+              layoutBuilder:
+                  (Widget? currentChild, List<Widget> previousChildren) {
+                return Stack(
+                  alignment: Alignment.topCenter,
+                  children: <Widget>[
+                    ...previousChildren,
+                    if (currentChild != null) currentChild,
+                  ],
+                );
+              },
+              child: showDefaultAccounts
+                  ? DefaultAccountsList(
+                      key: const ValueKey('default'),
+                      availableWidth: constraints.maxWidth,
+                      availableHeight: constraints.maxHeight,
+                    )
+                  : PassphraseAccountsList(
+                      key: const ValueKey('passphrase'),
+                      availableWidth: constraints.maxWidth,
+                      availableHeight: constraints.maxHeight,
                     ),
-                  )
-                : const SizedBox.shrink(key: ValueKey('empty')),
+            ),
           ),
-        ),
-        Flexible(
-          child: AnimatedSwitcher(
-            duration: const Duration(milliseconds: 300),
-            layoutBuilder:
-                (Widget? currentChild, List<Widget> previousChildren) {
-              return Stack(
-                alignment: Alignment.topCenter,
-                children: <Widget>[
-                  ...previousChildren,
-                  if (currentChild != null) currentChild,
-                ],
-              );
-            },
-            child: showDefaultAccounts
-                ? const DefaultAccountsList(key: ValueKey('default'))
-                : const PassphraseAccountsList(key: ValueKey('passphrase')),
-          ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 
@@ -133,7 +147,14 @@ class _AccountsCardState extends ConsumerState<AccountsCard>
 
 /// Widget for displaying default (non-passphrase) accounts with reordering support
 class DefaultAccountsList extends ConsumerStatefulWidget {
-  const DefaultAccountsList({super.key});
+  final double availableWidth;
+  final double availableHeight;
+
+  const DefaultAccountsList({
+    super.key,
+    required this.availableWidth,
+    required this.availableHeight,
+  });
 
   @override
   ConsumerState<DefaultAccountsList> createState() =>
@@ -267,6 +288,68 @@ class _DefaultAccountsListState extends ConsumerState<DefaultAccountsList> {
       }
     });
 
+    final accountsListIsEmpty = accounts.isEmpty && _accountsOrder.isEmpty;
+    if (accountsListIsEmpty) {
+      return Align(
+        alignment: Alignment.topCenter,
+        child: SizedBox(
+          width: 480,
+          child: Padding(
+            padding: const EdgeInsets.all(EnvoySpacing.medium2),
+            child: EmptyAccountsCard(),
+          ),
+        ),
+      );
+    }
+
+    final useGrid = useAccountsGrid(
+      accountCount: accounts.length,
+      availableWidth: widget.availableWidth,
+      availableHeight: widget.availableHeight,
+    );
+    if (useGrid) {
+      return Align(
+        alignment: Alignment.topCenter,
+        child: SizedBox(
+          width: double.infinity,
+          child: ScrollGradientMask(
+            start: 0.00,
+            topGradientValue: 0.045,
+            bottomGradientValue: 0.955,
+            end: 0.977,
+            child: ListView(
+              controller: _scrollController,
+              physics: const BouncingScrollPhysics(),
+              padding: const EdgeInsets.fromLTRB(20, 20, 20, 0),
+              children: [
+                GridView(
+                  primary: false,
+                  padding: EdgeInsets.zero,
+                  shrinkWrap: true,
+                  physics: const NeverScrollableScrollPhysics(),
+                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: 2,
+                    mainAxisExtent: 124,
+                    crossAxisSpacing: EnvoySpacing.medium1,
+                  ),
+                  children: _buildGridItems(
+                    accounts,
+                    _accountsOrder,
+                    (widget.availableWidth - 56) / 2,
+                  ),
+                ),
+                Opacity(
+                  opacity: _onReOrderStart ? 0 : 1,
+                  child: const AccountPrompts(),
+                ),
+                const SizedBox(height: 80),
+              ],
+            ),
+          ),
+        ),
+      );
+    }
+
     final scrollView = ScrollGradientMask(
       start: 0.00,
       topGradientValue: 0.045,
@@ -309,78 +392,218 @@ class _DefaultAccountsListState extends ConsumerState<DefaultAccountsList> {
             _onReOrderStart = true;
           });
         },
-        onReorderItem: (oldIndex, newIndex) async {
-          final order = List<String>.from(_accountsOrder);
-          final currentVisibleAccountsId = accounts.map((e) => e.id).toList();
-          final List<String> toReorder = order
-              .where((element) => currentVisibleAccountsId.contains(element))
-              .toList();
-          setState(() {
-            final String item = toReorder.removeAt(oldIndex);
-            toReorder.insert(newIndex, item);
-            //After moving visible accounts, add the rest of the accounts to the end of the list
-            for (var element in order) {
-              if (!toReorder.contains(element)) {
-                toReorder.add(element);
-              }
-            }
-            _accountsOrder = toReorder;
-
-            Future.microtask(
-              () => NgAccountManager().updateAccountOrder(toReorder),
-            );
-          });
-          await EnvoyStorage().addPromptState(DismissiblePrompt.dragAndDrop);
-        },
+        onReorderItem: (oldIndex, newIndex) =>
+            _reorderAccounts(oldIndex, newIndex, accounts),
         children: _buildListItems(accounts, _accountsOrder),
       ),
     );
 
-    return accounts.isEmpty && _accountsOrder.isEmpty
-        ? Padding(
-            padding: const EdgeInsets.all(EnvoySpacing.medium2),
-            child: EmptyAccountsCard(),
-          )
-        : scrollView;
+    return Align(
+      alignment: Alignment.topCenter,
+      child: SizedBox(width: 480, child: scrollView),
+    );
   }
 
   List<Widget> _buildListItems(
     List<EnvoyAccount> accounts,
     List<String> accountsOrder,
   ) {
-    final List<Widget> items = [];
+    return _orderedAccounts(accounts, accountsOrder)
+        .map(
+          (account) => _buildAccountItem(
+            account,
+            key: ValueKey(account.id),
+          ),
+        )
+        .toList();
+  }
 
+  List<Widget> _buildGridItems(
+    List<EnvoyAccount> accounts,
+    List<String> accountsOrder,
+    double cardWidth,
+  ) {
+    final orderedAccounts = _orderedAccounts(accounts, accountsOrder);
+
+    return List.generate(orderedAccounts.length, (index) {
+      final account = orderedAccounts[index];
+      return DragTarget<String>(
+        key: ValueKey(account.id),
+        onWillAcceptWithDetails: (details) => details.data != account.id,
+        onAcceptWithDetails: (details) {
+          final oldIndex = orderedAccounts.indexWhere(
+            (candidate) => candidate.id == details.data,
+          );
+          if (oldIndex != -1) {
+            _reorderAccounts(oldIndex, index, accounts);
+          }
+        },
+        builder: (context, candidateData, rejectedData) {
+          return LongPressDraggable<String>(
+            data: account.id,
+            maxSimultaneousDrags: 1,
+            onDragStarted: () => setState(() => _onReOrderStart = true),
+            onDragUpdate: (details) => _autoScrollGrid(details.globalPosition),
+            onDragEnd: (_) {
+              if (mounted) setState(() => _onReOrderStart = false);
+            },
+            feedback: Material(
+              color: Colors.transparent,
+              child: SizedBox(
+                width: cardWidth,
+                child: _buildAccountItem(
+                  account,
+                  draggable: false,
+                  useHero: false,
+                ),
+              ),
+            ),
+            childWhenDragging: Opacity(
+              opacity: 0.25,
+              child: _buildAccountItem(account, useHero: false),
+            ),
+            child: AnimatedScale(
+              duration: const Duration(milliseconds: 120),
+              scale: candidateData.isEmpty ? 1 : 0.97,
+              child: _buildAccountItem(account),
+            ),
+          );
+        },
+      );
+    });
+  }
+
+  void _autoScrollGrid(Offset globalPosition) {
+    if (!_scrollController.hasClients) return;
+
+    final renderBox = context.findRenderObject() as RenderBox?;
+    if (renderBox == null) return;
+
+    final nextOffset = gridAutoScrollOffset(
+      currentOffset: _scrollController.offset,
+      minOffset: _scrollController.position.minScrollExtent,
+      maxOffset: _scrollController.position.maxScrollExtent,
+      pointerY: renderBox.globalToLocal(globalPosition).dy,
+      viewportHeight: renderBox.size.height,
+    );
+    if (nextOffset != _scrollController.offset) {
+      _scrollController.jumpTo(nextOffset);
+    }
+  }
+
+  List<EnvoyAccount> _orderedAccounts(
+    List<EnvoyAccount> accounts,
+    List<String> accountsOrder,
+  ) {
     final orderToUse = accountsOrder.isEmpty
-        ? accounts.map((e) => e.id).toList()
+        ? accounts.map((account) => account.id).toList()
         : accountsOrder;
 
-    for (final id in orderToUse) {
-      final account = accounts.firstWhereOrNull((element) => element.id == id);
-      if (account != null) {
-        items.add(
-          SizedBox(
-            key: ValueKey(account.id),
-            height: _accountHeight,
-            child: AccountListTile(
-              account,
-              onTap: () async {
-                clearFilterState(ref);
-                ref.read(selectedAccountProvider.notifier).state = account;
-                context.go(ROUTE_ACCOUNT_DETAIL, extra: account);
-                return;
-              },
-            ),
-          ),
-        );
-      }
-    }
-    return items;
+    return orderToUse
+        .map(
+          (id) => accounts.firstWhereOrNull((account) => account.id == id),
+        )
+        .nonNulls
+        .toList();
   }
+
+  Widget _buildAccountItem(
+    EnvoyAccount account, {
+    Key? key,
+    bool draggable = true,
+    bool useHero = true,
+  }) {
+    return SizedBox(
+      key: key,
+      height: _accountHeight,
+      child: AccountListTile(
+        account,
+        draggable: draggable,
+        useHero: useHero,
+        onTap: () async {
+          clearFilterState(ref);
+          ref.read(selectedAccountProvider.notifier).state = account;
+          context.go(ROUTE_ACCOUNT_DETAIL, extra: account);
+        },
+      ),
+    );
+  }
+
+  Future<void> _reorderAccounts(
+    int oldIndex,
+    int newIndex,
+    List<EnvoyAccount> accounts,
+  ) async {
+    if (oldIndex == newIndex) return;
+
+    final visibleOrder = reorderAccountIds(
+      order: _accountsOrder,
+      visibleIds: accounts.map((account) => account.id).toList(),
+      oldIndex: oldIndex,
+      newIndex: newIndex,
+    );
+
+    setState(() => _accountsOrder = visibleOrder);
+    Future.microtask(
+      () => NgAccountManager().updateAccountOrder(visibleOrder),
+    );
+    await EnvoyStorage().addPromptState(DismissiblePrompt.dragAndDrop);
+  }
+}
+
+@visibleForTesting
+List<String> reorderAccountIds({
+  required List<String> order,
+  required List<String> visibleIds,
+  required int oldIndex,
+  required int newIndex,
+}) {
+  final fullOrder = order.isEmpty ? visibleIds : order;
+  final visible = visibleIds.toSet();
+  final reordered = fullOrder.where(visible.contains).toList();
+  final item = reordered.removeAt(oldIndex);
+  reordered.insert(newIndex, item);
+  reordered.addAll(fullOrder.where((id) => !reordered.contains(id)));
+  return reordered;
+}
+
+@visibleForTesting
+double gridAutoScrollOffset({
+  required double currentOffset,
+  required double minOffset,
+  required double maxOffset,
+  required double pointerY,
+  required double viewportHeight,
+}) {
+  const edge = 80.0;
+  const step = 24.0;
+  final delta = pointerY < edge
+      ? -step
+      : pointerY > viewportHeight - edge
+          ? step
+          : 0.0;
+  return (currentOffset + delta).clamp(minOffset, maxOffset).toDouble();
+}
+
+@visibleForTesting
+bool useAccountsGrid({
+  required int accountCount,
+  required double availableWidth,
+  required double availableHeight,
+}) {
+  return accountCount > 1 && availableWidth > availableHeight;
 }
 
 /// Widget for displaying passphrase accounts (no reordering)
 class PassphraseAccountsList extends ConsumerWidget {
-  const PassphraseAccountsList({super.key});
+  final double availableWidth;
+  final double availableHeight;
+
+  const PassphraseAccountsList({
+    super.key,
+    required this.availableWidth,
+    required this.availableHeight,
+  });
 
   static const double _accountHeight = 124;
 
@@ -391,43 +614,91 @@ class PassphraseAccountsList extends ConsumerWidget {
     );
 
     if (accounts.isEmpty) {
-      return Padding(
-        padding: const EdgeInsets.all(EnvoySpacing.medium2),
-        child: EmptyAccountsCard(),
+      return Align(
+        alignment: Alignment.topCenter,
+        child: SizedBox(
+          width: 480,
+          child: Padding(
+            padding: const EdgeInsets.all(EnvoySpacing.medium2),
+            child: EmptyAccountsCard(),
+          ),
+        ),
       );
     }
 
-    return ScrollGradientMask(
-      start: 0.00,
-      topGradientValue: 0.045,
-      bottomGradientValue: 0.955,
-      end: 1.0,
-      child: ListView.builder(
-        padding: const EdgeInsets.symmetric(horizontal: 20),
-        physics: const BouncingScrollPhysics(),
-        itemCount: accounts.length + 2, // +2 for header and footer spacing
-        itemBuilder: (context, index) {
-          // Header spacing
-          if (index == 0) {
-            return const SizedBox(height: 20);
-          }
-          // Footer spacing
-          if (index == accounts.length + 1) {
-            return const SizedBox(height: 80);
-          }
-          final account = accounts[index - 1];
-          return SizedBox(
-            height: _accountHeight,
-            child: AccountListTile(
-              account,
-              onTap: () async {
-                clearFilterState(ref);
-                ref.read(selectedAccountProvider.notifier).state = account;
-                context.go(ROUTE_ACCOUNT_DETAIL, extra: account);
+    if (useAccountsGrid(
+      accountCount: accounts.length,
+      availableWidth: availableWidth,
+      availableHeight: availableHeight,
+    )) {
+      return Align(
+        alignment: Alignment.topCenter,
+        child: SizedBox(
+          width: double.infinity,
+          child: ScrollGradientMask(
+            start: 0.00,
+            topGradientValue: 0.045,
+            bottomGradientValue: 0.955,
+            end: 1.0,
+            child: GridView.builder(
+              padding: const EdgeInsets.fromLTRB(20, 20, 20, 80),
+              physics: const BouncingScrollPhysics(),
+              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 2,
+                mainAxisExtent: _accountHeight,
+                crossAxisSpacing: 12,
+              ),
+              itemCount: accounts.length,
+              itemBuilder: (context, index) {
+                final account = accounts[index];
+                return AccountListTile(
+                  account,
+                  onTap: () async {
+                    clearFilterState(ref);
+                    ref.read(selectedAccountProvider.notifier).state = account;
+                    context.go(ROUTE_ACCOUNT_DETAIL, extra: account);
+                  },
+                );
               },
             ),
-          );
-        },
+          ),
+        ),
+      );
+    }
+
+    return Align(
+      alignment: Alignment.topCenter,
+      child: SizedBox(
+        width: 480,
+        child: ScrollGradientMask(
+          start: 0.00,
+          topGradientValue: 0.045,
+          bottomGradientValue: 0.955,
+          end: 1.0,
+          child: ListView.builder(
+            padding: const EdgeInsets.symmetric(horizontal: 20),
+            physics: const BouncingScrollPhysics(),
+            itemCount: accounts.length + 2, // +2 for header and footer spacing
+            itemBuilder: (context, index) {
+              if (index == 0) return const SizedBox(height: 20);
+              if (index == accounts.length + 1) {
+                return const SizedBox(height: 80);
+              }
+              final account = accounts[index - 1];
+              return SizedBox(
+                height: _accountHeight,
+                child: AccountListTile(
+                  account,
+                  onTap: () async {
+                    clearFilterState(ref);
+                    ref.read(selectedAccountProvider.notifier).state = account;
+                    context.go(ROUTE_ACCOUNT_DETAIL, extra: account);
+                  },
+                ),
+              );
+            },
+          ),
+        ),
       ),
     );
   }

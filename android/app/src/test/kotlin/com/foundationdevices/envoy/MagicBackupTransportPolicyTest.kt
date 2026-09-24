@@ -11,6 +11,14 @@ import org.junit.Test
 
 class MagicBackupTransportPolicyTest {
     @Test
+    fun allowsSoftwareBackedKeyOnlyOnDebugEmulators() {
+        assertTrue(allowSoftwareBackedMagicBackupKey(true, "ranchu"))
+        assertTrue(allowSoftwareBackedMagicBackupKey(true, "goldfish"))
+        assertFalse(allowSoftwareBackedMagicBackupKey(false, "ranchu"))
+        assertFalse(allowSoftwareBackedMagicBackupKey(true, "physical-device"))
+    }
+
+    @Test
     fun rejectsTransportWithoutProtectedBackupFlags() {
         assertFalse(isProtectedMagicBackupTransport(0))
         assertFalse(isProtectedMagicBackupTransport(1 shl 20))

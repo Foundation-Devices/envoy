@@ -46,6 +46,14 @@ class _EnvoyQRState extends State<EnvoyQR> {
           : QrErrorCorrectLevel.M,
       size: widget.qrSize,
     );
-    return SizedBox.square(dimension: widget.dimension, child: qrWidget);
+    return Center(
+      child: ConstrainedBox(
+        constraints: const BoxConstraints(maxWidth: 480, maxHeight: 480),
+        child: SizedBox.square(
+          dimension: widget.dimension,
+          child: qrWidget,
+        ),
+      ),
+    );
   }
 }

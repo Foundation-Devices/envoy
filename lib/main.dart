@@ -210,6 +210,9 @@ class _EnvoyAppState extends State<EnvoyApp> {
           themeMode: ThemeMode.light,
           theme: ThemeData(
             textTheme: envoyTextTheme,
+            bottomSheetTheme: const BottomSheetThemeData(
+              constraints: BoxConstraints(maxWidth: 480),
+            ),
             pageTransitionsTheme: const PageTransitionsTheme(
               builders: {
                 TargetPlatform.android:

@@ -149,6 +149,7 @@ class _TxReviewState extends ConsumerState<TxReview> {
       transitionBuilder: (child, animation, secondaryAnimation) {
         return SharedAxisTransition(
           animation: animation,
+          fillColor: Colors.transparent,
           secondaryAnimation: secondaryAnimation,
           transitionType: SharedAxisTransitionType.vertical,
           child: child,
@@ -318,86 +319,91 @@ class _TxReviewState extends ConsumerState<TxReview> {
       child: Padding(
         key: const Key("progress"),
         padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 14),
-        child: Scaffold(
-          backgroundColor: Colors.transparent,
-          body: CustomScrollView(
-            slivers: [
-              SliverToBoxAdapter(
-                child: SizedBox(
-                  height: 260,
-                  child: _isInitialized && _controller != null
-                      ? rive.RiveWidget(
-                          controller: _controller!,
-                          fit: rive.Fit.contain,
-                        )
-                      : const SizedBox(),
-                ),
-              ),
-              const SliverPadding(padding: EdgeInsets.all(28)),
-              SliverToBoxAdapter(
-                child: Builder(
-                  builder: (context) {
-                    String title =
-                        S().stalls_before_sending_tx_scanning_heading;
-                    String subTitle =
-                        S().stalls_before_sending_tx_scanning_subheading;
-                    if (spendState.broadcastProgress !=
-                        BroadcastProgress.inProgress) {
-                      if (spendState.broadcastProgress ==
-                          BroadcastProgress.success) {
-                        title = S()
-                            .stalls_before_sending_tx_scanning_broadcasting_success_heading;
-                        subTitle = S()
-                            .stalls_before_sending_tx_scanning_broadcasting_success_subheading;
-                      } else if (spendState.broadcastProgress ==
-                          BroadcastProgress.subsatFailed) {
-                        title = S()
-                            .stalls_before_sending_tx_scanning_broadcasting_fail_heading;
-                        subTitle = S()
-                            .stalls_before_sending_tx_scanning_broadcasting_fail_subsat_subheading;
-                      } else {
-                        title = S()
-                            .stalls_before_sending_tx_scanning_broadcasting_fail_heading;
-                        subTitle = S()
-                            .stalls_before_sending_tx_scanning_broadcasting_fail_subheading;
-                      }
-                    }
-                    return Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 24),
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Text(
-                            title,
-                            textAlign: TextAlign.center,
-                            style: EnvoyTypography.heading,
-                          ),
-                          const Padding(padding: EdgeInsets.all(18)),
-                          Text(
-                            subTitle,
-                            textAlign: TextAlign.center,
-                            style: Theme.of(context)
-                                .textTheme
-                                .bodySmall
-                                ?.copyWith(fontWeight: FontWeight.w500),
-                          ),
-                        ],
-                      ),
-                    );
-                  },
-                ),
-              ),
-              SliverFillRemaining(
-                hasScrollBody: false,
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 18,
-                    vertical: 44,
+        child: Center(
+          child: SizedBox(
+            width: 480,
+            child: Scaffold(
+              backgroundColor: Colors.transparent,
+              body: CustomScrollView(
+                slivers: [
+                  SliverToBoxAdapter(
+                    child: SizedBox(
+                      height: 260,
+                      child: _isInitialized && _controller != null
+                          ? rive.RiveWidget(
+                              controller: _controller!,
+                              fit: rive.Fit.contain,
+                            )
+                          : const SizedBox(),
+                    ),
                   ),
-                  child: _ctaButtons(context),
-                ),
+                  const SliverPadding(padding: EdgeInsets.all(28)),
+                  SliverToBoxAdapter(
+                    child: Builder(
+                      builder: (context) {
+                        String title =
+                            S().stalls_before_sending_tx_scanning_heading;
+                        String subTitle =
+                            S().stalls_before_sending_tx_scanning_subheading;
+                        if (spendState.broadcastProgress !=
+                            BroadcastProgress.inProgress) {
+                          if (spendState.broadcastProgress ==
+                              BroadcastProgress.success) {
+                            title = S()
+                                .stalls_before_sending_tx_scanning_broadcasting_success_heading;
+                            subTitle = S()
+                                .stalls_before_sending_tx_scanning_broadcasting_success_subheading;
+                          } else if (spendState.broadcastProgress ==
+                              BroadcastProgress.subsatFailed) {
+                            title = S()
+                                .stalls_before_sending_tx_scanning_broadcasting_fail_heading;
+                            subTitle = S()
+                                .stalls_before_sending_tx_scanning_broadcasting_fail_subsat_subheading;
+                          } else {
+                            title = S()
+                                .stalls_before_sending_tx_scanning_broadcasting_fail_heading;
+                            subTitle = S()
+                                .stalls_before_sending_tx_scanning_broadcasting_fail_subheading;
+                          }
+                        }
+                        return Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 24),
+                          child: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Text(
+                                title,
+                                textAlign: TextAlign.center,
+                                style: EnvoyTypography.heading,
+                              ),
+                              const Padding(padding: EdgeInsets.all(18)),
+                              Text(
+                                subTitle,
+                                textAlign: TextAlign.center,
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .bodySmall
+                                    ?.copyWith(fontWeight: FontWeight.w500),
+                              ),
+                            ],
+                          ),
+                        );
+                      },
+                    ),
+                  ),
+                  SliverFillRemaining(
+                    hasScrollBody: false,
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 18,
+                        vertical: 44,
+                      ),
+                      child: _ctaButtons(context),
+                    ),
+                  ),
+                ],
               ),
-            ],
+            ),
           ),
         ),
       ),
@@ -885,205 +891,213 @@ class _TransactionReviewScreenState
           clipper: ShieldClipper(isBlurShield: true),
           child: BackdropFilter(
             filter: ImageFilter.blur(sigmaX: 8, sigmaY: 8),
-            child: Padding(
-              padding: const EdgeInsets.symmetric(
-                horizontal: 12,
-              ).add(const EdgeInsets.only(bottom: EnvoySpacing.large1)),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: [
-                  if (transactionModel.canModify && !widget.primeTransferMode)
-                    EnvoyButton(
-                      enabled: !transactionModel.loading,
-                      S().send_build_viewEditDetails,
-                      type: EnvoyButtonTypes.tertiary,
-                      onTap: () {
-                        _showTxDetailsPage(context, ref, preparedTransaction);
-                        // ref.read(userHasChangedFeesProvider.notifier).state =
-                        //     false;
-                        // editTransaction(context, ref);
-                      },
-                    ),
-                  if (transactionModel.isFinalized && !account.isHot)
-                    EnvoyButton(
-                      enabled: !transactionModel.loading,
-                      S().component_cancel,
-                      type: EnvoyButtonTypes.tertiary,
-                      onTap: () {
-                        showEnvoyDialog(
-                            context: context,
-                            useRootNavigator: true,
-                            dialog: const DiscardTransactionDialog());
-                      },
-                    ),
-                  const Padding(padding: EdgeInsets.all(6)),
-                  EnvoyButton(
-                    enabled: enableButton,
-                    leading: isPrime
-                        ? EnvoyIcon(
-                            transactionModel.isFinalized
-                                ? EnvoyIcons.send
-                                : EnvoyIcons.quantum,
-                            color: EnvoyColors.solidWhite,
-                            size: EnvoyIconSize.small,
-                          )
-                        : transactionModel.isFinalized
+            child: Center(
+              heightFactor: 1,
+              child: SizedBox(
+                width: 480,
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 12,
+                  ).add(const EdgeInsets.only(bottom: EnvoySpacing.large1)),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      if (transactionModel.canModify &&
+                          !widget.primeTransferMode)
+                        EnvoyButton(
+                          enabled: !transactionModel.loading,
+                          S().send_build_viewEditDetails,
+                          type: EnvoyButtonTypes.tertiary,
+                          onTap: () {
+                            _showTxDetailsPage(
+                                context, ref, preparedTransaction);
+                          },
+                        ),
+                      if (transactionModel.isFinalized && !account.isHot)
+                        EnvoyButton(
+                          enabled: !transactionModel.loading,
+                          S().component_cancel,
+                          type: EnvoyButtonTypes.tertiary,
+                          onTap: () {
+                            showEnvoyDialog(
+                                context: context,
+                                useRootNavigator: true,
+                                dialog: const DiscardTransactionDialog());
+                          },
+                        ),
+                      const Padding(padding: EdgeInsets.all(6)),
+                      EnvoyButton(
+                        enabled: enableButton,
+                        leading: isPrime
                             ? EnvoyIcon(
-                                EnvoyIcons.send,
+                                transactionModel.isFinalized
+                                    ? EnvoyIcons.send
+                                    : EnvoyIcons.quantum,
                                 color: EnvoyColors.solidWhite,
                                 size: EnvoyIconSize.small,
                               )
-                            : null,
-                    (account.isHot || transactionModel.isFinalized)
-                        ? S().coincontrol_tx_detail_cta1
-                        : isPrime
-                            ? S().send_quantumBuild_signWithPassport
-                            : S().component_next,
-                    onTap: () {
-                      widget.onBroadcast();
-                    },
-                  ),
-                ],
-              ),
-            ),
-          ),
-        ),
-        child: Column(
-          children: [
-            if (!account.isHot && !isPrime)
-              Padding(
-                padding: const EdgeInsets.only(top: EnvoySpacing.medium1),
-                child: StepIndicator(
-                    currentStep: transactionModel.isFinalized ? 3 : 0),
-              ),
-            Padding(
-              padding: const EdgeInsets.symmetric(
-                vertical: EnvoySpacing.small,
-                horizontal: EnvoySpacing.medium1,
-              ),
-              child: ListTile(
-                title: Text(
-                  header,
-                  textAlign: TextAlign.center,
-                  style: EnvoyTypography.heading,
-                ),
-                subtitle: Padding(
-                  padding: const EdgeInsets.symmetric(
-                      vertical: EnvoySpacing.small, horizontal: 8),
-                  child: Text(
-                    subHeading,
-                    textAlign: TextAlign.center,
-                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                          fontSize: 13,
-                          fontWeight: FontWeight.w400,
-                        ),
-                  ),
-                ),
-              ),
-            ),
-            Flexible(
-              child: SingleChildScrollView(
-                child: Padding(
-                  padding: const EdgeInsets.only(bottom: 116),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Column(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Consumer(
-                            builder: (context, ref, child) {
-                              return TransactionReviewCard(
-                                account: account,
-                                transaction: transaction,
-                                onTxDetailTap: () {
-                                  _showTxDetailsPage(
-                                    context,
-                                    ref,
-                                    preparedTransaction,
-                                  );
-                                },
-                                canModifyPsbt: transactionModel.canModify,
-                                loading: transactionModel.loading,
-                                address: address,
-                                onFeeTap: (transactionModel.isFinalized &&
-                                        !account.isHot)
-                                    ? null
-                                    : () {
-                                        _showFeeChooser(
-                                          context,
-                                          ref,
-                                          transaction,
-                                        );
-                                      },
-                              );
-                            },
-                          ),
-                          if (feePercentage >= 25)
-                            Padding(
-                              padding: const EdgeInsets.only(
-                                top: EnvoySpacing.medium1,
-                              ),
-                              child: feeOverSpendWarning(feePercentage),
-                            ),
-                          if (isPrime)
-                            Padding(
-                              padding: const EdgeInsets.only(
-                                top: EnvoySpacing.medium1,
-                              ),
-                              child: transactionPrimeStatus(context),
-                            ),
-                        ],
+                            : transactionModel.isFinalized
+                                ? EnvoyIcon(
+                                    EnvoyIcons.send,
+                                    color: EnvoyColors.solidWhite,
+                                    size: EnvoyIconSize.small,
+                                  )
+                                : null,
+                        (account.isHot || transactionModel.isFinalized)
+                            ? S().coincontrol_tx_detail_cta1
+                            : isPrime
+                                ? S().send_quantumBuild_signWithPassport
+                                : S().component_next,
+                        onTap: () {
+                          widget.onBroadcast();
+                        },
                       ),
-
-                      if (error != null)
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            const Padding(
-                              padding: EdgeInsets.only(
-                                right: EnvoySpacing.small,
-                              ),
-                              child: EnvoyIcon(
-                                EnvoyIcons.alert,
-                                size: EnvoyIconSize.extraSmall,
-                                color: EnvoyColors.copper500,
-                              ),
-                            ),
-                            Text(
-                              error,
-                              style: EnvoyTypography.button.copyWith(
-                                color: EnvoyColors.copper500,
-                              ),
-                            ),
-                          ],
-                        ),
-
-                      // Special warning if we are sending max or the fee changed the TX
-                      if (transactionModel.mode == SpendMode.sendMax ||
-                          showFeeChangeNotice)
-                        Padding(
-                          padding: const EdgeInsets.symmetric(
-                              vertical: 12, horizontal: EnvoySpacing.small),
-                          child: Text(
-                            showFeeChangeNotice
-                                ? S()
-                                    .coincontrol_tx_detail_feeChange_information
-                                : S().send_reviewScreen_sendMaxWarning,
-                            style: EnvoyTypography.info.copyWith(
-                              color: NewEnvoyColor.contentTertiary,
-                            ),
-                            textAlign: TextAlign.center,
-                          ),
-                        ),
                     ],
                   ),
                 ),
               ),
             ),
-          ],
+          ),
+        ),
+        child: Center(
+          child: SizedBox(
+            width: 480,
+            height: double.infinity,
+            child: Column(
+              children: [
+                if (!account.isHot && !isPrime)
+                  Padding(
+                    padding: const EdgeInsets.only(top: EnvoySpacing.medium1),
+                    child: StepIndicator(
+                        currentStep: transactionModel.isFinalized ? 3 : 0),
+                  ),
+                Padding(
+                  padding: const EdgeInsets.symmetric(
+                    vertical: EnvoySpacing.small,
+                    horizontal: EnvoySpacing.medium1,
+                  ),
+                  child: ListTile(
+                    title: Text(
+                      header,
+                      textAlign: TextAlign.center,
+                      style: EnvoyTypography.heading,
+                    ),
+                    subtitle: Padding(
+                      padding: const EdgeInsets.symmetric(
+                          vertical: EnvoySpacing.small, horizontal: 8),
+                      child: Text(
+                        subHeading,
+                        textAlign: TextAlign.center,
+                        style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                              fontSize: 13,
+                              fontWeight: FontWeight.w400,
+                            ),
+                      ),
+                    ),
+                  ),
+                ),
+                Flexible(
+                  child: SingleChildScrollView(
+                    child: Padding(
+                      padding: const EdgeInsets.only(bottom: 116),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Column(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Consumer(
+                                builder: (context, ref, child) {
+                                  return TransactionReviewCard(
+                                    account: account,
+                                    transaction: transaction,
+                                    onTxDetailTap: () {
+                                      _showTxDetailsPage(
+                                        context,
+                                        ref,
+                                        preparedTransaction,
+                                      );
+                                    },
+                                    canModifyPsbt: transactionModel.canModify,
+                                    loading: transactionModel.loading,
+                                    address: address,
+                                    onFeeTap: (transactionModel.isFinalized &&
+                                            !account.isHot)
+                                        ? null
+                                        : () {
+                                            _showFeeChooser(
+                                              context,
+                                              ref,
+                                              transaction,
+                                            );
+                                          },
+                                  );
+                                },
+                              ),
+                              if (feePercentage >= 25)
+                                Padding(
+                                  padding: const EdgeInsets.only(
+                                    top: EnvoySpacing.medium1,
+                                  ),
+                                  child: feeOverSpendWarning(feePercentage),
+                                ),
+                              if (isPrime)
+                                Padding(
+                                  padding: const EdgeInsets.only(
+                                    top: EnvoySpacing.medium1,
+                                  ),
+                                  child: transactionPrimeStatus(context),
+                                ),
+                            ],
+                          ),
+                          if (error != null)
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                const Padding(
+                                  padding: EdgeInsets.only(
+                                    right: EnvoySpacing.small,
+                                  ),
+                                  child: EnvoyIcon(
+                                    EnvoyIcons.alert,
+                                    size: EnvoyIconSize.extraSmall,
+                                    color: EnvoyColors.copper500,
+                                  ),
+                                ),
+                                Text(
+                                  error,
+                                  style: EnvoyTypography.button.copyWith(
+                                    color: EnvoyColors.copper500,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          if (transactionModel.mode == SpendMode.sendMax ||
+                              showFeeChangeNotice)
+                            Padding(
+                              padding: const EdgeInsets.symmetric(
+                                  vertical: 12, horizontal: EnvoySpacing.small),
+                              child: Text(
+                                showFeeChangeNotice
+                                    ? S()
+                                        .coincontrol_tx_detail_feeChange_information
+                                    : S().send_reviewScreen_sendMaxWarning,
+                                style: EnvoyTypography.info.copyWith(
+                                  color: NewEnvoyColor.contentTertiary,
+                                ),
+                                textAlign: TextAlign.center,
+                              ),
+                            ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
         ),
       ),
     );

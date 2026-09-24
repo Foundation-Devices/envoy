@@ -9,6 +9,7 @@ import 'package:envoy/business/connectivity_manager.dart';
 import 'package:envoy/business/video.dart';
 import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/envoy_colors.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:http_tor/http_tor.dart';
@@ -645,11 +646,16 @@ class _FullScreenVideoPlayerState extends State<FullScreenVideoPlayer>
               Positioned(
                 top: 20,
                 left: 20,
-                child: BackButton(
-                  color: Colors.white,
-                  onPressed: () async {
-                    await _closeAndPop();
-                  },
+                child: Semantics(
+                  container: true,
+                  identifier: 'video_back',
+                  button: true,
+                  child: CupertinoNavigationBarBackButton(
+                    color: Colors.white,
+                    onPressed: () async {
+                      await _closeAndPop();
+                    },
+                  ),
                 ),
               ),
             // Black curtains

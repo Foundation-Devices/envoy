@@ -561,84 +561,84 @@ class NumPad extends StatefulWidget {
 class _NumPadState extends State<NumPad> {
   @override
   Widget build(BuildContext context) {
-    final size = MediaQuery.sizeOf(context);
-    final width = size.width * 0.8;
-    //total height of the numpad,only .34 of the screen height will be used by the numpad
-    final height = size.height * 0.34;
-
-    const int crossAxisCount = 3;
-    final int rowCount = (12 / crossAxisCount).ceil();
-
-    // Calculate the child aspect ratio, based on the width and height
-    final childAspectRatio = (width / crossAxisCount) / (height / rowCount);
-
     intl.NumberFormat currencyFormatter = intl.NumberFormat.currency(
       locale: currentLocale,
       symbol: "",
       name: Settings().selectedFiat,
     );
 
-    return GridView.count(
-      crossAxisCount: crossAxisCount,
-      childAspectRatio: childAspectRatio,
-      shrinkWrap: true,
-      // For some reason GridView has a default padding
-      padding: EdgeInsets.zero,
-      physics: const NeverScrollableScrollPhysics(),
-      children: [
-        ...(List.generate(9, (index) {
-          String digit = (index + 1).toString();
-          return NumpadButton(
-            NumpadButtonType.text,
-            text: digit,
-            onTap: () {
-              Haptics.lightImpact();
-              widget.onDigitEntered(digit);
-            },
-          );
-        })),
-        widget.amountDisplayUnit == AmountDisplayUnit.sat ||
-                (currencyFormatter.decimalDigits == 0 &&
-                    widget.amountDisplayUnit == AmountDisplayUnit.fiat)
-            ? const SizedBox.shrink()
-            : NumpadButton(
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final size = MediaQuery.sizeOf(context);
+        final width = constraints.maxWidth * 0.8;
+        final height = size.height * 0.34;
+
+        const int crossAxisCount = 3;
+        final int rowCount = (12 / crossAxisCount).ceil();
+        final childAspectRatio = (width / crossAxisCount) / (height / rowCount);
+
+        return GridView.count(
+          crossAxisCount: crossAxisCount,
+          childAspectRatio: childAspectRatio,
+          shrinkWrap: true,
+          padding: EdgeInsets.zero,
+          physics: const NeverScrollableScrollPhysics(),
+          children: [
+            ...(List.generate(9, (index) {
+              String digit = (index + 1).toString();
+              return NumpadButton(
                 NumpadButtonType.text,
-                text: fiatDecimalSeparator,
-                onTap: () {
-                  if (!widget.isDecimalSeparator) {
-                    Haptics.lightImpact();
-                    widget.onNumPadEvents(NumPadEvents.separator);
-                  }
-                },
-              ),
-        NumpadButton(
-          NumpadButtonType.text,
-          text: "0",
-          onTap: () {
-            Haptics.lightImpact();
-            widget.onDigitEntered("0");
-          },
-        ),
-        widget.isAmountZero
-            ? NumpadButton(
-                NumpadButtonType.clipboard,
+                text: digit,
                 onTap: () {
                   Haptics.lightImpact();
-                  widget.onNumPadEvents(NumPadEvents.clipboard);
+                  widget.onDigitEntered(digit);
                 },
-              )
-            : NumpadButton(
-                NumpadButtonType.backspace,
-                onTap: () {
-                  Haptics.lightImpact();
-                  widget.onNumPadEvents(NumPadEvents.backspace);
-                },
-                onLongPressDown: () {
-                  Haptics.lightImpact();
-                  widget.onNumPadEvents(NumPadEvents.clearAll);
-                },
-              ),
-      ],
+              );
+            })),
+            widget.amountDisplayUnit == AmountDisplayUnit.sat ||
+                    (currencyFormatter.decimalDigits == 0 &&
+                        widget.amountDisplayUnit == AmountDisplayUnit.fiat)
+                ? const SizedBox.shrink()
+                : NumpadButton(
+                    NumpadButtonType.text,
+                    text: fiatDecimalSeparator,
+                    onTap: () {
+                      if (!widget.isDecimalSeparator) {
+                        Haptics.lightImpact();
+                        widget.onNumPadEvents(NumPadEvents.separator);
+                      }
+                    },
+                  ),
+            NumpadButton(
+              NumpadButtonType.text,
+              text: "0",
+              onTap: () {
+                Haptics.lightImpact();
+                widget.onDigitEntered("0");
+              },
+            ),
+            widget.isAmountZero
+                ? NumpadButton(
+                    NumpadButtonType.clipboard,
+                    onTap: () {
+                      Haptics.lightImpact();
+                      widget.onNumPadEvents(NumPadEvents.clipboard);
+                    },
+                  )
+                : NumpadButton(
+                    NumpadButtonType.backspace,
+                    onTap: () {
+                      Haptics.lightImpact();
+                      widget.onNumPadEvents(NumPadEvents.backspace);
+                    },
+                    onLongPressDown: () {
+                      Haptics.lightImpact();
+                      widget.onNumPadEvents(NumPadEvents.clearAll);
+                    },
+                  ),
+          ],
+        );
+      },
     );
   }
 }

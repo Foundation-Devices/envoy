@@ -9,8 +9,13 @@ import 'package:envoy/ui/theme/envoy_spacing.dart';
 
 class OnboardPageBackground extends StatelessWidget {
   final Widget child;
+  final Widget? topBarLeading;
 
-  const OnboardPageBackground({super.key, required this.child});
+  const OnboardPageBackground({
+    super.key,
+    required this.child,
+    this.topBarLeading,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -30,14 +35,36 @@ class OnboardPageBackground extends StatelessWidget {
             tag: "shield",
             transitionOnUserGestures: true,
             child: Shield(
-              child: Padding(
-                padding: const EdgeInsets.only(
-                  right: EnvoySpacing.medium1,
-                  left: EnvoySpacing.medium1,
-                  top: EnvoySpacing.medium1,
-                  bottom: EnvoySpacing.medium2,
+              child: LayoutBuilder(
+                builder: (context, constraints) => Stack(
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.only(
+                        right: EnvoySpacing.medium1,
+                        left: EnvoySpacing.medium1,
+                        top: EnvoySpacing.medium1,
+                        bottom: EnvoySpacing.medium2,
+                      ),
+                      child: Center(
+                        child: SizedBox(
+                          width: 480,
+                          height: double.infinity,
+                          child: child,
+                        ),
+                      ),
+                    ),
+                    if (topBarLeading != null)
+                      Positioned(
+                        top: EnvoySpacing.medium1,
+                        left: ((constraints.maxWidth - 480) / 2)
+                            .clamp(EnvoySpacing.medium1, double.infinity),
+                        child: Material(
+                          color: Colors.transparent,
+                          child: topBarLeading!,
+                        ),
+                      ),
+                  ],
                 ),
-                child: SizedBox.expand(child: child),
               ),
             ),
           ),
