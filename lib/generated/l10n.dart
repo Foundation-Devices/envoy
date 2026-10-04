@@ -56,14 +56,9 @@ class S {
 
   // skipped getter for the ':' key
 
-  /// `https://blockstream.info/api/`
+  /// `6:15`
   String get _ {
-    return Intl.message(
-      'https://blockstream.info/api/',
-      name: '_',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('6:15', name: '_', desc: '', args: []);
   }
 
   /// `App Version`
@@ -7116,10 +7111,10 @@ class S {
     );
   }
 
-  /// `Ensure sure Bluetooth is enabled on Passport and your phone, and that both devices are nearby.`
+  /// `Ensure Bluetooth is enabled on Passport and your phone, and that both devices are nearby.`
   String get onboarding_modalBluetoothUnableConnect_content {
     return Intl.message(
-      'Ensure sure Bluetooth is enabled on Passport and your phone, and that both devices are nearby.',
+      'Ensure Bluetooth is enabled on Passport and your phone, and that both devices are nearby.',
       name: 'onboarding_modalBluetoothUnableConnect_content',
       desc: '',
       args: [],
