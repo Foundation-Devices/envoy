@@ -1,6 +1,6 @@
 {
   ":": ":",
-  "_": "https://blockstream.info/api/",
+  "_": "6:15",
   "about_appVersion": "App Version",
   "about_openSourceLicences": "Open Source Licences",
   "about_privacyPolicy": "Privacy Policy",
@@ -719,7 +719,7 @@
   "onboarding_magicUserMobileUploading_content": "Envoy is uploading your encrypted wallet backup to Foundation servers.\n\nSince your backup is end-to-end encrypted, Foundation has no access to your backup or knowledge of its contents.",
   "onboarding_magicUserMobileUploading_header": "Uploading Your Backup",
   "onboarding_migrating_xOfYSynced": "Migration in progress.\nPlease do not close Envoy.\n\n{amount} of {total_amount} processed.",
-  "onboarding_modalBluetoothUnableConnect_content": "Ensure sure Bluetooth is enabled on Passport and your phone, and that both devices are nearby.",
+  "onboarding_modalBluetoothUnableConnect_content": "Ensure Bluetooth is enabled on Passport and your phone, and that both devices are nearby.",
   "onboarding_modalBluetoothUnableConnect_header": "Unable to Connect",
   "onboarding_passpportSelectCamera_sub235VersionAlert": "Are you setting up a Passport Core on firmware v2.3.5 or earlier?",
   "onboarding_passpportSelectCamera_tapHere": "Tap here",

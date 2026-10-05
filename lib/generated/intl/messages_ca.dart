@@ -33,15 +33,15 @@ class MessageLookup extends MessageLookupByLibrary {
   static String m4(tagName) =>
       "La teva etiqueta ${tagName} està buida. Vols eliminar-la?";
 
-  static String m5(number) => "ADREÃ‡A #${number}";
+  static String m5(number) => "ADREÇA #${number}";
 
   static String m6(searchSpace) =>
-      "AdreÃ§a no trobada en les primeres ${searchSpace} adreces.";
+      "Adreça no trobada en les primeres ${searchSpace} adreces.";
 
   static String m7(time_remaining) => "Queden ${time_remaining}";
 
   static String m8(current_keyOS_version) =>
-      "El teu Passport Prime executa actualment ${current_keyOS_version}.\n\nActualitza ara per obtenir les Ãºltimes correccions i funcions.";
+      "El teu Passport Prime executa actualment ${current_keyOS_version}.\n\nActualitza ara per obtenir les últimes correccions i funcions.";
 
   static String m9(est_upd_time) => "Temps estimat: ${est_upd_time}";
 
@@ -51,19 +51,19 @@ class MessageLookup extends MessageLookupByLibrary {
       "Passport Prime s\'ha actualitzat correctament a\n${new_keyOS_version}";
 
   static String m12(amount, total_amount) =>
-      "MigraciÃ³ en curs.\nNo tanquis Envoy.\n\n${amount} de ${total_amount} processats.";
+      "Migració en curs.\nNo tanquis Envoy.\n\n${amount} de ${total_amount} processats.";
 
   static String m13(passport_color) => "Color: ${passport_color}";
 
   static String m14(firmware_version) => "Firmware: ${firmware_version}";
 
-  static String m15(serial_number) => "NÃºmero de sÃ¨rie: ${serial_number}";
+  static String m15(serial_number) => "Número de sèrie: ${serial_number}";
 
   static String m16(AccountName) =>
-      "Ves a ${AccountName} a Passport, tria â€˜Account Toolsâ€™ i desprÃ©s â€˜Verify Addressâ€™, i escaneja el codi QR de sota.";
+      "Ves a ${AccountName} a Passport, tria ‘Account Tools’ i després ‘Verify Address’, i escaneja el codi QR de sota.";
 
   static String m17(AccountName) =>
-      "Toca el compte ${AccountName} a Passport, tria â€˜Verify Addressâ€™ i escaneja el codi QR de sota.";
+      "Toca el compte ${AccountName} a Passport, tria ‘Verify Address’ i escaneja el codi QR de sota.";
 
   static String m18(accoutname) => "Reescaneig fallit per a ${accoutname} ";
 
@@ -137,7 +137,7 @@ class MessageLookup extends MessageLookupByLibrary {
           "Hi ha disponible una nova actualització d\'Envoy que conté actualitzacions i correccions importants. \n\nPer continuar utilitzant Envoy, actualitzeu-lo a la versió més recent. Gràcies.",
         ),
         "accounts_loading_loadingAccount": MessageLookupByLibrary.simpleMessage(
-          "Carregant compteâ€¦",
+          "Carregant compte…",
         ),
         "accounts_screen_walletType_Envoy":
             MessageLookupByLibrary.simpleMessage(
@@ -165,17 +165,17 @@ class MessageLookup extends MessageLookupByLibrary {
           "ID de pagament copiat al porta-retalls.",
         ),
         "accounts_toast_txidCopied": MessageLookupByLibrary.simpleMessage(
-          "ID de transacciÃ³ copiat al porta-retalls.",
+          "ID de transacció copiat al porta-retalls.",
         ),
         "accounts_upgradeBdkSignetModal_content":
             MessageLookupByLibrary.simpleMessage(
-          "Envoy ara utilitza Global Signet en lloc de Mutinynet. Els teus comptes Signet anteriors s\'han eliminat.\n\nPer comenÃ§ar a utilitzar Global Signet, ves a ConfiguraciÃ³ i activa l\'interruptor Signet.",
+          "Envoy ara utilitza Global Signet en lloc de Mutinynet. Els teus comptes Signet anteriors s\'han eliminat.\n\nPer començar a utilitzar Global Signet, ves a Configuració i activa l\'interruptor Signet.",
         ),
         "accounts_upgradeBdkSignetModal_header":
             MessageLookupByLibrary.simpleMessage("Global Signet"),
         "accounts_upgradeBdkTestnetModal_content":
             MessageLookupByLibrary.simpleMessage(
-          "â€˜Testnet3â€™ ha quedat obsolet i Envoy ara utilitza â€˜testnet4â€™. Els teus comptes testnet3 anteriors s\'han eliminat.\n\nPer comenÃ§ar a utilitzar testnet4, ves a ConfiguraciÃ³ i activa l\'interruptor Testnet.",
+          "‘Testnet3’ ha quedat obsolet i Envoy ara utilitza ‘testnet4’. Els teus comptes testnet3 anteriors s\'han eliminat.\n\nPer començar a utilitzar testnet4, ves a Configuració i activa l\'interruptor Testnet.",
         ),
         "accounts_upgradeBdkTestnetModal_header":
             MessageLookupByLibrary.simpleMessage("Presentem testnet4"),
@@ -232,8 +232,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "azteco_account_tx_history_pending_voucher":
             MessageLookupByLibrary.simpleMessage("Cupó Azteco pendent"),
         "azteco_connection_modal_fail_heading":
-            MessageLookupByLibrary.simpleMessage(
-                "No es pot establir la Connexió"),
+            MessageLookupByLibrary.simpleMessage("No es pot connectar"),
         "azteco_connection_modal_fail_subheading":
             MessageLookupByLibrary.simpleMessage(
           "Envoy no pot connectar amb Azteco.\n\nPoseu-vos en contacte amb support@azte.co o torneu-ho a provar més tard.",
@@ -247,7 +246,7 @@ class MessageLookup extends MessageLookupByLibrary {
           "CODI DE CUPÓ",
         ),
         "azteco_redeem_modal_amount": MessageLookupByLibrary.simpleMessage(
-          "Quantitat",
+          "Import",
         ),
         "azteco_redeem_modal_cta1": MessageLookupByLibrary.simpleMessage(
           "Bescanvia",
@@ -276,10 +275,10 @@ class MessageLookup extends MessageLookupByLibrary {
         ),
         "backup_toast_envoyBackupComplete":
             MessageLookupByLibrary.simpleMessage(
-          "CÃ²pia d\'Envoy completada.",
+          "Còpia d\'Envoy completada.",
         ),
         "backups_advancedBackups": MessageLookupByLibrary.simpleMessage(
-          "CÃ²pies avanÃ§ades",
+          "Còpies avançades",
         ),
         "backups_downloadBIP329BackupFile":
             MessageLookupByLibrary.simpleMessage(
@@ -287,14 +286,14 @@ class MessageLookup extends MessageLookupByLibrary {
         ),
         "backups_downloadSettingsDataBackupFile":
             MessageLookupByLibrary.simpleMessage(
-          "Descarrega cÃ²pia de configuraciÃ³ i dades",
+          "Descarrega còpia de configuració i dades",
         ),
         "backups_downloadSettingsMetadataBackupFile":
             MessageLookupByLibrary.simpleMessage(
-          "Descarrega cÃ²pia de configuraciÃ³ i metadades",
+          "Descarrega còpia de configuració i metadades",
         ),
         "backups_erase_mobile_wallet": MessageLookupByLibrary.simpleMessage(
-          "Esborra Cartera MÃ²bil",
+          "Esborra Cartera Mòbil",
         ),
         "backups_erase_wallets_and_backups":
             MessageLookupByLibrary.simpleMessage(
@@ -302,11 +301,11 @@ class MessageLookup extends MessageLookupByLibrary {
         ),
         "backups_erase_wallets_and_backups_modal_1_2_android_subheading":
             MessageLookupByLibrary.simpleMessage(
-          "Esteu a punt de suprimir permanentment la vostra cartera Envoy.\n\nSi utilitzeu Magic Backups, la vostra Envoy Seed també es suprimirà d\'Android Auto Backup.",
+          "Estàs a punt d\'eliminar permanentment la teva cartera Envoy.\n\nSi fas servir Còpies de Seguretat Màgiques, la clau d\'Envoy també s\'eliminarà de la Còpia de Seguretat Automàtica d\'Android.\n",
         ),
         "backups_erase_wallets_and_backups_modal_1_2_ios_subheading":
             MessageLookupByLibrary.simpleMessage(
-          "Estàs a punt de suprimir permanentment la teva cartera Envoy.\n\nSi utilitzes Còpies de Seguretat Màgiques, la clau d\'Envoy també se suprimirà del Clauer d\'iCloud.",
+          "Estàs a punt d\'eliminar permanentment la teva cartera Envoy.\n\nSi fas servir Còpies de Seguretat Màgiques, la clau d\'Envoy també s\'eliminarà del Clauer d\'iCloud.\n",
         ),
         "backups_erase_wallets_and_backups_modal_2_2_subheading":
             MessageLookupByLibrary.simpleMessage(
@@ -325,7 +324,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("No es pot continuar"),
         "backups_magicToManualErrorModal_subheader":
             MessageLookupByLibrary.simpleMessage(
-          "La CÃ²pia de Seguretat MÃ gica d\'Envoy no es pot desactivar mentre hi hagi una CÃ²pia de Seguretat MÃ gica de Passport Prime activa.\n\nPer continuar, desactiva primer la CÃ²pia de Seguretat MÃ gica de Passport Prime al dispositiu.",
+          "La Còpia de Seguretat Màgica d\'Envoy no es pot desactivar mentre hi hagi una Còpia de Seguretat Màgica de Passport Prime activa.\n\nPer continuar, desactiva primer la Còpia de Seguretat Màgica de Passport Prime al dispositiu.",
         ),
         "backups_manualToMagicrModal_header":
             MessageLookupByLibrary.simpleMessage(
@@ -333,26 +332,26 @@ class MessageLookup extends MessageLookupByLibrary {
         ),
         "backups_manualToMagicrModal_subheader":
             MessageLookupByLibrary.simpleMessage(
-          "AixÃ² activarÃ  una CÃ²pia de Seguretat MÃ gica de la teva cartera Envoy. La clau d\'Envoy es xifrarÃ  i es copiarÃ  al teu compte d\'Apple o Google. Les dades d\'Envoy es xifraran i s\'enviaran al servidor de Foundation.",
+          "Això activarà una Còpia de Seguretat Màgica de la teva cartera Envoy. La clau d\'Envoy es xifrarà i es copiarà al teu compte d\'Apple o Google. Les dades d\'Envoy es xifraran i s\'enviaran al servidor de Foundation.",
         ),
         "backups_primeMagicBackups": m0,
         "backups_primeMasterKeyBackup": MessageLookupByLibrary.simpleMessage(
-          "CÃ²pia de Clau Mestra (1 de 3 parts)",
+          "Còpia de Clau Mestra (1 de 3 parts)",
         ),
         "backups_settingsAndData": MessageLookupByLibrary.simpleMessage(
-          "ConfiguraciÃ³ i dades",
+          "Configuració i dades",
         ),
         "backups_settingsAndMetadata": MessageLookupByLibrary.simpleMessage(
-          "ConfiguraciÃ³ i metadades",
+          "Configuració i metadades",
         ),
         "backups_toggle_envoy_magic_backups":
             MessageLookupByLibrary.simpleMessage(
           "Còpies Màgiques Envoy",
         ),
         "backups_toggle_envoy_mobile_wallet_key":
-            MessageLookupByLibrary.simpleMessage("Clau de Cartera MÃ²bil"),
+            MessageLookupByLibrary.simpleMessage("Clau de Cartera Mòbil"),
         "backups_viewMobileWalletSeed": MessageLookupByLibrary.simpleMessage(
-          "Veure clau de Cartera MÃ²bil",
+          "Veure clau de Cartera Mòbil",
         ),
         "bottomNav_accounts": MessageLookupByLibrary.simpleMessage("Comptes"),
         "bottomNav_activity": MessageLookupByLibrary.simpleMessage("Activitat"),
@@ -405,13 +404,13 @@ class MessageLookup extends MessageLookupByLibrary {
           "No es pot descodificar UR.",
         ),
         "camera_toast_invalidPairPayload": MessageLookupByLibrary.simpleMessage(
-          "Payload de parella no vÃ lid.",
+          "Payload de parella no vàlid.",
         ),
         "camera_toast_notAValidAddress": MessageLookupByLibrary.simpleMessage(
-          "AdreÃ§a no vÃ lida.",
+          "Adreça no vàlida.",
         ),
         "camera_toast_notAValidSeed": MessageLookupByLibrary.simpleMessage(
-          "Clau no vÃ lida.",
+          "Clau no vàlida.",
         ),
         "card_coin_locked": MessageLookupByLibrary.simpleMessage(
           "Moneda Bloquejada",
@@ -440,7 +439,7 @@ class MessageLookup extends MessageLookupByLibrary {
         ),
         "coincontrol_coin_change_spendable_tate_modal_subheading":
             MessageLookupByLibrary.simpleMessage(
-          "El vostre identificador de transacció es copiarà al porta-retalls i és possible que sigui visible per a altres aplicacions del vostre telèfon.",
+          "L\'identificador de la transacció es copiarà al porta-retalls i és possible que sigui visible per a altres aplicacions del telèfon.",
         ),
         "coincontrol_edit_transaction_available_balance":
             MessageLookupByLibrary.simpleMessage("Saldo disponible"),
@@ -458,7 +457,7 @@ class MessageLookup extends MessageLookupByLibrary {
         ),
         "coincontrol_subsat_selectorWarning":
             MessageLookupByLibrary.simpleMessage(
-          "Menys d\'1 sat/vb Ã©s una funciÃ³ avanÃ§ada.",
+          "Menys d\'1 sat/vb és una funció avançada.",
         ),
         "coincontrol_switchActivity": MessageLookupByLibrary.simpleMessage(
           "Activitat",
@@ -469,7 +468,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Revisa la Transacció"),
         "coincontrol_txDetail_cta1_passport":
             MessageLookupByLibrary.simpleMessage(
-          "Signar amb Passaport",
+          "Signa amb Passport",
         ),
         "coincontrol_txDetail_heading_passport":
             MessageLookupByLibrary.simpleMessage(
@@ -519,7 +518,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "coincontrol_tx_detail_expand_heading":
             MessageLookupByLibrary.simpleMessage("DETALLS DE LA TRANSACCIÓ"),
         "coincontrol_tx_detail_expand_spentFrom":
-            MessageLookupByLibrary.simpleMessage("Gastat de"),
+            MessageLookupByLibrary.simpleMessage("Gastat des de"),
         "coincontrol_tx_detail_fee": MessageLookupByLibrary.simpleMessage(
           "Comissió",
         ),
@@ -533,7 +532,7 @@ class MessageLookup extends MessageLookupByLibrary {
           "Altres",
         ),
         "coincontrol_tx_detail_fee_fast": MessageLookupByLibrary.simpleMessage(
-          "RÃ pid",
+          "Ràpid",
         ),
         "coincontrol_tx_detail_fee_faster":
             MessageLookupByLibrary.simpleMessage(
@@ -648,7 +647,7 @@ class MessageLookup extends MessageLookupByLibrary {
           "No hi ha prou monedes confirmades o desbloquejades per cancel·lar aquesta transacció.\n\nSi pots, espera que les pendents es confirmin o desbloqueja\'n algunes i torna-ho a provar.",
         ),
         "coindetails_overlay_notes":
-            MessageLookupByLibrary.simpleMessage("Notes"),
+            MessageLookupByLibrary.simpleMessage("Nota"),
         "coindetails_overlay_paymentID": MessageLookupByLibrary.simpleMessage(
           "ID de pagament",
         ),
@@ -675,8 +674,9 @@ class MessageLookup extends MessageLookupByLibrary {
         "common_button_contactSupport": MessageLookupByLibrary.simpleMessage(
           "Contactar suport",
         ),
-        "common_button_retry":
-            MessageLookupByLibrary.simpleMessage("Reintenta"),
+        "common_button_retry": MessageLookupByLibrary.simpleMessage(
+          "Torna-ho a provar",
+        ),
         "component_12WordSeed": MessageLookupByLibrary.simpleMessage(
           "Clau de 12 paraules",
         ),
@@ -684,10 +684,12 @@ class MessageLookup extends MessageLookupByLibrary {
           "Clau de 24 paraules",
         ),
         "component_Apply": MessageLookupByLibrary.simpleMessage("Aplica"),
-        "component_advanced": MessageLookupByLibrary.simpleMessage("AvanÃ§at"),
-        "component_apply": MessageLookupByLibrary.simpleMessage("Aplicar"),
+        "component_advanced": MessageLookupByLibrary.simpleMessage(
+          "Opcions Avançades",
+        ),
+        "component_apply": MessageLookupByLibrary.simpleMessage("Aplica"),
         "component_areYouSure": MessageLookupByLibrary.simpleMessage(
-          "N\'estÃ s segur?",
+          "Estàs segur?",
         ),
         "component_back": MessageLookupByLibrary.simpleMessage("Enrere"),
         "component_cancel": MessageLookupByLibrary.simpleMessage("Cancel·la"),
@@ -703,8 +705,9 @@ class MessageLookup extends MessageLookupByLibrary {
         ),
         "component_exit": MessageLookupByLibrary.simpleMessage("Surt"),
         "component_filter": MessageLookupByLibrary.simpleMessage("Filtra"),
-        "component_filter_button_all":
-            MessageLookupByLibrary.simpleMessage("Tot"),
+        "component_filter_button_all": MessageLookupByLibrary.simpleMessage(
+          "Totes",
+        ),
         "component_goToSettings": MessageLookupByLibrary.simpleMessage(
           "Vés a Configuració",
         ),
@@ -723,7 +726,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "component_recoverWithQR": MessageLookupByLibrary.simpleMessage(
           "Recupera amb codi QR",
         ),
-        "component_redeem": MessageLookupByLibrary.simpleMessage("Bescanviar"),
+        "component_redeem": MessageLookupByLibrary.simpleMessage("Bescanvia"),
         "component_reset": MessageLookupByLibrary.simpleMessage("Reinicia"),
         "component_resetFilter": MessageLookupByLibrary.simpleMessage(
           "Restableix filtre",
@@ -824,8 +827,7 @@ class MessageLookup extends MessageLookupByLibrary {
         ),
         "device_deviceDetailsPrimeRemoved_completeAccessorySetup":
             MessageLookupByLibrary.simpleMessage(
-          "Completa configuraciÃ³ accessori",
-        ),
+                "Completa configuració accessori"),
         "device_deviceDetailsPrimeRemoved_pairPassportAgain":
             MessageLookupByLibrary.simpleMessage("Torna a emparellar Passport"),
         "device_deviceDetailsPrimeRemoved_reconnectPassport":
@@ -835,14 +837,14 @@ class MessageLookup extends MessageLookupByLibrary {
           "Connectat",
         ),
         "device_deviceDetailsPrime_connection":
-            MessageLookupByLibrary.simpleMessage("ConnexiÃ³"),
+            MessageLookupByLibrary.simpleMessage("Connexió"),
         "device_deviceDetailsPrime_disconnected":
             MessageLookupByLibrary.simpleMessage("Desconnectat"),
         "device_deviceDetailsPrime_securityCheck":
-            MessageLookupByLibrary.simpleMessage("ComprovaciÃ³ seguretat"),
+            MessageLookupByLibrary.simpleMessage("Comprovació seguretat"),
         "devices_connectingToPrime_content":
             MessageLookupByLibrary.simpleMessage(
-          "MantÃ©n els dispositius a prop.",
+          "Mantén els dispositius a prop.",
         ),
         "devices_connectingToPrime_header":
             MessageLookupByLibrary.simpleMessage(
@@ -850,10 +852,10 @@ class MessageLookup extends MessageLookupByLibrary {
         ),
         "devices_connectionFailedModal_content":
             MessageLookupByLibrary.simpleMessage(
-          "Envoy no s\'ha pogut connectar a Passport Prime. Assegura\'t que Passport Prime estÃ  encÃ¨s, que Bluetooth estÃ  activat i que no estÃ  connectat a un altre dispositiu.",
+          "Envoy no s\'ha pogut connectar a Passport Prime. Assegura\'t que Passport Prime està encès, que Bluetooth està activat i que no està connectat a un altre dispositiu.",
         ),
         "devices_connectionFailedModal_header":
-            MessageLookupByLibrary.simpleMessage("ConnexiÃ³ fallida"),
+            MessageLookupByLibrary.simpleMessage("Connexió fallida"),
         "devices_empty_modal_video_cta1": MessageLookupByLibrary.simpleMessage(
           "Comprar Passport",
         ),
@@ -865,15 +867,15 @@ class MessageLookup extends MessageLookupByLibrary {
         ),
         "devices_firmwareUpdateModal_content":
             MessageLookupByLibrary.simpleMessage(
-          "Les actualitzacions de firmware de Passport Prime s\'han d\'iniciar al dispositiu. Ves a ConfiguraciÃ³ > ActualitzaciÃ³.",
+          "Les actualitzacions de firmware de Passport Prime s\'han d\'iniciar al dispositiu. Ves a Configuració > Actualització.",
         ),
         "devices_firmwareUpdateModal_header":
             MessageLookupByLibrary.simpleMessage(
-          "ComenÃ§a a Passport Prime",
+          "Comença a Passport Prime",
         ),
         "devices_reconnectedSuccess_content":
             MessageLookupByLibrary.simpleMessage(
-          "El dispositiu ja estÃ  a punt.",
+          "El dispositiu ja està a punt.",
         ),
         "devices_reconnectedSuccess_header":
             MessageLookupByLibrary.simpleMessage(
@@ -1244,7 +1246,7 @@ class MessageLookup extends MessageLookupByLibrary {
         ),
         "erase_wallet_with_balance_modal_subheading":
             MessageLookupByLibrary.simpleMessage(
-          "Abans d\'eliminar la cartera d\'Envoy, buideu els vostres comptes.\nAneu a Còpies de Seguretat > Esborra Carteres i Còpies de Seguretat un cop hàgiu acabat.",
+          "Abans d\'eliminar la teva cartera Envoy, buida els teus Comptes.\n\nVes a Còpies de seguretat > Esborra carteres i còpies de seguretat quan hagis acabat.",
         ),
         "exploreAddresses_listFilter_unused":
             MessageLookupByLibrary.simpleMessage(
@@ -1260,21 +1262,21 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Torna a la llista"),
         "exploreAddresses_listModal_content":
             MessageLookupByLibrary.simpleMessage(
-          "Aquesta adreÃ§a s\'ha utilitzat almenys una vegada. En rebre Bitcoin, Ã©s una bona prÃ ctica de privacitat utilitzar una adreÃ§a nova.",
+          "Aquesta adreça s\'ha utilitzat almenys una vegada. En rebre Bitcoin, és una bona pràctica de privacitat utilitzar una adreça nova.",
         ),
         "exploreAddresses_listModal_showAddress":
-            MessageLookupByLibrary.simpleMessage("Mostra adreÃ§a"),
+            MessageLookupByLibrary.simpleMessage("Mostra adreça"),
         "exploreAddresses_list_header": MessageLookupByLibrary.simpleMessage(
           "Explora adreces",
         ),
         "exploreAddresses_qr_derivationPath":
             MessageLookupByLibrary.simpleMessage(
-          "Ruta de derivaciÃ³",
+          "Ruta de derivació",
         ),
         "exploreAddresses_qr_header": m5,
         "exploreAddresses_qr_warningReused":
             MessageLookupByLibrary.simpleMessage(
-          "Aquesta adreÃ§a ja s\'ha utilitzat. Evita reutilitzar adreces per preservar la privacitat.",
+          "Aquesta adreça ja s\'ha utilitzat. Evita reutilitzar adreces per preservar la privacitat.",
         ),
         "exploreAddresses_searchError_continueSearching":
             MessageLookupByLibrary.simpleMessage("Continua cercant"),
@@ -1335,10 +1337,10 @@ class MessageLookup extends MessageLookupByLibrary {
         ),
         "finalize_catchAll_backUpMasterKey":
             MessageLookupByLibrary.simpleMessage(
-          "Fes cÃ²pia Clau Mestra",
+          "Fes còpia Clau Mestra",
         ),
         "finalize_catchAll_backingUpMasterKey":
-            MessageLookupByLibrary.simpleMessage("Fent cÃ²pia Clau Mestra"),
+            MessageLookupByLibrary.simpleMessage("Fent còpia Clau Mestra"),
         "finalize_catchAll_connectAccount":
             MessageLookupByLibrary.simpleMessage(
           "Connecta compte",
@@ -1355,7 +1357,7 @@ class MessageLookup extends MessageLookupByLibrary {
         ),
         "finalize_catchAll_masterKeyBackedUp":
             MessageLookupByLibrary.simpleMessage(
-          "CÃ²pia de Clau Mestra feta",
+          "Còpia de Clau Mestra feta",
         ),
         "finalize_catchAll_masterKeySetUp":
             MessageLookupByLibrary.simpleMessage(
@@ -1371,7 +1373,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "finalize_catchAll_settingUpMasterKey":
             MessageLookupByLibrary.simpleMessage("Configurant Clau Mestra"),
         "finish_connectedSuccess_content": MessageLookupByLibrary.simpleMessage(
-          "Envoy estÃ  configurat i a punt per al teu Bitcoin!",
+          "Envoy està configurat i preparat per al vostre Bitcoin!",
         ),
         "finish_connectedSuccess_header": MessageLookupByLibrary.simpleMessage(
           "Cartera connectada correctament",
@@ -1380,7 +1382,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Cancel·la actualit."),
         "firmware_connectionModalCancelUpdate_content":
             MessageLookupByLibrary.simpleMessage(
-          "AixÃ² cancelÂ·larÃ  l\'actualitzaciÃ³ del firmware. Passport Prime continuarÃ  amb la versiÃ³ actual.",
+          "Això cancel·larà l\'actualització del firmware. Passport Prime continuarà amb la versió actual.",
         ),
         "firmware_connectionModalCancelUpdate_header":
             MessageLookupByLibrary.simpleMessage("Cancel·la actualit.?"),
@@ -1389,7 +1391,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "firmware_downloadingUpdate_downloaded":
             MessageLookupByLibrary.simpleMessage("Descarregada"),
         "firmware_downloadingUpdate_estimating":
-            MessageLookupByLibrary.simpleMessage("Estimant temps restantâ€¦"),
+            MessageLookupByLibrary.simpleMessage("Estimant temps restant…"),
         "firmware_downloadingUpdate_header":
             MessageLookupByLibrary.simpleMessage(
           "Descarregant",
@@ -1406,20 +1408,20 @@ class MessageLookup extends MessageLookupByLibrary {
         "firmware_updateAvailable_whatsNew": m10,
         "firmware_updateError_downloadFailed":
             MessageLookupByLibrary.simpleMessage(
-          "DescÃ rrega fallida",
+          "Descàrrega fallida",
         ),
         "firmware_updateError_header": MessageLookupByLibrary.simpleMessage(
           "Error actualització",
         ),
         "firmware_updateError_installFailed":
             MessageLookupByLibrary.simpleMessage(
-          "InstalÂ·laciÃ³ fallida",
+          "Instal·lació fallida",
         ),
         "firmware_updateError_receivingFailed":
-            MessageLookupByLibrary.simpleMessage("TransferÃ¨ncia fallida"),
+            MessageLookupByLibrary.simpleMessage("Transferència fallida"),
         "firmware_updateError_verifyFailed":
             MessageLookupByLibrary.simpleMessage(
-          "VerificaciÃ³ fallida",
+          "Verificació fallida",
         ),
         "firmware_updateModalConnectionLostToast_unableToReconnect":
             MessageLookupByLibrary.simpleMessage(
@@ -1428,21 +1430,21 @@ class MessageLookup extends MessageLookupByLibrary {
         "firmware_updateModalConnectionLost_exit":
             MessageLookupByLibrary.simpleMessage("Surt configuració"),
         "firmware_updateModalConnectionLost_header":
-            MessageLookupByLibrary.simpleMessage("ConnexiÃ³ perduda"),
+            MessageLookupByLibrary.simpleMessage("Connexió perduda"),
         "firmware_updateModalConnectionLost_reconnecting":
-            MessageLookupByLibrary.simpleMessage("Reconnectantâ€¦"),
+            MessageLookupByLibrary.simpleMessage("Reconnectant…"),
         "firmware_updateModalConnectionLost_tryToReconnect":
             MessageLookupByLibrary.simpleMessage("Intenta reconnectar"),
         "firmware_updateSuccess_content1": m11,
         "firmware_updateSuccess_content2": MessageLookupByLibrary.simpleMessage(
-          "Continua la configuraciÃ³ a Passport Prime.",
+          "Continua la configuració a Passport Prime.",
         ),
         "firmware_updateSuccess_header": MessageLookupByLibrary.simpleMessage(
-          "ActualitzaciÃ³ correcta",
+          "Actualització correcta",
         ),
         "firmware_updatingDownload_content":
             MessageLookupByLibrary.simpleMessage(
-          "MantÃ©n els dispositius a prop.",
+          "Mantén els dispositius a prop.",
         ),
         "firmware_updatingDownload_downloading":
             MessageLookupByLibrary.simpleMessage("Descarregant"),
@@ -1463,7 +1465,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Instal·lant"),
         "firmware_updatingPrime_primeRestarting":
             MessageLookupByLibrary.simpleMessage(
-          "Passport Prime s\'estÃ  reiniciant",
+          "Passport Prime s\'està reiniciant",
         ),
         "firmware_updatingPrime_restartPrime":
             MessageLookupByLibrary.simpleMessage(
@@ -1493,13 +1495,13 @@ class MessageLookup extends MessageLookupByLibrary {
           "Toqueu qualsevol de les targetes anteriors per rebre Bitcoin.",
         ),
         "invalid_qr_heading": MessageLookupByLibrary.simpleMessage(
-          "Codi QR invÃ lid",
+          "Codi QR invàlid",
         ),
         "invalid_qr_subheading": MessageLookupByLibrary.simpleMessage(
-          "El codi QR no contÃ© cap transacciÃ³ Bitcoin vÃ lida (PSBT). Comprova-ho i torna-ho a provar.",
+          "El codi QR no conté cap transacció Bitcoin vàlida (PSBT). Comprova-ho i torna-ho a provar.",
         ),
         "launch_screen_faceID_fail_CTA": MessageLookupByLibrary.simpleMessage(
-          "Torna-ho A Provar",
+          "Torna-ho a Provar",
         ),
         "launch_screen_faceID_fail_heading":
             MessageLookupByLibrary.simpleMessage(
@@ -1573,9 +1575,9 @@ class MessageLookup extends MessageLookupByLibrary {
           "Envoy està creant una clau segura per a la cartera de Bitcoin, que s\'emmagatzemarà encriptada d\'extrem a extrem en el teu Clauer d\'iCloud.",
         ),
         "magic_setup_recovery_fail_Android_CTA1":
-            MessageLookupByLibrary.simpleMessage("Torna-ho"),
+            MessageLookupByLibrary.simpleMessage("Torna-ho a provar"),
         "magic_setup_recovery_fail_Android_CTA2":
-            MessageLookupByLibrary.simpleMessage("Recuperació amb codi QR"),
+            MessageLookupByLibrary.simpleMessage("Recupera amb codi QR"),
         "magic_setup_recovery_fail_Android_subheading":
             MessageLookupByLibrary.simpleMessage(
           "Envoy no pot localitzar una Còpia de Seguretat Màgica.\n\nConfirmeu que heu iniciat la sessió amb el compte de Google correcte i que heu restaurat la còpia de seguretat del dispositiu més recent.",
@@ -1660,7 +1662,7 @@ class MessageLookup extends MessageLookupByLibrary {
         ),
         "manage_deviceDetailsModalDisconnectExistingPassport_content":
             MessageLookupByLibrary.simpleMessage(
-          "En la versiÃ³ actual, Envoy nomÃ©s admet una connexiÃ³ amb Passport Prime.\nAixÃ² canviarÃ  en una propera actualitzaciÃ³, perÃ² ara has de desconnectar el Passport Prime existent abans de configurar-ne un de nou.",
+          "En la versió actual, Envoy només admet una connexió amb Passport Prime.\nAixò canviarà en una propera actualització, però ara has de desconnectar el Passport Prime existent abans de configurar-ne un de nou.",
         ),
         "manage_deviceDetailsModalDisconnectExistingPassport_disconnect":
             MessageLookupByLibrary.simpleMessage("Desconnecta"),
@@ -1670,13 +1672,13 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Reconnecta QuantumLink"),
         "manage_deviceDetailsUnpairedModalWarning_content":
             MessageLookupByLibrary.simpleMessage(
-          "La connexiÃ³ QuantumLink del teu Passport Prime {0} ja no estÃ  disponible. Si recentment has esborrat el dispositiu o has desemparellat Envoy, aixÃ² Ã©s normal. Si no, contacta amb suport.\nEnvoy eliminarÃ  aquest dispositiu de la llista d\'accessoris Bluetooth del teu telÃ¨fon.",
+          "La connexió QuantumLink del teu Passport Prime {0} ja no està disponible. Si recentment has esborrat el dispositiu o has desemparellat Envoy, això és normal. Si no, contacta amb suport.\nEnvoy eliminarà aquest dispositiu de la llista d\'accessoris Bluetooth del teu telèfon.",
         ),
         "manage_deviceDetailsUnpairedModalWarning_header":
             MessageLookupByLibrary.simpleMessage("QuantumLink desconnectat"),
         "manage_deviceDetailsUnpairedModal_content":
             MessageLookupByLibrary.simpleMessage(
-          "Passport Prime {0} s\'ha desemparellat. Envoy ara eliminarÃ  el dispositiu de la llista d\'accessoris Bluetooth del teu telÃ¨fon.",
+          "Passport Prime {0} s\'ha desemparellat. Envoy ara eliminarà el dispositiu de la llista d\'accessoris Bluetooth del teu telèfon.",
         ),
         "manage_deviceDetailsUnpairedModal_header":
             MessageLookupByLibrary.simpleMessage("Passport desemparellat"),
@@ -1736,22 +1738,22 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Cartera existent detectada"),
         "manual_onboardDisableMB_magicBackupDetected_subheading":
             MessageLookupByLibrary.simpleMessage(
-          "Envoy ha trobat una cartera existent al teu nÃºvol personal i la recuperarÃ  ara. Per desactivar les CÃ²pies MÃ giques o esborrar aquesta cartera permanentment, visita el menÃº de cÃ²pies.",
+          "Envoy ha trobat una cartera existent al teu núvol personal i la recuperarà ara. Per desactivar les Còpies Màgiques o esborrar aquesta cartera permanentment, visita el menú de còpies.",
         ),
         "manual_setup_change_from_magic_header":
             MessageLookupByLibrary.simpleMessage(
                 "Còpies Màgiques desactivades"),
         "manual_setup_change_from_magic_modal_subheader":
             MessageLookupByLibrary.simpleMessage(
-          "La teva CÃ²pia de Seguretat MÃ gica estÃ  a punt d\'esborrar-se permanentment. Assegura\'t que la clau privada estÃ  desada de manera segura i que descarregues el fitxer de cÃ²pia de seguretat d\'Envoy.\n\nAquesta acciÃ³ suprimirÃ  permanentment la clau d\'Envoy del teu compte d\'Apple o Google, i les dades xifrades d\'Envoy dels servidors de Foundation desprÃ©s d\'un perÃ­ode d\'espera de 24 h.",
+          "La teva Còpia de Seguretat Màgica està a punt d\'esborrar-se permanentment. Assegura\'t que la clau privada està desada de manera segura i que descarregues el fitxer de còpia de seguretat d\'Envoy.\n\nAquesta acció suprimirà permanentment la clau d\'Envoy del teu compte d\'Apple o Google, i les dades xifrades d\'Envoy dels servidors de Foundation després d\'un període d\'espera de 24 h.",
         ),
         "manual_setup_change_from_magic_subheaderApple":
             MessageLookupByLibrary.simpleMessage(
-          "Les dades de la CÃ²pia de Seguretat MÃ gica d\'Envoy s\'han suprimit correctament del teu compte d\'Apple i dels servidors de Foundation.",
+          "Les dades de la Còpia de Seguretat Màgica d\'Envoy s\'han suprimit correctament del teu compte d\'Apple i dels servidors de Foundation.",
         ),
         "manual_setup_change_from_magic_subheaderGoogle":
             MessageLookupByLibrary.simpleMessage(
-          "Les dades de la CÃ²pia de Seguretat MÃ gica d\'Envoy s\'han suprimit correctament del teu compte de Google i dels servidors de Foundation.",
+          "Les dades de la Còpia de Seguretat Màgica d\'Envoy s\'han suprimit correctament del teu compte de Google i dels servidors de Foundation.",
         ),
         "manual_setup_create_and_store_backup_CTA":
             MessageLookupByLibrary.simpleMessage("Trieu Destinació"),
@@ -1772,11 +1774,11 @@ class MessageLookup extends MessageLookupByLibrary {
         ),
         "manual_setup_generate_seed_heading":
             MessageLookupByLibrary.simpleMessage(
-          "Mantingueu La Vostra Clau Privada",
+          "Mantingues la teva clau privada",
         ),
         "manual_setup_generate_seed_subheading":
             MessageLookupByLibrary.simpleMessage(
-          "Recordeu mantenir sempre privada la vostra clau. Qualsevol persona amb accés a aquesta clau pot gastar el vostre Bitcoin!",
+          "Mantén privades les paraules de clau. Qui accedeixi a aquesta clau pot gastar el teu Bitcoin!",
         ),
         "manual_setup_generate_seed_verify_seed_again_quiz_infotext":
             MessageLookupByLibrary.simpleMessage(
@@ -1837,10 +1839,10 @@ class MessageLookup extends MessageLookupByLibrary {
           "Importa amb codi QR",
         ),
         "manual_setup_import_seed_CTA2": MessageLookupByLibrary.simpleMessage(
-          "Clau Privada de 24 Paraules",
+          "Clau de 24 paraules",
         ),
         "manual_setup_import_seed_CTA3": MessageLookupByLibrary.simpleMessage(
-          "Clau Privada de 12 Paraules",
+          "Clau de 12 paraules",
         ),
         "manual_setup_import_seed_checkbox":
             MessageLookupByLibrary.simpleMessage(
@@ -1870,7 +1872,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Restaurar"),
         "manual_setup_magicBackupDetected_subheading":
             MessageLookupByLibrary.simpleMessage(
-          "S\'ha trobat una Còpia de Seguretat al servidor.\nVoleu Restaurar la vostra còpia de seguretat?",
+          "S\'ha trobat una Còpia de Seguretat Màgica al servidor.\n\nVols restaurar-la?",
         ),
         "manual_setup_recovery_fail_cta2": MessageLookupByLibrary.simpleMessage(
           "Importar Clau Privada",
@@ -1982,7 +1984,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "manual_toggle_on_seed_backedup_iOS_toFoundationServers":
             MessageLookupByLibrary.simpleMessage("als Servidors de Foundation"),
         "manual_toggle_on_seed_backingup": MessageLookupByLibrary.simpleMessage(
-          "Fent cÃ²piaâ€¦",
+          "Fent còpia…",
         ),
         "manual_toggle_on_seed_backup_in_progress_ios_backup_in_progress":
             MessageLookupByLibrary.simpleMessage(
@@ -2042,54 +2044,54 @@ class MessageLookup extends MessageLookupByLibrary {
           "Comprovació desactivada",
         ),
         "menu_toast_unexpectedError": MessageLookupByLibrary.simpleMessage(
-          "S\'ha produÃ¯t un error inesperat. Torna-ho a provar.",
+          "S\'ha produït un error inesperat. Torna-ho a provar.",
         ),
         "onboardin_unifiedAccountsModal_content":
             MessageLookupByLibrary.simpleMessage(
-          "Des de la versiÃ³ 2.0.0, tots els tipus d\'adreÃ§a sÃ³n accessibles des d\'una sola targeta de compte.\n\nEl tipus d\'adreÃ§a de recepciÃ³ per defecte es pot canviar a ConfiguraciÃ³.",
+          "Des de la versió 2.0.0, tots els tipus d\'adreça són accessibles des d\'una sola targeta de compte.\n\nEl tipus d\'adreça de recepció per defecte es pot canviar a Configuració.",
         ),
         "onboardin_unifiedAccountsModal_tilte":
-            MessageLookupByLibrary.simpleMessage("Tipus d\'adreÃ§a unificats"),
+            MessageLookupByLibrary.simpleMessage("Tipus d\'adreça unificats"),
         "onboarding_advancedModal_content":
             MessageLookupByLibrary.simpleMessage(
-          "Si continues sense CÃ²pies de Seguretat MÃ giques, serÃ s responsable de desar les teves paraules de clau i dades de cÃ²pia.",
+          "Si continues sense Còpies de Seguretat Màgiques, seràs responsable de desar les teves paraules de clau i dades de còpia.",
         ),
         "onboarding_advancedModal_header": MessageLookupByLibrary.simpleMessage(
-          "N\'estÃ s segur?",
+          "Estàs segur?",
         ),
         "onboarding_advanced_magicBackupSwitchText":
             MessageLookupByLibrary.simpleMessage(
-          "CÃ²pia i recuperaciÃ³ simples i segures",
+          "Còpia i recuperació simples i segures",
         ),
         "onboarding_advanced_magicBackups":
             MessageLookupByLibrary.simpleMessage(
-          "CÃ²pies MÃ giques",
+          "Còpies de Seguretat Màgiques",
         ),
         "onboarding_advanced_magicBackupsContent":
             MessageLookupByLibrary.simpleMessage(
-          "CÃ²pies xifrades automÃ tiques de les teves dades per a una recuperaciÃ³ instantÃ nia i sense estrÃ¨s.",
+          "Còpies xifrades automàtiques de les teves dades per a una recuperació instantània i sense estrès.",
         ),
         "onboarding_advanced_title": MessageLookupByLibrary.simpleMessage(
-          "AvanÃ§at",
+          "Opcions Avançades",
         ),
         "onboarding_appclip_header": MessageLookupByLibrary.simpleMessage(
           "Benvingut a Passport",
         ),
         "onboarding_appclip_subheaderCore":
             MessageLookupByLibrary.simpleMessage(
-          "InstalÂ·la Envoy per configurar Passport Core.",
+          "Instal·la Envoy per configurar Passport Core.",
         ),
         "onboarding_appclip_subheaderPrime":
             MessageLookupByLibrary.simpleMessage(
-          "InstalÂ·la Envoy per configurar Passport Prime.",
+          "Instal·la Envoy per configurar Passport Prime.",
         ),
         "onboarding_bluetoothDisabled_content":
             MessageLookupByLibrary.simpleMessage(
-          "Passport Prime requereix Bluetooth per a la configuraciÃ³ inicial amb QuantumLink. AixÃ² permet sincronitzar data i hora, actualitzacions de firmware, comprovacions de seguretat, cÃ²pies i mÃ©s.\n\nActiva els permisos Bluetooth a la configuraciÃ³ d\'Envoy.",
+          "Passport Prime requereix Bluetooth per a la configuració inicial amb QuantumLink. Això permet sincronitzar data i hora, actualitzacions de firmware, comprovacions de seguretat, còpies i més.\n\nActiva els permisos Bluetooth a la configuració d\'Envoy.",
         ),
         "onboarding_bluetoothDisabled_enable":
             MessageLookupByLibrary.simpleMessage(
-          "Activa a ConfiguraciÃ³",
+          "Activa a Configuració",
         ),
         "onboarding_bluetoothDisabled_header":
             MessageLookupByLibrary.simpleMessage(
@@ -2101,46 +2103,48 @@ class MessageLookup extends MessageLookupByLibrary {
         ),
         "onboarding_bluetoothIntro_content":
             MessageLookupByLibrary.simpleMessage(
-          "Passport Prime utilitza un nou protocol segur basat en Bluetooth per comunicar-se en temps real amb Envoy.\n\nQuantumLink crea un tÃºnel xifrat d\'extrem a extrem entre Passport i Envoy per garantir una connexiÃ³ segura.",
+          "Passport Prime utilitza un nou protocol segur basat en Bluetooth per comunicar-se en temps real amb Envoy.\n\nQuantumLink crea un túnel xifrat d\'extrem a extrem entre Passport i Envoy per garantir una connexió segura.",
         ),
         "onboarding_bluetoothIntro_header":
             MessageLookupByLibrary.simpleMessage(
           "Protegeix Bluetooth amb\nQuantumLink",
         ),
         "onboarding_connectionChecking_SecurityPassed":
-            MessageLookupByLibrary.simpleMessage("ComprovaciÃ³ superada"),
+            MessageLookupByLibrary.simpleMessage("Comprovació superada"),
         "onboarding_connectionChecking_forUpdates":
             MessageLookupByLibrary.simpleMessage("Cercant actualitzacions"),
         "onboarding_connectionIntroError2_content":
             MessageLookupByLibrary.simpleMessage(
-          "Envoy no ha pogut connectar amb els servidors de Foundation. Assegura\'t que tens connexiÃ³ a Internet.",
+          "Envoy no ha pogut connectar amb els servidors de Foundation. Assegura\'t que tens connexió a Internet.",
         ),
         "onboarding_connectionIntroErrorInternet_content":
             MessageLookupByLibrary.simpleMessage(
-          "No s\'ha pogut comunicar amb el servidor de seguretat. Comprova la connexiÃ³ a Internet i torna-ho a provar.",
+          "No s\'ha pogut comunicar amb el servidor de seguretat. Comprova la connexió a Internet i torna-ho a provar.",
         ),
         "onboarding_connectionIntroErrorInternet_securityCheckPending":
-            MessageLookupByLibrary.simpleMessage("ComprovaciÃ³ pendent"),
+            MessageLookupByLibrary.simpleMessage("Comprovació pendent"),
         "onboarding_connectionIntroError_content":
             MessageLookupByLibrary.simpleMessage(
-          "Aquest dispositiu podria no ser genuÃ­ o haver estat manipulat durant l\'enviament. Contacta amb el servei tÃ¨cnic per rebre ajuda.",
+          "Aquest dispositiu podria no ser genuí o haver estat manipulat durant l\'enviament. Contacta amb el servei tècnic per rebre ajuda.",
         ),
         "onboarding_connectionIntroError_exitSetup":
             MessageLookupByLibrary.simpleMessage("Surt configuració"),
         "onboarding_connectionIntroError_securityCheckFailed":
-            MessageLookupByLibrary.simpleMessage("ComprovaciÃ³ fallida"),
+            MessageLookupByLibrary.simpleMessage("Comprovació fallida"),
         "onboarding_connectionIntroError_securityCheckPending":
-            MessageLookupByLibrary.simpleMessage("ComprovaciÃ³ pendent"),
+            MessageLookupByLibrary.simpleMessage("Comprovació pendent"),
         "onboarding_connectionIntroWarning_content":
             MessageLookupByLibrary.simpleMessage(
-          "Assegura\'t que Passport Prime estigui encÃ¨s i a prop del telÃ¨fon.",
+          "Assegura\'t que Passport Prime estigui encès i a prop del telèfon.",
         ),
         "onboarding_connectionIntroWarning_header":
             MessageLookupByLibrary.simpleMessage("Config. pausada"),
         "onboarding_connectionIntro_checkForUpdates":
             MessageLookupByLibrary.simpleMessage("Cerca actualitzacions"),
         "onboarding_connectionIntro_checkingDeviceSecurity":
-            MessageLookupByLibrary.simpleMessage("Comprovant seguretat"),
+            MessageLookupByLibrary.simpleMessage(
+          "Comprovació de la Seguretat del Dispositiu",
+        ),
         "onboarding_connectionIntro_connectedToPrime":
             MessageLookupByLibrary.simpleMessage("Connectat a Passport Prime"),
         "onboarding_connectionIntro_header":
@@ -2149,13 +2153,13 @@ class MessageLookup extends MessageLookupByLibrary {
         ),
         "onboarding_connectionModalAbort_content":
             MessageLookupByLibrary.simpleMessage(
-          "Continua nomÃ©s si vols perdre tot el progrÃ©s i reiniciar la configuraciÃ³ de Passport des del principi.",
+          "Continua només si vols perdre tot el progrés i reiniciar la configuració de Passport des del principi.",
         ),
         "onboarding_connectionModalAbort_header":
             MessageLookupByLibrary.simpleMessage("Surt configuració?"),
         "onboarding_connectionModalExitOnboarding_content":
             MessageLookupByLibrary.simpleMessage(
-          "AixÃ² esborrarÃ  tot el progrÃ©s. HaurÃ s de comenÃ§ar la configuraciÃ³ de Passport Prime des del principi.",
+          "Això esborrarà tot el progrés. Hauràs de començar la configuració de Passport Prime des del principi.",
         ),
         "onboarding_connectionModalExitOnboarding_header":
             MessageLookupByLibrary.simpleMessage("Surt configuració?"),
@@ -2165,100 +2169,99 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Nova actualització"),
         "onboarding_magicUserMobileCreating_content":
             MessageLookupByLibrary.simpleMessage(
-          "Envoy estÃ  creant una clau segura per utilitzar-la amb la teva Cartera MÃ²bil Bitcoin, que es desarÃ  xifrada d\'extrem a extrem al teu compte d\'Apple o Google.",
+          "Envoy està creant una clau segura per utilitzar-la amb la teva Cartera Mòbil Bitcoin, que es desarà xifrada d\'extrem a extrem al teu compte d\'Apple o Google.",
         ),
         "onboarding_magicUserMobileCreating_header":
             MessageLookupByLibrary.simpleMessage(
-          "Creant la Clau de Cartera MÃ²bil",
-        ),
+                "Creant la Clau de Cartera Mòbil"),
         "onboarding_magicUserMobileEncrypting_content":
             MessageLookupByLibrary.simpleMessage(
-          "Envoy estÃ  xifrant la cÃ²pia de seguretat de la cartera.\n\nAquesta cÃ²pia contÃ© dades Ãºtils de la cartera, com ara etiquetes, notes, comptes i configuraciÃ³.",
+          "Envoy està encriptant la còpia de seguretat de la cartera.\n\nAquesta còpia de seguretat conté dades útils de la cartera, com ara etiquetes, notes, comptes i configuració.",
         ),
         "onboarding_magicUserMobileEncrypting_header":
-            MessageLookupByLibrary.simpleMessage("Xifrant cÃ²pia de cartera"),
+            MessageLookupByLibrary.simpleMessage("Xifrant còpia de cartera"),
         "onboarding_magicUserMobileIntro_content1":
             MessageLookupByLibrary.simpleMessage(
-          "TambÃ© coneguda com a â€œcartera calentaâ€. Gastar des d\'aquesta cartera nomÃ©s requereix el teu telÃ¨fon per autoritzar.",
+          "També coneguda com a “cartera calenta”. Gastar des d\'aquesta cartera només requereix el teu telèfon per autoritzar.",
         ),
         "onboarding_magicUserMobileIntro_content2":
             MessageLookupByLibrary.simpleMessage(
-          "La clau de la teva Cartera MÃ²bil es desarÃ  a l\'enclavament segur del telÃ¨fon, xifrada, i se\'n farÃ  una cÃ²pia al teu compte d\'Apple o Google.",
+          "La clau de la teva Cartera Mòbil es desarà a l\'enclavament segur del telèfon, xifrada, i se\'n farà una còpia al teu compte d\'Apple o Google.",
         ),
         "onboarding_magicUserMobileIntro_header":
             MessageLookupByLibrary.simpleMessage(
-          "Configura una Cartera MÃ²bil amb CÃ²pies MÃ giques",
+          "Configura una Cartera Mòbil amb Còpies Màgiques",
         ),
         "onboarding_magicUserMobileIntro_learnMoreMagicBackups":
             MessageLookupByLibrary.simpleMessage(
-          "AprÃ¨n mÃ©s sobre les CÃ²pies MÃ giques",
+          "Aprèn més sobre les Còpies Màgiques",
         ),
         "onboarding_magicUserMobileSuccess_content":
             MessageLookupByLibrary.simpleMessage(
-          "Envoy estÃ  configurat i a punt per al teu Bitcoin!",
+          "Envoy està configurat i preparat per al vostre Bitcoin!",
         ),
         "onboarding_magicUserMobileSuccess_header":
             MessageLookupByLibrary.simpleMessage(
-          "La teva Cartera MÃ²bil estÃ  a punt",
+          "La teva Cartera Mòbil està a punt",
         ),
         "onboarding_magicUserMobileUploading_content":
             MessageLookupByLibrary.simpleMessage(
-          "Envoy estÃ  pujant la cÃ²pia xifrada de la cartera als servidors de Foundation.\n\nCom que la cÃ²pia estÃ  xifrada d\'extrem a extrem, Foundation no hi tÃ© accÃ©s ni en coneix el contingut.",
+          "Envoy està penjant la còpia de seguretat de la cartera xifrada als servidors de Foundation.\n\nCom que la vostra còpia de seguretat està xifrada d\'extrem a extrem, Foundation no té accés a la vostra còpia de seguretat ni al coneixement del seu contingut.",
         ),
         "onboarding_magicUserMobileUploading_header":
-            MessageLookupByLibrary.simpleMessage("Pujant la teva cÃ²pia"),
+            MessageLookupByLibrary.simpleMessage("Pujant Còpia de Seguretat"),
         "onboarding_migrating_xOfYSynced": m12,
         "onboarding_modalBluetoothUnableConnect_content":
             MessageLookupByLibrary.simpleMessage(
-          "Assegura\'t que Bluetooth estÃ  activat a Passport i al telÃ¨fon, i que tots dos dispositius sÃ³n a prop.",
+          "Assegura\'t que Bluetooth està activat a Passport i al telèfon, i que tots dos dispositius són a prop.",
         ),
         "onboarding_modalBluetoothUnableConnect_header":
             MessageLookupByLibrary.simpleMessage("No es pot connectar"),
         "onboarding_passpportSelectCamera_sub235VersionAlert":
             MessageLookupByLibrary.simpleMessage(
-          "EstÃ s configurant un Passport Core amb firmware v2.3.5 o anterior?",
+          "Estàs configurant un Passport Core amb firmware v2.3.5 o anterior?",
         ),
         "onboarding_passpportSelectCamera_tapHere":
-            MessageLookupByLibrary.simpleMessage("Toca aquÃ­"),
+            MessageLookupByLibrary.simpleMessage("Toca aquí"),
         "onboarding_primeIntroError_content":
             MessageLookupByLibrary.simpleMessage(
-          "No s\'ha pogut connectar a Internet. Comprova la connexiÃ³.",
+          "No s\'ha pogut connectar a Internet. Comprova la connexió.",
         ),
         "onboarding_primeIntro_content": MessageLookupByLibrary.simpleMessage(
-          "Enhorabona per fer el primer pas per protegir tota la teva vida digital.\n\nConfigurar el teu Passport Prime nomÃ©s trigarÃ  5-10 minuts. Agafa el dispositiu i comencem!",
+          "Enhorabona per fer el primer pas per protegir tota la teva vida digital.\n\nConfigurar el teu Passport Prime només trigarà 5-10 minuts. Agafa el dispositiu i comencem!",
         ),
         "onboarding_primeIntro_header": MessageLookupByLibrary.simpleMessage(
           "Configura el teu Passport Prime",
         ),
         "onboarding_sovereignUserMobileIntro_content1":
             MessageLookupByLibrary.simpleMessage(
-          "TambÃ© coneguda com a â€œcartera calentaâ€. Gastar des d\'aquesta cartera nomÃ©s requereix el teu telÃ¨fon per autoritzar.",
+          "També coneguda com a “cartera calenta”. Gastar des d\'aquesta cartera només requereix el teu telèfon per autoritzar.",
         ),
         "onboarding_sovereignUserMobileIntro_content2":
             MessageLookupByLibrary.simpleMessage(
-          "Les teves claus Bitcoin es desaran a l\'enclavament segur del telÃ¨fon. NomÃ©s tu ets responsable de mantenir una cÃ²pia de la clau privada.",
+          "Les teves claus Bitcoin es desaran a l\'enclavament segur del telèfon. Només tu ets responsable de mantenir una còpia de la clau privada.",
         ),
         "onboarding_sovereignUserMobileIntro_header":
-            MessageLookupByLibrary.simpleMessage("Configura la Cartera MÃ²bil"),
+            MessageLookupByLibrary.simpleMessage("Configura la Cartera Mòbil"),
         "onboarding_tutorialColdWallet_content":
             MessageLookupByLibrary.simpleMessage(
-          "TambÃ© coneguda com a â€œcartera fredaâ€. Gastar des d\'aquesta cartera requereix l\'autoritzaciÃ³ del teu dispositiu Passport.\n\nLa Clau Mestra de Passport sempre es desa de manera segura fora de lÃ­nia.\n\nUtilitza aquesta cartera per protegir la major part dels teus estalvis en Bitcoin.",
+          "També coneguda com a “cartera freda”. Gastar des d\'aquesta cartera requereix l\'autorització del teu dispositiu Passport.\n\nLa Clau Mestra de Passport sempre es desa de manera segura fora de línia.\n\nUtilitza aquesta cartera per protegir la major part dels teus estalvis en Bitcoin.",
         ),
         "onboarding_tutorialColdWallet_header":
             MessageLookupByLibrary.simpleMessage("Cartera Passport"),
         "onboarding_tutorialHotWallet_content":
             MessageLookupByLibrary.simpleMessage(
-          "TambÃ© coneguda com a â€œcartera calentaâ€. Gastar des d\'aquesta cartera nomÃ©s requereix el teu telÃ¨fon per autoritzar.\n\nCom que la Cartera MÃ²bil estÃ  connectada a Internet, utilitza-la per desar petites quantitats de Bitcoin per a transaccions freqÃ¼ents.",
+          "També coneguda com a “cartera calenta”. Gastar des d\'aquesta cartera només requereix el teu telèfon per autoritzar.\n\nCom que la Cartera Mòbil està connectada a Internet, utilitza-la per desar petites quantitats de Bitcoin per a transaccions freqüents.",
         ),
         "onboarding_tutorialHotWallet_header":
             MessageLookupByLibrary.simpleMessage(
-          "Cartera MÃ²bil",
+          "Cartera Mòbil",
         ),
         "onboarding_welcome_content": MessageLookupByLibrary.simpleMessage(
-          "Recupera la teva sobirania amb Envoy, una cartera Bitcoin senzilla amb potents funcions de gestiÃ³ de comptes i privacitat.",
+          "Recupera la teva sobirania amb Envoy, una cartera Bitcoin senzilla amb potents funcions de gestió de comptes i privacitat.",
         ),
         "onboarding_welcome_createMobileWallet":
-            MessageLookupByLibrary.simpleMessage("Crea una\nCartera MÃ²bil"),
+            MessageLookupByLibrary.simpleMessage("Crea una\nCartera Mòbil"),
         "onboarding_welcome_header": MessageLookupByLibrary.simpleMessage(
           "Benvingut a Envoy",
         ),
@@ -2282,7 +2285,7 @@ class MessageLookup extends MessageLookupByLibrary {
           "Aquesta és una adreça de Bitcoin que pertany al teu Passport.",
         ),
         "pair_new_device_address_cta2": MessageLookupByLibrary.simpleMessage(
-          "Contactar Servei Tècnic",
+          "Contactar suport",
         ),
         "pair_new_device_address_heading": MessageLookupByLibrary.simpleMessage(
           "Adreça validada?",
@@ -2347,17 +2350,17 @@ class MessageLookup extends MessageLookupByLibrary {
           "No s\'ha pogut accedir al Block Explorer",
         ),
         "privacy_blockExplorer_success": MessageLookupByLibrary.simpleMessage(
-          "ConnexiÃ³ correcta al Block Explorer",
+          "Connexió correcta al Block Explorer",
         ),
         "privacy_blockExplorer_urlError": MessageLookupByLibrary.simpleMessage(
           "Falta el prefix http:// o https:// a l\'URL",
         ),
         "privacy_explorer_configure": MessageLookupByLibrary.simpleMessage(
-          "Millora la privacitat connectant el teu propi explorador de blocs. Toca aprÃ¨n mÃ©s a dalt.",
+          "Millora la privacitat connectant el teu propi explorador de blocs. Toca aprèn més a dalt.",
         ),
         "privacy_explorer_explorerAddress":
             MessageLookupByLibrary.simpleMessage(
-          "AdreÃ§a de l\'explorador",
+          "Adreça de l\'explorador",
         ),
         "privacy_explorer_explorerType_personal":
             MessageLookupByLibrary.simpleMessage("Block Explorer personal"),
@@ -2368,10 +2371,10 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Connecta igualment"),
         "privacy_invalidCertificateModal_content":
             MessageLookupByLibrary.simpleMessage(
-          "Aquest node tÃ© un certificat no vÃ lid o autosignat. La connexiÃ³ pot no ser segura.\nVols connectar igualment?",
+          "Aquest node té un certificat no vàlid o autosignat. La connexió pot no ser segura.\nVols connectar igualment?",
         ),
         "privacy_invalidCertificateModal_header":
-            MessageLookupByLibrary.simpleMessage("Certificat no vÃ lid"),
+            MessageLookupByLibrary.simpleMessage("Certificat no vàlid"),
         "privacy_node_configure": MessageLookupByLibrary.simpleMessage(
           "Millora la teva privacitat executant el teu propi node. Toca per obtenir més informació.",
         ),
@@ -2458,7 +2461,7 @@ class MessageLookup extends MessageLookupByLibrary {
           "Com voleu que Envoy es connecti a Internet?",
         ),
         "qrTooBig_warning_subheading": MessageLookupByLibrary.simpleMessage(
-          "El codi QR escanejat contÃ© moltes dades i podria fer que Envoy es torni inestable. Segur que vols continuar?",
+          "El codi QR escanejat conté moltes dades i podria fer que Envoy es torni inestable. Segur que vols continuar?",
         ),
         "ramp_note": MessageLookupByLibrary.simpleMessage("Compra Ramp"),
         "ramp_pendingVoucher": MessageLookupByLibrary.simpleMessage(
@@ -2469,11 +2472,11 @@ class MessageLookup extends MessageLookupByLibrary {
                 "Utilitzeu una Adreça Taproot"),
         "receive_mobileWallet_multiplePassportContent":
             MessageLookupByLibrary.simpleMessage(
-          "Els fons enviats a aquesta adreÃ§a nomÃ©s es poden gastar amb el telÃ¨fon. Per protegir-los fora de lÃ­nia, tria un compte Passport [[aquÃ­]].",
+          "Els fons enviats a aquesta adreça només es poden gastar amb el telèfon. Per protegir-los fora de línia, tria un compte Passport [[aquí]].",
         ),
         "receive_mobileWallet_singlePassportContent":
             MessageLookupByLibrary.simpleMessage(
-          "Els fons enviats a aquesta adreÃ§a nomÃ©s es poden gastar amb el telÃ¨fon. Per protegir-los fora de lÃ­nia amb Passport, [[toca aquÃ­]].",
+          "Els fons enviats a aquesta adreça només es poden gastar amb el telèfon. Per protegir-los fora de línia amb Passport, [[toca aquí]].",
         ),
         "receive_qr_code_heading":
             MessageLookupByLibrary.simpleMessage("REBRE"),
@@ -2486,7 +2489,7 @@ class MessageLookup extends MessageLookupByLibrary {
           "Signa missatge",
         ),
         "receive_toast_addressCopied": MessageLookupByLibrary.simpleMessage(
-          "AdreÃ§a copiada al porta-retalls.",
+          "Adreça copiada al porta-retalls.",
         ),
         "receive_tx_list_awaitingConfirmation":
             MessageLookupByLibrary.simpleMessage("Pendent de confirmació"),
@@ -2583,10 +2586,10 @@ class MessageLookup extends MessageLookupByLibrary {
         ),
         "replaceByFee_coindetails_overlayNotice":
             MessageLookupByLibrary.simpleMessage(
-          "Les funcions d\'augmentar i cancelÂ·lar estaran disponibles quan la transacciÃ³ s\'hagi acabat de transmetre.",
+          "Les funcions d\'augmentar i cancel·lar estaran disponibles quan la transacció s\'hagi acabat de transmetre.",
         ),
         "replaceByFee_coindetails_overlay_boost":
-            MessageLookupByLibrary.simpleMessage("Aumenta"),
+            MessageLookupByLibrary.simpleMessage("Augmenta"),
         "replaceByFee_coindetails_overlay_modal_heading":
             MessageLookupByLibrary.simpleMessage("Augmenta la Transacció"),
         "replaceByFee_coindetails_overlay_modal_subheading":
@@ -2596,7 +2599,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "replaceByFee_edit_transaction_requiredAmount":
             MessageLookupByLibrary.simpleMessage("Necessari per Augmentar"),
         "replaceByFee_modal_deletedInactiveTX_ramp_heading":
-            MessageLookupByLibrary.simpleMessage("Transaccions Eliminades"),
+            MessageLookupByLibrary.simpleMessage("Transaccions eliminades"),
         "replaceByFee_modal_deletedInactiveTX_ramp_subheading":
             MessageLookupByLibrary.simpleMessage(
           "Les compres incompletes amb els identificadors de Ramp següents s\'han eliminat de l\'activitat al cap de 5 dies.",
@@ -2636,7 +2639,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "rescanAccount_sizeModal_500Addresses":
             MessageLookupByLibrary.simpleMessage("500 adreces (~5 min)"),
         "rescanAccount_sizeModal_content": MessageLookupByLibrary.simpleMessage(
-          "S\'han escanejat 100 adreces abans. Si falten fons, prova un valor mÃ©s alt.",
+          "S\'han escanejat 100 adreces abans. Si falten fons, prova un valor més alt.",
         ),
         "rescanAccount_sizeModal_header": MessageLookupByLibrary.simpleMessage(
           "Reescaneja compte",
@@ -2652,11 +2655,11 @@ class MessageLookup extends MessageLookupByLibrary {
           "No s\'ha pogut connectar a Passport Prime. Torna-ho a provar i contacta amb suport si persisteix.",
         ),
         "scanner_toast_notValidQr": MessageLookupByLibrary.simpleMessage(
-          "QR no vÃ lid.",
+          "QR no vàlid.",
         ),
         "scv_cameraModalUnexpectedQrFormat_content":
             MessageLookupByLibrary.simpleMessage(
-          "Assegura\'t que escaneges un codi QR de comprovaciÃ³ de seguretat de Passport.",
+          "Assegura\'t que escaneges un codi QR de comprovació de seguretat de Passport.",
         ),
         "scv_cameraModalUnexpectedQrFormat_header":
             MessageLookupByLibrary.simpleMessage("Format QR inesperat"),
@@ -2671,10 +2674,10 @@ class MessageLookup extends MessageLookupByLibrary {
         ),
         "send_build_amount": MessageLookupByLibrary.simpleMessage("Import"),
         "send_build_header": MessageLookupByLibrary.simpleMessage(
-          "Comprova detalls de transacciÃ³",
+          "Comprova detalls de transacció",
         ),
         "send_build_subheader": MessageLookupByLibrary.simpleMessage(
-          "Confirma que els detalls de la transacciÃ³ sÃ³n correctes abans de continuar.",
+          "Confirma que els detalls de la transacció són correctes abans de continuar.",
         ),
         "send_build_viewEditDetails": MessageLookupByLibrary.simpleMessage(
           "Veure i editar detalls",
@@ -2700,13 +2703,13 @@ class MessageLookup extends MessageLookupByLibrary {
         ),
         "send_editTxDetails_changeAddress":
             MessageLookupByLibrary.simpleMessage(
-          "AdreÃ§a de canvi",
+          "Adreça de canvi",
         ),
         "send_editTxDetails_changeAmount": MessageLookupByLibrary.simpleMessage(
           "Import de canvi",
         ),
         "send_editTxDetails_feeNoEstimatePossible":
-            MessageLookupByLibrary.simpleMessage("No hi ha estimaciÃ³"),
+            MessageLookupByLibrary.simpleMessage("No hi ha estimació"),
         "send_editTxDetails_spendingFromAccount":
             MessageLookupByLibrary.simpleMessage("Gastant des del compte"),
         "send_editTxDetails_spentFrom": MessageLookupByLibrary.simpleMessage(
@@ -2731,7 +2734,7 @@ class MessageLookup extends MessageLookupByLibrary {
           "Quantitat massa baixa",
         ),
         "send_keyboard_enterAddress": MessageLookupByLibrary.simpleMessage(
-          "Introdueix adreÃ§a",
+          "Introdueix adreça",
         ),
         "send_keyboard_send_max": MessageLookupByLibrary.simpleMessage(
           "Enviar Màxim",
@@ -2747,7 +2750,7 @@ class MessageLookup extends MessageLookupByLibrary {
         ),
         "send_qrReview_scanSignedTransaction":
             MessageLookupByLibrary.simpleMessage(
-          "Escaneja transacciÃ³ signada",
+          "Escaneja transacció signada",
         ),
         "send_qrReview_viewDetails": MessageLookupByLibrary.simpleMessage(
           "Veure detalls",
@@ -2760,16 +2763,16 @@ class MessageLookup extends MessageLookupByLibrary {
           "Escaneja primer el QR amb Passport",
         ),
         "send_qrScan_subheader": MessageLookupByLibrary.simpleMessage(
-          "ContÃ© la transacciÃ³ perquÃ¨ la signis al teu Passport.",
+          "Conté la transacció perquè la signis al teu Passport.",
         ),
         "send_qrScan_verifyOnPassport": MessageLookupByLibrary.simpleMessage(
           "Verifica a Passport",
         ),
         "send_qrSend_header": MessageLookupByLibrary.simpleMessage(
-          "TransacciÃ³ a punt per enviar",
+          "Transacció a punt per enviar",
         ),
         "send_qrSend_subheader": MessageLookupByLibrary.simpleMessage(
-          "Envoy enviarÃ  la transacciÃ³ a la xarxa Bitcoin.",
+          "Envoy enviarà la transacció a la xarxa Bitcoin.",
         ),
         "send_qr_code_card_heading": MessageLookupByLibrary.simpleMessage(
           "Escaneja el QR amb el teu Passport",
@@ -2782,7 +2785,7 @@ class MessageLookup extends MessageLookupByLibrary {
         ),
         "send_quantumBuildOutOfRange_makeSureInRangeUnlocked":
             MessageLookupByLibrary.simpleMessage(
-          "Per continuar, assegura\'t que Passport Prime estigui encÃ¨s, a prop i desbloquejat.",
+          "Per continuar, assegura\'t que Passport Prime estigui encès, a prop i desbloquejat.",
         ),
         "send_quantumBuildOutOfRange_waitingForPassport":
             MessageLookupByLibrary.simpleMessage("Esperant Passport"),
@@ -2793,9 +2796,9 @@ class MessageLookup extends MessageLookupByLibrary {
         "send_quantumReview_connectedToPassport":
             MessageLookupByLibrary.simpleMessage("Connectat a Passport"),
         "send_quantumReview_transactionTransferred":
-            MessageLookupByLibrary.simpleMessage("TransacciÃ³ transferida"),
+            MessageLookupByLibrary.simpleMessage("Transacció transferida"),
         "send_quantumReview_transferringTransaction":
-            MessageLookupByLibrary.simpleMessage("Transferint transacciÃ³"),
+            MessageLookupByLibrary.simpleMessage("Transferint transacció"),
         "send_quantumReview_waitForSigning":
             MessageLookupByLibrary.simpleMessage(
           "Esperant signatura",
@@ -2804,14 +2807,14 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Esperant signatura"),
         "send_quantumSend_transactionready":
             MessageLookupByLibrary.simpleMessage(
-          "TransacciÃ³ a punt",
+          "Transacció a punt",
         ),
         "send_reviewScreen_sendMaxWarning":
             MessageLookupByLibrary.simpleMessage(
           "Enviar el màxim: les comissions es dedueixen de l\'import enviat.",
         ),
         "send_review_header": MessageLookupByLibrary.simpleMessage(
-          "Verifica detalls de transacciÃ³",
+          "Verifica detalls de transacció",
         ),
         "send_review_subheader": MessageLookupByLibrary.simpleMessage(
           "Comprova que aquests detalls coincideixen amb els que mostra el teu Passport.",
@@ -2821,7 +2824,7 @@ class MessageLookup extends MessageLookupByLibrary {
         ),
         "settings_advancedModalReceiveSegwit_content":
             MessageLookupByLibrary.simpleMessage(
-          "Amb aquest interruptor desactivat, es generaran adreces Native Segwit quan toquis rebre. Aquest Ã©s el tipus d\'adreÃ§a per defecte de la majoria de carteres Bitcoin.",
+          "Amb aquest interruptor desactivat, es generaran adreces Native Segwit quan toquis rebre. Aquest és el tipus d\'adreça per defecte de la majoria de carteres Bitcoin.",
         ),
         "settings_advancedModalReceiveSegwit_title":
             MessageLookupByLibrary.simpleMessage("Rebre a Segwit"),
@@ -2883,7 +2886,7 @@ class MessageLookup extends MessageLookupByLibrary {
           "Escaneja el QR",
         ),
         "signMessage_mainSignedQr_scanQrSubheader":
-            MessageLookupByLibrary.simpleMessage("ContÃ© el missatge signat."),
+            MessageLookupByLibrary.simpleMessage("Conté el missatge signat."),
         "signMessage_mainSigned_copySignature":
             MessageLookupByLibrary.simpleMessage("Copia signatura"),
         "signMessage_mainSigned_header": MessageLookupByLibrary.simpleMessage(
@@ -2894,10 +2897,10 @@ class MessageLookup extends MessageLookupByLibrary {
         "signMessage_mainSigned_signatureInvalid":
             MessageLookupByLibrary.simpleMessage("Signatura invàlida"),
         "signMessage_mainSigned_signatureValid":
-            MessageLookupByLibrary.simpleMessage("Valid signature"),
+            MessageLookupByLibrary.simpleMessage("Signatura vàlida"),
         "signMessage_main_addressDoesNotBelong":
             MessageLookupByLibrary.simpleMessage(
-          "L\'adreÃ§a no pertany a aquest compte.\nIntrodueix-ne una altra.",
+          "L\'adreça no pertany a aquest compte.\nIntrodueix-ne una altra.",
         ),
         "signMessage_main_enterPasteMessage":
             MessageLookupByLibrary.simpleMessage(
@@ -2927,7 +2930,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage(
                 "Escanejat i signat per Passport"),
         "signMessage_qr_subheader": MessageLookupByLibrary.simpleMessage(
-          "ContÃ© el missatge perquÃ¨ el teu Passport el signi.",
+          "Conté el missatge perquè el teu Passport el signi.",
         ),
         "stalls_before_sending_tx_add_note_modal_cta2":
             MessageLookupByLibrary.simpleMessage("No gràcies"),
@@ -2994,7 +2997,7 @@ class MessageLookup extends MessageLookupByLibrary {
           "Torneu a Etiquetar Seleccionat",
         ),
         "tagged_tagDetails_sheet_transferSelected":
-            MessageLookupByLibrary.simpleMessage("Transferir selecciÃ³"),
+            MessageLookupByLibrary.simpleMessage("Transferir selecció"),
         "tap_and_drag_first_time_text": MessageLookupByLibrary.simpleMessage(
           "Manteniu premut per arrossegar i reordenar els vostres comptes.",
         ),
@@ -3006,7 +3009,7 @@ class MessageLookup extends MessageLookupByLibrary {
         ),
         "taproot_passport_dialog_reconnect":
             MessageLookupByLibrary.simpleMessage(
-          "Torneu a connectar Passport",
+          "Reconnecta Passport",
         ),
         "taproot_passport_dialog_subheading":
             MessageLookupByLibrary.simpleMessage(
@@ -3030,7 +3033,7 @@ class MessageLookup extends MessageLookupByLibrary {
           "Pot ser que l\'app rendeixi pitjor fins que Envoy pugui restablir la connexió amb Tor.\n\nDesactivar Tor establirà una connexió directa amb el servidor d\'Envoy, però comporta [[riscos]] de privacitat.",
         ),
         "tor_connectivity_toast_warning": MessageLookupByLibrary.simpleMessage(
-          "Problema per establir la connectivitat amb Tor",
+          "Problema de connectivitat amb Tor",
         ),
         "transfer_fromTo_transferFrom": MessageLookupByLibrary.simpleMessage(
           "Transferir des de",
@@ -3042,7 +3045,7 @@ class MessageLookup extends MessageLookupByLibrary {
           "Connectant a la xarxa Tor",
         ),
         "video_loadingTorText": MessageLookupByLibrary.simpleMessage(
-          "Envoy estÃ  carregant el vÃ­deo a travÃ©s de la xarxa Tor",
+          "Envoy està carregant el vídeo a través de la xarxa Tor",
         ),
         "wallet_security_modal_1_4_android_subheading":
             MessageLookupByLibrary.simpleMessage(
@@ -3066,7 +3069,7 @@ class MessageLookup extends MessageLookupByLibrary {
         ),
         "wallet_security_modal_4_4_heading":
             MessageLookupByLibrary.simpleMessage(
-          "Com Es Protegeixen Les Vostres Dades",
+          "Com es protegeixen les teves dades",
         ),
         "wallet_security_modal_4_4_subheading":
             MessageLookupByLibrary.simpleMessage(
