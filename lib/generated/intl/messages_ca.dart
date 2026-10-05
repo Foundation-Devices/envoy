@@ -179,7 +179,7 @@ class MessageLookup extends MessageLookupByLibrary {
         ),
         "accounts_upgradeBdkTestnetModal_header":
             MessageLookupByLibrary.simpleMessage("Presentem testnet4"),
-        "activity_boosted": MessageLookupByLibrary.simpleMessage("Aumentat"),
+        "activity_boosted": MessageLookupByLibrary.simpleMessage("Augmentat"),
         "activity_canceling":
             MessageLookupByLibrary.simpleMessage("Cancel·lant…"),
         "activity_emptyState_label": MessageLookupByLibrary.simpleMessage(
@@ -1584,7 +1584,7 @@ class MessageLookup extends MessageLookupByLibrary {
         ),
         "magic_setup_recovery_fail_backup_heading":
             MessageLookupByLibrary.simpleMessage(
-          "Còpia De Seguretat Màgica Non Trobat",
+          "Còpia de Seguretat Màgica No Trobada",
         ),
         "magic_setup_recovery_fail_backup_subheading":
             MessageLookupByLibrary.simpleMessage(
@@ -3073,7 +3073,7 @@ class MessageLookup extends MessageLookupByLibrary {
         ),
         "wallet_security_modal_4_4_subheading":
             MessageLookupByLibrary.simpleMessage(
-          "Si preferiu desactivar Magic Backups i, en canvi, protegir manualment la clau privada i les dades de la vostra cartera, cap problema!\n\nNomés cal que torneu a la pantalla de configuració i trieu Configura Manualment La Clau Privada.",
+          "Si prefereixes no fer servir la Còpia de Seguretat Màgica i, en canvi, protegir manualment la clau privada i les dades de la teva cartera, cap problema!\n\nNomés cal que tornis a la pantalla anterior i desactivis la Còpia de Seguretat Màgica.",
         ),
         "wallet_security_modal_HowToRecoverYourWallet":
             MessageLookupByLibrary.simpleMessage("Com recuperar la cartera"),

@@ -28,12 +28,12 @@ class MessageLookup extends MessageLookupByLibrary {
   static String m2(AccountName) =>
       "Acede a ${AccountName} no Passport, escolhe ‘Account Tools’ > ‘Verify Address’ e digitaliza o código QR.";
 
-  static String m3(number) => "A taxa e ${number}% do total";
+  static String m3(number) => "A taxa é ${number}% do total";
 
   static String m4(tagName) =>
       "A tua etiqueta ${tagName} está vazia. Pretendes eliminá-la?";
 
-  static String m5(number) => "ENDERECO #${number}";
+  static String m5(number) => "ENDEREÇO #${number}";
 
   static String m6(searchSpace) =>
       "Endereço não encontrado nos primeiros ${searchSpace} endereços.";
@@ -52,7 +52,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "Passport Prime foi atualizado com sucesso \npara ${new_keyOS_version}";
 
   static String m12(amount, total_amount) =>
-      "Migracao em curso.\nNao feches a Envoy.\n\n${amount} de ${total_amount} processados.";
+      "Migração em curso.\nNão feches a Envoy.\n\n${amount} de ${total_amount} processados.";
 
   static String m13(passport_color) => "Cor: ${passport_color}";
 
@@ -169,13 +169,13 @@ class MessageLookup extends MessageLookupByLibrary {
         ),
         "accounts_upgradeBdkSignetModal_content":
             MessageLookupByLibrary.simpleMessage(
-          "A Envoy passa agora a usar Global Signet em vez de Mutinynet. As tuas contas Signet anteriores foram removidas. \n\nPara comecares a usar Global Signet, vai a Definicoes e ativa o interruptor Signet.",
+          "A Envoy passa agora a usar Global Signet em vez de Mutinynet. As tuas contas Signet anteriores foram removidas. \n\nPara começares a usar Global Signet, vai a Definições e ativa o interruptor Signet.",
         ),
         "accounts_upgradeBdkSignetModal_header":
             MessageLookupByLibrary.simpleMessage("Global Signet"),
         "accounts_upgradeBdkTestnetModal_content":
             MessageLookupByLibrary.simpleMessage(
-          "‘Testnet3’ foi descontinuado e a Envoy usa agora ‘testnet4’. As tuas contas testnet3 anteriores foram removidas. \n\nPara comecares a usar testnet4, vai a Definicoes e ativa o interruptor Testnet.",
+          "‘Testnet3’ foi descontinuado e a Envoy usa agora ‘testnet4’. As tuas contas testnet3 anteriores foram removidas. \n\nPara começares a usar testnet4, vai a Definições e ativa o interruptor Testnet.",
         ),
         "accounts_upgradeBdkTestnetModal_header":
             MessageLookupByLibrary.simpleMessage("A apresentar testnet4"),
@@ -277,7 +277,7 @@ class MessageLookup extends MessageLookupByLibrary {
           "Cópia Envoy concluída.",
         ),
         "backups_advancedBackups": MessageLookupByLibrary.simpleMessage(
-          "Copias seg. avancadas",
+          "Cópias seg. avançadas",
         ),
         "backups_downloadBIP329BackupFile":
             MessageLookupByLibrary.simpleMessage(
@@ -320,37 +320,37 @@ class MessageLookup extends MessageLookupByLibrary {
           "Lembra-te de manter sempre privadas as tuas palavras semente. Qualquer pessoa com acesso a esta semente pode gastar as tuas Bitcoin!",
         ),
         "backups_magicToManualErrorModal_header":
-            MessageLookupByLibrary.simpleMessage("Nao foi possivel continuar"),
+            MessageLookupByLibrary.simpleMessage("Não foi possível continuar"),
         "backups_magicToManualErrorModal_subheader":
             MessageLookupByLibrary.simpleMessage(
-          "A Copia Magica de Seguranca da Envoy nao pode ser desativada enquanto uma Copia Magica de Seguranca do Passport Prime estiver ativa.\n\nPara continuar, desativa primeiro a Copia Magica de Seguranca do Passport Prime no dispositivo.",
+          "A Cópia Mágica de Segurança da Envoy não pode ser desativada enquanto uma Cópia Mágica de Segurança do Passport Prime estiver ativa.\n\nPara continuar, desativa primeiro a Cópia Mágica de Segurança do Passport Prime no dispositivo.",
         ),
         "backups_manualToMagicrModal_header":
             MessageLookupByLibrary.simpleMessage(
-          "A ativar Copias Magicas",
+          "A ativar Cópias Mágicas",
         ),
         "backups_manualToMagicrModal_subheader":
             MessageLookupByLibrary.simpleMessage(
-          "Isto vai ativar uma Copia Magica de Seguranca da tua carteira Envoy. A tua semente da Envoy vai ser encriptada e copiada para a tua conta Apple ou Google. Os dados da Envoy vao ser encriptados e enviados para o servidor da Foundation.",
+          "Isto vai ativar uma Cópia Mágica de Segurança da tua carteira Envoy. A tua semente da Envoy vai ser encriptada e copiada para a tua conta Apple ou Google. Os dados da Envoy vão ser encriptados e enviados para o servidor da Foundation.",
         ),
         "backups_primeMagicBackups": m0,
         "backups_primeMasterKeyBackup": MessageLookupByLibrary.simpleMessage(
           "Cópia seg. da chave-mestra (1 de 3 partes)",
         ),
         "backups_settingsAndData": MessageLookupByLibrary.simpleMessage(
-          "Definicoes & Dados",
+          "Definições & Dados",
         ),
         "backups_settingsAndMetadata": MessageLookupByLibrary.simpleMessage(
-          "Definicoes & Metadados",
+          "Definições & Metadados",
         ),
         "backups_toggle_envoy_magic_backups":
             MessageLookupByLibrary.simpleMessage(
-          "Envoy Copia Magica Seg.",
+          "Envoy Cópia Mágica Seg.",
         ),
         "backups_toggle_envoy_mobile_wallet_key":
-            MessageLookupByLibrary.simpleMessage("Chave da Carteira Movel"),
+            MessageLookupByLibrary.simpleMessage("Chave da Carteira Móvel"),
         "backups_viewMobileWalletSeed": MessageLookupByLibrary.simpleMessage(
-          "Ver semente da Carteira Movel",
+          "Ver semente da Carteira Móvel",
         ),
         "bottomNav_accounts": MessageLookupByLibrary.simpleMessage("Contas"),
         "bottomNav_activity": MessageLookupByLibrary.simpleMessage("Atividade"),
@@ -727,7 +727,7 @@ class MessageLookup extends MessageLookupByLibrary {
           "Repor filtro",
         ),
         "component_resetSorting": MessageLookupByLibrary.simpleMessage(
-          "Repor ordenacao",
+          "Repor ordenação",
         ),
         "component_retry":
             MessageLookupByLibrary.simpleMessage("Tentar novamente"),
@@ -778,11 +778,11 @@ class MessageLookup extends MessageLookupByLibrary {
         ),
         "delete_wallet_for_good_error_content":
             MessageLookupByLibrary.simpleMessage(
-          "A Envoy nao conseguiu contactar o servidor da Foundation para eliminar os teus dados de carteira encriptados. Tenta novamente ou contacta o suporte.",
+          "A Envoy não conseguiu contactar o servidor da Foundation para eliminar os teus dados de carteira encriptados. Tenta novamente ou contacta o suporte.",
         ),
         "delete_wallet_for_good_error_title":
             MessageLookupByLibrary.simpleMessage(
-          "Impossivel eliminar",
+          "Impossível eliminar",
         ),
         "delete_wallet_for_good_instant_android_subheading":
             MessageLookupByLibrary.simpleMessage(
@@ -1246,19 +1246,19 @@ class MessageLookup extends MessageLookupByLibrary {
         "exploreAddresses_listFilter_zeroBalance":
             MessageLookupByLibrary.simpleMessage("0 Saldo"),
         "exploreAddresses_listModal_backToList":
-            MessageLookupByLibrary.simpleMessage("Voltar a lista"),
+            MessageLookupByLibrary.simpleMessage("Voltar à lista"),
         "exploreAddresses_listModal_content":
             MessageLookupByLibrary.simpleMessage(
-          "Este endereco ja foi usado pelo menos uma vez. Ao receber Bitcoin, e recomendado usar um novo endereco por privacidade.",
+          "Este endereço já foi usado pelo menos uma vez. Ao receber Bitcoin, é recomendado usar um novo endereço por privacidade.",
         ),
         "exploreAddresses_listModal_showAddress":
-            MessageLookupByLibrary.simpleMessage("Mostrar endereco"),
+            MessageLookupByLibrary.simpleMessage("Mostrar endereço"),
         "exploreAddresses_list_header": MessageLookupByLibrary.simpleMessage(
-          "Explorar enderecos",
+          "Explorar endereços",
         ),
         "exploreAddresses_qr_derivationPath":
             MessageLookupByLibrary.simpleMessage(
-          "Caminho de derivacao",
+          "Caminho de derivação",
         ),
         "exploreAddresses_qr_header": m5,
         "exploreAddresses_qr_warningReused":
@@ -1273,7 +1273,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "exploreAdresses_activityOptions_editAccountName":
             MessageLookupByLibrary.simpleMessage("Editar nome da conta"),
         "exploreAdresses_activityOptions_exploreAddresses":
-            MessageLookupByLibrary.simpleMessage("Explorar enderecos"),
+            MessageLookupByLibrary.simpleMessage("Explorar endereços"),
         "exploreAdresses_activityOptions_showDescriptor":
             MessageLookupByLibrary.simpleMessage("Mostrar descritor"),
         "exploreAdresses_activityOptions_signMessage":
@@ -1320,11 +1320,11 @@ class MessageLookup extends MessageLookupByLibrary {
         "filter_sortBy_zToA": MessageLookupByLibrary.simpleMessage("De Z a A"),
         "finalize_catchAll_backUpMasterKey":
             MessageLookupByLibrary.simpleMessage(
-          "Copia Seg. Chave Mestra",
+          "Cópia Seg. Chave Mestra",
         ),
         "finalize_catchAll_backingUpMasterKey":
             MessageLookupByLibrary.simpleMessage(
-                "A fazer Copia Seg. Chave Mestra"),
+                "A fazer Cópia Seg. Chave Mestra"),
         "finalize_catchAll_connectAccount":
             MessageLookupByLibrary.simpleMessage(
           "Associar Conta",
@@ -1341,7 +1341,7 @@ class MessageLookup extends MessageLookupByLibrary {
         ),
         "finalize_catchAll_masterKeyBackedUp":
             MessageLookupByLibrary.simpleMessage(
-          "Copia Seg. da Chave Mestra",
+          "Cópia Seg. da Chave Mestra",
         ),
         "finalize_catchAll_masterKeySetUp":
             MessageLookupByLibrary.simpleMessage(
@@ -1373,7 +1373,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "firmware_downloadingUpdate_aboutOneMin":
             MessageLookupByLibrary.simpleMessage("Falta cerca de 1 min"),
         "firmware_downloadingUpdate_downloaded":
-            MessageLookupByLibrary.simpleMessage("Atualizacao Descarregada"),
+            MessageLookupByLibrary.simpleMessage("Atualização Descarregada"),
         "firmware_downloadingUpdate_estimating":
             MessageLookupByLibrary.simpleMessage("A estimar tempo restante…"),
         "firmware_downloadingUpdate_header":
@@ -1396,7 +1396,7 @@ class MessageLookup extends MessageLookupByLibrary {
           "Falha ao Descarregar",
         ),
         "firmware_updateError_header": MessageLookupByLibrary.simpleMessage(
-          "Falha na Atualizacao",
+          "Falha na Atualização",
         ),
         "firmware_updateError_installFailed":
             MessageLookupByLibrary.simpleMessage(
@@ -1422,10 +1422,10 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Tentar ligar de novo"),
         "firmware_updateSuccess_content1": m11,
         "firmware_updateSuccess_content2": MessageLookupByLibrary.simpleMessage(
-          "Continua a configuracao no Passport Prime.",
+          "Continua a configuração no Passport Prime.",
         ),
         "firmware_updateSuccess_header": MessageLookupByLibrary.simpleMessage(
-          "Atualizacao com Sucesso",
+          "Atualização com Sucesso",
         ),
         "firmware_updatingDownload_content":
             MessageLookupByLibrary.simpleMessage(
@@ -1442,12 +1442,12 @@ class MessageLookup extends MessageLookupByLibrary {
           "Transferir para Passport Prime",
         ),
         "firmware_updatingPrime_content2": MessageLookupByLibrary.simpleMessage(
-          "A configuracao retoma depois de o Prime reiniciar.",
+          "A configuração retoma depois de o Prime reiniciar.",
         ),
         "firmware_updatingPrime_installUpdate":
-            MessageLookupByLibrary.simpleMessage("Instalar Atualizacao"),
+            MessageLookupByLibrary.simpleMessage("Instalar Atualização"),
         "firmware_updatingPrime_installingUpdate":
-            MessageLookupByLibrary.simpleMessage("A instalar atualizacao"),
+            MessageLookupByLibrary.simpleMessage("A instalar atualização"),
         "firmware_updatingPrime_primeRestarting":
             MessageLookupByLibrary.simpleMessage("Passport Prime a reiniciar"),
         "firmware_updatingPrime_restartPrime":
@@ -1455,13 +1455,13 @@ class MessageLookup extends MessageLookupByLibrary {
           "Reiniciar Passport Prime",
         ),
         "firmware_updatingPrime_updateInstalled":
-            MessageLookupByLibrary.simpleMessage("Atualizacao Instalada"),
+            MessageLookupByLibrary.simpleMessage("Atualização Instalada"),
         "firmware_updatingPrime_verified": MessageLookupByLibrary.simpleMessage(
-          "Atualizacao Verificada",
+          "Atualização Verificada",
         ),
         "firmware_updatingPrime_verifying":
             MessageLookupByLibrary.simpleMessage(
-          "A verificar atualizacao",
+          "A verificar atualização",
         ),
         "header_chooseAccount": MessageLookupByLibrary.simpleMessage(
           "ESCOLHE UMA CONTA",
@@ -1543,7 +1543,7 @@ class MessageLookup extends MessageLookupByLibrary {
         ),
         "magic_setup_generate_backup_subheading":
             MessageLookupByLibrary.simpleMessage(
-          "A Envoy está a encriptar a cópia de segurança da tua carteira.\n\nEsta cópia de segurança contém dados utéis da carteira, tais como etiquetas, notas, contas e definições.",
+          "A Envoy está a encriptar a cópia de segurança da tua carteira.\n\nEsta cópia de segurança contém dados úteis da carteira, tais como etiquetas, notas, contas e definições.",
         ),
         "magic_setup_generate_envoy_key_android_subheading":
             MessageLookupByLibrary.simpleMessage(
@@ -1729,15 +1729,15 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Magic Backups desativados"),
         "manual_setup_change_from_magic_modal_subheader":
             MessageLookupByLibrary.simpleMessage(
-          "A tua Copia Magica de Seguranca esta prestes a ser apagada permanentemente. Garante que tens a tua semente bem guardada e que descarregas o teu ficheiro de copia de seguranca da Envoy.\n\nEsta acao vai apagar permanentemente a tua semente Envoy da tua conta Apple ou Google e os teus dados Envoy encriptados dos servidores da Foundation apos um periodo de espera de 24h.",
+          "A tua Cópia Mágica de Segurança está prestes a ser apagada permanentemente. Garante que tens a tua semente bem guardada e que descarregas o teu ficheiro de cópia de segurança da Envoy.\n\nEsta ação vai apagar permanentemente a tua semente Envoy da tua conta Apple ou Google e os teus dados Envoy encriptados dos servidores da Foundation após um período de espera de 24h.",
         ),
         "manual_setup_change_from_magic_subheaderApple":
             MessageLookupByLibrary.simpleMessage(
-          "Os teus dados da Copia Magica de Seguranca da Envoy foram eliminados com sucesso da tua conta Apple e dos servidores da Foundation.",
+          "Os teus dados da Cópia Mágica de Segurança da Envoy foram eliminados com sucesso da tua conta Apple e dos servidores da Foundation.",
         ),
         "manual_setup_change_from_magic_subheaderGoogle":
             MessageLookupByLibrary.simpleMessage(
-          "Os teus dados da Copia Magica de Seguranca da Envoy foram eliminados com sucesso da tua conta Google e dos servidores da Foundation.",
+          "Os teus dados da Cópia Mágica de Segurança da Envoy foram eliminados com sucesso da tua conta Google e dos servidores da Foundation.",
         ),
         "manual_setup_create_and_store_backup_CTA":
             MessageLookupByLibrary.simpleMessage("Escolher Destino"),
@@ -1817,7 +1817,7 @@ class MessageLookup extends MessageLookupByLibrary {
         ),
         "manual_setup_import_seed_12_words_fail_modal_subheading":
             MessageLookupByLibrary.simpleMessage(
-          "Essa semente parece ser inválida. Por favor verifica as palavras introduzidas, incluíndo a ordem em que se encontram e tenta novamente.",
+          "Essa semente parece ser inválida. Por favor verifica as palavras introduzidas, incluindo a ordem em que se encontram e tenta novamente.",
         ),
         "manual_setup_import_seed_12_words_heading":
             MessageLookupByLibrary.simpleMessage("Introduz a Tua Semente"),
@@ -1968,7 +1968,7 @@ class MessageLookup extends MessageLookupByLibrary {
           "para os Servidores da Foundation",
         ),
         "manual_toggle_on_seed_backingup": MessageLookupByLibrary.simpleMessage(
-          "A fazer copia…",
+          "A fazer cópia…",
         ),
         "manual_toggle_on_seed_backup_in_progress_ios_backup_in_progress":
             MessageLookupByLibrary.simpleMessage("Cópia de Segurança em Curso"),
@@ -2031,14 +2031,14 @@ class MessageLookup extends MessageLookupByLibrary {
         ),
         "onboardin_unifiedAccountsModal_content":
             MessageLookupByLibrary.simpleMessage(
-          "A partir da versao 2.0.0, todos os tipos de endereco estao agora acessiveis num unico cartao de conta.\n\nO tipo de endereco de rececao predefinido pode ser alterado em Definicoes.",
+          "A partir da versão 2.0.0, todos os tipos de endereço estão agora acessíveis num único cartão de conta.\n\nO tipo de endereço de receção predefinido pode ser alterado em Definições.",
         ),
         "onboardin_unifiedAccountsModal_tilte":
             MessageLookupByLibrary.simpleMessage(
-                "Tipos de endereco unificados"),
+                "Tipos de endereço unificados"),
         "onboarding_advancedModal_content":
             MessageLookupByLibrary.simpleMessage(
-          "Se continuares sem Copias Magicas de Seguranca, ficas responsavel por guardar as tuas palavras semente e os dados da copia de seguranca.",
+          "Se continuares sem Cópias Mágicas de Segurança, ficas responsável por guardar as tuas palavras semente e os dados da cópia de segurança.",
         ),
         "onboarding_advancedModal_header": MessageLookupByLibrary.simpleMessage(
           "Tens a certeza?",
@@ -2053,7 +2053,7 @@ class MessageLookup extends MessageLookupByLibrary {
         ),
         "onboarding_advanced_magicBackupsContent":
             MessageLookupByLibrary.simpleMessage(
-          "Copias de seguranca encriptadas automaticas dos teus dados, para recuperacao imediata e sem stress.",
+          "Cópias de segurança encriptadas automáticas dos teus dados, para recuperação imediata e sem stress.",
         ),
         "onboarding_advanced_title": MessageLookupByLibrary.simpleMessage(
           "Avançado",
@@ -2071,11 +2071,11 @@ class MessageLookup extends MessageLookupByLibrary {
         ),
         "onboarding_bluetoothDisabled_content":
             MessageLookupByLibrary.simpleMessage(
-          "O Passport Prime precisa de Bluetooth para a configuração inicial com o QuantumLink. Isto permite sincronizar data e hora, atualizações de firmware, verificações de segurança, cópias de segurança e muito mais.\n\nAtiva as permissões de Bluetooth nas Definicoes da Envoy.",
+          "O Passport Prime precisa de Bluetooth para a configuração inicial com o QuantumLink. Isto permite sincronizar data e hora, atualizações de firmware, verificações de segurança, cópias de segurança e muito mais.\n\nAtiva as permissões de Bluetooth nas Definições da Envoy.",
         ),
         "onboarding_bluetoothDisabled_enable":
             MessageLookupByLibrary.simpleMessage(
-          "Ativar em Definicoes",
+          "Ativar em Definições",
         ),
         "onboarding_bluetoothDisabled_header":
             MessageLookupByLibrary.simpleMessage(
@@ -2096,7 +2096,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "onboarding_connectionChecking_SecurityPassed":
             MessageLookupByLibrary.simpleMessage("Verificação de seg. OK"),
         "onboarding_connectionChecking_forUpdates":
-            MessageLookupByLibrary.simpleMessage("A procurar atualizacoes"),
+            MessageLookupByLibrary.simpleMessage("A procurar atualizações"),
         "onboarding_connectionIntroError2_content":
             MessageLookupByLibrary.simpleMessage(
           "A Envoy não conseguiu ligar aos servidores da Foundation. Verifica a ligação à Internet.",
@@ -2154,34 +2154,34 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Nova atualização disponível"),
         "onboarding_magicUserMobileCreating_content":
             MessageLookupByLibrary.simpleMessage(
-          "A Envoy esta a criar uma chave segura para usar com a tua Carteira Movel de Bitcoin, que sera guardada encriptada de ponta a ponta na tua conta Apple ou Google.",
+          "A Envoy está a criar uma chave segura para usar com a tua Carteira Móvel de Bitcoin, que será guardada encriptada de ponta a ponta na tua conta Apple ou Google.",
         ),
         "onboarding_magicUserMobileCreating_header":
             MessageLookupByLibrary.simpleMessage(
-                "A criar chave da Carteira Movel"),
+                "A criar chave da Carteira Móvel"),
         "onboarding_magicUserMobileEncrypting_content":
             MessageLookupByLibrary.simpleMessage(
-          "A Envoy está a encriptar a cópia de segurança da tua carteira.\n\nEsta cópia de segurança contém dados utéis da carteira, tais como etiquetas, notas, contas e definições.",
+          "A Envoy está a encriptar a cópia de segurança da tua carteira.\n\nEsta cópia de segurança contém dados úteis da carteira, tais como etiquetas, notas, contas e definições.",
         ),
         "onboarding_magicUserMobileEncrypting_header":
             MessageLookupByLibrary.simpleMessage(
-          "A encriptar a copia de seguranca",
+          "A encriptar a cópia de segurança",
         ),
         "onboarding_magicUserMobileIntro_content1":
             MessageLookupByLibrary.simpleMessage(
-          "Tambem conhecida como uma “hot wallet”. Gastar a partir desta carteira so requer o teu telemovel para autorizar.",
+          "Também conhecida como uma “hot wallet”. Gastar a partir desta carteira só requer o teu telemóvel para autorizar.",
         ),
         "onboarding_magicUserMobileIntro_content2":
             MessageLookupByLibrary.simpleMessage(
-          "A chave da Carteira Movel sera guardada no enclave seguro do teu telemovel, encriptada e com copia de seguranca na tua conta Apple ou Google.",
+          "A chave da Carteira Móvel será guardada no enclave seguro do teu telemóvel, encriptada e com cópia de segurança na tua conta Apple ou Google.",
         ),
         "onboarding_magicUserMobileIntro_header":
             MessageLookupByLibrary.simpleMessage(
-          "Configurar Carteira Movel com Copias Magicas",
+          "Configurar Carteira Móvel com Cópias Mágicas",
         ),
         "onboarding_magicUserMobileIntro_learnMoreMagicBackups":
             MessageLookupByLibrary.simpleMessage(
-          "Mais informacao sobre Copias Magicas",
+          "Mais informação sobre Cópias Mágicas",
         ),
         "onboarding_magicUserMobileSuccess_content":
             MessageLookupByLibrary.simpleMessage(
@@ -2189,7 +2189,7 @@ class MessageLookup extends MessageLookupByLibrary {
         ),
         "onboarding_magicUserMobileSuccess_header":
             MessageLookupByLibrary.simpleMessage(
-          "A tua Carteira Movel esta pronta",
+          "A tua Carteira Móvel está pronta",
         ),
         "onboarding_magicUserMobileUploading_content":
             MessageLookupByLibrary.simpleMessage(
@@ -2208,7 +2208,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Não Foi Possível Ligar"),
         "onboarding_passpportSelectCamera_sub235VersionAlert":
             MessageLookupByLibrary.simpleMessage(
-          "Estas a configurar um Passport Core com firmware v2.3.5 ou anterior?",
+          "Estás a configurar um Passport Core com firmware v2.3.5 ou anterior?",
         ),
         "onboarding_passpportSelectCamera_tapHere":
             MessageLookupByLibrary.simpleMessage("Toca aqui"),
@@ -2224,35 +2224,35 @@ class MessageLookup extends MessageLookupByLibrary {
         ),
         "onboarding_sovereignUserMobileIntro_content1":
             MessageLookupByLibrary.simpleMessage(
-          "Tambem conhecida como uma “hot wallet”. Gastar a partir desta carteira so requer o teu telemovel para autorizar.",
+          "Também conhecida como uma “hot wallet”. Gastar a partir desta carteira só requer o teu telemóvel para autorizar.",
         ),
         "onboarding_sovereignUserMobileIntro_content2":
             MessageLookupByLibrary.simpleMessage(
-          "As tuas chaves de Bitcoin serao guardadas no enclave seguro do teu telemovel. So tu es responsavel por manter uma copia de seguranca da tua semente.",
+          "As tuas chaves de Bitcoin serão guardadas no enclave seguro do teu telemóvel. Só tu és responsável por manter uma cópia de segurança da tua semente.",
         ),
         "onboarding_sovereignUserMobileIntro_header":
-            MessageLookupByLibrary.simpleMessage("Configurar Carteira Movel"),
+            MessageLookupByLibrary.simpleMessage("Configurar Carteira Móvel"),
         "onboarding_tutorialColdWallet_content":
             MessageLookupByLibrary.simpleMessage(
-          "Tambem conhecida como uma “cold wallet”. Gastar desta carteira requer autorizacao do teu dispositivo Passport. \n\nA tua Passport Master Key e sempre guardada em seguranca, offline.\n\nUsa esta carteira para proteger a maior parte das tuas poupancas em Bitcoin.",
+          "Também conhecida como uma “cold wallet”. Gastar desta carteira requer autorização do teu dispositivo Passport. \n\nA tua Passport Master Key é sempre guardada em segurança, offline.\n\nUsa esta carteira para proteger a maior parte das tuas poupanças em Bitcoin.",
         ),
         "onboarding_tutorialColdWallet_header":
             MessageLookupByLibrary.simpleMessage("Carteira Passport"),
         "onboarding_tutorialHotWallet_content":
             MessageLookupByLibrary.simpleMessage(
-          "Tambem conhecida como uma “hot wallet.” Gastar desta carteira requer apenas o teu telemovel para autorizacao.\n\nComo a tua Carteira Movel esta ligada a Internet, usa esta carteira para guardar pequenas quantias de Bitcoin para transaccoes frequentes.",
+          "Também conhecida como uma “hot wallet.” Gastar desta carteira requer apenas o teu telemóvel para autorização.\n\nComo a tua Carteira Móvel está ligada à Internet, usa esta carteira para guardar pequenas quantias de Bitcoin para transacções frequentes.",
         ),
         "onboarding_tutorialHotWallet_header":
             MessageLookupByLibrary.simpleMessage(
           "Carteira Móvel",
         ),
         "onboarding_welcome_content": MessageLookupByLibrary.simpleMessage(
-          "Recupera o controlo com a Envoy, uma carteira de Bitcoin simples com poderosa gestao de contas e funcionalidades de privacidade.",
+          "Recupera o controlo com a Envoy, uma carteira de Bitcoin simples com poderosa gestão de contas e funcionalidades de privacidade.",
         ),
         "onboarding_welcome_createMobileWallet":
-            MessageLookupByLibrary.simpleMessage("Criar uma \nCarteira Movel"),
+            MessageLookupByLibrary.simpleMessage("Criar uma \nCarteira Móvel"),
         "onboarding_welcome_header": MessageLookupByLibrary.simpleMessage(
-          "Bem-vindo a Envoy",
+          "Bem-vindo à Envoy",
         ),
         "onboarding_welcome_setUpPassport":
             MessageLookupByLibrary.simpleMessage(
@@ -2345,7 +2345,7 @@ class MessageLookup extends MessageLookupByLibrary {
           "Falta prefixo http:// ou https:// no URL",
         ),
         "privacy_explorer_configure": MessageLookupByLibrary.simpleMessage(
-          "Melhora a tua privacidade ao ligares-te ao teu proprio Explorador de Blocos. Toca em Mais informacao acima.",
+          "Melhora a tua privacidade ao ligares-te ao teu próprio Explorador de Blocos. Toca em Mais informação acima.",
         ),
         "privacy_explorer_explorerAddress":
             MessageLookupByLibrary.simpleMessage(
@@ -2568,7 +2568,7 @@ class MessageLookup extends MessageLookupByLibrary {
         ),
         "replaceByFee_coindetails_overlayNotice":
             MessageLookupByLibrary.simpleMessage(
-          "As funcoes Boost e Cancel vao estar disponiveis depois de a transaccao terminar de ser difundida.",
+          "As funções Boost e Cancel vão estar disponíveis depois de a transacção terminar de ser difundida.",
         ),
         "replaceByFee_coindetails_overlay_boost":
             MessageLookupByLibrary.simpleMessage("Reforçar"),
@@ -2612,7 +2612,7 @@ class MessageLookup extends MessageLookupByLibrary {
         ),
         "rescanAccount_rescanning_rescanningAccount":
             MessageLookupByLibrary.simpleMessage(
-          "A reanalisar a tua conta. Nao feches Envoy.",
+          "A reanalisar a tua conta. Não feches Envoy.",
         ),
         "rescanAccount_sizeModal_1000Addresses":
             MessageLookupByLibrary.simpleMessage("1000 Endereços (~10 min)"),
@@ -2715,7 +2715,7 @@ class MessageLookup extends MessageLookupByLibrary {
           "Quantia demasiado baixa",
         ),
         "send_keyboard_enterAddress": MessageLookupByLibrary.simpleMessage(
-          "Introduzir endereco",
+          "Introduzir endereço",
         ),
         "send_keyboard_send_max": MessageLookupByLibrary.simpleMessage(
           "Enviar o Máximo",
@@ -2803,13 +2803,13 @@ class MessageLookup extends MessageLookupByLibrary {
         "settings_advanced": MessageLookupByLibrary.simpleMessage("Avançado"),
         "settings_advancedModalReceiveSegwit_content":
             MessageLookupByLibrary.simpleMessage(
-          "Com este interruptor desativado, serao gerados enderecos Native Segwit quando tocares em receber. Este e o tipo de endereco predefinido usado pela maioria das carteiras Bitcoin.",
+          "Com este interruptor desativado, serão gerados endereços Native Segwit quando tocares em receber. Este é o tipo de endereço predefinido usado pela maioria das carteiras Bitcoin.",
         ),
         "settings_advancedModalReceiveSegwit_title":
             MessageLookupByLibrary.simpleMessage("Receber para Segwit"),
         "settings_advancedModalReceiveTaproot_content":
             MessageLookupByLibrary.simpleMessage(
-          "Com este interruptor ativado, serao gerados enderecos Taproot quando tocares em receber. Antes de continuares, garante que quem te envia Bitcoin e compativel com Taproot.",
+          "Com este interruptor ativado, serão gerados endereços Taproot quando tocares em receber. Antes de continuares, garante que quem te envia Bitcoin é compatível com Taproot.",
         ),
         "settings_advancedModalReceiveTaproot_title":
             MessageLookupByLibrary.simpleMessage("Receber para Taproot"),
@@ -2863,10 +2863,10 @@ class MessageLookup extends MessageLookupByLibrary {
           "Ver Registo de Actividade da Envoy",
         ),
         "signMessage_mainSignedQr_scanQr": MessageLookupByLibrary.simpleMessage(
-          "Le o Codigo QR",
+          "Lê o Código QR",
         ),
         "signMessage_mainSignedQr_scanQrSubheader":
-            MessageLookupByLibrary.simpleMessage("Contem a mensagem assinada."),
+            MessageLookupByLibrary.simpleMessage("Contém a mensagem assinada."),
         "signMessage_mainSigned_copySignature":
             MessageLookupByLibrary.simpleMessage("Copiar assinatura"),
         "signMessage_mainSigned_header": MessageLookupByLibrary.simpleMessage(
@@ -2881,7 +2881,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Assinatura válida"),
         "signMessage_main_addressDoesNotBelong":
             MessageLookupByLibrary.simpleMessage(
-          "O endereco nao pertence a esta conta.\nIntroduz outro endereco.",
+          "O endereço não pertence a esta conta.\nIntroduz outro endereço.",
         ),
         "signMessage_main_enterPasteMessage":
             MessageLookupByLibrary.simpleMessage(
@@ -2899,7 +2899,7 @@ class MessageLookup extends MessageLookupByLibrary {
           "Importar de ficheiro",
         ),
         "signMessage_qr_header": MessageLookupByLibrary.simpleMessage(
-          "Le o Codigo QR com o Passport",
+          "Lê o Código QR com o Passport",
         ),
         "signMessage_qr_importSignature": MessageLookupByLibrary.simpleMessage(
           "Importar assinatura",
@@ -2911,7 +2911,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage(
                 "Lido e assinado pelo Passport"),
         "signMessage_qr_subheader": MessageLookupByLibrary.simpleMessage(
-          "Contem a mensagem para o Passport assinar.",
+          "Contém a mensagem para o Passport assinar.",
         ),
         "stalls_before_sending_tx_add_note_modal_cta2":
             MessageLookupByLibrary.simpleMessage("Não, obrigado"),
@@ -2978,7 +2978,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "tagged_tagDetails_sheet_transferSelected":
             MessageLookupByLibrary.simpleMessage("Transferir selecionados"),
         "tap_and_drag_first_time_text": MessageLookupByLibrary.simpleMessage(
-          "Mantêm pressionado para arrastar e reordenar as tuas contas.",
+          "Mantém pressionado para arrastar e reordenar as tuas contas.",
         ),
         "taproot_passport_dialog_heading": MessageLookupByLibrary.simpleMessage(
           "Taproot no Passport",
@@ -3055,7 +3055,7 @@ class MessageLookup extends MessageLookupByLibrary {
         ),
         "wallet_security_modal_4_4_subheading":
             MessageLookupByLibrary.simpleMessage(
-          "Se preferires optar por não utilizar as Cópias Mágicas de Segurança e, em alternativa, proteger manualmente as sementes e os dados da tua carteira, não há problema!\n\nBasta voltar ao menu de configuração e escolher Configuração Manual das Palavras Semente.",
+          "Se preferires não utilizar a Cópia Mágica de Segurança e, em alternativa, proteger manualmente a semente e os dados da tua carteira, não há problema!\n\nBasta voltar ao ecrã anterior e desactivar a Cópia Mágica de Segurança.",
         ),
         "wallet_security_modal_HowToRecoverYourWallet":
             MessageLookupByLibrary.simpleMessage(
@@ -3066,7 +3066,7 @@ class MessageLookup extends MessageLookupByLibrary {
         ),
         "wallet_security_modal_HowYourSeedIsSecured":
             MessageLookupByLibrary.simpleMessage(
-                "Como a tua semente e protegida"),
+                "Como a tua semente é protegida"),
         "wallet_security_modal_HowYourWalletIsSecured":
             MessageLookupByLibrary.simpleMessage(
           "Como é Que a Tua Carteira é Protegida",
@@ -3095,7 +3095,7 @@ class MessageLookup extends MessageLookupByLibrary {
           "Gerir o Passport",
         ),
         "welcome_screen_heading": MessageLookupByLibrary.simpleMessage(
-          "Bem-vindo a Envoy",
+          "Bem-vindo à Envoy",
         ),
       };
 }
