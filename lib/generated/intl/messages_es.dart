@@ -1266,7 +1266,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "exploreAddresses_qr_header": m5,
         "exploreAddresses_qr_warningReused":
             MessageLookupByLibrary.simpleMessage(
-          "Esta dirección ya se ha utilizado.\nEvita reutilizar direcciones para mantener tu privacidad.",
+          "Esta dirección ya se ha utilizado. Evita reutilizar direcciones para mantener tu privacidad.",
         ),
         "exploreAddresses_searchError_continueSearching":
             MessageLookupByLibrary.simpleMessage("Seguir buscando"),
@@ -2629,7 +2629,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "rescanAccount_sizeModal_500Addresses":
             MessageLookupByLibrary.simpleMessage("500 Direcciones (~5 min)"),
         "rescanAccount_sizeModal_content": MessageLookupByLibrary.simpleMessage(
-          "Se escanearon previamente 100 direcciones.\nSi no aparecen los fondos, prueba un valor de escaneo mayor.",
+          "Se escanearon previamente 100 direcciones. Si no aparecen los fondos, prueba un valor de escaneo mayor.",
         ),
         "rescanAccount_sizeModal_header": MessageLookupByLibrary.simpleMessage(
           "Volver a escanear cuenta",

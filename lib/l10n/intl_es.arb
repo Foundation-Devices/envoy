@@ -417,7 +417,7 @@
   "exploreAddresses_list_header": "Explorar Direcciones",
   "exploreAddresses_qr_derivationPath": "Ruta de Derivación",
   "exploreAddresses_qr_header": "DIRECCIÓN #{number}",
-  "exploreAddresses_qr_warningReused": "Esta dirección ya se ha utilizado.\nEvita reutilizar direcciones para mantener tu privacidad.",
+  "exploreAddresses_qr_warningReused": "Esta dirección ya se ha utilizado. Evita reutilizar direcciones para mantener tu privacidad.",
   "exploreAddresses_searchError_continueSearching": "Seguir buscando",
   "exploreAddresses_searchError_notFound": "No se encontró en las primeras {searchSpace} direcciones.",
   "exploreAdresses_activityOptions_deleteAccount": "Eliminar Cuenta",
@@ -856,7 +856,7 @@
   "rescanAccount_sizeModal_1000Addresses": "1000 Direcciones (~10 min)",
   "rescanAccount_sizeModal_300Addresses": "300 Direcciones (~3 min)",
   "rescanAccount_sizeModal_500Addresses": "500 Direcciones (~5 min)",
-  "rescanAccount_sizeModal_content": "Se escanearon previamente 100 direcciones.\nSi no aparecen los fondos, prueba un valor de escaneo mayor.",
+  "rescanAccount_sizeModal_content": "Se escanearon previamente 100 direcciones. Si no aparecen los fondos, prueba un valor de escaneo mayor.",
   "rescanAccount_sizeModal_header": "Volver a escanear cuenta",
   "rescanAccount_toast_rescanningFailed": "Reescaneo fallido para {accoutname} ",
   "rescanAccount_toast_rescanningStarted": "Reescaneo iniciado. No cierres Envoy.",

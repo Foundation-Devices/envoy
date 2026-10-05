@@ -301,11 +301,11 @@ class MessageLookup extends MessageLookupByLibrary {
         ),
         "backups_erase_wallets_and_backups_modal_1_2_android_subheading":
             MessageLookupByLibrary.simpleMessage(
-          "Estàs a punt d\'eliminar permanentment la teva cartera Envoy.\n\nSi fas servir Còpies de Seguretat Màgiques, la clau d\'Envoy també s\'eliminarà de la Còpia de Seguretat Automàtica d\'Android.\n",
+          "Estàs a punt d\'eliminar permanentment la teva cartera Envoy.\n\nSi fas servir Còpies de Seguretat Màgiques, la clau d\'Envoy també s\'eliminarà de la Còpia de Seguretat Automàtica d\'Android. ",
         ),
         "backups_erase_wallets_and_backups_modal_1_2_ios_subheading":
             MessageLookupByLibrary.simpleMessage(
-          "Estàs a punt d\'eliminar permanentment la teva cartera Envoy.\n\nSi fas servir Còpies de Seguretat Màgiques, la clau d\'Envoy també s\'eliminarà del Clauer d\'iCloud.\n",
+          "Estàs a punt d\'eliminar permanentment la teva cartera Envoy.\n\nSi fas servir Còpies de Seguretat Màgiques, la clau d\'Envoy també s\'eliminarà del Clauer d\'iCloud. ",
         ),
         "backups_erase_wallets_and_backups_modal_2_2_subheading":
             MessageLookupByLibrary.simpleMessage(
@@ -1246,7 +1246,7 @@ class MessageLookup extends MessageLookupByLibrary {
         ),
         "erase_wallet_with_balance_modal_subheading":
             MessageLookupByLibrary.simpleMessage(
-          "Abans d\'eliminar la teva cartera Envoy, buida els teus Comptes.\n\nVes a Còpies de seguretat > Esborra carteres i còpies de seguretat quan hagis acabat.",
+          "Abans d\'eliminar la teva cartera Envoy, buida els teus Comptes. \nVes a Còpies de seguretat > Esborra carteres i còpies de seguretat quan hagis acabat.",
         ),
         "exploreAddresses_listFilter_unused":
             MessageLookupByLibrary.simpleMessage(
@@ -1872,7 +1872,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Restaurar"),
         "manual_setup_magicBackupDetected_subheading":
             MessageLookupByLibrary.simpleMessage(
-          "S\'ha trobat una Còpia de Seguretat Màgica al servidor.\n\nVols restaurar-la?",
+          "S\'ha trobat una Còpia de Seguretat Màgica al servidor. \nVols restaurar-la?",
         ),
         "manual_setup_recovery_fail_cta2": MessageLookupByLibrary.simpleMessage(
           "Importar Clau Privada",

@@ -300,11 +300,11 @@ class MessageLookup extends MessageLookupByLibrary {
         ),
         "backups_erase_wallets_and_backups_modal_1_2_android_subheading":
             MessageLookupByLibrary.simpleMessage(
-          "Estás prestes a eliminar permanentemente a tua carteira Envoy. \n\nSe estiveres a usar Cópias Mágicas de Segurança, a tua semente do Envoy também será eliminada da Cópia de Segurança do Android.\n",
+          "Estás prestes a eliminar permanentemente a tua carteira Envoy. \n\nSe estiveres a usar Cópias Mágicas de Segurança, a tua semente do Envoy também será eliminada da Cópia de Segurança do Android. ",
         ),
         "backups_erase_wallets_and_backups_modal_1_2_ios_subheading":
             MessageLookupByLibrary.simpleMessage(
-          "Estás prestes a eliminar permanentemente a tua carteira Envoy.\n\nSe estiveres a usar Cópias Mágicas de Segurança, a tua semente do Envoy também será eliminada do Porta-chaves iCloud.\n",
+          "Estás prestes a eliminar permanentemente a tua carteira Envoy.\n\nSe estiveres a usar Cópias Mágicas de Segurança, a tua semente do Envoy também será eliminada do Porta-chaves iCloud. ",
         ),
         "backups_erase_wallets_and_backups_modal_2_2_subheading":
             MessageLookupByLibrary.simpleMessage(
@@ -1233,7 +1233,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Eliminar Contas mesmo assim"),
         "erase_wallet_with_balance_modal_subheading":
             MessageLookupByLibrary.simpleMessage(
-          "Antes de eliminares a tua carteira Envoy, esvazia as tuas Contas.\n\nVai a Cópias de segurança > Apagar carteiras e cópias de segurança quando terminares.",
+          "Antes de eliminares a tua carteira Envoy, esvazia as tuas Contas. \nVai a Cópias de segurança > Apagar carteiras e cópias de segurança quando terminares.",
         ),
         "exploreAddresses_listFilter_unused":
             MessageLookupByLibrary.simpleMessage(
@@ -1263,7 +1263,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "exploreAddresses_qr_header": m5,
         "exploreAddresses_qr_warningReused":
             MessageLookupByLibrary.simpleMessage(
-          "Este endereço já foi utilizado.\nEvita reutilizar endereços para proteger a tua privacidade. ",
+          "Este endereço já foi utilizado. Evita reutilizar endereços para proteger a tua privacidade. ",
         ),
         "exploreAddresses_searchError_continueSearching":
             MessageLookupByLibrary.simpleMessage("Continuar Pesquisa"),
@@ -1858,7 +1858,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Restaurar"),
         "manual_setup_magicBackupDetected_subheading":
             MessageLookupByLibrary.simpleMessage(
-          "Foi encontrada uma Cópia Mágica de Segurança no servidor.\n\nRestaurar a tua cópia de segurança?",
+          "Foi encontrada uma Cópia Mágica de Segurança no servidor. \nRestaurar a tua cópia de segurança?",
         ),
         "manual_setup_recovery_fail_cta2": MessageLookupByLibrary.simpleMessage(
           "Importar Palavras Semente",

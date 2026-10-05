@@ -76,8 +76,8 @@
   "backups_downloadSettingsMetadataBackupFile": "Descarrega còpia de configuració i metadades",
   "backups_erase_mobile_wallet": "Esborra Cartera Mòbil",
   "backups_erase_wallets_and_backups": "Esborra Carteres i Còpies de Seguretat",
-  "backups_erase_wallets_and_backups_modal_1_2_android_subheading": "Estàs a punt d'eliminar permanentment la teva cartera Envoy.\n\nSi fas servir Còpies de Seguretat Màgiques, la clau d'Envoy també s'eliminarà de la Còpia de Seguretat Automàtica d'Android.\n",
-  "backups_erase_wallets_and_backups_modal_1_2_ios_subheading": "Estàs a punt d'eliminar permanentment la teva cartera Envoy.\n\nSi fas servir Còpies de Seguretat Màgiques, la clau d'Envoy també s'eliminarà del Clauer d'iCloud.\n",
+  "backups_erase_wallets_and_backups_modal_1_2_android_subheading": "Estàs a punt d'eliminar permanentment la teva cartera Envoy.\n\nSi fas servir Còpies de Seguretat Màgiques, la clau d'Envoy també s'eliminarà de la Còpia de Seguretat Automàtica d'Android. ",
+  "backups_erase_wallets_and_backups_modal_1_2_ios_subheading": "Estàs a punt d'eliminar permanentment la teva cartera Envoy.\n\nSi fas servir Còpies de Seguretat Màgiques, la clau d'Envoy també s'eliminarà del Clauer d'iCloud. ",
   "backups_erase_wallets_and_backups_modal_2_2_subheading": "Els comptes Passport connectats no se suprimiran en aquest procés.\n\nAbans de suprimir la cartera Envoy, assegurem-nos que la clau i el fitxer de còpia estiguin desats.\n",
   "backups_erase_wallets_and_backups_show_seed_CTA": "Mostra les Paraules",
   "backups_erase_wallets_and_backups_show_seed_heading": "Mantingues la teva clau privada",
@@ -407,7 +407,7 @@
   "envoy_welcome_screen_subheading": "Per a una configuració perfecta, us recomanem que activeu [[Còpia de seguretat màgica]].\n\nEls usuaris avançats poden crear o restaurar manualment una clau privada.",
   "erase_wallet_with_balance_modal_CTA1": "Torna als meus Comptes",
   "erase_wallet_with_balance_modal_CTA2": "Suprimeix els comptes de totes maneres",
-  "erase_wallet_with_balance_modal_subheading": "Abans d'eliminar la teva cartera Envoy, buida els teus Comptes.\n\nVes a Còpies de seguretat > Esborra carteres i còpies de seguretat quan hagis acabat.",
+  "erase_wallet_with_balance_modal_subheading": "Abans d'eliminar la teva cartera Envoy, buida els teus Comptes. \nVes a Còpies de seguretat > Esborra carteres i còpies de seguretat quan hagis acabat.",
   "exploreAddresses_listFilter_unused": "No usada",
   "exploreAddresses_listFilter_used": "Usada",
   "exploreAddresses_listFilter_zeroBalance": "Saldo 0",
@@ -611,7 +611,7 @@
   "manual_setup_magicBackupDetected_heading": "S'ha detectat una Còpia de Seguretat",
   "manual_setup_magicBackupDetected_ignore": "Ignorar",
   "manual_setup_magicBackupDetected_restore": "Restaurar",
-  "manual_setup_magicBackupDetected_subheading": "S'ha trobat una Còpia de Seguretat Màgica al servidor.\n\nVols restaurar-la?",
+  "manual_setup_magicBackupDetected_subheading": "S'ha trobat una Còpia de Seguretat Màgica al servidor. \nVols restaurar-la?",
   "manual_setup_recovery_fail_cta2": "Importar Clau Privada",
   "manual_setup_recovery_fail_heading": "No es pot escanejar el Codi QR",
   "manual_setup_recovery_fail_subheading": "Proveu d'escanejar de nou o importar manualment la clau privada.",

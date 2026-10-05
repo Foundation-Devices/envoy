@@ -76,8 +76,8 @@
   "backups_downloadSettingsMetadataBackupFile": "Descarregar cópia seg. Definições & Metadados",
   "backups_erase_mobile_wallet": "Apagar Carteira Móvel",
   "backups_erase_wallets_and_backups": "Apagar Carteiras e Cópias de Segurança",
-  "backups_erase_wallets_and_backups_modal_1_2_android_subheading": "Estás prestes a eliminar permanentemente a tua carteira Envoy. \n\nSe estiveres a usar Cópias Mágicas de Segurança, a tua semente do Envoy também será eliminada da Cópia de Segurança do Android.\n",
-  "backups_erase_wallets_and_backups_modal_1_2_ios_subheading": "Estás prestes a eliminar permanentemente a tua carteira Envoy.\n\nSe estiveres a usar Cópias Mágicas de Segurança, a tua semente do Envoy também será eliminada do Porta-chaves iCloud.\n",
+  "backups_erase_wallets_and_backups_modal_1_2_android_subheading": "Estás prestes a eliminar permanentemente a tua carteira Envoy. \n\nSe estiveres a usar Cópias Mágicas de Segurança, a tua semente do Envoy também será eliminada da Cópia de Segurança do Android. ",
+  "backups_erase_wallets_and_backups_modal_1_2_ios_subheading": "Estás prestes a eliminar permanentemente a tua carteira Envoy.\n\nSe estiveres a usar Cópias Mágicas de Segurança, a tua semente do Envoy também será eliminada do Porta-chaves iCloud. ",
   "backups_erase_wallets_and_backups_modal_2_2_subheading": "Nenhuma conta Passport associada será removida neste processo.\n\nAntes de eliminares a carteira Envoy, confirma que a semente e o ficheiro de cópia estão guardados.\n",
   "backups_erase_wallets_and_backups_show_seed_CTA": "Mostrar Semente",
   "backups_erase_wallets_and_backups_show_seed_heading": "Mantém a Tua Semente Privada",
@@ -407,7 +407,7 @@
   "envoy_welcome_screen_subheading": "Para uma configuração sem problemas, recomendamos que seja activada a opção [[Cópia Mágica de Segurança]].\n\nUtilizadores experientes podem criar manualmente ou restaurar a semente da carteira.",
   "erase_wallet_with_balance_modal_CTA1": "Voltar para as minhas Contas",
   "erase_wallet_with_balance_modal_CTA2": "Eliminar Contas mesmo assim",
-  "erase_wallet_with_balance_modal_subheading": "Antes de eliminares a tua carteira Envoy, esvazia as tuas Contas.\n\nVai a Cópias de segurança > Apagar carteiras e cópias de segurança quando terminares.",
+  "erase_wallet_with_balance_modal_subheading": "Antes de eliminares a tua carteira Envoy, esvazia as tuas Contas. \nVai a Cópias de segurança > Apagar carteiras e cópias de segurança quando terminares.",
   "exploreAddresses_listFilter_unused": "Não usado",
   "exploreAddresses_listFilter_used": "Usado",
   "exploreAddresses_listFilter_zeroBalance": "0 Saldo",
@@ -417,7 +417,7 @@
   "exploreAddresses_list_header": "Explorar endereços",
   "exploreAddresses_qr_derivationPath": "Caminho de derivação",
   "exploreAddresses_qr_header": "ENDEREÇO #{number}",
-  "exploreAddresses_qr_warningReused": "Este endereço já foi utilizado.\nEvita reutilizar endereços para proteger a tua privacidade. ",
+  "exploreAddresses_qr_warningReused": "Este endereço já foi utilizado. Evita reutilizar endereços para proteger a tua privacidade. ",
   "exploreAddresses_searchError_continueSearching": "Continuar Pesquisa",
   "exploreAddresses_searchError_notFound": "Endereço não encontrado nos primeiros {searchSpace} endereços.",
   "exploreAdresses_activityOptions_deleteAccount": "Eliminar conta",
@@ -611,7 +611,7 @@
   "manual_setup_magicBackupDetected_heading": "Cópia Mágica de Segurança Detectada",
   "manual_setup_magicBackupDetected_ignore": "Ignorar",
   "manual_setup_magicBackupDetected_restore": "Restaurar",
-  "manual_setup_magicBackupDetected_subheading": "Foi encontrada uma Cópia Mágica de Segurança no servidor.\n\nRestaurar a tua cópia de segurança?",
+  "manual_setup_magicBackupDetected_subheading": "Foi encontrada uma Cópia Mágica de Segurança no servidor. \nRestaurar a tua cópia de segurança?",
   "manual_setup_recovery_fail_cta2": "Importar Palavras Semente",
   "manual_setup_recovery_fail_heading": "Não foi possível digitalizar o Código QR",
   "manual_setup_recovery_fail_subheading": "Tenta digitalizar novamente ou, em alternativa, importa manualmente as tuas palavras semente.",
