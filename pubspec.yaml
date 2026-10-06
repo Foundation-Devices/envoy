@@ -43,6 +43,8 @@ dependencies:
     path: packages/ngwallet
   shards:
     path: packages/shards
+  qlv2:
+    path: packages/qlv2
 
   #  # qr_code_scanner fork
   qr_code_scanner_plus:
