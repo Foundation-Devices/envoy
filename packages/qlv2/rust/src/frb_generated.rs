@@ -54,7 +54,7 @@ flutter_rust_bridge::frb_generated_boilerplate!(
     default_rust_auto_opaque = RustAutoOpaqueMoi,
 );
 pub(crate) const FLUTTER_RUST_BRIDGE_CODEGEN_VERSION: &str = "2.11.1";
-pub(crate) const FLUTTER_RUST_BRIDGE_CODEGEN_CONTENT_HASH: i32 = -1492476416;
+pub(crate) const FLUTTER_RUST_BRIDGE_CODEGEN_CONTENT_HASH: i32 = -1482422522;
 
 // Section: executor
 
@@ -3563,6 +3563,101 @@ fn wire__crate__api__ql_link__QlSession_connect_impl(
         },
     )
 }
+fn wire__crate__api__ql_link__QlSession_default_impl(
+    port_: flutter_rust_bridge::for_generated::MessagePort,
+    ptr_: flutter_rust_bridge::for_generated::PlatformGeneralizedUint8ListPtr,
+    rust_vec_len_: i32,
+    data_len_: i32,
+) {
+    FLUTTER_RUST_BRIDGE_HANDLER.wrap_normal::<flutter_rust_bridge::for_generated::SseCodec, _, _>(
+        flutter_rust_bridge::for_generated::TaskInfo {
+            debug_name: "QlSession_default",
+            port: Some(port_),
+            mode: flutter_rust_bridge::for_generated::FfiCallMode::Normal,
+        },
+        move || {
+            let message = unsafe {
+                flutter_rust_bridge::for_generated::Dart2RustMessageSse::from_wire(
+                    ptr_,
+                    rust_vec_len_,
+                    data_len_,
+                )
+            };
+            let mut deserializer =
+                flutter_rust_bridge::for_generated::SseDeserializer::new(message);
+            deserializer.end();
+            move |context| {
+                transform_result_sse::<_, ()>((move || {
+                    let output_ok = Result::<_, ()>::Ok(crate::api::ql_link::QLSession::default())?;
+                    Ok(output_ok)
+                })())
+            }
+        },
+    )
+}
+fn wire__crate__api__ql_link__QlSession_download_passport_benchmark_impl(
+    port_: flutter_rust_bridge::for_generated::MessagePort,
+    ptr_: flutter_rust_bridge::for_generated::PlatformGeneralizedUint8ListPtr,
+    rust_vec_len_: i32,
+    data_len_: i32,
+) {
+    FLUTTER_RUST_BRIDGE_HANDLER.wrap_async::<flutter_rust_bridge::for_generated::SseCodec, _, _, _>(
+        flutter_rust_bridge::for_generated::TaskInfo {
+            debug_name: "QlSession_download_passport_benchmark",
+            port: Some(port_),
+            mode: flutter_rust_bridge::for_generated::FfiCallMode::Normal,
+        },
+        move || {
+            let message = unsafe {
+                flutter_rust_bridge::for_generated::Dart2RustMessageSse::from_wire(
+                    ptr_,
+                    rust_vec_len_,
+                    data_len_,
+                )
+            };
+            let mut deserializer =
+                flutter_rust_bridge::for_generated::SseDeserializer::new(message);
+            let api_that = <RustOpaqueMoi<
+                flutter_rust_bridge::for_generated::RustAutoOpaqueInner<QLSession>,
+            >>::sse_decode(&mut deserializer);
+            let api_bytes = <u32>::sse_decode(&mut deserializer);
+            let api_receive_window = <u32>::sse_decode(&mut deserializer);
+            deserializer.end();
+            move |context| async move {
+                transform_result_sse::<_, flutter_rust_bridge::for_generated::anyhow::Error>(
+                    (move || async move {
+                        let mut api_that_guard = None;
+                        let decode_indices_ =
+                            flutter_rust_bridge::for_generated::lockable_compute_decode_order(
+                                vec![flutter_rust_bridge::for_generated::LockableOrderInfo::new(
+                                    &api_that, 0, false,
+                                )],
+                            );
+                        for i in decode_indices_ {
+                            match i {
+                                0 => {
+                                    api_that_guard =
+                                        Some(api_that.lockable_decode_async_ref().await)
+                                }
+                                _ => unreachable!(),
+                            }
+                        }
+                        let api_that_guard = api_that_guard.unwrap();
+                        let output_ok =
+                            crate::api::ql_link::QLSession::download_passport_benchmark(
+                                &*api_that_guard,
+                                api_bytes,
+                                api_receive_window,
+                            )
+                            .await?;
+                        Ok(output_ok)
+                    })()
+                    .await,
+                )
+            }
+        },
+    )
+}
 fn wire__crate__api__ql_link__QlSession_generate_xid_impl(
     ptr_: flutter_rust_bridge::for_generated::PlatformGeneralizedUint8ListPtr,
     rust_vec_len_: i32,
@@ -3999,6 +4094,66 @@ fn wire__crate__api__ql_link__QlSession_request_passport_details_impl(
                         let output_ok = crate::api::ql_link::QLSession::request_passport_details(
                             &*api_that_guard,
                             api_request,
+                        )
+                        .await?;
+                        Ok(output_ok)
+                    })()
+                    .await,
+                )
+            }
+        },
+    )
+}
+fn wire__crate__api__ql_link__QlSession_request_passport_echo_impl(
+    port_: flutter_rust_bridge::for_generated::MessagePort,
+    ptr_: flutter_rust_bridge::for_generated::PlatformGeneralizedUint8ListPtr,
+    rust_vec_len_: i32,
+    data_len_: i32,
+) {
+    FLUTTER_RUST_BRIDGE_HANDLER.wrap_async::<flutter_rust_bridge::for_generated::SseCodec, _, _, _>(
+        flutter_rust_bridge::for_generated::TaskInfo {
+            debug_name: "QlSession_request_passport_echo",
+            port: Some(port_),
+            mode: flutter_rust_bridge::for_generated::FfiCallMode::Normal,
+        },
+        move || {
+            let message = unsafe {
+                flutter_rust_bridge::for_generated::Dart2RustMessageSse::from_wire(
+                    ptr_,
+                    rust_vec_len_,
+                    data_len_,
+                )
+            };
+            let mut deserializer =
+                flutter_rust_bridge::for_generated::SseDeserializer::new(message);
+            let api_that = <RustOpaqueMoi<
+                flutter_rust_bridge::for_generated::RustAutoOpaqueInner<QLSession>,
+            >>::sse_decode(&mut deserializer);
+            let api_message = <String>::sse_decode(&mut deserializer);
+            deserializer.end();
+            move |context| async move {
+                transform_result_sse::<_, flutter_rust_bridge::for_generated::anyhow::Error>(
+                    (move || async move {
+                        let mut api_that_guard = None;
+                        let decode_indices_ =
+                            flutter_rust_bridge::for_generated::lockable_compute_decode_order(
+                                vec![flutter_rust_bridge::for_generated::LockableOrderInfo::new(
+                                    &api_that, 0, false,
+                                )],
+                            );
+                        for i in decode_indices_ {
+                            match i {
+                                0 => {
+                                    api_that_guard =
+                                        Some(api_that.lockable_decode_async_ref().await)
+                                }
+                                _ => unreachable!(),
+                            }
+                        }
+                        let api_that_guard = api_that_guard.unwrap();
+                        let output_ok = crate::api::ql_link::QLSession::request_passport_echo(
+                            &*api_that_guard,
+                            api_message,
                         )
                         .await?;
                         Ok(output_ok)
@@ -7238,6 +7393,20 @@ impl SseDecode for Option<Vec<u8>> {
     }
 }
 
+impl SseDecode for crate::api::ql_link::PassportBenchmarkResult {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        let mut var_bytes = <u32>::sse_decode(deserializer);
+        let mut var_seconds = <f64>::sse_decode(deserializer);
+        let mut var_mibPerSecond = <f64>::sse_decode(deserializer);
+        return crate::api::ql_link::PassportBenchmarkResult {
+            bytes: var_bytes,
+            seconds: var_seconds,
+            mib_per_second: var_mibPerSecond,
+        };
+    }
+}
+
 impl SseDecode for ql_api::system::PassportColor {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
@@ -7267,6 +7436,18 @@ impl SseDecode for ql_api::system::PassportDetailsResponse {
             serial: var_serial,
             color: var_color,
             onboarding_complete: var_onboardingComplete,
+        };
+    }
+}
+
+impl SseDecode for crate::api::ql_link::PassportEchoResult {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        let mut var_message = <String>::sse_decode(deserializer);
+        let mut var_milliseconds = <f64>::sse_decode(deserializer);
+        return crate::api::ql_link::PassportEchoResult {
+            message: var_message,
+            milliseconds: var_milliseconds,
         };
     }
 }
@@ -7870,162 +8051,175 @@ fn pde_ffi_dispatcher_primary_impl(
             wire__crate__api__ql_link__QlSession_bind_peer_impl(port, ptr, rust_vec_len, data_len)
         }
         68 => wire__crate__api__ql_link__QlSession_connect_impl(port, ptr, rust_vec_len, data_len),
-        70 => wire__crate__api__ql_link__QlSession_get_persisted_peer_impl(
+        69 => wire__crate__api__ql_link__QlSession_default_impl(port, ptr, rust_vec_len, data_len),
+        70 => wire__crate__api__ql_link__QlSession_download_passport_benchmark_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        71 => wire__crate__api__ql_link__QlSession_new_impl(port, ptr, rust_vec_len, data_len),
-        72 => wire__crate__api__ql_link__QlSession_new_from_identity_impl(
+        72 => wire__crate__api__ql_link__QlSession_get_persisted_peer_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        73 => {
+        73 => wire__crate__api__ql_link__QlSession_new_impl(port, ptr, rust_vec_len, data_len),
+        74 => wire__crate__api__ql_link__QlSession_new_from_identity_impl(
+            port,
+            ptr,
+            rust_vec_len,
+            data_len,
+        ),
+        75 => {
             wire__crate__api__ql_link__QlSession_own_bundle_impl(port, ptr, rust_vec_len, data_len)
         }
-        74 => wire__crate__api__ql_link__QlSession_own_identity_impl(
+        76 => wire__crate__api__ql_link__QlSession_own_identity_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        75 => wire__crate__api__ql_link__QlSession_pair_impl(port, ptr, rust_vec_len, data_len),
-        76 => wire__crate__api__ql_link__QlSession_provision_router_impl(
+        77 => wire__crate__api__ql_link__QlSession_pair_impl(port, ptr, rust_vec_len, data_len),
+        78 => wire__crate__api__ql_link__QlSession_provision_router_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        77 => wire__crate__api__ql_link__QlSession_request_passport_active_seed_fingerprint_impl(
+        79 => wire__crate__api__ql_link__QlSession_request_passport_active_seed_fingerprint_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        78 => wire__crate__api__ql_link__QlSession_request_passport_details_impl(
+        80 => wire__crate__api__ql_link__QlSession_request_passport_details_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        79 => wire__crate__api__ql_link__QlSession_request_peer_permissions_impl(
+        81 => wire__crate__api__ql_link__QlSession_request_passport_echo_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        80 => wire__crate__api__ql_link__QlSession_request_permissions_impl(
+        82 => wire__crate__api__ql_link__QlSession_request_peer_permissions_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        81 => wire__crate__api__ql_link__QlSession_request_sign_psbt_impl(
+        83 => wire__crate__api__ql_link__QlSession_request_permissions_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        82 => wire__crate__api__ql_link__QlSession_send_incoming_impl(
+        84 => wire__crate__api__ql_link__QlSession_request_sign_psbt_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        83 => wire__crate__api__ql_link__QlSession_send_incoming_ws_impl(
+        85 => wire__crate__api__ql_link__QlSession_send_incoming_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        84 => wire__crate__api__ql_link__QlSession_set_persisted_peer_impl(
+        86 => wire__crate__api__ql_link__QlSession_send_incoming_ws_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        86 => wire__crate__api__ql_link__QlSession_set_up_router_impl(
+        87 => wire__crate__api__ql_link__QlSession_set_persisted_peer_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        87 => wire__crate__api__ql_link__QlSession_stream_outgoing_messages_impl(
+        89 => wire__crate__api__ql_link__QlSession_set_up_router_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        88 => wire__crate__api__ql_link__QlSession_stream_peer_status_impl(
+        90 => wire__crate__api__ql_link__QlSession_stream_outgoing_messages_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        89 => wire__crate__api__ql_link__QlSession_subscribe_account_updated_impl(
+        91 => wire__crate__api__ql_link__QlSession_stream_peer_status_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        90 => wire__crate__api__ql_link__QlSession_subscribe_firmware_install_status_impl(
+        92 => wire__crate__api__ql_link__QlSession_subscribe_account_updated_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        91 => wire__crate__api__ql_link__QlSession_subscribe_magic_backup_restore_completed_impl(
+        93 => wire__crate__api__ql_link__QlSession_subscribe_firmware_install_status_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        92 => wire__crate__api__ql_link__QlSession_subscribe_onboarding_status_impl(
+        94 => wire__crate__api__ql_link__QlSession_subscribe_magic_backup_restore_completed_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        93 => wire__crate__api__ql_link__QlSession_subscribe_passport_active_seed_fingerprint_impl(
+        95 => wire__crate__api__ql_link__QlSession_subscribe_onboarding_status_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        94 => wire__crate__api__ql_link__QlSession_subscribe_passport_details_impl(
+        96 => wire__crate__api__ql_link__QlSession_subscribe_passport_active_seed_fingerprint_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        95 => wire__crate__api__ql_link__QlSession_subscribe_passport_fiat_preference_impl(
+        97 => wire__crate__api__ql_link__QlSession_subscribe_passport_details_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        96 => wire__crate__api__ql_link__QlSession_subscribe_passport_magic_backup_enabled_impl(
+        98 => wire__crate__api__ql_link__QlSession_subscribe_passport_fiat_preference_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        97 => wire__crate__api__ql_link__QlSession_xid_impl(port, ptr, rust_vec_len, data_len),
-        100 => wire__crate__api__btp__decode_impl(port, ptr, rust_vec_len, data_len),
-        101 => wire__ql_api__codec__empty_default_impl(port, ptr, rust_vec_len, data_len),
-        102 => wire__crate__api__btp__encode_impl(port, ptr, rust_vec_len, data_len),
-        103 => wire__crate__api__btp__get_decoder_impl(port, ptr, rust_vec_len, data_len),
-        105 => wire__crate__api__ql_link__init_app_impl(port, ptr, rust_vec_len, data_len),
-        106 => wire__crate__api__ql_link__setup_default_user_utils_impl(
+        99 => wire__crate__api__ql_link__QlSession_subscribe_passport_magic_backup_enabled_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        107 => wire__crate__api__rust_log__stream_rust_logs_impl(port, ptr, rust_vec_len, data_len),
+        100 => wire__crate__api__ql_link__QlSession_xid_impl(port, ptr, rust_vec_len, data_len),
+        103 => wire__crate__api__btp__decode_impl(port, ptr, rust_vec_len, data_len),
+        104 => wire__ql_api__codec__empty_default_impl(port, ptr, rust_vec_len, data_len),
+        105 => wire__crate__api__btp__encode_impl(port, ptr, rust_vec_len, data_len),
+        106 => wire__crate__api__btp__get_decoder_impl(port, ptr, rust_vec_len, data_len),
+        108 => wire__crate__api__ql_link__init_app_impl(port, ptr, rust_vec_len, data_len),
+        109 => wire__crate__api__ql_link__setup_default_user_utils_impl(
+            port,
+            ptr,
+            rust_vec_len,
+            data_len,
+        ),
+        110 => wire__crate__api__rust_log__stream_rust_logs_impl(port, ptr, rust_vec_len, data_len),
         _ => unreachable!(),
     }
 }
@@ -8072,11 +8266,11 @@ fn pde_ffi_dispatcher_sync_impl(
 59 => wire__crate__api__rpc__backup__InboundUploadMagicBackup_auto_accessor_set_request_impl(ptr, rust_vec_len, data_len),
 62 => wire__crate__api__platform__OutBoundWrite_auto_accessor_get_payload_impl(ptr, rust_vec_len, data_len),
 63 => wire__crate__api__platform__OutBoundWrite_auto_accessor_set_payload_impl(ptr, rust_vec_len, data_len),
-69 => wire__crate__api__ql_link__QlSession_generate_xid_impl(ptr, rust_vec_len, data_len),
-85 => wire__crate__api__ql_link__QlSession_set_router_enabled_impl(ptr, rust_vec_len, data_len),
-98 => wire__crate__api__rpc__RouterState_auto_accessor_get_inner_impl(ptr, rust_vec_len, data_len),
-99 => wire__crate__api__rpc__RouterState_auto_accessor_set_inner_impl(ptr, rust_vec_len, data_len),
-104 => wire__crate__api__ql_link__greet_impl(ptr, rust_vec_len, data_len),
+71 => wire__crate__api__ql_link__QlSession_generate_xid_impl(ptr, rust_vec_len, data_len),
+88 => wire__crate__api__ql_link__QlSession_set_router_enabled_impl(ptr, rust_vec_len, data_len),
+101 => wire__crate__api__rpc__RouterState_auto_accessor_get_inner_impl(ptr, rust_vec_len, data_len),
+102 => wire__crate__api__rpc__RouterState_auto_accessor_set_inner_impl(ptr, rust_vec_len, data_len),
+107 => wire__crate__api__ql_link__greet_impl(ptr, rust_vec_len, data_len),
                         _ => unreachable!(),
                     }
 }
@@ -9398,6 +9592,28 @@ impl flutter_rust_bridge::IntoIntoDart<FrbWrapper<ql_api::onboarding::Onboarding
     }
 }
 // Codec=Dco (DartCObject based), see doc to use other codecs
+impl flutter_rust_bridge::IntoDart for crate::api::ql_link::PassportBenchmarkResult {
+    fn into_dart(self) -> flutter_rust_bridge::for_generated::DartAbi {
+        [
+            self.bytes.into_into_dart().into_dart(),
+            self.seconds.into_into_dart().into_dart(),
+            self.mib_per_second.into_into_dart().into_dart(),
+        ]
+        .into_dart()
+    }
+}
+impl flutter_rust_bridge::for_generated::IntoDartExceptPrimitive
+    for crate::api::ql_link::PassportBenchmarkResult
+{
+}
+impl flutter_rust_bridge::IntoIntoDart<crate::api::ql_link::PassportBenchmarkResult>
+    for crate::api::ql_link::PassportBenchmarkResult
+{
+    fn into_into_dart(self) -> crate::api::ql_link::PassportBenchmarkResult {
+        self
+    }
+}
+// Codec=Dco (DartCObject based), see doc to use other codecs
 impl flutter_rust_bridge::IntoDart for FrbWrapper<ql_api::system::PassportColor> {
     fn into_dart(self) -> flutter_rust_bridge::for_generated::DartAbi {
         match self.0 {
@@ -9441,6 +9657,27 @@ impl flutter_rust_bridge::IntoIntoDart<FrbWrapper<ql_api::system::PassportDetail
 {
     fn into_into_dart(self) -> FrbWrapper<ql_api::system::PassportDetailsResponse> {
         self.into()
+    }
+}
+// Codec=Dco (DartCObject based), see doc to use other codecs
+impl flutter_rust_bridge::IntoDart for crate::api::ql_link::PassportEchoResult {
+    fn into_dart(self) -> flutter_rust_bridge::for_generated::DartAbi {
+        [
+            self.message.into_into_dart().into_dart(),
+            self.milliseconds.into_into_dart().into_dart(),
+        ]
+        .into_dart()
+    }
+}
+impl flutter_rust_bridge::for_generated::IntoDartExceptPrimitive
+    for crate::api::ql_link::PassportEchoResult
+{
+}
+impl flutter_rust_bridge::IntoIntoDart<crate::api::ql_link::PassportEchoResult>
+    for crate::api::ql_link::PassportEchoResult
+{
+    fn into_into_dart(self) -> crate::api::ql_link::PassportEchoResult {
+        self
     }
 }
 // Codec=Dco (DartCObject based), see doc to use other codecs
@@ -11345,6 +11582,15 @@ impl SseEncode for Option<Vec<u8>> {
     }
 }
 
+impl SseEncode for crate::api::ql_link::PassportBenchmarkResult {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        <u32>::sse_encode(self.bytes, serializer);
+        <f64>::sse_encode(self.seconds, serializer);
+        <f64>::sse_encode(self.mib_per_second, serializer);
+    }
+}
+
 impl SseEncode for ql_api::system::PassportColor {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
@@ -11370,6 +11616,14 @@ impl SseEncode for ql_api::system::PassportDetailsResponse {
         <ql_api::system::PassportSerial>::sse_encode(self.serial, serializer);
         <ql_api::system::PassportColor>::sse_encode(self.color, serializer);
         <bool>::sse_encode(self.onboarding_complete, serializer);
+    }
+}
+
+impl SseEncode for crate::api::ql_link::PassportEchoResult {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        <String>::sse_encode(self.message, serializer);
+        <f64>::sse_encode(self.milliseconds, serializer);
     }
 }
 

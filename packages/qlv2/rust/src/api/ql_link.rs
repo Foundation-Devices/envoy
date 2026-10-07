@@ -4,7 +4,7 @@
 
 use std::future::Future;
 use std::sync::{Arc, Mutex};
-use std::time::Duration;
+use std::time::{Duration, Instant};
 
 use crate::api::rpc_macros::rpc_request;
 use crate::router::{Peer, BUNDLE_BYTES, ROUTER};
@@ -17,7 +17,7 @@ use crate::{
     },
     frb_generated::StreamSink,
 };
-use anyhow::anyhow;
+use anyhow::{anyhow, ensure};
 use ql_api::PeerPermissionsParams;
 use ql_codec::{Decode, Encode};
 use ql_common::StreamInfo;
@@ -27,7 +27,22 @@ use ql_keyos::PeerPermissions;
 use ql_rpc::Router;
 use ql_runtime::{QlStream, RuntimeConfig, RuntimeHandle};
 use ql_wire::{PairingToken, PeerBundle, QlIdentity};
-use tokio::sync::{mpsc, Notify};
+use sha2::{Digest, Sha256};
+use tokio::sync::{mpsc, oneshot, Notify};
+
+const MAX_BENCHMARK_BYTES: u32 = 16 * 1024 * 1024;
+const MAX_BENCHMARK_WINDOW: u32 = 1024 * 1024;
+
+pub struct PassportEchoResult {
+    pub message: String,
+    pub milliseconds: f64,
+}
+
+pub struct PassportBenchmarkResult {
+    pub bytes: u32,
+    pub seconds: f64,
+    pub mib_per_second: f64,
+}
 
 #[derive(Clone, Copy)]
 struct TokioSendSpawner;
@@ -83,6 +98,7 @@ fn setup_backtrace() {
 /// Holds all state needed to run the QL v2 protocol session.
 pub struct QLSession {
     pub(crate) handle: RuntimeHandle,
+    _runtime_lifetime: oneshot::Sender<()>,
     xid: [u8; 16],
     own_identity: Vec<u8>,
     own_bundle: Vec<u8>,
@@ -94,6 +110,8 @@ pub struct QLSession {
     inbound_byte_writer: mpsc::Sender<Vec<u8>>,
     router_attach: Arc<Notify>,
     router_peer: Mutex<Option<Arc<Peer>>>,
+    #[cfg(test)]
+    runtime_stopped: Mutex<Option<std::sync::mpsc::Receiver<()>>>,
 }
 
 impl Default for QLSession {
@@ -103,6 +121,44 @@ impl Default for QLSession {
 }
 
 impl QLSession {
+    pub async fn request_passport_echo(
+        &self,
+        message: String,
+    ) -> anyhow::Result<PassportEchoResult> {
+        ensure!(
+            !message.is_empty() && message.len() <= 64 * 1024,
+            "Enter an echo payload of 1-65536 bytes"
+        );
+        let started = Instant::now();
+        let response = tokio::time::timeout(
+            Duration::from_secs(15),
+            self.handle.rpc().request::<ql_api::RequestPassportEcho>(
+                &ql_api::EchoParams { message },
+                Default::default(),
+            ),
+        )
+        .await
+        .map_err(|_| anyhow!("Passport echo timed out"))??;
+        Ok(PassportEchoResult {
+            message: response.message,
+            milliseconds: started.elapsed().as_secs_f64() * 1000.0,
+        })
+    }
+
+    pub async fn download_passport_benchmark(
+        &self,
+        bytes: u32,
+        receive_window: u32,
+    ) -> anyhow::Result<PassportBenchmarkResult> {
+        validate_benchmark(bytes, receive_window)?;
+        tokio::time::timeout(
+            Duration::from_secs(120),
+            run_passport_benchmark(&self.handle, bytes, receive_window),
+        )
+        .await
+        .map_err(|_| anyhow!("Passport benchmark timed out"))?
+    }
+
     pub async fn provision_router(&self) -> anyhow::Result<()> {
         let response = self
             .handle
@@ -179,6 +235,9 @@ impl QLSession {
         let (write_tx, write_rx) = mpsc::channel::<OutBoundWrite>(2);
         let (inbound_byte_tx, inbound_byte_rx) = mpsc::channel::<Vec<u8>>(2);
         let router_attach = Arc::new(Notify::new());
+        let (runtime_lifetime, runtime_shutdown) = oneshot::channel();
+        #[cfg(test)]
+        let (runtime_stopped_tx, runtime_stopped_rx) = std::sync::mpsc::channel();
 
         let channels = Arc::new(Channels {
             peer_bundle: Mutex::new(None),
@@ -201,7 +260,7 @@ impl QLSession {
             platform,
             RuntimeConfig {
                 fsm: ql_fsm::QlFsmConfig {
-                    handshake_timeout: Duration::from_secs(60 * 60 * 60),
+                    handshake_timeout: Duration::from_secs(60),
                     ..Default::default()
                 },
                 max_concurrent_message_writes: 2,
@@ -233,16 +292,23 @@ impl QLSession {
                             }
                         }
                     };
-                    tokio::select! {
-                        _ = runtime.run() => {}
-                        _ = attach => {}
-                    }
+                    let attach_task = tokio::spawn(async move {
+                        tokio::select! {
+                            _ = attach => {}
+                            _ = runtime_shutdown => {}
+                        }
+                    });
+                    runtime.run().await;
+                    attach_task.abort();
                 });
             log::info!("Runtime has completed");
+            #[cfg(test)]
+            let _ = runtime_stopped_tx.send(());
         });
 
         Self {
             handle,
+            _runtime_lifetime: runtime_lifetime,
             xid: xid_arr,
             own_identity,
             own_bundle,
@@ -254,6 +320,8 @@ impl QLSession {
             inbound_byte_writer: inbound_byte_tx,
             router_attach,
             router_peer: Mutex::new(None),
+            #[cfg(test)]
+            runtime_stopped: Mutex::new(Some(runtime_stopped_rx)),
         }
     }
 
@@ -422,11 +490,13 @@ impl QLSession {
             .unwrap()
             .take()
             .expect("stream_peer_status already consumed");
-        while let Some(event) = rx.recv().await {
-            if sink.add(event).is_err() {
-                break;
+        tokio::spawn(async move {
+            while let Some(event) = rx.recv().await {
+                if sink.add(event).is_err() {
+                    break;
+                }
             }
-        }
+        });
     }
 
     /// Stream of outgoing BLE messages enqueued by the runtime. Call once and `.listen()` in Dart.
@@ -437,12 +507,71 @@ impl QLSession {
             .unwrap()
             .take()
             .expect("stream_outgoing_messages already consumed");
-        while let Some(write_reuqest) = rx.recv().await {
-            if sink.add(write_reuqest).is_err() {
+        tokio::spawn(async move {
+            while let Some(write_reuqest) = rx.recv().await {
+                if sink.add(write_reuqest).is_err() {
+                    break;
+                }
+            }
+        });
+    }
+}
+
+fn validate_benchmark(bytes: u32, receive_window: u32) -> anyhow::Result<()> {
+    ensure!(
+        (1..=MAX_BENCHMARK_BYTES).contains(&bytes),
+        "Choose 1-16384 KiB of benchmark data"
+    );
+    ensure!(
+        (1024..=MAX_BENCHMARK_WINDOW).contains(&receive_window),
+        "Choose a receive window of 1-1024 KiB"
+    );
+    Ok(())
+}
+
+async fn run_passport_benchmark(
+    handle: &RuntimeHandle,
+    bytes: u32,
+    receive_window: u32,
+) -> anyhow::Result<PassportBenchmarkResult> {
+    let call = handle
+        .rpc()
+        .download::<ql_api::DownloadPassportBenchmark>(
+            &ql_api::DownloadBenchmarkParams {
+                length: bytes.into(),
+            },
+            ql_runtime::StreamOptions {
+                receive_window: Some(receive_window),
+                ..Default::default()
+            },
+        )
+        .await?;
+    let (header, mut parts) = call.start().await?;
+    let started = Instant::now();
+    let mut received = 0usize;
+    let mut hash = Sha256::new();
+    while let Some((_, mut part)) = parts.next_part().await? {
+        loop {
+            let chunk = part.read_chunk().await?;
+            if chunk.is_empty() {
                 break;
             }
+            received += chunk.len();
+            ensure!(received <= bytes as usize, "Benchmark returned excess data");
+            hash.update(&chunk);
         }
     }
+    ensure!(received == bytes as usize, "Benchmark length mismatch");
+    ensure!(
+        hash.finalize().as_slice() == header.hash.as_slice(),
+        "Benchmark hash mismatch"
+    );
+    let seconds = started.elapsed().as_secs_f64().max(f64::EPSILON);
+    Ok(PassportBenchmarkResult {
+        bytes,
+        seconds,
+        mib_per_second: f64::from(bytes) / (1024.0 * 1024.0) / seconds,
+    })
 }
 
 rpc_request!(
@@ -455,9 +584,22 @@ rpc_request!(
 
 #[cfg(test)]
 mod tests {
-    use super::{PairingInvite, QLSession};
+    use super::{validate_benchmark, PairingInvite, QLSession};
     use ql_codec::{Decode, Encode};
     use ql_wire::QlIdentity;
+    use std::time::Duration;
+
+    #[test]
+    fn dropping_session_stops_runtime_thread() {
+        let session = QLSession::new();
+        let runtime_stopped = session.runtime_stopped.lock().unwrap().take().unwrap();
+
+        drop(session);
+
+        runtime_stopped
+            .recv_timeout(Duration::from_secs(2))
+            .expect("QL runtime thread did not stop");
+    }
 
     #[tokio::test]
     async fn only_local_records_reach_the_local_runtime() {
@@ -539,5 +681,14 @@ mod tests {
         invite.version = PairingInvite::VERSION.saturating_add(1);
 
         assert!(session.pair(invite.encode_vec()).is_err());
+    }
+
+    #[test]
+    fn benchmark_limits_are_validated() {
+        assert!(validate_benchmark(1024, 1024).is_ok());
+        assert!(validate_benchmark(0, 1024).is_err());
+        assert!(validate_benchmark(16 * 1024 * 1024 + 1, 1024).is_err());
+        assert!(validate_benchmark(1024, 1023).is_err());
+        assert!(validate_benchmark(1024, 1024 * 1024 + 1).is_err());
     }
 }

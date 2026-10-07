@@ -912,10 +912,16 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   Uint8List? dco_decode_opt_list_prim_u_8_strict(dynamic raw);
 
   @protected
+  PassportBenchmarkResult dco_decode_passport_benchmark_result(dynamic raw);
+
+  @protected
   PassportColor dco_decode_passport_color(dynamic raw);
 
   @protected
   PassportDetailsResponse dco_decode_passport_details_response(dynamic raw);
+
+  @protected
+  PassportEchoResult dco_decode_passport_echo_result(dynamic raw);
 
   @protected
   PassportFiatPreferenceEvent dco_decode_passport_fiat_preference_event(
@@ -1850,10 +1856,18 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   Uint8List? sse_decode_opt_list_prim_u_8_strict(SseDeserializer deserializer);
 
   @protected
+  PassportBenchmarkResult sse_decode_passport_benchmark_result(
+      SseDeserializer deserializer);
+
+  @protected
   PassportColor sse_decode_passport_color(SseDeserializer deserializer);
 
   @protected
   PassportDetailsResponse sse_decode_passport_details_response(
+      SseDeserializer deserializer);
+
+  @protected
+  PassportEchoResult sse_decode_passport_echo_result(
       SseDeserializer deserializer);
 
   @protected
@@ -2800,11 +2814,19 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
       Uint8List? self, SseSerializer serializer);
 
   @protected
+  void sse_encode_passport_benchmark_result(
+      PassportBenchmarkResult self, SseSerializer serializer);
+
+  @protected
   void sse_encode_passport_color(PassportColor self, SseSerializer serializer);
 
   @protected
   void sse_encode_passport_details_response(
       PassportDetailsResponse self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_passport_echo_result(
+      PassportEchoResult self, SseSerializer serializer);
 
   @protected
   void sse_encode_passport_fiat_preference_event(

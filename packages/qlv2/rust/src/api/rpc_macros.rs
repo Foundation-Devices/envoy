@@ -147,11 +147,53 @@ macro_rules! rpc_subscription {
                     request: $params,
                     sink: $crate::frb_generated::StreamSink<$event>,
                 ) -> anyhow::Result<()> {
-                    let mut subscription = self.handle.rpc().subscribe::<ql_api::$route>(&request,Default::default()).await?;
+                    log::info!("opening {} subscription", stringify!($route));
+                    let mut subscription = match self
+                        .handle
+                        .rpc()
+                        .subscribe::<ql_api::$route>(&request, Default::default())
+                        .await
+                    {
+                        Ok(subscription) => subscription,
+                        Err(error) => {
+                            log::warn!(
+                                "{} subscription unavailable: {error}",
+                                stringify!($route)
+                            );
+                            return Ok(());
+                        }
+                    };
+                    log::info!("{} subscription opened", stringify!($route));
                     tokio::spawn(async move {
-                        while let Some(Ok(event)) = subscription.next_event().await {
-                            if sink.add(event).is_err() {
-                                return;
+                        loop {
+                            match subscription.next_event().await {
+                                Some(Ok(event)) => {
+                                    log::info!(
+                                        "{} subscription event received",
+                                        stringify!($route)
+                                    );
+                                    if sink.add(event).is_err() {
+                                        log::info!(
+                                            "{} subscription Dart listener closed",
+                                            stringify!($route)
+                                        );
+                                        return;
+                                    }
+                                }
+                                Some(Err(error)) => {
+                                    log::warn!(
+                                        "{} subscription ended with error: {error}",
+                                        stringify!($route)
+                                    );
+                                    return;
+                                }
+                                None => {
+                                    log::warn!(
+                                        "{} subscription ended by peer",
+                                        stringify!($route)
+                                    );
+                                    return;
+                                }
                             }
                         }
                     });

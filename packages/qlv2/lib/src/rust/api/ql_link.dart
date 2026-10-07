@@ -23,7 +23,7 @@ import 'rpc/fx.dart';
 import 'rpc/security_check.dart';
 import 'rpc/timezone.dart';
 
-// These functions are ignored because they are not marked as `pub`: `initialize`, `setup_backtrace`
+// These functions are ignored because they are not marked as `pub`: `initialize`, `run_passport_benchmark`, `setup_backtrace`, `validate_benchmark`
 // These types are ignored because they are neither used by any `pub` functions nor (for structs and enums) marked `#[frb(unignore)]`: `TokioSendSpawner`
 // These function are ignored because they are on traits that is not defined in current crate (put an empty `#[frb]` on it to unignore): `clone`, `spawn`
 
@@ -45,6 +45,12 @@ abstract class QlSession implements RustOpaqueInterface {
 
   /// Sends a connect command to the runtime.
   Future<void> connect();
+
+  static Future<QlSession> default_() =>
+      RustLib.instance.api.crateApiQlLinkQlSessionDefault();
+
+  Future<PassportBenchmarkResult> downloadPassportBenchmark(
+      {required int bytes, required int receiveWindow});
 
   /// Generates a random 16-byte XID.
   static Uint8List generateXid() =>
@@ -80,6 +86,8 @@ abstract class QlSession implements RustOpaqueInterface {
 
   Future<PassportDetailsResponse> requestPassportDetails(
       {required Empty request});
+
+  Future<PassportEchoResult> requestPassportEcho({required String message});
 
   Future<PeerPermissionsResponse> requestPeerPermissions(
       {required PeerPermissionsParams request});
@@ -132,4 +140,49 @@ abstract class QlSession implements RustOpaqueInterface {
 
   /// Returns the 16-byte XID for this device.
   Future<Uint8List> xid();
+}
+
+class PassportBenchmarkResult {
+  final int bytes;
+  final double seconds;
+  final double mibPerSecond;
+
+  const PassportBenchmarkResult({
+    required this.bytes,
+    required this.seconds,
+    required this.mibPerSecond,
+  });
+
+  @override
+  int get hashCode => bytes.hashCode ^ seconds.hashCode ^ mibPerSecond.hashCode;
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is PassportBenchmarkResult &&
+          runtimeType == other.runtimeType &&
+          bytes == other.bytes &&
+          seconds == other.seconds &&
+          mibPerSecond == other.mibPerSecond;
+}
+
+class PassportEchoResult {
+  final String message;
+  final double milliseconds;
+
+  const PassportEchoResult({
+    required this.message,
+    required this.milliseconds,
+  });
+
+  @override
+  int get hashCode => message.hashCode ^ milliseconds.hashCode;
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is PassportEchoResult &&
+          runtimeType == other.runtimeType &&
+          message == other.message &&
+          milliseconds == other.milliseconds;
 }
