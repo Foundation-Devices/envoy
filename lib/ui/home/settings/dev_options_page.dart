@@ -4,6 +4,7 @@
 
 import 'package:envoy/business/envoy_seed.dart';
 import 'package:envoy/business/settings.dart';
+import 'package:envoy/ui/home/settings/qlv2_diagnostics_page.dart';
 import 'package:envoy/ui/widgets/toast/envoy_toast.dart';
 import 'package:envoy/util/bug_report_helper.dart';
 import 'package:envoy/util/console.dart';
@@ -154,6 +155,29 @@ class _DevOptionsPageState extends State<DevOptionsPage> {
                   Settings().skipPrimeSecurityCheck = enabled;
                 });
               },
+            ),
+            const SizedBox(height: 8),
+            Card(
+              margin: EdgeInsets.zero,
+              color: surfaceColor,
+              elevation: 0,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(18),
+              ),
+              child: _DevOptionTile(
+                title: "QLv2 diagnostics",
+                subtitle: "Run Passport echo and BLE throughput benchmarks.",
+                titleColor: titleColor,
+                subtitleColor: subtitleColor,
+                iconColor: subtitleColor,
+                onTap: () async {
+                  await Navigator.of(context).push(
+                    MaterialPageRoute<void>(
+                      builder: (_) => const Qlv2DiagnosticsPage(),
+                    ),
+                  );
+                },
+              ),
             ),
             const SizedBox(height: 18),
             const Padding(

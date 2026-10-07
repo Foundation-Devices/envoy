@@ -37,7 +37,7 @@ class QLV2BroadcastTransactionHandler
     final torPort = settings.getTorPort(account.network, server);
 
     try {
-      final txid = await EnvoyAccountHandler.broadcastSerializedPsbt(
+      final txid = await EnvoyAccountHandler.broadcast(
         psbt: request.psbt,
         electrumServer: server,
         torPort: torPort,

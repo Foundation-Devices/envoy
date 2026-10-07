@@ -8,6 +8,7 @@ import 'dart:ui';
 
 import 'package:envoy/account/accounts_manager.dart';
 import 'package:envoy/ble/bluetooth_manager.dart';
+import 'package:envoy/ble/qlv2/protocol_handler.dart';
 import 'package:envoy/business/local_storage.dart';
 import 'package:envoy/channels/bluetooth_channel.dart';
 import 'package:envoy/channels/ql_connection.dart';
@@ -35,6 +36,8 @@ enum DeviceType {
 
 enum DeviceColor { light, dark }
 
+enum PrimeConnectionProtocol { qlV1, qlV2 }
+
 @JsonSerializable()
 class Device {
   String name;
@@ -47,12 +50,18 @@ class Device {
   final String peripheralId;
   @JsonKey(defaultValue: false)
   bool onboardingComplete;
+  @JsonKey(defaultValue: PrimeConnectionProtocol.qlV1)
+  final PrimeConnectionProtocol protocol;
   @Uint8ListConverter()
   Uint8List? xid;
 
   //type QuantumLinkIdentity
   @Uint8ListConverter()
   Uint8List? senderXid;
+  @Uint8ListConverter()
+  Uint8List? qlv2Identity;
+  @Uint8ListConverter()
+  Uint8List? qlv2PeerBundle;
   final DateTime datePaired;
   String firmwareVersion;
   List<String>? pairedAccountIds;
@@ -74,16 +83,25 @@ class Device {
     this.peripheralId = "",
     this.xid,
     this.senderXid,
+    this.qlv2Identity,
+    this.qlv2PeerBundle,
     this.pairedAccountIds,
     this.primeBackupEnabled,
     this.primeFiatCurrency,
     this.onboardingComplete = false,
+    this.protocol = PrimeConnectionProtocol.qlV1,
   });
 
   // Serialisation
   factory Device.fromJson(Map<String, dynamic> json) => _$DeviceFromJson(json);
 
   Map<String, dynamic> toJson() => _$DeviceToJson(this);
+
+  bool get hasQlPairingCredentials => switch (protocol) {
+        PrimeConnectionProtocol.qlV1 => xid?.isNotEmpty == true,
+        PrimeConnectionProtocol.qlV2 => qlv2Identity?.isNotEmpty == true &&
+            qlv2PeerBundle?.isNotEmpty == true,
+      };
 
   /// Deserialize the stored QuantumLinkIdentity (sender XID)
   Future<api.QuantumLinkIdentity?> getQlIdentity() async {
@@ -223,8 +241,13 @@ class Devices extends ChangeNotifier {
             reset: shouldResetChannel,
           );
 
-          // Restore XIDs before (re)connection so messages can be decoded.
-          await qlConnection.reconnect(device);
+          // Attach exactly one decoder before (re)connection. Incoming bytes
+          // must never be offered to both QL protocol versions.
+          if (device.protocol == PrimeConnectionProtocol.qlV2) {
+            await _restoreQlv2Session(device, qlConnection);
+          } else {
+            await qlConnection.reconnect(device);
+          }
 
           if (connectedIds.contains(deviceId)) {
             kPrint("Device already connected: $deviceId");
@@ -248,6 +271,35 @@ class Devices extends ChangeNotifier {
     } finally {
       _isConnectingPrimes = false;
     }
+  }
+
+  Future<void> _restoreQlv2Session(
+    Device device,
+    QLConnection connection,
+  ) async {
+    final identity = device.qlv2Identity;
+    final peer = device.qlv2PeerBundle;
+    if (identity == null || identity.isEmpty || peer == null || peer.isEmpty) {
+      throw StateError(
+        'Stored QL v2 device ${device.serial} is missing protocol credentials',
+      );
+    }
+    final handler = await QLV2ProtocolHandler.create(
+      transport: connection,
+      identityBytes: identity,
+      peerBundleBytes: peer,
+      autoConnect: false,
+      onOwnIdentity: (bytes) async {
+        device.qlv2Identity = Uint8List.fromList(bytes);
+        await storeDevices();
+      },
+      onPeerBundle: (bytes) async {
+        device.qlv2PeerBundle = Uint8List.fromList(bytes);
+        await storeDevices();
+      },
+    );
+    connection.v2Handler = handler;
+    await handler.connect();
   }
 
   static Future<Devices> init() async {
@@ -313,7 +365,8 @@ class Devices extends ChangeNotifier {
     await storeDevices();
     notifyListeners();
 
-    if (device.type == DeviceType.passportPrime) {
+    if (device.type == DeviceType.passportPrime &&
+        device.protocol == PrimeConnectionProtocol.qlV1) {
       try {
         await device.qlConnection().writeMessage(
               api.QuantumLinkMessage.deviceNameUpdate(
@@ -347,6 +400,24 @@ class Devices extends ChangeNotifier {
 
     await storeDevices();
     notifyListeners();
+  }
+
+  Future<bool> updatePrimeDetails({
+    required String serial,
+    required String name,
+    required String firmwareVersion,
+    required bool onboardingComplete,
+  }) async {
+    final device = getDeviceBySerial(serial);
+    if (device == null || device.type != DeviceType.passportPrime) {
+      return false;
+    }
+    device.name = name;
+    device.firmwareVersion = firmwareVersion;
+    device.onboardingComplete = onboardingComplete;
+    await storeDevices();
+    notifyListeners();
+    return true;
   }
 
   Future<void> reorderDevices(List<String> serials) async {
@@ -483,6 +554,8 @@ class Devices extends ChangeNotifier {
       if (device.serial == targetDevice.serial) {
         device.xid = null;
         device.senderXid = null;
+        device.qlv2Identity = null;
+        device.qlv2PeerBundle = null;
         await storeDevices();
         notifyListeners();
         return;

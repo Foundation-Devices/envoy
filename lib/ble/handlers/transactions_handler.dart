@@ -8,6 +8,7 @@ import 'dart:typed_data';
 
 import 'package:envoy/ble/quantum_link_router.dart';
 import 'package:foundation_api/foundation_api.dart' as api;
+import 'package:qlv2/qlv2.dart' as qlv2;
 
 /// Handler for Tx related messages over Quantum Link.
 ///
@@ -34,6 +35,26 @@ class TransactionHandler extends PassportMessageHandler {
   }
 
   Future<void> sendPsbt(String accountId, Uint8List psbt) async {
+    final v2 = qlConnection.v2Handler;
+    if (v2 != null) {
+      final response = await v2.requestSignPsbt(
+        accountId: accountId,
+        psbt: psbt,
+      );
+      switch (response) {
+        case qlv2.SignPsbtResponse_Signed(:final psbt):
+          _txBroadcast.add(
+            api.QuantumLinkMessage_BroadcastTransaction(
+              api.BroadcastTransaction(accountId: accountId, psbt: psbt),
+            ),
+          );
+        case qlv2.SignPsbtResponse_Rejected():
+          throw StateError('Passport rejected the signing request');
+        case qlv2.SignPsbtResponse_Error(:final error):
+          throw StateError('Passport signing failed: $error');
+      }
+      return;
+    }
     await qlConnection.writeMessage(
       api.QuantumLinkMessage.signPsbt(
         api.SignPsbt(psbt: psbt, accountId: accountId),

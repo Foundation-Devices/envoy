@@ -735,7 +735,8 @@ qlv2.FirmwareUpdateAvailable _firmwareUpdateAvailable(
   return qlv2.FirmwareUpdateAvailable(
     version: latest.version,
     changelog: changelog,
-    timestamp: latest.releaseDate.millisecondsSinceEpoch,
+    timestamp: latest.releaseDate.millisecondsSinceEpoch ~/
+        Duration.millisecondsPerSecond,
     totalSize: totalBytes,
     patchCount: patches.length,
   );

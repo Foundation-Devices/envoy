@@ -12,7 +12,7 @@ import 'package:envoy/ble/quantum_link_router.dart';
 import 'package:envoy/business/server.dart';
 import 'package:envoy/channels/ble_status.dart';
 import 'package:envoy/generated/l10n.dart';
-import 'package:envoy/ui/onboard/prime/firmware_update/prime_fw_update_state.dart';
+import 'package:envoy/ui/onboard/prime/state/prime_onboarding_controller.dart';
 import 'package:envoy/ui/widgets/envoy_step_item.dart';
 import 'package:envoy/util/bug_report_helper.dart';
 import 'package:envoy/util/console.dart';

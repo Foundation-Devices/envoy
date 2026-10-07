@@ -51,6 +51,7 @@ class BleAccountHandler extends PassportMessageHandler {
     // Re-push the rate periodically so Prime's "Last Update" indicator
     // stays fresh even when the BTC price hasn't moved.
     _rateRefreshTimer = Timer.periodic(const Duration(seconds: 30), (_) async {
+      if (qlConnection.v2Handler != null) return;
       if (!qlConnection.isQLActive()) return;
       await sendExchangeRate();
       await sendExchangeRateHistory();
@@ -70,6 +71,7 @@ class BleAccountHandler extends PassportMessageHandler {
 
   void setupExchangeRateListener() {
     _onExchangeRateChanged = () async {
+      if (qlConnection.v2Handler != null) return;
       final historyHash = ExchangeRate().history.hashCode;
       if (lastExchangeRateHash != historyHash) {
         await sendExchangeRate();
@@ -95,7 +97,7 @@ class BleAccountHandler extends PassportMessageHandler {
   Future<void> handleMessage(api.QuantumLinkMessage message) async {
     if (message case api.QuantumLinkMessage_AccountUpdate accountUpdate) {
       kPrint("Got account update message: ${accountUpdate.field0.accountId}");
-      await _handleAccountUpdate(accountUpdate.field0);
+      await handleAccountUpdate(accountUpdate.field0);
     } else if (message
         case api.QuantumLinkMessage_ApplyPassphrase applyPassphrase) {
       _latestApplyPassphrase = applyPassphrase.field0;
@@ -137,7 +139,7 @@ class BleAccountHandler extends PassportMessageHandler {
     unawaited(sendExchangeRateHistory());
   }
 
-  Future<void> _handleAccountUpdate(api.AccountUpdate accountUpdate) async {
+  Future<void> handleAccountUpdate(api.AccountUpdate accountUpdate) async {
     kPrint("Got account update!");
     kPrint("Got payload! ${accountUpdate.accountId}");
     final payload = accountUpdate.update;
@@ -267,10 +269,29 @@ class BleAccountHandler extends PassportMessageHandler {
     kPrint("Account added!");
   }
 
+  void handleActiveSeedFingerprint({
+    required String fingerprint,
+    required bool hasPassphrase,
+  }) {
+    _latestApplyPassphrase = api.ApplyPassphrase(
+      fingerprint: hasPassphrase ? fingerprint : null,
+    );
+    _applyPassphraseStream.add(_latestApplyPassphrase);
+  }
+
   Future<void> sendAccountUpdate(api.AccountUpdate accountUpdate) async {
+    if (qlConnection.v2Handler != null) return;
     await qlConnection.writeMessage(
       api.QuantumLinkMessage.accountUpdate(accountUpdate),
     );
+  }
+
+  Future<void> handleQlv2Unpair() async {
+    final device = qlConnection.getDevice();
+    if (device == null) return;
+    _unpairRequestStream.add(const api.UnpairingRequest());
+    await Devices().clearDeviceQLKeys(device);
+    await qlConnection.disconnect();
   }
 
   bool _sendingData = false;
@@ -291,6 +312,7 @@ class BleAccountHandler extends PassportMessageHandler {
   }
 
   Future<void> sendExchangeRate() async {
+    if (qlConnection.v2Handler != null) return;
     if (_sendingData) return;
 
     final device = qlConnection.getDevice();
@@ -346,6 +368,7 @@ class BleAccountHandler extends PassportMessageHandler {
   }
 
   Future<bool> sendExchangeRateHistory() async {
+    if (qlConnection.v2Handler != null) return false;
     if (_fetchingHistory) return false;
 
     final device = qlConnection.getDevice();

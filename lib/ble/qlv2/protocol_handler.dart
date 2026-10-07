@@ -720,33 +720,37 @@ class QLV2ProtocolHandler {
   }
 
   Future<void> _writeOutgoing(QLV2WriteRequest write) async {
-    var success = true;
+    var success = false;
     try {
-      if (!await _waitForBleReady()) {
-        success = false;
-        return;
-      }
+      if (_disposed || !await _waitForBleReady() || _disposed) return;
+
       final chunks = await write.chunks();
+      if (_disposed) return;
+
       for (final chunk in chunks) {
-        if (!_transport.lastDeviceStatus.readyForWrite) {
-          success = false;
-          break;
-        }
+        if (_disposed || !_transport.lastDeviceStatus.readyForWrite) return;
+
         if (Platform.isIOS) {
           await Future<void>.delayed(const Duration(milliseconds: 6));
+          if (_disposed) return;
         }
+
         var written = await _transport.writeBleChunk(chunk);
+        if (_disposed) return;
+
         if (!written && _transport.lastDeviceStatus.readyForWrite) {
           await Future<void>.delayed(const Duration(milliseconds: 150));
+          if (_disposed) return;
+
           written = await _transport.writeBleChunk(chunk);
+          if (_disposed) return;
         }
-        if (!written) {
-          success = false;
-          break;
-        }
+
+        if (!written) return;
       }
+
+      success = true;
     } catch (error, stack) {
-      success = false;
       _reportError('QL v2 BLE write failed', error, stack);
     } finally {
       try {
