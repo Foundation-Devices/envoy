@@ -497,8 +497,7 @@ fn wire__crate__api__envoy_wallet__EnvoyAccountHandler_broadcast_impl(
             };
             let mut deserializer =
                 flutter_rust_bridge::for_generated::SseDeserializer::new(message);
-            let api_draft_transaction =
-                <ngwallet::send::DraftTransaction>::sse_decode(&mut deserializer);
+            let api_psbt = <Vec<u8>>::sse_decode(&mut deserializer);
             let api_electrum_server = <String>::sse_decode(&mut deserializer);
             let api_tor_port = <Option<u16>>::sse_decode(&mut deserializer);
             let api_validate_domain = <Option<bool>>::sse_decode(&mut deserializer);
@@ -506,7 +505,7 @@ fn wire__crate__api__envoy_wallet__EnvoyAccountHandler_broadcast_impl(
             move |context| {
                 transform_result_sse::<_, crate::api::errors::BroadcastError>((move || {
                     let output_ok = crate::api::envoy_wallet::EnvoyAccountHandler::broadcast(
-                        api_draft_transaction,
+                        &api_psbt,
                         &api_electrum_server,
                         api_tor_port,
                         api_validate_domain,

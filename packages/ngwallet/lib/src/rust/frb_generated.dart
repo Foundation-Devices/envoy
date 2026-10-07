@@ -123,7 +123,7 @@ abstract class RustLibApi extends BaseApi {
       {required EnvoyAccountHandler that});
 
   Future<String> crateApiEnvoyWalletEnvoyAccountHandlerBroadcast(
-      {required DraftTransaction draftTransaction,
+      {required List<int> psbt,
       required String electrumServer,
       int? torPort,
       bool? validateDomain});
@@ -705,14 +705,14 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
 
   @override
   Future<String> crateApiEnvoyWalletEnvoyAccountHandlerBroadcast(
-      {required DraftTransaction draftTransaction,
+      {required List<int> psbt,
       required String electrumServer,
       int? torPort,
       bool? validateDomain}) {
     return handler.executeNormal(NormalTask(
       callFfi: (port_) {
         final serializer = SseSerializer(generalizedFrbRustBinding);
-        sse_encode_box_autoadd_draft_transaction(draftTransaction, serializer);
+        sse_encode_list_prim_u_8_loose(psbt, serializer);
         sse_encode_String(electrumServer, serializer);
         sse_encode_opt_box_autoadd_u_16(torPort, serializer);
         sse_encode_opt_box_autoadd_bool(validateDomain, serializer);
@@ -724,7 +724,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         decodeErrorData: sse_decode_broadcast_error,
       ),
       constMeta: kCrateApiEnvoyWalletEnvoyAccountHandlerBroadcastConstMeta,
-      argValues: [draftTransaction, electrumServer, torPort, validateDomain],
+      argValues: [psbt, electrumServer, torPort, validateDomain],
       apiImpl: this,
     ));
   }
@@ -732,12 +732,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   TaskConstMeta get kCrateApiEnvoyWalletEnvoyAccountHandlerBroadcastConstMeta =>
       const TaskConstMeta(
         debugName: "EnvoyAccountHandler_broadcast",
-        argNames: [
-          "draftTransaction",
-          "electrumServer",
-          "torPort",
-          "validateDomain"
-        ],
+        argNames: ["psbt", "electrumServer", "torPort", "validateDomain"],
       );
 
   @override

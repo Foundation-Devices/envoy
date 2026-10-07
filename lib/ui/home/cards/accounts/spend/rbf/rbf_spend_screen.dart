@@ -660,7 +660,7 @@ class _RBFSpendScreenState extends ConsumerState<RBFSpendScreen> {
 
       /// get the raw transaction from the database
       await EnvoyAccountHandler.broadcast(
-        draftTransaction: draftTransaction,
+        psbt: draftTransaction.psbt,
         electrumServer: server,
         torPort: port,
         validateDomain: Settings().validateDomain(
