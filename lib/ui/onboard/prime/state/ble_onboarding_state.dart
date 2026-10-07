@@ -6,78 +6,220 @@
 import 'dart:async';
 import 'package:async/async.dart';
 import 'package:envoy/ble/bluetooth_manager.dart';
-import 'package:envoy/ble/handlers/fw_update_handler.dart';
-import 'package:envoy/ble/handlers/onboard_handler.dart';
 import 'package:envoy/ble/handlers/scv_handler.dart';
 import 'package:envoy/channels/ql_connection.dart';
+import 'package:envoy/business/devices.dart';
 import 'package:envoy/generated/l10n.dart';
-import 'package:envoy/ui/onboard/prime/firmware_update/prime_fw_update_state.dart';
+import 'package:envoy/ui/onboard/prime/state/ble_onboarding_session_state.dart';
+import 'package:envoy/ui/onboard/prime/state/prime_onboarding_controller.dart'
+    as shared;
 import 'package:envoy/ui/widgets/envoy_step_item.dart';
 import 'package:envoy/util/console.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:foundation_api/foundation_api.dart';
 
-/// State Provider for the current onboarding device
-/// different onboarding steps will watch this provider to get the current onboarding device
-/// and listen to its various state streams.
-final onboardingDeviceProvider = StateProvider<QLConnection?>((ref) {
-  return null;
-});
+export 'package:envoy/ui/onboard/prime/state/ble_onboarding_session_state.dart'
+    show onboardingDeviceProvider;
+export 'package:envoy/ui/onboard/prime/state/prime_onboarding_controller.dart'
+    show
+        PrimeOnboardingAdapter,
+        PrimeFirmwareChangelog,
+        PrimeFirmwareTransferProgress,
+        PrimeFwUpdateStep,
+        PrimeOnboardingStep,
+        PrimeOnboardingUiState,
+        SecurityStepModel,
+        primeOnboardingControllerProvider;
+export 'package:envoy/ui/onboard/prime/state/qlv2/prime_onboarding_qlv2_state.dart'
+    show setOnboardingPrimeQlv2Session, stopOnboardingPrimeQlv2Scope;
 
-/// Extended step model that includes error type for security check
-class SecurityStepModel extends StepModel {
-  final ScvErrorType errorType;
-
-  SecurityStepModel({
-    required super.stepName,
-    required super.state,
-    this.errorType = ScvErrorType.none,
-  });
+void _logPrimeOnboarding(String message) {
+  kPrint("[PrimeOnboarding] $message");
 }
 
-/// Stream Providers for various BLE onboarding states
-final fwUpdateStreamProvider = StreamProvider<FwUpdateState>((ref) {
-  final device = ref.watch(onboardingDeviceProvider);
-  if (device == null) return const Stream.empty();
-  return device.qlHandler.fwUpdateHandler.fetchStateStream;
-});
+class Qlv1PrimeOnboardingAdapter implements shared.PrimeOnboardingAdapter {
+  final QLConnection device;
+  final bool isSettingsUpdate;
 
-final blePairingStreamProvider = StreamProvider<BleConnectionState>((ref) {
-  final device = ref.watch(onboardingDeviceProvider);
-  if (device == null) return const Stream.empty();
-  return device.qlHandler.bleOnboardHandler.blePairingState;
-});
+  Qlv1PrimeOnboardingAdapter({
+    required this.device,
+    this.isSettingsUpdate = false,
+  });
 
-final onboardingStateStreamProvider = StreamProvider<OnboardingState>((ref) {
-  final device = ref.watch(onboardingDeviceProvider);
-  if (device == null) return const Stream.empty();
-  return device.qlHandler.bleOnboardHandler.onboardingState;
-});
+  final _subscriptions = <StreamSubscription<dynamic>>[];
+  shared.PrimeOnboardingController? _controller;
+  bool _disposed = false;
 
-final scvStateProvider = StreamProvider<ScvUpdateState>((ref) {
-  final device = ref.watch(onboardingDeviceProvider);
-  if (device == null) return const Stream.empty();
-  return device.qlHandler.scvAccountHandler.scvUpdateController;
-});
+  void _update(
+    void Function(shared.PrimeOnboardingController controller) update,
+  ) {
+    final controller = _controller;
+    if (_disposed || controller == null) return;
+    update(controller);
+  }
 
-final fwDownloadStreamProvider = StreamProvider<FwUpdateState>((ref) {
-  final device = ref.watch(onboardingDeviceProvider);
-  if (device == null) return const Stream.empty();
-  return device.qlHandler.fwUpdateHandler.downloadStateStream;
-});
+  void _updateFirmwareMetadata() {
+    final handler = device.qlHandler.fwUpdateHandler;
+    _update(
+      (controller) => controller.updateFirmwareMetadata(
+        currentVersion: handler.currentVersion,
+        targetVersion: handler.newVersion,
+        estimatedTime: handler.estimatedUpdateTime,
+        changelogs: handler.availablePatches
+            .map(
+              (patch) => shared.PrimeFirmwareChangelog(
+                version: patch.version,
+                changelog: patch.changelog,
+              ),
+            )
+            .toList(growable: false),
+      ),
+    );
+  }
 
-final fwUpdateStepProvider = StreamProvider<PrimeFwUpdateStep>((ref) {
-  final device = ref.watch(onboardingDeviceProvider);
-  if (device == null) return const Stream.empty();
-  return device.qlHandler.fwUpdateHandler.primeFwUpdate;
-});
+  @override
+  void attach(shared.PrimeOnboardingController controller) {
+    _controller = controller;
+    _disposed = false;
 
-final fwTransferState = StreamProvider<FwUpdateState>((ref) {
-  final device = ref.watch(onboardingDeviceProvider);
-  if (device == null) return const Stream.empty();
-  return device.qlHandler.fwUpdateHandler.transferStateStream;
-});
+    final onboardHandler = device.qlHandler.bleOnboardHandler;
+    final scvHandler = device.qlHandler.scvAccountHandler;
+    final fwHandler = device.qlHandler.fwUpdateHandler;
+
+    controller.setSettingsFirmwareUpdate(isSettingsUpdate);
+    final lastBleState = onboardHandler.lastBleState;
+    if (lastBleState != null) {
+      controller.updateBleConnection(lastBleState.message, lastBleState.step);
+    }
+    controller.replaceCompletedSteps(
+      onboardHandler.completedSteps.map(mapQlv1OnboardingStep).toSet(),
+    );
+    final lastScvState = scvHandler.lastScvState;
+    if (lastScvState != null) {
+      controller.updateSecurity(
+        lastScvState.message,
+        lastScvState.step,
+        errorType: lastScvState.errorType,
+      );
+    }
+    controller.replaceCompletedFirmwareSteps(fwHandler.completedUpdateStates);
+    if (fwHandler.completedUpdateStates.isNotEmpty) {
+      controller.recordFirmwareUpdateStep(
+        fwHandler.completedUpdateStates.last,
+      );
+    }
+    _updateFirmwareMetadata();
+
+    _subscriptions.add(
+      onboardHandler.blePairingState.listen((state) {
+        _logPrimeOnboarding(
+          "qlv1 ble_pairing=${state.step} message=${state.message}",
+        );
+        _update(
+          (controller) =>
+              controller.updateBleConnection(state.message, state.step),
+        );
+      }),
+    );
+    _subscriptions.add(
+      onboardHandler.onboardingState.listen((state) {
+        _logPrimeOnboarding("qlv1 onboarding=${state.name}");
+        _update(
+          (controller) => controller.recordStep(mapQlv1OnboardingStep(state)),
+        );
+      }),
+    );
+    _subscriptions.add(
+      scvHandler.scvUpdateController.listen(
+        (state) => _update(
+          (controller) => controller.updateSecurity(
+            state.message,
+            state.step,
+            errorType: state.errorType,
+          ),
+        ),
+      ),
+    );
+    _subscriptions.add(
+      fwHandler.fetchStateStream.listen((state) {
+        _update(
+          (controller) =>
+              controller.updateFirmwareCheck(state.message, state.step),
+        );
+        _updateFirmwareMetadata();
+      }),
+    );
+    _subscriptions.add(
+      fwHandler.downloadStateStream.listen((state) {
+        _update(
+          (controller) =>
+              controller.updateFirmwareDownload(state.message, state.step),
+        );
+        _updateFirmwareMetadata();
+      }),
+    );
+    _subscriptions.add(
+      fwHandler.primeFwUpdate.listen((step) {
+        _update((controller) => controller.recordFirmwareUpdateStep(step));
+        _updateFirmwareMetadata();
+      }),
+    );
+    _subscriptions.add(
+      fwHandler.downloadProgress.listen(
+        (progress) => _update(
+          (controller) => controller.updateFirmwareDownloadProgress(progress),
+        ),
+      ),
+    );
+    _subscriptions.add(
+      fwHandler.transferProgress.listen(
+        (progress) => _update(
+          (controller) => controller.updateFirmwareTransferProgress(
+            progress: progress.progress,
+            remainingTime: progress.remainingTime,
+          ),
+        ),
+      ),
+    );
+  }
+
+  @override
+  void reset() {
+    if (_disposed) return;
+    device.qlHandler.fwUpdateHandler.reset();
+    device.qlHandler.bleOnboardHandler.reset();
+    device.qlHandler.scvAccountHandler.reset();
+  }
+
+  @override
+  Future<void> dispose() async {
+    if (_disposed) return;
+    _disposed = true;
+    _controller = null;
+    final activeSubscriptions = List.of(_subscriptions);
+    _subscriptions.clear();
+    await Future.wait(
+      activeSubscriptions.map((subscription) => subscription.cancel()),
+    );
+  }
+}
+
+Future<void> setOnboardingPrimeQlv1Session({
+  required ProviderContainer container,
+  required QLConnection device,
+  bool isSettingsUpdate = false,
+}) async {
+  container.read(onboardingDeviceProvider.notifier).state = device;
+  await container
+      .read(shared.primeOnboardingControllerProvider.notifier)
+      .useAdapter(
+        Qlv1PrimeOnboardingAdapter(
+          device: device,
+          isSettingsUpdate: isSettingsUpdate,
+        ),
+      );
+}
 
 class StepNotifier extends StateNotifier<StepModel> {
   StepNotifier({
@@ -91,110 +233,40 @@ class StepNotifier extends StateNotifier<StepModel> {
 }
 
 final bleConnectionProvider = Provider<StepModel>((ref) {
-  final asyncState = ref.watch(blePairingStreamProvider);
-  final lastState = ref
-      .watch(onboardingDeviceProvider)
-      ?.qlHandler
-      .bleOnboardHandler
-      .lastBleState;
-  if (!asyncState.hasValue && lastState != null) {
-    return StepModel(stepName: lastState.message, state: lastState.step);
-  }
-  return asyncState.when(
-    data: (data) {
-      return StepModel(stepName: data.message, state: data.step);
-    },
-    loading: () {
-      return StepModel(
-        stepName: "Connecting to device",
-        state: EnvoyStepState.IDLE,
+  return ref.watch(shared.primeOnboardingControllerProvider).bleConnection ??
+      StepModel(
+        stepName: "Connecting to Prime",
+        state: EnvoyStepState.LOADING,
       );
-    },
-    error: (err, stack) {
-      return StepModel(
-        stepName: "Unable to connect to device",
-        state: EnvoyStepState.ERROR,
-      );
-    },
-  );
 });
 
-final deviceSecurityProvider = Provider<SecurityStepModel>((ref) {
-  final asyncState = ref.watch(scvStateProvider);
-  final lastState = ref
-      .watch(onboardingDeviceProvider)
-      ?.qlHandler
-      .scvAccountHandler
-      .lastScvState;
-  if (!asyncState.hasValue && lastState != null) {
-    return SecurityStepModel(
-      stepName: lastState.message,
-      state: lastState.step,
-      errorType: lastState.errorType,
-    );
-  }
-  return asyncState.when(
-    data: (data) {
-      return SecurityStepModel(
-        stepName: data.message,
-        state: data.step,
-        errorType: data.errorType,
-      );
-    },
-    loading: () {
-      return SecurityStepModel(
-        stepName: S().onboarding_connectionIntro_checkingDeviceSecurity,
-        state: EnvoyStepState.IDLE,
-      );
-    },
-    error: (err, stack) {
-      return SecurityStepModel(
-        stepName:
-            S().onboarding_connectionIntroErrorChallenge_securityCheckPending,
-        state: EnvoyStepState.ERROR,
-        errorType: ScvErrorType.challengeError,
-      );
-    },
+final deviceSecurityProvider = Provider<shared.SecurityStepModel>((ref) {
+  final security = ref.watch(shared.primeOnboardingControllerProvider).security;
+  return shared.SecurityStepModel(
+    stepName: security?.stepName ??
+        S().onboarding_connectionIntro_checkingDeviceSecurity,
+    state: security?.state ?? EnvoyStepState.IDLE,
+    errorType: security?.errorType ?? ScvErrorType.none,
   );
 });
 
 final firmWareUpdateProvider = Provider<StepModel>((ref) {
-  final asyncState = ref.watch(fwUpdateStreamProvider);
-  return asyncState.when(
-    data: (data) {
-      return StepModel(stepName: data.message, state: data.step);
-    },
-    loading: () {
-      return StepModel(
+  return ref.watch(shared.primeOnboardingControllerProvider).firmwareCheck ??
+      StepModel(
         stepName: S().onboarding_connectionIntro_checkForUpdates,
         state: EnvoyStepState.IDLE,
       );
-    },
-    error: (err, stack) {
-      return StepModel(
-        stepName: S().onboarding_connectionIntro_checkForUpdates,
-        state: EnvoyStepState.ERROR,
-      );
-    },
-  );
 });
 
 final creatingPinProvider = Provider<StepModel>((ref) {
-  ref.watch(onboardingStateStreamProvider);
-  final device = ref.watch(onboardingDeviceProvider);
-  if (device == null) {
-    return StepModel(
-      stepName: S().finalize_catchAll_creatingPin,
-      state: EnvoyStepState.IDLE,
-    );
-  }
-  final stateHistory = device.qlHandler.bleOnboardHandler.completedSteps;
-  if (stateHistory.contains(OnboardingState.deviceSecured)) {
+  final stateHistory =
+      ref.watch(shared.primeOnboardingControllerProvider).completedSteps;
+  if (stateHistory.contains(shared.PrimeOnboardingStep.deviceSecured)) {
     return StepModel(
       stepName: S().finalize_catchAll_pinCreated,
       state: EnvoyStepState.FINISHED,
     );
-  } else if (stateHistory.contains(OnboardingState.securingDevice)) {
+  } else if (stateHistory.contains(shared.PrimeOnboardingStep.securingDevice)) {
     return StepModel(
       stepName: S().finalize_catchAll_creatingPin,
       state: EnvoyStepState.LOADING,
@@ -208,21 +280,17 @@ final creatingPinProvider = Provider<StepModel>((ref) {
 });
 
 final setUpMasterKeyProvider = Provider<StepModel>((ref) {
-  ref.watch(onboardingStateStreamProvider);
-  final device = ref.watch(onboardingDeviceProvider);
-  if (device == null) {
-    return StepModel(
-      stepName: S().finalize_catchAll_setUpMasterKey,
-      state: EnvoyStepState.IDLE,
-    );
-  }
-  final stateHistory = device.qlHandler.bleOnboardHandler.completedSteps;
-  if (stateHistory.contains(OnboardingState.walletCreated)) {
+  final stateHistory =
+      ref.watch(shared.primeOnboardingControllerProvider).completedSteps;
+  if (stateHistory.contains(shared.PrimeOnboardingStep.walletCreated)) {
     return StepModel(
       stepName: S().finalize_catchAll_masterKeySetUp,
       state: EnvoyStepState.FINISHED,
     );
-  } else if (stateHistory.contains(OnboardingState.walletCreationScreen)) {
+  } else if (stateHistory.any({
+    shared.PrimeOnboardingStep.walletCreationScreen,
+    shared.PrimeOnboardingStep.creatingWallet,
+  }.contains)) {
     return StepModel(
       stepName: S().finalize_catchAll_settingUpMasterKey,
       state: EnvoyStepState.LOADING,
@@ -236,23 +304,24 @@ final setUpMasterKeyProvider = Provider<StepModel>((ref) {
 });
 
 final backUpMasterKeyProvider = Provider<StepModel>((ref) {
-  ref.watch(onboardingStateStreamProvider);
-  final device = ref.watch(onboardingDeviceProvider);
-  if (device == null) {
-    return StepModel(
-      stepName: S().finalize_catchAll_backUpMasterKey,
-      state: EnvoyStepState.IDLE,
-    );
-  }
-  final stateHistory = device.qlHandler.bleOnboardHandler.completedSteps;
-  if (stateHistory.contains(OnboardingState.magicBackupCreated) ||
-      stateHistory.contains(OnboardingState.connectingWallet)) {
+  final stateHistory =
+      ref.watch(shared.primeOnboardingControllerProvider).completedSteps;
+  if (stateHistory.any({
+    shared.PrimeOnboardingStep.magicBackupCreated,
+    shared.PrimeOnboardingStep.connectingWallet,
+    shared.PrimeOnboardingStep.walletConnected,
+  }.contains)) {
     return StepModel(
       stepName: S().finalize_catchAll_masterKeyBackedUp,
       state: EnvoyStepState.FINISHED,
     );
-  } else if (stateHistory.contains(OnboardingState.magicBackupScreen) ||
-      stateHistory.contains(OnboardingState.creatingManualBackup)) {
+  } else if (stateHistory.any({
+    shared.PrimeOnboardingStep.magicBackupScreen,
+    shared.PrimeOnboardingStep.creatingMagicBackup,
+    shared.PrimeOnboardingStep.creatingManualBackup,
+    shared.PrimeOnboardingStep.creatingKeycardBackup,
+    shared.PrimeOnboardingStep.writingDownSeedWords,
+  }.contains)) {
     return StepModel(
       stepName: S().finalize_catchAll_backingUpMasterKey,
       state: EnvoyStepState.LOADING,
@@ -266,21 +335,19 @@ final backUpMasterKeyProvider = Provider<StepModel>((ref) {
 });
 
 final connectAccountProvider = Provider<StepModel>((ref) {
-  ref.watch(onboardingStateStreamProvider);
-  final device = ref.watch(onboardingDeviceProvider);
-  if (device == null) {
-    return StepModel(
-      stepName: S().finalize_catchAll_connectAccount,
-      state: EnvoyStepState.IDLE,
-    );
+  final state = ref.watch(shared.primeOnboardingControllerProvider);
+  final accountConnection = state.accountConnection;
+  if (accountConnection != null) {
+    return accountConnection;
   }
-  final stateHistory = device.qlHandler.bleOnboardHandler.completedSteps;
-  if (stateHistory.contains(OnboardingState.walletConected)) {
+  if (state.completedSteps
+      .contains(shared.PrimeOnboardingStep.walletConnected)) {
     return StepModel(
       stepName: S().finalize_catchAll_connectingAccount,
       state: EnvoyStepState.FINISHED,
     );
-  } else if (stateHistory.contains(OnboardingState.connectingWallet)) {
+  } else if (state.completedSteps
+      .contains(shared.PrimeOnboardingStep.connectingWallet)) {
     return StepModel(
       stepName: S().finalize_catchAll_connectingAccount,
       state: EnvoyStepState.LOADING,
@@ -293,6 +360,50 @@ final connectAccountProvider = Provider<StepModel>((ref) {
   }
 });
 
+final primeOnboardingStepProvider =
+    Provider<shared.PrimeOnboardingStep?>((ref) {
+  return ref.watch(shared.primeOnboardingControllerProvider).latestStep;
+});
+
+final primeOnboardingCompletedStepsProvider =
+    Provider<Set<shared.PrimeOnboardingStep>>((ref) {
+  return ref.watch(shared.primeOnboardingControllerProvider).completedSteps;
+});
+
+shared.PrimeOnboardingStep mapQlv1OnboardingStep(OnboardingState state) {
+  return switch (state) {
+    OnboardingState.securityChecked =>
+      shared.PrimeOnboardingStep.securityChecked,
+    OnboardingState.securityCheckFailed =>
+      shared.PrimeOnboardingStep.securityCheckFailed,
+    OnboardingState.firmwareUpdateScreen =>
+      shared.PrimeOnboardingStep.firmwareUpdateScreen,
+    OnboardingState.securingDevice => shared.PrimeOnboardingStep.securingDevice,
+    OnboardingState.deviceSecured => shared.PrimeOnboardingStep.deviceSecured,
+    OnboardingState.walletCreationScreen =>
+      shared.PrimeOnboardingStep.walletCreationScreen,
+    OnboardingState.creatingWallet => shared.PrimeOnboardingStep.creatingWallet,
+    OnboardingState.walletCreated => shared.PrimeOnboardingStep.walletCreated,
+    OnboardingState.magicBackupScreen =>
+      shared.PrimeOnboardingStep.magicBackupScreen,
+    OnboardingState.creatingMagicBackup =>
+      shared.PrimeOnboardingStep.creatingMagicBackup,
+    OnboardingState.magicBackupCreated =>
+      shared.PrimeOnboardingStep.magicBackupCreated,
+    OnboardingState.creatingManualBackup =>
+      shared.PrimeOnboardingStep.creatingManualBackup,
+    OnboardingState.creatingKeycardBackup =>
+      shared.PrimeOnboardingStep.creatingKeycardBackup,
+    OnboardingState.writingDownSeedWords =>
+      shared.PrimeOnboardingStep.writingDownSeedWords,
+    OnboardingState.connectingWallet =>
+      shared.PrimeOnboardingStep.connectingWallet,
+    OnboardingState.walletConected =>
+      shared.PrimeOnboardingStep.walletConnected,
+    OnboardingState.completed => shared.PrimeOnboardingStep.completed,
+  };
+}
+
 final settingsUpdateConnectionProvider = StreamProvider<QLConnection>((ref) {
   final asyncConnections = ref.watch(qlConnectionStreamProvider);
   final connections = asyncConnections.valueOrNull ?? [];
@@ -302,10 +413,21 @@ final settingsUpdateConnectionProvider = StreamProvider<QLConnection>((ref) {
   final controller = StreamController<QLConnection>();
   final group = StreamGroup<QLConnection>();
   for (final conn in connections) {
-    group.add(
-      conn.qlHandler.fwUpdateHandler.settingsUpdateStarted
-          .map<QLConnection>((_) => conn),
-    );
+    final savedDevice = conn.getDevice();
+    if (savedDevice?.protocol == PrimeConnectionProtocol.qlV2) {
+      final handler = conn.v2Handler;
+      if (handler != null) {
+        group.add(
+          handler.firmwareEvents.settingsUpdateStarted
+              .map<QLConnection>((_) => conn),
+        );
+      }
+    } else {
+      group.add(
+        conn.qlHandler.fwUpdateHandler.settingsUpdateStarted
+            .map<QLConnection>((_) => conn),
+      );
+    }
   }
   final sub = group.stream.listen(controller.add);
   ref.onDispose(() {
@@ -318,14 +440,18 @@ final settingsUpdateConnectionProvider = StreamProvider<QLConnection>((ref) {
 
 void resetOnboardingPrimeProviders(ProviderContainer container) {
   try {
-    final device = container.read(onboardingDeviceProvider);
-    if (device != null) {
-      device.qlHandler.fwUpdateHandler.reset();
-      device.qlHandler.bleOnboardHandler.reset();
-      device.qlHandler.scvAccountHandler.reset();
-    }
+    container
+        .read(shared.primeOnboardingControllerProvider.notifier)
+        .resetSession();
   } catch (e, stack) {
     kPrint("Error resetting onboarding providers: $e");
     debugPrintStack(stackTrace: stack);
   }
+}
+
+Future<void> clearOnboardingPrimeSession(ProviderContainer container) async {
+  await container
+      .read(shared.primeOnboardingControllerProvider.notifier)
+      .clearSession();
+  container.read(onboardingDeviceProvider.notifier).state = null;
 }
