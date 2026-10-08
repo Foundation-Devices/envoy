@@ -469,8 +469,7 @@ class _PrimeOptionsWidgetState extends ConsumerState<PrimeOptionsWidget> {
         widget.device.bleId,
         widget.device.color == Colors.black ? 0 : 1,
       );
-      // after repairing the connection, restore XID's
-      await qlConnection.reconnect(widget.device);
+      await Devices().restoreProtocolSession(widget.device, qlConnection);
       widget.onRepairComplete.call();
     } on PlatformException catch (e) {
       if (e.code == "BLUETOOTH_DISABLED") {

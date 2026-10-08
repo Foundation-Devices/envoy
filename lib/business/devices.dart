@@ -243,11 +243,7 @@ class Devices extends ChangeNotifier {
 
           // Attach exactly one decoder before (re)connection. Incoming bytes
           // must never be offered to both QL protocol versions.
-          if (device.protocol == PrimeConnectionProtocol.qlV2) {
-            await _restoreQlv2Session(device, qlConnection);
-          } else {
-            await qlConnection.reconnect(device);
-          }
+          await restoreProtocolSession(device, qlConnection);
 
           if (connectedIds.contains(deviceId)) {
             kPrint("Device already connected: $deviceId");
@@ -300,6 +296,18 @@ class Devices extends ChangeNotifier {
     );
     connection.v2Handler = handler;
     await handler.connect();
+  }
+
+  Future<void> restoreProtocolSession(
+    Device device,
+    QLConnection connection,
+  ) async {
+    switch (device.protocol) {
+      case PrimeConnectionProtocol.qlV1:
+        await connection.reconnect(device);
+      case PrimeConnectionProtocol.qlV2:
+        await _restoreQlv2Session(device, connection);
+    }
   }
 
   static Future<Devices> init() async {

@@ -87,11 +87,7 @@ class _OnboardPrimeBluetoothState extends ConsumerState<OnboardPrimeBluetooth>
   @override
   void initState() {
     super.initState();
-    _onboardingStepSubscription = ref.listenManual<PrimeOnboardingStep?>(
-      primeOnboardingStepProvider,
-      (_, next) => _routeFromOnboardingStep(next),
-      fireImmediately: true,
-    );
+    unawaited(_listenForOnboardingSteps());
     WidgetsBinding.instance.addPostFrameCallback((_) {
       final params = GoRouter.of(context).state.uri.queryParameters;
       setState(() {
@@ -107,6 +103,22 @@ class _OnboardPrimeBluetoothState extends ConsumerState<OnboardPrimeBluetooth>
         onboardingCompleted = GoRouter.of(context).state.extra as bool;
       }
     });
+  }
+
+  Future<void> _listenForOnboardingSteps() async {
+    if (ref.read(primeOnboardingStepProvider) ==
+        PrimeOnboardingStep.completed) {
+      await ref.read(primeOnboardingControllerProvider.notifier).clearSession();
+      if (!mounted) return;
+      ref.read(onboardingDeviceProvider.notifier).state = null;
+    }
+
+    if (!mounted) return;
+    _onboardingStepSubscription = ref.listenManual<PrimeOnboardingStep?>(
+      primeOnboardingStepProvider,
+      (_, next) => _routeFromOnboardingStep(next),
+      fireImmediately: true,
+    );
   }
 
   @override

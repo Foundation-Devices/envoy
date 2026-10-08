@@ -594,6 +594,9 @@ class EnvoySeed {
           "Magic Backup",
           "cloud recovery completed: $status",
         );
+        if (status) {
+          deferDeviceReconnect();
+        }
         return status;
       } catch (e, st) {
         debugPrintStack(stackTrace: st);
@@ -615,6 +618,9 @@ class EnvoySeed {
           "Magic Backup",
           "file recovery completed: $success",
         );
+        if (success) {
+          deferDeviceReconnect();
+        }
         return success;
       } catch (e, st) {
         debugPrintStack(stackTrace: st);
@@ -769,6 +775,10 @@ class EnvoySeed {
       await MigrationManager().setMigrationComplete();
     }
     return success;
+  }
+
+  void deferDeviceReconnect() {
+    Timer.run(() => unawaited(Devices().connect()));
   }
 
   /// Settings, devices and accounts used to be stored in SharedPreferences

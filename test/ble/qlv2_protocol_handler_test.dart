@@ -222,6 +222,27 @@ void main() {
     handler.dispose();
   });
 
+  test('starts a requested reconnect when repaired BLE becomes ready',
+      () async {
+    final transport = _FakeTransport()
+      ..currentStatus = const DeviceStatus(connected: true, ready: false);
+    final session = _FakeSessionDriver();
+    final handler = QLV2ProtocolHandler.createForTransportTest(
+      transport: transport,
+      sessionDriver: session,
+    );
+
+    await handler.connect();
+    expect(session.connectCount, 0);
+
+    transport.currentStatus = const DeviceStatus(connected: true, ready: true);
+    transport.status.add(transport.currentStatus);
+    await Future<void>.delayed(Duration.zero);
+
+    expect(session.connectCount, 1);
+    handler.dispose();
+  });
+
   test('a paired session reconnects without repeating pairing', () async {
     final transport = _FakeTransport();
     final session = _FakeSessionDriver();
