@@ -53,12 +53,11 @@ macro_rules! rpc_request {
                     payload: $params,
                     response: ql_rpc::request::Response<$response, ql_runtime::StreamWriter>,
                 ) {
-                    self.inner
+                    let _ = self.inner
                         .add($crate::api::rpc::InboundRpc::$variant([<Inbound $route>] {
                             payload,
                             response,
-                        }))
-                        .unwrap()
+                        }));
                 }
             }
         }
@@ -127,12 +126,11 @@ macro_rules! rpc_subscription {
                     payload: $params,
                     responder: ql_rpc::subscription::SubscriptionResponder<$event, ql_runtime::StreamWriter>,
                 ) {
-                    self.inner
+                    let _ = self.inner
                         .add($crate::api::rpc::InboundRpc::$variant([<Inbound $route>] {
                             payload,
                             responder: Some(responder),
-                        }))
-                        .unwrap()
+                        }));
                 }
             }
         }
@@ -297,13 +295,12 @@ macro_rules! rpc_upload {
                     reader: ql_rpc::MultipartReader<$part_header, ql_runtime::StreamReader>,
                     responder: ql_rpc::upload::UploadResponder<$response, ql_runtime::StreamWriter>,
                 ) {
-                    self.inner
+                    let _ = self.inner
                         .add($crate::api::rpc::InboundRpc::$variant([<Inbound $route>] {
                             request,
                             reader: Some(reader),
                             responder: Some(responder),
-                        }))
-                        .unwrap()
+                        }));
                 }
             }
         }
@@ -620,12 +617,11 @@ macro_rules! rpc_duplex {
                 _:ql_rpc::Context,
                     peer: ql_rpc::duplex::DuplexPeer<ql_api::$route, ql_runtime::StreamWriter, ql_runtime::StreamReader>,
                 ) {
-                    self.inner
+                    let _ = self.inner
                         .add($crate::api::rpc::InboundRpc::$variant([<Inbound $route>] {
                             sender: Some(peer.sender),
                             receiver: Some(peer.receiver),
-                        }))
-                        .unwrap()
+                        }));
                 }
             }
         }

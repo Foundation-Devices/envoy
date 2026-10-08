@@ -2,8 +2,6 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-import 'dart:async';
-
 import 'package:envoy/account/accounts_manager.dart';
 import 'package:envoy/ble/qlv2/rpc_dispatcher.dart';
 import 'package:envoy/business/settings.dart';
@@ -45,12 +43,10 @@ class QLV2BroadcastTransactionHandler
           server,
           viaTor: torPort != null,
         ),
-      ).timeout(const Duration(seconds: 45));
+      );
       await rpc.field0.respond(
         response: qlv2.BroadcastTransactionResponse.broadcast(txid: txid),
       );
-    } on TimeoutException {
-      await _respondError(rpc, 'network_timeout');
     } on BroadcastError_NetworkError {
       await _respondError(rpc, 'network_error');
     } on BroadcastError_ConsensusError {
