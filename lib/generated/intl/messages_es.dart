@@ -181,7 +181,7 @@ class MessageLookup extends MessageLookupByLibrary {
           "\'Testnet3\' ha quedado obsoleto y Envoy ahora usa \'testnet4\'. Tus cuentas anteriores de testnet3 han sido eliminadas. \n\nPara empezar a usar testnet4, ve a Ajustes y activa el botón Testnet.",
         ),
         "accounts_upgradeBdkTestnetModal_header":
-            MessageLookupByLibrary.simpleMessage("Presentamos​•​testnet4"),
+            MessageLookupByLibrary.simpleMessage("Presentamos testnet4"),
         "activity_boosted": MessageLookupByLibrary.simpleMessage("Acelerado"),
         "activity_canceling":
             MessageLookupByLibrary.simpleMessage("Cancelando"),
@@ -310,7 +310,7 @@ class MessageLookup extends MessageLookupByLibrary {
         ),
         "backups_erase_wallets_and_backups_modal_2_2_subheading":
             MessageLookupByLibrary.simpleMessage(
-          "Las cuentas de Passport conectadas no se eliminarán como parte de este proceso.\n\nAntes de eliminar tu Cartera Envoy, vamos a asegurarnbos de que tu semilla y de copia de seguridad estén bien guardados.\n",
+          "Las cuentas de Passport conectadas no se eliminarán como parte de este proceso.\n\nAntes de eliminar tu Cartera Envoy, vamos a asegurarnos de que tu semilla y tu archivo de copia de seguridad estén bien guardados.\n",
         ),
         "backups_erase_wallets_and_backups_show_seed_CTA":
             MessageLookupByLibrary.simpleMessage("Mostrar semilla"),
@@ -1266,7 +1266,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "exploreAddresses_qr_header": m5,
         "exploreAddresses_qr_warningReused":
             MessageLookupByLibrary.simpleMessage(
-          "Esta dirección ya se ha utilizado.\nEvita reutilizar direcciones para mantener tu privacidad.",
+          "Esta dirección ya se ha utilizado. Evita reutilizar direcciones para mantener tu privacidad.",
         ),
         "exploreAddresses_searchError_continueSearching":
             MessageLookupByLibrary.simpleMessage("Seguir buscando"),
@@ -1733,7 +1733,7 @@ class MessageLookup extends MessageLookupByLibrary {
         ),
         "manual_setup_change_from_magic_modal_subheader":
             MessageLookupByLibrary.simpleMessage(
-          "Tu Copia de Seguridad de Mágica está a punto de eliminarse de forma permanente. Asegúrate de tener una copia de seguridad segura de tu semilla y de descargar tu Copia de Seguridad de Envoy.\n\nEsta acción eliminará permanentemente tu semilla de Envoy de tu cuenta de Apple o Google, y también eliminará tus datos cifrados de Envoy de los servidores de Foundation tras un periodo de 24 horas.",
+          "Tu Copia de Seguridad Mágica está a punto de eliminarse de forma permanente. Asegúrate de tener una copia de seguridad segura de tu semilla y de descargar tu Copia de Seguridad de Envoy.\n\nEsta acción eliminará permanentemente tu semilla de Envoy de tu cuenta de Apple o Google, y también eliminará tus datos cifrados de Envoy de los servidores de Foundation tras un periodo de 24 horas.",
         ),
         "manual_setup_change_from_magic_subheaderApple":
             MessageLookupByLibrary.simpleMessage(
@@ -2097,8 +2097,7 @@ class MessageLookup extends MessageLookupByLibrary {
           "Comprobación de Seguridad Superada",
         ),
         "onboarding_connectionChecking_forUpdates":
-            MessageLookupByLibrary.simpleMessage(
-                "Comprobando​•​Actualizaciones"),
+            MessageLookupByLibrary.simpleMessage("Comprobando Actualizaciones"),
         "onboarding_connectionIntroError2_content":
             MessageLookupByLibrary.simpleMessage(
           "Envoy no pudo conectar con los servidores de Foundation. Asegúrate de estar conectado a Internet.",
@@ -2114,7 +2113,7 @@ class MessageLookup extends MessageLookupByLibrary {
           "Es posible que este dispositivo no sea original o que haya sido manipulado durante el envío. Contacta con Atención al Cliente.",
         ),
         "onboarding_connectionIntroError_exitSetup":
-            MessageLookupByLibrary.simpleMessage("Cerrar Incialización"),
+            MessageLookupByLibrary.simpleMessage("Cerrar Inicialización"),
         "onboarding_connectionIntroError_securityCheckFailed":
             MessageLookupByLibrary.simpleMessage(
           "Comprobación de Seguridad Fallida",
@@ -2630,7 +2629,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "rescanAccount_sizeModal_500Addresses":
             MessageLookupByLibrary.simpleMessage("500 Direcciones (~5 min)"),
         "rescanAccount_sizeModal_content": MessageLookupByLibrary.simpleMessage(
-          "Se escanearon previamente 100 direcciones.\nSi no aparecen los fondos, prueba un valor de escaneo mayor.",
+          "Se escanearon previamente 100 direcciones. Si no aparecen los fondos, prueba un valor de escaneo mayor.",
         ),
         "rescanAccount_sizeModal_header": MessageLookupByLibrary.simpleMessage(
           "Volver a escanear cuenta",
@@ -3061,7 +3060,7 @@ class MessageLookup extends MessageLookupByLibrary {
         ),
         "wallet_security_modal_4_4_subheading":
             MessageLookupByLibrary.simpleMessage(
-          "Si prefieres no tener Copia de Seguridad Mágica, y en su lugar proteger manualmente la semilla y los datos de tu cartera, ¡no hay problema!\n\nSimplemente vuleve a la pantalla de configuración y selecciona \"Configurar Semilla Manualmente\".",
+          "Si prefieres no usar la Copia de Seguridad Mágica y, en su lugar, proteger manualmente la semilla y los datos de tu cartera, ¡no hay problema!\n\nSimplemente vuelve a la pantalla anterior y desactiva la Copia de Seguridad Mágica.",
         ),
         "wallet_security_modal_HowToRecoverYourWallet":
             MessageLookupByLibrary.simpleMessage("Cómo Restaurar tu Cartera"),

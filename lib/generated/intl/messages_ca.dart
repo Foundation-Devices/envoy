@@ -179,7 +179,7 @@ class MessageLookup extends MessageLookupByLibrary {
         ),
         "accounts_upgradeBdkTestnetModal_header":
             MessageLookupByLibrary.simpleMessage("Presentem testnet4"),
-        "activity_boosted": MessageLookupByLibrary.simpleMessage("Aumentat"),
+        "activity_boosted": MessageLookupByLibrary.simpleMessage("Augmentat"),
         "activity_canceling":
             MessageLookupByLibrary.simpleMessage("Cancel·lant…"),
         "activity_emptyState_label": MessageLookupByLibrary.simpleMessage(
@@ -301,11 +301,11 @@ class MessageLookup extends MessageLookupByLibrary {
         ),
         "backups_erase_wallets_and_backups_modal_1_2_android_subheading":
             MessageLookupByLibrary.simpleMessage(
-          "Estàs a punt d\'eliminar permanentment la teva cartera Envoy.\n\nSi fas servir Còpies de Seguretat Màgiques, la clau d\'Envoy també s\'eliminarà de la Còpia de Seguretat Automàtica d\'Android.\n",
+          "Estàs a punt d\'eliminar permanentment la teva cartera Envoy.\n\nSi fas servir Còpies de Seguretat Màgiques, la clau d\'Envoy també s\'eliminarà de la Còpia de Seguretat Automàtica d\'Android. ",
         ),
         "backups_erase_wallets_and_backups_modal_1_2_ios_subheading":
             MessageLookupByLibrary.simpleMessage(
-          "Estàs a punt d\'eliminar permanentment la teva cartera Envoy.\n\nSi fas servir Còpies de Seguretat Màgiques, la clau d\'Envoy també s\'eliminarà del Clauer d\'iCloud.\n",
+          "Estàs a punt d\'eliminar permanentment la teva cartera Envoy.\n\nSi fas servir Còpies de Seguretat Màgiques, la clau d\'Envoy també s\'eliminarà del Clauer d\'iCloud. ",
         ),
         "backups_erase_wallets_and_backups_modal_2_2_subheading":
             MessageLookupByLibrary.simpleMessage(
@@ -1246,7 +1246,7 @@ class MessageLookup extends MessageLookupByLibrary {
         ),
         "erase_wallet_with_balance_modal_subheading":
             MessageLookupByLibrary.simpleMessage(
-          "Abans d\'eliminar la teva cartera Envoy, buida els teus Comptes.\n\nVes a Còpies de seguretat > Esborra carteres i còpies de seguretat quan hagis acabat.",
+          "Abans d\'eliminar la teva cartera Envoy, buida els teus Comptes. \nVes a Còpies de seguretat > Esborra carteres i còpies de seguretat quan hagis acabat.",
         ),
         "exploreAddresses_listFilter_unused":
             MessageLookupByLibrary.simpleMessage(
@@ -1584,7 +1584,7 @@ class MessageLookup extends MessageLookupByLibrary {
         ),
         "magic_setup_recovery_fail_backup_heading":
             MessageLookupByLibrary.simpleMessage(
-          "Còpia De Seguretat Màgica Non Trobat",
+          "Còpia de Seguretat Màgica No Trobada",
         ),
         "magic_setup_recovery_fail_backup_subheading":
             MessageLookupByLibrary.simpleMessage(
@@ -1872,7 +1872,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Restaurar"),
         "manual_setup_magicBackupDetected_subheading":
             MessageLookupByLibrary.simpleMessage(
-          "S\'ha trobat una Còpia de Seguretat Màgica al servidor.\n\nVols restaurar-la?",
+          "S\'ha trobat una Còpia de Seguretat Màgica al servidor. \nVols restaurar-la?",
         ),
         "manual_setup_recovery_fail_cta2": MessageLookupByLibrary.simpleMessage(
           "Importar Clau Privada",
@@ -3073,7 +3073,7 @@ class MessageLookup extends MessageLookupByLibrary {
         ),
         "wallet_security_modal_4_4_subheading":
             MessageLookupByLibrary.simpleMessage(
-          "Si preferiu desactivar Magic Backups i, en canvi, protegir manualment la clau privada i les dades de la vostra cartera, cap problema!\n\nNomés cal que torneu a la pantalla de configuració i trieu Configura Manualment La Clau Privada.",
+          "Si prefereixes no fer servir la Còpia de Seguretat Màgica i, en canvi, protegir manualment la clau privada i les dades de la teva cartera, cap problema!\n\nNomés cal que tornis a la pantalla anterior i desactivis la Còpia de Seguretat Màgica.",
         ),
         "wallet_security_modal_HowToRecoverYourWallet":
             MessageLookupByLibrary.simpleMessage("Com recuperar la cartera"),
