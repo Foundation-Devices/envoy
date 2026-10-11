@@ -51,6 +51,74 @@ class _DeviceCardState extends ConsumerState<DeviceCard>
     setState(() {});
   }
 
+  void _showConnectionDetails({
+    required bool bleConnected,
+    required bool qlActive,
+  }) {
+    final firmwareVersion = widget.device.firmwareVersion.trim();
+    final protocol = switch (widget.device.protocol) {
+      PrimeConnectionProtocol.qlV1 => 'QLv1',
+      PrimeConnectionProtocol.qlV2 => 'QLv2',
+    };
+
+    showEnvoyDialog(
+      context: context,
+      useRootNavigator: true,
+      dialog: EnvoyDialog(
+        title: 'Connection Details',
+        content: MediaQuery.withClampedTextScaling(
+          maxScaleFactor: 1.3,
+          child: Column(
+            children: [
+              _connectionDetailRow(
+                'QuantumLink Version',
+                protocol,
+              ),
+              _connectionDetailRow(
+                'Firmware',
+                firmwareVersion.isEmpty ? 'Unknown' : firmwareVersion,
+              ),
+              _connectionDetailRow(
+                'Bluetooth',
+                bleConnected ? 'Connected' : 'Disconnected',
+              ),
+              _connectionDetailRow(
+                'QuantumLink',
+                qlActive ? 'Active' : 'Inactive',
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _connectionDetailRow(String label, String value) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: EnvoySpacing.small),
+      child: Row(
+        children: [
+          Expanded(
+            child: Text(
+              label,
+              style: EnvoyTypography.body,
+            ),
+          ),
+          const SizedBox(width: EnvoySpacing.medium1),
+          Flexible(
+            child: Text(
+              value,
+              textAlign: TextAlign.end,
+              style: EnvoyTypography.body.copyWith(
+                color: NewEnvoyColor.contentSecondary,
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
   Future loadDevicePairingInfo() async {
     if (widget.device.type != DeviceType.passportPrime) return;
     if (!Platform.isIOS && !Platform.isAndroid) return;
@@ -160,7 +228,7 @@ class _DeviceCardState extends ConsumerState<DeviceCard>
 
     // Prime cleared its QL keys via UnpairingRequest
     final primeUnpaired = widget.device.type == DeviceType.passportPrime &&
-        (widget.device.xid == null || widget.device.xid!.isEmpty);
+        !widget.device.hasQlPairingCredentials;
 
     final listItemTitleTheme = EnvoyTypography.body.copyWith(
         color: deviceRemovedFromHostSystemSettings
@@ -221,31 +289,44 @@ class _DeviceCardState extends ConsumerState<DeviceCard>
                         ),
                         child: Column(
                           children: [
-                            ListTile(
-                              contentPadding: EdgeInsets.symmetric(
-                                horizontal: EnvoySpacing.xs,
-                              ),
-                              title: Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Flexible(
-                                    child: MediaQuery.withClampedTextScaling(
+                            Semantics(
+                              hint:
+                                  widget.device.type == DeviceType.passportPrime
+                                      ? 'Long press for connection details'
+                                      : null,
+                              child: ListTile(
+                                contentPadding: EdgeInsets.symmetric(
+                                  horizontal: EnvoySpacing.xs,
+                                ),
+                                onLongPress: widget.device.type ==
+                                        DeviceType.passportPrime
+                                    ? () => _showConnectionDetails(
+                                          bleConnected: bleConnected,
+                                          qlActive: qlActive,
+                                        )
+                                    : null,
+                                title: Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Flexible(
+                                      child: MediaQuery.withClampedTextScaling(
+                                        maxScaleFactor: 1.3,
+                                        child: Text(
+                                          S().manage_device_details_deviceSerial,
+                                          style: listItemTheme,
+                                        ),
+                                      ),
+                                    ),
+                                    MediaQuery.withClampedTextScaling(
                                       maxScaleFactor: 1.3,
                                       child: Text(
-                                        S().manage_device_details_deviceSerial,
+                                        widget.device.serial,
                                         style: listItemTheme,
                                       ),
                                     ),
-                                  ),
-                                  MediaQuery.withClampedTextScaling(
-                                    maxScaleFactor: 1.3,
-                                    child: Text(
-                                      widget.device.serial,
-                                      style: listItemTheme,
-                                    ),
-                                  ),
-                                ],
+                                  ],
+                                ),
                               ),
                             ),
                             Divider(color: NewEnvoyColor.neutral200, height: 1),
@@ -388,8 +469,7 @@ class _PrimeOptionsWidgetState extends ConsumerState<PrimeOptionsWidget> {
         widget.device.bleId,
         widget.device.color == Colors.black ? 0 : 1,
       );
-      // after repairing the connection, restore XID's
-      await qlConnection.reconnect(widget.device);
+      await Devices().restoreProtocolSession(widget.device, qlConnection);
       widget.onRepairComplete.call();
     } on PlatformException catch (e) {
       if (e.code == "BLUETOOTH_DISABLED") {

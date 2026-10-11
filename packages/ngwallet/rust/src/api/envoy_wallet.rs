@@ -906,21 +906,29 @@ impl EnvoyAccountHandler {
     }
 
     pub fn broadcast(
-        draft_transaction: DraftTransaction,
+        psbt: &[u8],
         electrum_server: &str,
         tor_port: Option<u16>,
         validate_domain: Option<bool>,
     ) -> Result<String, BroadcastError> {
-        let socks_proxy = tor_port.map(|port| format!("127.0.0.1:{}", port));
-        let socks_proxy = socks_proxy.as_deref();
-        NgAccount::<Connection>::broadcast_psbt(
-            draft_transaction,
-            electrum_server,
-            socks_proxy,
-            validate_domain,
-        )
-        .map_err(BroadcastError::from)
-        .map(|tx_id| tx_id.to_string())
+        let psbt = Psbt::deserialize(psbt).map_err(|error| {
+            BroadcastError::Message(format!("Failed to deserialize PSBT: {error}"))
+        })?;
+        let transaction = psbt.extract_tx().map_err(|error| {
+            BroadcastError::Message(format!("Failed to extract transaction from PSBT: {error}"))
+        })?;
+        let socks_proxy = tor_port.map(|port| format!("127.0.0.1:{port}"));
+        let config = ConfigBuilder::new()
+            .timeout(Some(30))
+            .retry(3)
+            .socks5(socks_proxy.as_deref().map(Socks5Config::new))
+            .validate_domain(validate_domain.unwrap_or(true))
+            .build();
+        let client = Client::from_config(electrum_server, config).map_err(BroadcastError::from)?;
+        client
+            .transaction_broadcast(&transaction)
+            .map_err(BroadcastError::from)
+            .map(|tx_id| tx_id.to_string())
     }
     pub fn validate_address(address: &str, network: Option<Network>) -> bool {
         match Address::from_str(address) {
@@ -1268,6 +1276,19 @@ pub fn get_server_features(
 }
 
 //
+#[cfg(test)]
+mod tests {
+    use super::{BroadcastError, EnvoyAccountHandler};
+
+    #[test]
+    fn broadcast_rejects_malformed_psbt_before_network_use() {
+        let result =
+            EnvoyAccountHandler::broadcast(&[0, 1, 2], "tcp://127.0.0.1:1", None, Some(false));
+
+        assert!(matches!(result, Err(BroadcastError::Message(_))));
+    }
+}
+
 // #[cfg(test)]
 // mod tests {
 //     #[test]

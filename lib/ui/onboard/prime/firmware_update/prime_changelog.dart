@@ -2,8 +2,8 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-import 'package:envoy/business/server.dart';
 import 'package:envoy/generated/l10n.dart';
+import 'package:envoy/ui/onboard/prime/state/prime_onboarding_controller.dart';
 import 'package:envoy/ui/theme/envoy_colors.dart';
 import 'package:envoy/ui/theme/envoy_spacing.dart';
 import 'package:envoy/ui/theme/envoy_typography.dart';
@@ -14,7 +14,7 @@ import 'package:stupid_simple_sheet/stupid_simple_sheet.dart';
 Future<void> showPrimeChangelogSheet({
   required BuildContext context,
   required String newVersion,
-  required List<PrimePatch> changelogs,
+  required List<PrimeFirmwareChangelog> changelogs,
 }) {
   final minimumSheetHeight = MediaQuery.sizeOf(context).height * .5;
 
@@ -47,7 +47,7 @@ Future<void> showPrimeChangelogSheet({
   );
 }
 
-String _mergePatchChangelogs(List<PrimePatch> patches) {
+String _mergePatchChangelogs(List<PrimeFirmwareChangelog> patches) {
   final sections = <String>[];
 
   for (final patch in patches.reversed) {
@@ -67,7 +67,7 @@ String _mergePatchChangelogs(List<PrimePatch> patches) {
 
 class PrimeChangelog extends StatelessWidget {
   final String newVersion;
-  final List<PrimePatch> patches;
+  final List<PrimeFirmwareChangelog> patches;
 
   const PrimeChangelog({
     super.key,

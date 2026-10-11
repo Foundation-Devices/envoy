@@ -56,12 +56,12 @@ abstract class EnvoyAccountHandler implements RustOpaqueInterface {
   BigInt balance();
 
   static Future<String> broadcast(
-          {required DraftTransaction draftTransaction,
+          {required List<int> psbt,
           required String electrumServer,
           int? torPort,
           bool? validateDomain}) =>
       RustLib.instance.api.crateApiEnvoyWalletEnvoyAccountHandlerBroadcast(
-          draftTransaction: draftTransaction,
+          psbt: psbt,
           electrumServer: electrumServer,
           torPort: torPort,
           validateDomain: validateDomain);

@@ -666,16 +666,34 @@ class HomePageState extends ConsumerState<HomePage>
       }
     });
 
-    ref.listen(onboardingStateStreamProvider, (previous, next) {
+    ref.listen(primeOnboardingStepProvider, (previous, next) {
       _showTutorialIfNeeded(context);
     });
 
     ref.listen(settingsUpdateConnectionProvider, (previous, next) {
-      next.whenData((connection) {
+      next.whenData((connection) async {
         final currentPath = ref.read(routePathProvider);
         if (currentPath.contains(ONBOARD_PRIME_FIRMWARE_UPDATE)) return;
-        ref.read(onboardingDeviceProvider.notifier).state = connection;
-        context.goNamed(ONBOARD_PRIME_FIRMWARE_UPDATE);
+        final container = ProviderScope.containerOf(context);
+        if (connection.getDevice()?.protocol == PrimeConnectionProtocol.qlV2) {
+          final handler = connection.v2Handler;
+          if (handler == null) return;
+          await setOnboardingPrimeQlv2Session(
+            container: container,
+            device: connection,
+            handler: handler,
+            isSettingsUpdate: true,
+          );
+        } else {
+          await setOnboardingPrimeQlv1Session(
+            container: container,
+            device: connection,
+            isSettingsUpdate: true,
+          );
+        }
+        if (context.mounted) {
+          context.goNamed(ONBOARD_PRIME_FIRMWARE_UPDATE);
+        }
       });
     });
 

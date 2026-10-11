@@ -395,6 +395,7 @@ Future<void> tryMagicRecover(
     Settings().setSyncToCloud(true);
     Settings().updateAccountsViewSettings();
     await EnvoySeed().enableMagicBackup();
+    EnvoySeed().deferDeviceReconnect();
     navigator.push(
       MaterialPageRoute(
         builder: (context) {

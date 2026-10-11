@@ -22,6 +22,7 @@ PACKAGES=(
     "packages/ur"
     "packages/shards"
     "packages/http_tor"
+    "packages/qlv2"
 )
 
 for PACKAGE_DIR in "${PACKAGES[@]}"; do
@@ -64,4 +65,3 @@ for PACKAGE_DIR in "${PACKAGES[@]}"; do
 done
 
 echo "FRB generated successfully!"
-

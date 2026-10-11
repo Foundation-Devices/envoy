@@ -7,53 +7,38 @@ import 'package:envoy/ui/onboard/prime/state/ble_onboarding_state.dart';
 import 'package:envoy/ui/widgets/envoy_step_item.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-enum PrimeFwUpdateStep {
-  downloading,
-  transferring,
-  verifying,
-  installing,
-  rebooting,
-  finished,
-  notAvailable,
-  error,
-  idle,
-}
+export 'package:envoy/ui/onboard/prime/state/prime_onboarding_controller.dart'
+    show PrimeFwUpdateStep;
 
 final primeUpdateStateProvider = Provider<PrimeFwUpdateStep>((ref) {
-  final asyncState = ref.watch(fwUpdateStepProvider);
-  return asyncState.when(
-    data: (data) {
-      return data;
-    },
-    loading: () {
-      return PrimeFwUpdateStep.idle;
-    },
-    error: (err, stack) {
-      return PrimeFwUpdateStep.error;
-    },
-  );
+  return ref.watch(primeOnboardingControllerProvider).firmwareUpdateStep;
 });
 
 final fwDownloadStateProvider = Provider<StepModel>((ref) {
-  final asyncState = ref.watch(fwDownloadStreamProvider);
-  return asyncState.when(
-    data: (data) {
-      return StepModel(stepName: data.message, state: data.step);
-    },
-    loading: () {
-      return StepModel(
+  return ref.watch(primeOnboardingControllerProvider).firmwareDownload ??
+      StepModel(
         stepName: S().firmware_updatingDownload_downloading,
         state: EnvoyStepState.IDLE,
       );
-    },
-    error: (err, stack) {
-      return StepModel(
-        stepName: S().firmware_updateError_downloadFailed,
-        state: EnvoyStepState.ERROR,
-      );
-    },
-  );
 });
+
+StepModel _firmwareStep({
+  required PrimeFwUpdateStep update,
+  required Set<PrimeFwUpdateStep> completed,
+  required PrimeFwUpdateStep activeStep,
+  required Set<PrimeFwUpdateStep> finishedBy,
+  required String loadingMessage,
+  required String finishedMessage,
+  required String idleMessage,
+}) {
+  if (update == activeStep) {
+    return StepModel(stepName: loadingMessage, state: EnvoyStepState.LOADING);
+  }
+  if (completed.any(finishedBy.contains)) {
+    return StepModel(stepName: finishedMessage, state: EnvoyStepState.FINISHED);
+  }
+  return StepModel(stepName: idleMessage, state: EnvoyStepState.IDLE);
+}
 
 final fwTransferStateProvider = StateNotifierProvider<StepNotifier, StepModel>((
   ref,
@@ -74,74 +59,51 @@ final fwTransferStateProvider = StateNotifierProvider<StepNotifier, StepModel>((
 
 final primeFwSigVerifyStateProvider = Provider<StepModel>((ref) {
   final update = ref.watch(primeUpdateStateProvider);
-  final device = ref.watch(onboardingDeviceProvider);
-  final completedUpdateStates =
-      device?.qlHandler.fwUpdateHandler.completedUpdateStates ?? {};
-  if (update == PrimeFwUpdateStep.verifying) {
-    return StepModel(
-      stepName: S().firmware_updatingPrime_verifying,
-      state: EnvoyStepState.LOADING,
-    );
-  } else if (completedUpdateStates.contains(PrimeFwUpdateStep.installing) ||
-      completedUpdateStates.contains(PrimeFwUpdateStep.rebooting) ||
-      completedUpdateStates.contains(PrimeFwUpdateStep.finished)) {
-    return StepModel(
-      stepName: S().firmware_updatingPrime_verified,
-      state: EnvoyStepState.FINISHED,
-    );
-  } else {
-    return StepModel(
-      //TODO: localization
-      stepName: "Verifying Signatures",
-      state: EnvoyStepState.IDLE,
-    );
-  }
+  return _firmwareStep(
+    update: update,
+    completed:
+        ref.watch(primeOnboardingControllerProvider).completedFirmwareSteps,
+    activeStep: PrimeFwUpdateStep.verifying,
+    finishedBy: const {
+      PrimeFwUpdateStep.installing,
+      PrimeFwUpdateStep.rebooting,
+      PrimeFwUpdateStep.finished,
+    },
+    loadingMessage: S().firmware_updatingPrime_verifying,
+    finishedMessage: S().firmware_updatingPrime_verified,
+    //TODO: localization
+    idleMessage: "Verifying Signatures",
+  );
 });
 
 final primeFwInstallStateProvider = Provider<StepModel>((ref) {
   final update = ref.watch(primeUpdateStateProvider);
-  final device = ref.watch(onboardingDeviceProvider);
-  final completedUpdateStates =
-      device?.qlHandler.fwUpdateHandler.completedUpdateStates ?? {};
-  if (update == PrimeFwUpdateStep.installing) {
-    return StepModel(
-      stepName: S().firmware_updatingPrime_installingUpdate,
-      state: EnvoyStepState.LOADING,
-    );
-  } else if (completedUpdateStates.contains(PrimeFwUpdateStep.installing) ||
-      completedUpdateStates.contains(PrimeFwUpdateStep.rebooting) ||
-      completedUpdateStates.contains(PrimeFwUpdateStep.finished)) {
-    return StepModel(
-      stepName: S().firmware_updatingPrime_updateInstalled,
-      state: EnvoyStepState.FINISHED,
-    );
-  } else {
-    return StepModel(
-      stepName: S().firmware_updatingPrime_installUpdate,
-      state: EnvoyStepState.IDLE,
-    );
-  }
+  return _firmwareStep(
+    update: update,
+    completed:
+        ref.watch(primeOnboardingControllerProvider).completedFirmwareSteps,
+    activeStep: PrimeFwUpdateStep.installing,
+    finishedBy: const {
+      PrimeFwUpdateStep.installing,
+      PrimeFwUpdateStep.rebooting,
+      PrimeFwUpdateStep.finished,
+    },
+    loadingMessage: S().firmware_updatingPrime_installingUpdate,
+    finishedMessage: S().firmware_updatingPrime_updateInstalled,
+    idleMessage: S().firmware_updatingPrime_installUpdate,
+  );
 });
 
 final primeFwRebootStateProvider = Provider<StepModel>((ref) {
   final update = ref.watch(primeUpdateStateProvider);
-  final device = ref.watch(onboardingDeviceProvider);
-  final completedUpdateStates =
-      device?.qlHandler.fwUpdateHandler.completedUpdateStates ?? {};
-  if (update == PrimeFwUpdateStep.rebooting) {
-    return StepModel(
-      stepName: S().firmware_updatingPrime_primeRestarting,
-      state: EnvoyStepState.LOADING,
-    );
-  } else if (completedUpdateStates.contains(PrimeFwUpdateStep.rebooting)) {
-    return StepModel(
-      stepName: S().firmware_updatingPrime_primeRestarting,
-      state: EnvoyStepState.FINISHED,
-    );
-  } else {
-    return StepModel(
-      stepName: S().firmware_updatingPrime_restartPrime,
-      state: EnvoyStepState.IDLE,
-    );
-  }
+  return _firmwareStep(
+    update: update,
+    completed:
+        ref.watch(primeOnboardingControllerProvider).completedFirmwareSteps,
+    activeStep: PrimeFwUpdateStep.rebooting,
+    finishedBy: const {PrimeFwUpdateStep.rebooting},
+    loadingMessage: S().firmware_updatingPrime_primeRestarting,
+    finishedMessage: S().firmware_updatingPrime_primeRestarting,
+    idleMessage: S().firmware_updatingPrime_restartPrime,
+  );
 });

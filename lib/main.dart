@@ -36,6 +36,7 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:http_tor/http_tor.dart';
+import 'package:qlv2/qlv2.dart' as qlv2;
 import 'package:rive/rive.dart';
 import 'package:timeago/timeago.dart' as timeago;
 import 'package:tor/tor.dart';
@@ -91,6 +92,7 @@ Future<void> initSingletons({bool integrationTestsRunning = false}) async {
   await LocalStorage.init();
   await RiveNative.init();
   await Ur.init();
+  await qlv2.Qlv2.init();
   NgAccountManager.init();
   await Settings.restore();
 

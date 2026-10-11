@@ -16,6 +16,8 @@ PODS:
     - Flutter
   - rust_lib_ngwallet (0.0.1):
     - Flutter
+  - rust_lib_qlv2 (0.0.1):
+    - Flutter
   - rust_lib_shards (0.0.1):
     - Flutter
   - rust_lib_ur (0.0.1):
@@ -30,6 +32,7 @@ DEPENDENCIES:
   - rust_lib_foundation_api (from `.symlinks/plugins/rust_lib_foundation_api/ios`)
   - rust_lib_http_tor (from `.symlinks/plugins/rust_lib_http_tor/ios`)
   - rust_lib_ngwallet (from `.symlinks/plugins/rust_lib_ngwallet/ios`)
+  - rust_lib_qlv2 (from `.symlinks/plugins/rust_lib_qlv2/ios`)
   - rust_lib_shards (from `.symlinks/plugins/rust_lib_shards/ios`)
   - rust_lib_ur (from `.symlinks/plugins/rust_lib_ur/ios`)
 
@@ -54,6 +57,8 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/rust_lib_http_tor/ios"
   rust_lib_ngwallet:
     :path: ".symlinks/plugins/rust_lib_ngwallet/ios"
+  rust_lib_qlv2:
+    :path: ".symlinks/plugins/rust_lib_qlv2/ios"
   rust_lib_shards:
     :path: ".symlinks/plugins/rust_lib_shards/ios"
   rust_lib_ur:
@@ -69,6 +74,7 @@ SPEC CHECKSUMS:
   rust_lib_foundation_api: b926bd066994ff2c0354873b5335f7287ac62945
   rust_lib_http_tor: 0fcda57f1a6c6046f5f62488ef5bce90aa30694a
   rust_lib_ngwallet: 3a8d019b362008e31221ba4b2263988fcc0bf802
+  rust_lib_qlv2: 237d37cc76aa43172afaf8a743f5b2c6d35a0b9f
   rust_lib_shards: 8e23064d2ebd38e6a70dc5a2fd05747544c14005
   rust_lib_ur: b8ae26f3fe44408cb5bd20c0bf244cd0a0413a6d
 

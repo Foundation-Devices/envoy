@@ -1,0 +1,42 @@
+# SPDX-FileCopyrightText: 2026 Foundation Devices Inc.
+#
+# SPDX-License-Identifier: GPL-3.0-or-later
+
+[package]
+name = "rust_lib_qlv2"
+version = "0.1.0"
+edition = "2021"
+
+[lints.rust]
+unexpected_cfgs = { level = "warn", check-cfg = ['cfg(frb_expand)'] }
+
+[lib]
+crate-type = ["cdylib", "staticlib"]
+
+[dependencies]
+flutter_rust_bridge = "=2.11.1"
+bytes = "1"
+ql-btp = { git = "https://github.com/Foundation-Devices/quantum-link", rev = "2f609a550132e62a5e51d6c835234941ada2f871" }
+ql-wire = { git = "https://github.com/Foundation-Devices/quantum-link", rev = "2f609a550132e62a5e51d6c835234941ada2f871" }
+ql-router = { git = "https://github.com/Foundation-Devices/quantum-link", rev = "2f609a550132e62a5e51d6c835234941ada2f871", features = ["tokio"] }
+ql-common = { git = "https://github.com/Foundation-Devices/quantum-link", rev = "2f609a550132e62a5e51d6c835234941ada2f871" }
+ql-fsm = { git = "https://github.com/Foundation-Devices/quantum-link", rev = "2f609a550132e62a5e51d6c835234941ada2f871" }
+ql-keyos = { git = "https://github.com/Foundation-Devices/quantum-link", rev = "2f609a550132e62a5e51d6c835234941ada2f871" }
+ql-runtime = { git = "https://github.com/Foundation-Devices/quantum-link", rev = "2f609a550132e62a5e51d6c835234941ada2f871", features = ["rpc", "log"] }
+ql-codec = { git = "https://github.com/Foundation-Devices/quantum-link", rev = "2f609a550132e62a5e51d6c835234941ada2f871" }
+ql-rpc = { git = "https://github.com/Foundation-Devices/quantum-link", rev = "2f609a550132e62a5e51d6c835234941ada2f871" }
+ql-api = { git = "https://github.com/Foundation-Devices/quantum-link", rev = "2f609a550132e62a5e51d6c835234941ada2f871", features = ["frb"] }
+tokio = { version = "1.48", features = ["rt", "time", "sync", "macros", "net"] }
+libcrux-aesgcm = "0.0.7"
+libcrux-ml-kem = "0.0.7"
+sha2 = "0.10"
+rand = "0.10"
+anyhow = "1"
+log = "0.4.26"
+android_logger = "0.15.1"
+paste = "1"
+
+[target.'cfg(target_os = "ios")'.dependencies]
+oslog = "0.2.0"
+[target.'cfg(target_os = "macos")'.dependencies]
+oslog = "0.2.0"
