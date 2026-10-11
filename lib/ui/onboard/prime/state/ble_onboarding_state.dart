@@ -7,8 +7,8 @@ import 'dart:async';
 import 'package:async/async.dart';
 import 'package:envoy/ble/bluetooth_manager.dart';
 import 'package:envoy/ble/handlers/scv_handler.dart';
+import 'package:envoy/ble/qlv2/protocol_handler.dart';
 import 'package:envoy/channels/ql_connection.dart';
-import 'package:envoy/business/devices.dart';
 import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/onboard/prime/state/ble_onboarding_session_state.dart';
 import 'package:envoy/ui/onboard/prime/state/prime_onboarding_controller.dart'
@@ -413,21 +413,7 @@ final settingsUpdateConnectionProvider = StreamProvider<QLConnection>((ref) {
   final controller = StreamController<QLConnection>();
   final group = StreamGroup<QLConnection>();
   for (final conn in connections) {
-    final savedDevice = conn.getDevice();
-    if (savedDevice?.protocol == PrimeConnectionProtocol.qlV2) {
-      final handler = conn.v2Handler;
-      if (handler != null) {
-        group.add(
-          handler.firmwareEvents.settingsUpdateStarted
-              .map<QLConnection>((_) => conn),
-        );
-      }
-    } else {
-      group.add(
-        conn.qlHandler.fwUpdateHandler.settingsUpdateStarted
-            .map<QLConnection>((_) => conn),
-      );
-    }
+    group.add(_settingsUpdatesFor(conn));
   }
   final sub = group.stream.listen(controller.add);
   ref.onDispose(() {
@@ -437,6 +423,38 @@ final settingsUpdateConnectionProvider = StreamProvider<QLConnection>((ref) {
   });
   return controller.stream;
 });
+
+Stream<QLConnection> _settingsUpdatesFor(QLConnection connection) {
+  late final StreamController<QLConnection> controller;
+  StreamSubscription<QLV2ProtocolHandler?>? handlerChanges;
+  StreamSubscription<void>? settingsUpdates;
+
+  void useHandler(QLV2ProtocolHandler? handler) {
+    unawaited(settingsUpdates?.cancel());
+
+    final updates = handler?.firmwareEvents.settingsUpdateStarted ??
+        connection.qlHandler.fwUpdateHandler.settingsUpdateStarted;
+    settingsUpdates = updates.listen(
+      (_) => controller.add(connection),
+      onError: controller.addError,
+    );
+  }
+
+  controller = StreamController<QLConnection>(
+    onListen: () {
+      handlerChanges = connection.v2HandlerChanges.listen(
+        useHandler,
+        onError: controller.addError,
+      );
+      useHandler(connection.v2Handler);
+    },
+    onCancel: () async {
+      await handlerChanges?.cancel();
+      await settingsUpdates?.cancel();
+    },
+  );
+  return controller.stream;
+}
 
 void resetOnboardingPrimeProviders(ProviderContainer container) {
   try {

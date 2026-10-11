@@ -97,8 +97,11 @@ class QLConnection with EnvoyMessageWriter implements QLBleTransport {
   api.XidDocument? _recipientXid;
 
   QLV2ProtocolHandler? _v2Handler;
+  final _v2HandlerChanges =
+      StreamController<QLV2ProtocolHandler?>.broadcast(sync: true);
 
   QLV2ProtocolHandler? get v2Handler => _v2Handler;
+  Stream<QLV2ProtocolHandler?> get v2HandlerChanges => _v2HandlerChanges.stream;
 
   set v2Handler(QLV2ProtocolHandler? handler) {
     if (identical(_v2Handler, handler)) return;
@@ -115,6 +118,7 @@ class QLConnection with EnvoyMessageWriter implements QLBleTransport {
     } else {
       _emitQLActiveIfChanged();
     }
+    if (!_v2HandlerChanges.isClosed) _v2HandlerChanges.add(handler);
   }
 
   api.XidDocument? get recipientXid => _recipientXid;
@@ -833,6 +837,7 @@ class QLConnection with EnvoyMessageWriter implements QLBleTransport {
     _qlv2ActiveSubscription?.cancel();
     _v2Handler?.dispose();
     _v2Handler = null;
+    unawaited(_v2HandlerChanges.close());
     _qlActivityMonitorTimer?.cancel();
     _autoReconnectTimer?.cancel();
     _postTransferLivenessTimer?.cancel();
