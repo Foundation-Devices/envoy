@@ -9,12 +9,12 @@ import 'package:envoy/ui/envoy_colors.dart' as legacy_colors;
 import 'package:envoy/util/console.dart';
 import 'package:qlv2/qlv2.dart' as qlv2;
 
-Future<void> saveQlv2PassportDevice({
+Future<void> saveCompletedQlv2PassportDevice({
   required QLConnection device,
   required QLV2ProtocolHandler handler,
-  bool onboardingCompleteOverride = true,
+  qlv2.PassportDetailsResponse? passportDetails,
 }) async {
-  final passportDetails = await handler.fetchPassportDetails();
+  passportDetails ??= await handler.fetchPassportDetails();
   final identityBytes = await handler.ownIdentity();
   final peerBundleBytes = await handler.getPersistedPeer();
   if (identityBytes.isEmpty ||
@@ -23,6 +23,7 @@ Future<void> saveQlv2PassportDevice({
     throw StateError('QL v2 pairing credentials are incomplete.');
   }
   final serial = passportDetails.serial.field0;
+  device.primeSerial = serial;
   final existingDevice =
       Devices().getDeviceBySerial(serial) ?? device.getDevice();
 
@@ -31,13 +32,12 @@ Future<void> saveQlv2PassportDevice({
           ? "Passport Prime"
           : passportDetails.deviceName.trim());
   final peripheralId = device.lastDeviceStatus.peripheralId;
-  final onboardingComplete = onboardingCompleteOverride;
 
   kPrint(
     "[PrimeOnboarding] qlv2_device_storage: saving device "
     "serial=$serial name=$deviceName bleId=${device.deviceId} "
     "peripheralId=${peripheralId == null || peripheralId.isEmpty ? device.deviceId : peripheralId} "
-    "existing=${existingDevice != null} onboardingComplete=$onboardingComplete",
+    "existing=${existingDevice != null} onboardingComplete=true",
   );
 
   await Devices().add(
@@ -61,13 +61,29 @@ Future<void> saveQlv2PassportDevice({
       protocol: PrimeConnectionProtocol.qlV2,
       pairedAccountIds: existingDevice?.pairedAccountIds,
       primeBackupEnabled: existingDevice?.primeBackupEnabled,
-      onboardingComplete: onboardingComplete,
+      onboardingComplete: true,
     ),
   );
 
   kPrint(
     "[PrimeOnboarding] qlv2_device_storage: saved device serial=$serial",
   );
+}
+
+Future<bool> prepareQlv2PassportDeviceAfterPairing({
+  required QLConnection device,
+  required QLV2ProtocolHandler handler,
+}) async {
+  final passportDetails = await handler.fetchPassportDetails();
+  device.primeSerial = passportDetails.serial.field0;
+  if (!passportDetails.onboardingComplete) return false;
+
+  await saveCompletedQlv2PassportDevice(
+    device: device,
+    handler: handler,
+    passportDetails: passportDetails,
+  );
+  return true;
 }
 
 DeviceType _mapQlv2PassportModel(qlv2.PassportModel model) {

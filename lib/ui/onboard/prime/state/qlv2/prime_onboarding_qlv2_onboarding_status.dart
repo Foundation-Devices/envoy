@@ -72,10 +72,9 @@ class PrimeOnboardingQlv2OnboardingStatusHandler
           throw StateError("No QL v2 session available for passport details.");
         }
 
-        await saveQlv2PassportDevice(
+        await saveCompletedQlv2PassportDevice(
           device: device,
           handler: handler,
-          onboardingCompleteOverride: true,
         );
         _storedCompletedDetails = true;
         kPrint(

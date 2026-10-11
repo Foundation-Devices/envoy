@@ -593,13 +593,12 @@ class _OnboardPrimeBluetoothState extends ConsumerState<OnboardPrimeBluetooth>
       );
       await handler.pair(invite);
       await _waitForQlv2Active(handler);
-      await saveQlv2PassportDevice(
+      final alreadyOnboarded = await prepareQlv2PassportDeviceAfterPairing(
         device: device,
         handler: handler,
-        onboardingCompleteOverride: onboardingCompleted,
       );
 
-      if (onboardingCompleted) {
+      if (alreadyOnboarded) {
         stopOnboardingPrimeQlv2Scope(device);
         if (context.mounted) context.goNamed(ONBOARD_REPAIRING);
       } else if (context.mounted) {
