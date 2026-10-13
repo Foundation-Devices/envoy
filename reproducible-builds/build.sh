@@ -43,6 +43,8 @@ build_inside_nix() {
     export GRADLE_USER_HOME="$reproducible_cache_root/gradle"
     export PUB_CACHE="$reproducible_cache_root/pub"
     export TMPDIR="$reproducible_cache_root/tmp"
+    # Keep the writable Flutter mirror inside the disposable canonical checkout.
+    export XDG_CACHE_HOME="$repository_root/.cache"
     export SOURCE_DATE_EPOCH
     SOURCE_DATE_EPOCH=$(git -C "$repository_root" show -s --format=%ct HEAD)
     export TZ=UTC

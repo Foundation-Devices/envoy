@@ -125,7 +125,7 @@ class Server {
         cancellationToken: cancellationToken,
         onProgress: onProgress,
       );
-      return file.readAsBytes();
+      return await file.readAsBytes();
     } catch (e, stack) {
       EnvoyReport().log(
         "Server",
