@@ -17,7 +17,11 @@
       fenix,
       ...
     }:
-    flake-utils.lib.eachDefaultSystem (
+    flake-utils.lib.eachSystem [
+      "x86_64-linux"
+      "aarch64-linux"
+      "aarch64-darwin"
+    ] (
       system:
       let
         pkgs = import nixpkgs {
@@ -30,13 +34,20 @@
 
         inherit (nixpkgs) lib;
 
-        # Keep Flutter explicit even though the package comes from pinned nixpkgs.
-        # Bump this alongside flake.lock when intentionally updating Flutter.
-        flutterVersion = "3.44.2";
+        # Keep every local and CI environment on the same Flutter release.
+        flutterVersion = lib.removeSuffix "\n" (builtins.readFile ./flutter-version);
+        flutterData = builtins.fromJSON (builtins.readFile ./nix/flutter.json);
         flutterPinned =
-          assert lib.assertMsg (pkgs.flutter.version == flutterVersion)
-            "Expected Flutter ${flutterVersion}, but nixpkgs provides ${pkgs.flutter.version}. Update flutterVersion or pin nixpkgs to a matching revision.";
-          pkgs.flutter;
+          assert lib.assertMsg (flutterData.version == flutterVersion)
+            "Expected Flutter metadata for ${flutterVersion}, but nix/flutter.json contains ${flutterData.version}.";
+          pkgs.flutterPackages.wrapFlutter (
+            pkgs.flutterPackages.mkFlutter (
+              flutterData
+              // {
+                inherit (pkgs.flutter347.unwrapped) patches;
+              }
+            )
+          );
         flutterRustBridgeCodegen = pkgs.flutter_rust_bridge_codegen.overrideAttrs (_: rec {
           version = "2.11.1";
           src = pkgs.fetchFromGitHub {
@@ -56,13 +67,8 @@
         androidComposition = pkgs.androidenv.composeAndroidPackages {
           cmdLineToolsVersion = "8.0";
           toolsVersion = "26.1.1";
-          platformToolsVersion = "35.0.2";
-          buildToolsVersions = [
-            "30.0.3"
-            "33.0.1"
-            "34.0.0"
-            "35.0.0"
-          ];
+          platformToolsVersion = "37.0.1";
+          buildToolsVersions = [ "36.0.0" ];
           includeEmulator = false;
           emulatorVersion = "31.3.10";
           platformVersions = [
@@ -115,13 +121,8 @@
           # The obsolete pre-cmdline SDK tools bundle contains 32-bit Linux
           # binaries. Flutter and Gradle only require cmdline-tools here.
           toolsVersion = null;
-          platformToolsVersion = "35.0.2";
-          buildToolsVersions = [
-            "30.0.3"
-            "33.0.1"
-            "34.0.0"
-            "35.0.0"
-          ];
+          platformToolsVersion = "37.0.1";
+          buildToolsVersions = [ "36.0.0" ];
           includeEmulator = false;
           platformVersions = [
             "28"
@@ -158,7 +159,7 @@
           let
             xcodeenv = import (nixpkgs + "/pkgs/development/mobile/xcodeenv") { inherit (pkgs) callPackage; };
           in
-          lib.optionals pkgs.stdenv.isDarwin [
+          lib.optionals pkgs.stdenv.hostPlatform.isDarwin [
             (xcodeenv.composeXcodeWrapper { versions = [ "16.0" ]; })
           ];
 
@@ -259,10 +260,29 @@
           exit 1
         '';
 
+        writableFlutterRoot = ''
+          flutter_cache_root="''${XDG_CACHE_HOME:-$HOME/.cache}/envoy/${builtins.baseNameOf "${flutterPinned}"}"
+          if [ ! -x "$flutter_cache_root/bin/flutter" ]; then
+            mkdir -p "$flutter_cache_root"
+            ${pkgs.coreutils}/bin/cp -R "${flutterPinned}/." "$flutter_cache_root"
+          fi
+          if [ ! -e "$flutter_cache_root/.envoy-writable-v2" ]; then
+            ${pkgs.findutils}/bin/find "$flutter_cache_root" ! -type l -exec chmod u+w {} +
+            touch "$flutter_cache_root/.envoy-writable-v2"
+          fi
+          # The Nix Flutter package exposes bin/dart through a relative symlink.
+          # Re-anchor it after copying the SDK out of /nix/store.
+          ${pkgs.coreutils}/bin/ln -sfn "${flutterPinned}/bin/dart" "$flutter_cache_root/bin/dart"
+          export FLUTTER_ROOT="$flutter_cache_root"
+        '';
+
         flutter-wrapper = pkgs.writeShellScriptBin "flutter" ''
+          # Gradle 9 requires included plugin directories to be writable.
+          # Mirror Nix's symlink-based SDK tree into the user cache once.
+          ${writableFlutterRoot}
+
           if [ "$(uname -s)" = "Darwin" ]; then
-            export FLUTTER_ROOT="${flutterPinned}"
-            export PATH="${flutterPinned}/bin:${rustToolchain}/bin:${rustup-shim}/bin:${pkgs.rsync}/bin:/opt/homebrew/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:$PATH"
+            export PATH="$FLUTTER_ROOT/bin:${rustToolchain}/bin:${rustup-shim}/bin:${pkgs.rsync}/bin:/opt/homebrew/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:$PATH"
 
             # Keep Xcode/SwiftPM on Apple's compiler toolchain while still using
             # the Nix-provided Flutter, Rust, and GNU rsync binaries.
@@ -275,6 +295,7 @@
         '';
 
         reproducibleFlutterWrapper = pkgs.writeShellScriptBin "flutter" ''
+          ${writableFlutterRoot}
           exec ${flutterPinned}/bin/flutter "$@"
         '';
 
@@ -481,7 +502,7 @@
           inherit buildInputs;
           shellHook = ''
             # Flutter setup
-            export FLUTTER_ROOT="${flutterPinned}"
+            ${writableFlutterRoot}
             export PATH="${flutter-wrapper}/bin:$FLUTTER_ROOT/bin:$PATH"
 
             # Remove rustup from PATH to use Nix Rust
@@ -495,9 +516,9 @@
             echo "Java: $(java --version)"
 
             # darwin xcode
-            ${lib.optionalString pkgs.stdenv.isDarwin "unset DEVELOPER_DIR DEVELOPER_DIR_FOR_TARGET SDKROOT SDKROOT_FOR_TARGET"}
-            ${lib.optionalString pkgs.stdenv.isDarwin "export DEVELOPER_DIR=\"$(xcode-select -p)\""}
-            ${lib.optionalString pkgs.stdenv.isDarwin "export CARGO_TARGET_AARCH64_APPLE_DARWIN_LINKER=/usr/bin/clang"}
+            ${lib.optionalString pkgs.stdenv.hostPlatform.isDarwin "unset DEVELOPER_DIR DEVELOPER_DIR_FOR_TARGET SDKROOT SDKROOT_FOR_TARGET"}
+            ${lib.optionalString pkgs.stdenv.hostPlatform.isDarwin "export DEVELOPER_DIR=\"$(xcode-select -p)\""}
+            ${lib.optionalString pkgs.stdenv.hostPlatform.isDarwin "export CARGO_TARGET_AARCH64_APPLE_DARWIN_LINKER=/usr/bin/clang"}
 
             # Android SDK and NDK configuration
             export ANDROID_SDK_ROOT="${androidComposition.androidsdk}/libexec/android-sdk"
@@ -509,7 +530,7 @@
             # Prefer current build tools and Nix's SDK wrappers. Keep the
             # legacy tools directories last so their Java-8-only apkanalyzer
             # cannot shadow the Java-17-compatible wrapper.
-            export PATH="$ANDROID_SDK_ROOT/cmdline-tools/latest/bin:$ANDROID_SDK_ROOT/build-tools/35.0.0:$ANDROID_SDK_ROOT/platform-tools:$PATH:$ANDROID_SDK_ROOT/tools:$ANDROID_SDK_ROOT/tools/bin"
+            export PATH="$ANDROID_SDK_ROOT/cmdline-tools/latest/bin:$ANDROID_SDK_ROOT/build-tools/36.0.0:$ANDROID_SDK_ROOT/platform-tools:$PATH:$ANDROID_SDK_ROOT/tools:$ANDROID_SDK_ROOT/tools/bin"
           '';
         };
 
@@ -524,7 +545,7 @@
             export ANDROID_HOME="$ANDROID_SDK_ROOT"
             export ANDROID_NDK_ROOT="$ANDROID_SDK_ROOT/ndk/28.2.13676358"
             export NDK_HOME="$ANDROID_NDK_ROOT"
-            export PATH="$ANDROID_SDK_ROOT/cmdline-tools/latest/bin:$ANDROID_SDK_ROOT/build-tools/35.0.0:$ANDROID_SDK_ROOT/platform-tools:$PATH:$ANDROID_SDK_ROOT/tools:$ANDROID_SDK_ROOT/tools/bin"
+            export PATH="$ANDROID_SDK_ROOT/cmdline-tools/latest/bin:$ANDROID_SDK_ROOT/build-tools/36.0.0:$ANDROID_SDK_ROOT/platform-tools:$PATH:$ANDROID_SDK_ROOT/tools:$ANDROID_SDK_ROOT/tools/bin"
           '';
         };
       }

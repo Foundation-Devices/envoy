@@ -21,3 +21,8 @@ analyzer:
     - '**/*.g.dart'
     - 'test/*.mocks.dart'
     - 'build/**'
+    - android/**
+    - ios/**
+    - macos/**
+    - linux/**
+    - web/**

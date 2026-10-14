@@ -66,7 +66,7 @@ EXTERNAL SOURCES:
 
 SPEC CHECKSUMS:
   file_saver: 503e386464dbe118f630e17b4c2e1190fa0cf808
-  Flutter: cabc95a1d2626b1b06e7179b784ebcf0c0cde467
+  Flutter: 71a624a5bc0c04062bf19101d501e466baf2fb47
   flutter_secure_storage: d33dac7ae2ea08509be337e775f6b59f1ff45f12
   MTBBarcodeScanner: f453b33c4b7dfe545d8c6484ed744d55671788cb
   qr_code_scanner_plus: 3bfe4deb7f28996a63a2a580819d49dae80d5ed3

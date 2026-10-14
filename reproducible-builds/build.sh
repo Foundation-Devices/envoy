@@ -43,6 +43,10 @@ build_inside_nix() {
     export GRADLE_USER_HOME="$reproducible_cache_root/gradle"
     export PUB_CACHE="$reproducible_cache_root/pub"
     export TMPDIR="$reproducible_cache_root/tmp"
+    # Keep Flutter's SDK mirror and Gradle wrapper links in the disposable checkout.
+    export HOME="$repository_root/.home"
+    export XDG_CACHE_HOME="$HOME/.cache"
+    mkdir -p "$HOME"
     export SOURCE_DATE_EPOCH
     SOURCE_DATE_EPOCH=$(git -C "$repository_root" show -s --format=%ct HEAD)
     export TZ=UTC

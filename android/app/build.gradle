@@ -33,6 +33,10 @@ android {
     compileSdkVersion flutter.compileSdkVersion
     ndkVersion = "28.2.13676358"
 
+    buildFeatures {
+        buildConfig = true
+    }
+
     sourceSets {
         main.java.srcDirs += 'src/main/kotlin'
     }
