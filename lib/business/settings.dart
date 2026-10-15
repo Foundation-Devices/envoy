@@ -349,7 +349,7 @@ class Settings extends ChangeNotifier {
   String get primeFirmwareServerAddress {
     return usingTor
         ? "http://2i4lfw43nncbqfzcogzeq4fn5kal7z5svzecydka3riyf5xonknwpwad.onion"
-        : "http://192.168.178.106:8000";
+        : "https://firmware.foundation.xyz";
   }
 
   @JsonKey(includeFromJson: false, includeToJson: false)
