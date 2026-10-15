@@ -160,18 +160,24 @@ class Qlv2PrimeOnboardingAdapter implements PrimeOnboardingAdapter {
       ),
     );
 
-    _subscriptions.add(
-      handler.accountUpdateEvents.status.listen(
-        (state) => _update((controller) {
-          controller.updateAccountConnection(state.message, state.step);
-          if (state.step == EnvoyStepState.LOADING) {
-            controller.recordStep(PrimeOnboardingStep.connectingWallet);
-          } else if (state.step == EnvoyStepState.FINISHED) {
-            controller.recordStep(PrimeOnboardingStep.walletConnected);
-          }
-        }),
-      ),
-    );
+    if (!isSettingsUpdate) {
+      _subscriptions.add(
+        handler.accountUpdateEvents.status.listen(
+          (state) => _update((controller) {
+            controller.updateAccountConnection(state.message, state.step);
+            if (state.step == EnvoyStepState.LOADING) {
+              controller.recordStep(PrimeOnboardingStep.connectingWallet);
+            } else if (state.step == EnvoyStepState.FINISHED) {
+              controller.recordStep(PrimeOnboardingStep.walletConnected);
+            }
+          }),
+        ),
+      );
+    } else {
+      kPrint(
+        "[PrimeOnboarding] QL v2 settings update: account routing disabled",
+      );
+    }
 
     if (handler.isActive) {
       _updateActive(true);

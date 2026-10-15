@@ -48,6 +48,7 @@ import 'package:envoy/ui/widgets/toast/envoy_toast.dart';
 import 'package:envoy/ui/widgets/tutorial_page.dart';
 import 'package:envoy/util/amount.dart';
 import 'package:envoy/util/app_store_url.dart';
+import 'package:envoy/util/console.dart';
 import 'package:envoy/util/easing.dart';
 import 'package:envoy/util/envoy_storage.dart';
 import 'package:flutter/material.dart';
@@ -671,28 +672,91 @@ class HomePageState extends ConsumerState<HomePage>
     });
 
     ref.listen(settingsUpdateConnectionProvider, (previous, next) {
+      kPrint(
+        "[PrimeFirmwareNavigation] provider state changed "
+        "loading=${next.isLoading} hasValue=${next.hasValue} "
+        "hasError=${next.hasError}",
+      );
+      if (next.hasError) {
+        kPrint(
+          "[PrimeFirmwareNavigation] provider error=${next.error}",
+          stackTrace: next.stackTrace,
+        );
+      }
       next.whenData((connection) async {
-        final currentPath = ref.read(routePathProvider);
-        if (currentPath.contains(ONBOARD_PRIME_FIRMWARE_UPDATE)) return;
-        final container = ProviderScope.containerOf(context);
-        if (connection.getDevice()?.protocol == PrimeConnectionProtocol.qlV2) {
-          final handler = connection.v2Handler;
-          if (handler == null) return;
-          await setOnboardingPrimeQlv2Session(
-            container: container,
-            device: connection,
-            handler: handler,
-            isSettingsUpdate: true,
+        try {
+          final currentPath = ref.read(routePathProvider);
+          final savedDevice = connection.getDevice();
+          kPrint(
+            "[PrimeFirmwareNavigation] received update event "
+            "deviceId=${connection.deviceId} currentPath=$currentPath "
+            "mounted=$mounted savedDevice=${savedDevice != null} "
+            "onboardingComplete=${savedDevice?.onboardingComplete} "
+            "protocol=${savedDevice?.protocol} "
+            "hasQlv2Handler=${connection.v2Handler != null}",
           );
-        } else {
-          await setOnboardingPrimeQlv1Session(
-            container: container,
-            device: connection,
-            isSettingsUpdate: true,
+          if (currentPath.contains(ONBOARD_PRIME_FIRMWARE_UPDATE)) {
+            kPrint(
+              "[PrimeFirmwareNavigation] update page is already visible; "
+              "ignoring duplicate event",
+            );
+            return;
+          }
+          final container = ProviderScope.containerOf(context);
+          if (savedDevice?.protocol == PrimeConnectionProtocol.qlV2) {
+            final handler = connection.v2Handler;
+            if (handler == null) {
+              kPrint(
+                "[PrimeFirmwareNavigation] cannot open update page because "
+                "the QL v2 handler is unavailable",
+              );
+              return;
+            }
+            kPrint(
+              "[PrimeFirmwareNavigation] preparing QL v2 settings update session",
+            );
+            await setOnboardingPrimeQlv2Session(
+              container: container,
+              device: connection,
+              handler: handler,
+              isSettingsUpdate: true,
+            );
+            kPrint(
+              "[PrimeFirmwareNavigation] QL v2 settings update session ready",
+            );
+          } else {
+            kPrint(
+              "[PrimeFirmwareNavigation] preparing QL v1 settings update session",
+            );
+            await setOnboardingPrimeQlv1Session(
+              container: container,
+              device: connection,
+              isSettingsUpdate: true,
+            );
+            kPrint(
+              "[PrimeFirmwareNavigation] QL v1 settings update session ready",
+            );
+          }
+          if (context.mounted) {
+            kPrint(
+              "[PrimeFirmwareNavigation] opening firmware update page "
+              "route=$ONBOARD_PRIME_FIRMWARE_UPDATE",
+            );
+            context.goNamed(ONBOARD_PRIME_FIRMWARE_UPDATE);
+            kPrint(
+              "[PrimeFirmwareNavigation] navigation command dispatched",
+            );
+          } else {
+            kPrint(
+              "[PrimeFirmwareNavigation] home page was disposed before navigation",
+            );
+          }
+        } catch (error, stackTrace) {
+          kPrint(
+            "[PrimeFirmwareNavigation] failed to prepare or open update page: "
+            "$error",
+            stackTrace: stackTrace,
           );
-        }
-        if (context.mounted) {
-          context.goNamed(ONBOARD_PRIME_FIRMWARE_UPDATE);
         }
       });
     });

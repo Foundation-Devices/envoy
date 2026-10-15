@@ -408,15 +408,46 @@ final settingsUpdateConnectionProvider = StreamProvider<QLConnection>((ref) {
   final asyncConnections = ref.watch(qlConnectionStreamProvider);
   final connections = asyncConnections.valueOrNull ?? [];
 
-  if (connections.isEmpty) return const Stream.empty();
+  _logPrimeOnboarding(
+    "firmware navigation: provider rebuilt "
+    "connections=${connections.length} "
+    "connectionStreamLoading=${asyncConnections.isLoading} "
+    "connectionStreamError=${asyncConnections.hasError}",
+  );
+
+  if (connections.isEmpty) {
+    _logPrimeOnboarding(
+      "firmware navigation: no connections; returning empty stream",
+    );
+    return const Stream.empty();
+  }
 
   final controller = StreamController<QLConnection>();
   final group = StreamGroup<QLConnection>();
   for (final conn in connections) {
+    _logPrimeOnboarding(
+      "firmware navigation: registering connection "
+      "deviceId=${conn.deviceId} hasQlv2Handler=${conn.v2Handler != null}",
+    );
     group.add(_settingsUpdatesFor(conn));
   }
-  final sub = group.stream.listen(controller.add);
+  final sub = group.stream.listen(
+    (connection) {
+      _logPrimeOnboarding(
+        "firmware navigation: provider emitting connection "
+        "deviceId=${connection.deviceId}",
+      );
+      controller.add(connection);
+    },
+    onError: (Object error, StackTrace stackTrace) {
+      _logPrimeOnboarding(
+        "firmware navigation: provider stream error=$error",
+      );
+      controller.addError(error, stackTrace);
+    },
+  );
   ref.onDispose(() {
+    _logPrimeOnboarding("firmware navigation: disposing provider listeners");
     sub.cancel();
     group.close();
     controller.close();
@@ -430,25 +461,74 @@ Stream<QLConnection> _settingsUpdatesFor(QLConnection connection) {
   StreamSubscription<void>? settingsUpdates;
 
   void useHandler(QLV2ProtocolHandler? handler) {
+    _logPrimeOnboarding(
+      "firmware navigation: protocol handler changed "
+      "deviceId=${connection.deviceId} qlv2=${handler != null}",
+    );
     unawaited(settingsUpdates?.cancel());
 
-    final updates = handler?.firmwareEvents.settingsUpdateStarted ??
-        connection.qlHandler.fwUpdateHandler.settingsUpdateStarted;
-    settingsUpdates = updates.listen(
-      (_) => controller.add(connection),
+    if (handler == null) {
+      _logPrimeOnboarding(
+        "firmware navigation: attaching QL v1 listener "
+        "deviceId=${connection.deviceId}",
+      );
+      settingsUpdates =
+          connection.qlHandler.fwUpdateHandler.settingsUpdateStarted.listen(
+        (_) {
+          _logPrimeOnboarding(
+            "firmware navigation: forwarding QL v1 update event "
+            "deviceId=${connection.deviceId} "
+            "providerListening=${controller.hasListener}",
+          );
+          controller.add(connection);
+        },
+        onError: controller.addError,
+      );
+      return;
+    }
+
+    final events = handler.firmwareEvents;
+    _logPrimeOnboarding(
+      "firmware navigation: attaching QL v2 listener "
+      "deviceId=${connection.deviceId}",
+    );
+    settingsUpdates = events.settingsUpdateStarted.listen(
+      (_) {
+        _logPrimeOnboarding(
+          "firmware navigation: forwarding QL v2 update event "
+          "deviceId=${connection.deviceId} "
+          "providerListening=${controller.hasListener}",
+        );
+        controller.add(connection);
+      },
       onError: controller.addError,
     );
   }
 
   controller = StreamController<QLConnection>(
     onListen: () {
+      _logPrimeOnboarding(
+        "firmware navigation: connection stream subscribed "
+        "deviceId=${connection.deviceId} "
+        "hasQlv2Handler=${connection.v2Handler != null}",
+      );
       handlerChanges = connection.v2HandlerChanges.listen(
         useHandler,
-        onError: controller.addError,
+        onError: (Object error, StackTrace stackTrace) {
+          _logPrimeOnboarding(
+            "firmware navigation: handler stream error "
+            "deviceId=${connection.deviceId} error=$error",
+          );
+          controller.addError(error, stackTrace);
+        },
       );
       useHandler(connection.v2Handler);
     },
     onCancel: () async {
+      _logPrimeOnboarding(
+        "firmware navigation: connection stream cancelled "
+        "deviceId=${connection.deviceId}",
+      );
       await handlerChanges?.cancel();
       await settingsUpdates?.cancel();
     },

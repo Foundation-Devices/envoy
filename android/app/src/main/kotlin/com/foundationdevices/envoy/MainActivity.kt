@@ -13,6 +13,7 @@ import android.provider.DocumentsContract
 import android.provider.Settings
 import android.provider.Settings.ACTION_MANAGE_ALL_FILES_ACCESS_PERMISSION
 import android.system.Os
+import android.util.Log
 import android.view.WindowManager
 import androidx.annotation.RequiresApi
 import com.foundationdevices.envoy.ble.BluetoothChannel
@@ -21,6 +22,8 @@ import io.flutter.embedding.engine.FlutterEngine
 import io.flutter.plugin.common.EventChannel
 import io.flutter.plugin.common.MethodChannel
 import java.io.File
+import java.util.UUID
+import org.json.JSONObject
 
 class MainActivity : FlutterFragmentActivity(), EventChannel.StreamHandler {
     private val CHANNEL = "envoy"
@@ -34,6 +37,8 @@ class MainActivity : FlutterFragmentActivity(), EventChannel.StreamHandler {
 
     private var directoryContentRequestCode = 21
     private var saveFileRequestCode = 22
+    private var localFirmwareFolderRequestCode = 23
+    private var localFirmwareFolderResult: MethodChannel.Result? = null
 
     override fun onNewIntent(intent: Intent) {
         super.onNewIntent(intent)
@@ -60,6 +65,11 @@ class MainActivity : FlutterFragmentActivity(), EventChannel.StreamHandler {
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode == localFirmwareFolderRequestCode) {
+            handleLocalFirmwareFolderResult(resultCode, data)
+            return
+        }
+
         if (requestCode == directoryContentRequestCode && resultCode == RESULT_OK) {
             if (data != null) {
                 val uri = data.data
@@ -198,6 +208,28 @@ class MainActivity : FlutterFragmentActivity(), EventChannel.StreamHandler {
                     result.success(true)
                 }
 
+                "pick_local_prime_firmware_folder" -> {
+                    if (localFirmwareFolderResult != null) {
+                        result.error(
+                            "picker_active",
+                            "A local firmware folder selection is already active",
+                            null
+                        )
+                    } else {
+                        localFirmwareFolderResult = result
+                        Log.i(LOCAL_FIRMWARE_TAG, "picker: opening folder picker")
+                        startActivityForResult(
+                            Intent(Intent.ACTION_OPEN_DOCUMENT_TREE).apply {
+                                addFlags(
+                                    Intent.FLAG_GRANT_READ_URI_PERMISSION or
+                                        Intent.FLAG_GRANT_PERSISTABLE_URI_PERMISSION
+                                )
+                            },
+                            localFirmwareFolderRequestCode
+                        )
+                    }
+                }
+
                 "get_manage_files_permission" -> {
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
                         getManageAllFilesPermission()
@@ -278,6 +310,183 @@ class MainActivity : FlutterFragmentActivity(), EventChannel.StreamHandler {
         if (!Environment.isExternalStorageManager()) {
             startActivity(Intent(ACTION_MANAGE_ALL_FILES_ACCESS_PERMISSION))
         }
+    }
+
+    private fun handleLocalFirmwareFolderResult(resultCode: Int, data: Intent?) {
+        val result = localFirmwareFolderResult ?: return
+        if (resultCode != RESULT_OK || data?.data == null) {
+            Log.i(LOCAL_FIRMWARE_TAG, "picker: selection cancelled")
+            localFirmwareFolderResult = null
+            result.success(null)
+            return
+        }
+
+        val treeUri = data.data!!
+        Log.i(LOCAL_FIRMWARE_TAG, "picker: selected uri=$treeUri")
+        try {
+            val takeFlags = data.flags and Intent.FLAG_GRANT_READ_URI_PERMISSION
+            contentResolver.takePersistableUriPermission(treeUri, takeFlags)
+            Log.i(LOCAL_FIRMWARE_TAG, "picker: persisted read permission")
+        } catch (error: SecurityException) {
+            Log.i(
+                LOCAL_FIRMWARE_TAG,
+                "picker: persistent permission unavailable; using current grant",
+                error
+            )
+        }
+
+        Thread {
+            try {
+                val cachedFolder = cacheLocalPrimeFirmwareFolder(treeUri)
+                runOnUiThread {
+                    Log.i(
+                        LOCAL_FIRMWARE_TAG,
+                        "picker: prepared readable folder=${cachedFolder.absolutePath}"
+                    )
+                    localFirmwareFolderResult = null
+                    result.success(cachedFolder.absolutePath)
+                }
+            } catch (error: Exception) {
+                Log.e(LOCAL_FIRMWARE_TAG, "picker: failed to read selected folder", error)
+                runOnUiThread {
+                    localFirmwareFolderResult = null
+                    result.error(
+                        "local_firmware_folder",
+                        error.message ?: "Failed to read selected firmware folder",
+                        null
+                    )
+                }
+            }
+        }.start()
+    }
+
+    private fun cacheLocalPrimeFirmwareFolder(treeUri: Uri): File {
+        val children = directChildDocuments(treeUri)
+        Log.i(
+            LOCAL_FIRMWARE_TAG,
+            "folder: direct children=${children.keys.sorted().joinToString()}"
+        )
+
+        val manifestUri = children[LOCAL_FIRMWARE_MANIFEST]
+            ?: throw IllegalArgumentException("Selected folder must contain update.json")
+        val manifestJson = contentResolver.openInputStream(manifestUri)?.use { input ->
+            input.bufferedReader().readText()
+        } ?: throw IllegalArgumentException("Unable to read update.json")
+        Log.i(
+            LOCAL_FIRMWARE_TAG,
+            "folder: read update.json bytes=${manifestJson.toByteArray().size}"
+        )
+
+        val patches = JSONObject(manifestJson).optJSONArray("patches")
+            ?: throw IllegalArgumentException("Manifest must include at least one patch")
+        if (patches.length() == 0) {
+            throw IllegalArgumentException("Manifest must include at least one patch")
+        }
+
+        val updateFileNames = mutableListOf<String>()
+        for (index in 0 until patches.length()) {
+            val updateFileName = patches.getJSONObject(index)
+                .optString("update_filename")
+                .trim()
+            if (updateFileName.isEmpty()) {
+                throw IllegalArgumentException(
+                    "Patch ${index + 1} must include a non-empty update_filename"
+                )
+            }
+            if (updateFileName == "." ||
+                updateFileName == ".." ||
+                updateFileName.contains('/') ||
+                updateFileName.contains('\\')
+            ) {
+                throw IllegalArgumentException(
+                    "Patch file must be directly inside the selected folder: $updateFileName"
+                )
+            }
+            if (updateFileNames.contains(updateFileName)) {
+                throw IllegalArgumentException("Duplicate patch filename: $updateFileName")
+            }
+            updateFileNames.add(updateFileName)
+            if (!children.containsKey(updateFileName)) {
+                throw IllegalArgumentException("Patch file not found: $updateFileName")
+            }
+            Log.i(
+                LOCAL_FIRMWARE_TAG,
+                "folder: patch ${index + 1}/${patches.length()} file=$updateFileName"
+            )
+        }
+
+        val destination = File(
+            cacheDir,
+            "local-prime-firmware/${UUID.randomUUID()}"
+        )
+        if (!destination.mkdirs()) {
+            throw IllegalStateException("Unable to prepare local firmware cache")
+        }
+
+        try {
+            File(destination, LOCAL_FIRMWARE_MANIFEST).writeText(manifestJson)
+            for (updateFileName in updateFileNames) {
+                val sourceUri = children.getValue(updateFileName)
+                val outputFile = File(destination, updateFileName)
+                contentResolver.openInputStream(sourceUri)?.use { input ->
+                    outputFile.outputStream().use { output -> input.copyTo(output) }
+                } ?: throw IllegalArgumentException("Unable to read $updateFileName")
+                Log.i(
+                    LOCAL_FIRMWARE_TAG,
+                    "folder: copied file=$updateFileName bytes=${outputFile.length()}"
+                )
+            }
+            return destination
+        } catch (error: Exception) {
+            destination.deleteRecursively()
+            throw error
+        }
+    }
+
+    private fun directChildDocuments(treeUri: Uri): Map<String, Uri> {
+        val treeDocumentId = DocumentsContract.getTreeDocumentId(treeUri)
+        val childrenUri = DocumentsContract.buildChildDocumentsUriUsingTree(
+            treeUri,
+            treeDocumentId
+        )
+        val projection = arrayOf(
+            DocumentsContract.Document.COLUMN_DOCUMENT_ID,
+            DocumentsContract.Document.COLUMN_DISPLAY_NAME,
+            DocumentsContract.Document.COLUMN_MIME_TYPE
+        )
+        val children = mutableMapOf<String, Uri>()
+
+        contentResolver.query(childrenUri, projection, null, null, null)?.use { cursor ->
+            val idColumn = cursor.getColumnIndexOrThrow(
+                DocumentsContract.Document.COLUMN_DOCUMENT_ID
+            )
+            val nameColumn = cursor.getColumnIndexOrThrow(
+                DocumentsContract.Document.COLUMN_DISPLAY_NAME
+            )
+            val mimeColumn = cursor.getColumnIndexOrThrow(
+                DocumentsContract.Document.COLUMN_MIME_TYPE
+            )
+            while (cursor.moveToNext()) {
+                if (cursor.getString(mimeColumn) == DocumentsContract.Document.MIME_TYPE_DIR) {
+                    continue
+                }
+                val name = cursor.getString(nameColumn)
+                if (children.containsKey(name)) {
+                    throw IllegalArgumentException("Duplicate file in selected folder: $name")
+                }
+                children[name] = DocumentsContract.buildDocumentUriUsingTree(
+                    treeUri,
+                    cursor.getString(idColumn)
+                )
+            }
+        } ?: throw IllegalArgumentException("Unable to read selected folder")
+
+        return children
+    }
+
+    companion object {
+        private const val LOCAL_FIRMWARE_TAG = "LocalPrimeFirmware"
+        private const val LOCAL_FIRMWARE_MANIFEST = "update.json"
     }
 
     override fun onDestroy() {

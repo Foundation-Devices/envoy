@@ -9,6 +9,7 @@ import 'dart:typed_data';
 import 'package:crypto/crypto.dart';
 import 'package:envoy/ble/qlv2/rpc_dispatcher.dart';
 import 'package:envoy/business/devices.dart';
+import 'package:envoy/business/local_prime_firmware_update.dart';
 import 'package:envoy/business/local_storage.dart';
 import 'package:envoy/business/server.dart';
 import 'package:envoy/business/updates_manager.dart';
@@ -17,6 +18,7 @@ import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/onboard/prime/state/prime_onboarding_controller.dart';
 import 'package:envoy/ui/widgets/envoy_step_item.dart';
 import 'package:envoy/util/bug_report_helper.dart';
+import 'package:envoy/util/console.dart';
 import 'package:envoy/util/envoy_storage.dart';
 import 'package:envoy/util/transfer_rate_estimator.dart';
 import 'package:http_tor/http_tor.dart';
@@ -61,6 +63,7 @@ class QLV2FirmwareEvents {
   String _newVersion = "";
   int _totalPatchBytes = 0;
   List<PrimeFirmwareChangelog> _changelogs = const [];
+  qlv2.FirmwareInstallEvent? _lastInstallEvent;
   Future<void> _operationChain = Future.value();
   bool _disposed = false;
 
@@ -146,7 +149,21 @@ class QLV2FirmwareEvents {
 
   void emitSettingsUpdateStarted() {
     if (_disposed) return;
+    _logQlv2Firmware(
+      "settings_update: emitting navigation event "
+      "hasListener=${_settingsUpdateStarted.hasListener}",
+    );
     _settingsUpdateStarted.add(null);
+    _logQlv2Firmware("settings_update: navigation event added to stream");
+  }
+
+  bool _recordInstallEvent(
+    qlv2.FirmwareInstallEvent event, {
+    required bool subscriptionInitial,
+  }) {
+    final replayed = subscriptionInitial && event == _lastInstallEvent;
+    _lastInstallEvent = event;
+    return replayed;
   }
 
   void recordUpdateMetadata({
@@ -234,7 +251,7 @@ class QLV2FirmwareUpdateCheckHandler
       EnvoyStepState.LOADING,
     );
     try {
-      final source = _firmwareSource ?? _selectedFirmwareSource();
+      final source = _firmwareSource ?? selectedQlv2FirmwareSource();
       _logQlv2Firmware(
         "update_check: fetching patches source=${_firmwareSourceName(source)} "
         "currentVersion=$currentVersion",
@@ -260,7 +277,10 @@ class QLV2FirmwareUpdateCheckHandler
         );
         _events.emitUpdateStep(PrimeFwUpdateStep.notAvailable);
       } else {
-        final update = _firmwareUpdateAvailable(patches);
+        final update = buildQlv2FirmwareUpdateAvailable(
+          patches,
+          localOverride: source is LocalQlv2FirmwareSource,
+        );
         _logQlv2Firmware(
           "update_check: responding available version=${update.version} "
           "patchCount=${update.patchCount} "
@@ -275,7 +295,17 @@ class QLV2FirmwareUpdateCheckHandler
           S().onboarding_connectionUpdatesAvailable_updatesAvailable,
           EnvoyStepState.FINISHED,
         );
-        if (device.getDevice()?.onboardingComplete == true) {
+        _logQlv2Firmware(
+          "update_check: resetting update progress "
+          "previous=${_events.lastUpdateStep}",
+        );
+        _events.emitUpdateStep(PrimeFwUpdateStep.idle);
+        final savedDevice = device.getDevice();
+        _logQlv2Firmware(
+          "update_check: update available savedDevice=${savedDevice != null} "
+          "onboardingComplete=${savedDevice?.onboardingComplete}",
+        );
+        if (savedDevice?.onboardingComplete == true) {
           _events.emitSettingsUpdateStarted();
         }
       }
@@ -349,7 +379,7 @@ class QLV2FirmwareDownloadHandler
       _logQlv2Firmware(
         "download: requested currentVersion=$currentVersion",
       );
-      final source = _firmwareSource ?? _selectedFirmwareSource();
+      final source = _firmwareSource ?? selectedQlv2FirmwareSource();
       _logQlv2Firmware(
         "download: fetching patches source=${_firmwareSourceName(source)} "
         "currentVersion=$currentVersion",
@@ -381,10 +411,14 @@ class QLV2FirmwareDownloadHandler
         currentVersion,
         patches,
         cancellationToken: cancellationToken,
+        onProgress: _events.emitDownloadProgress,
       );
       _events.emitDownloadProgress(1);
 
-      final update = _firmwareUpdateAvailable(patches);
+      final update = buildQlv2FirmwareUpdateAvailable(
+        patches,
+        localOverride: source is LocalQlv2FirmwareSource,
+      );
       _logQlv2Firmware(
         "transfer: starting current=$currentVersion "
         "target=${update.version} patches=${patches.length} "
@@ -526,6 +560,7 @@ abstract interface class QLV2FirmwareSource {
     String currentVersion,
     List<QLV2FirmwarePatch> patches, {
     required DownloadCancellationToken cancellationToken,
+    required void Function(double progress) onProgress,
   });
 }
 
@@ -581,11 +616,15 @@ class ServerQlv2FirmwareSource implements QLV2FirmwareSource {
     String currentVersion,
     List<QLV2FirmwarePatch> patches, {
     required DownloadCancellationToken cancellationToken,
+    required void Function(double progress) onProgress,
   }) async {
     final payloads = <QLV2FirmwarePatchPayload>[];
     final latest = patches.last;
     final folderName =
         "prime-patches/${_sanitizePathPart(currentVersion)}-to-${_sanitizePathPart(latest.version)}";
+    final totalBytes = _totalPatchBytes(patches);
+    var completedBytes = 0;
+    var highWaterBytes = 0;
 
     for (var index = 0; index < patches.length; index++) {
       final patch = patches[index];
@@ -601,6 +640,14 @@ class ServerQlv2FirmwareSource implements QLV2FirmwareSource {
       final binary = await Server().fetchPrimePatchBinary(
         serverPatch,
         cancellationToken: cancellationToken,
+        onProgress: (progress) {
+          final downloadedBytes = (completedBytes +
+                  progress.downloaded.toInt().clamp(0, patch.size))
+              .clamp(0, totalBytes);
+          if (downloadedBytes <= highWaterBytes) return;
+          highWaterBytes = downloadedBytes;
+          onProgress(downloadedBytes / totalBytes);
+        },
       );
       _logQlv2Firmware(
         "server_source: downloaded patch ${index + 1}/${patches.length} "
@@ -613,6 +660,11 @@ class ServerQlv2FirmwareSource implements QLV2FirmwareSource {
       final path = "$folderName/${_sanitizePathPart(fileName)}";
       _logQlv2Firmware("server_source: saving patch cachePath=$path");
       await LocalStorage().saveFileBytes(path, binary);
+      completedBytes += patch.size;
+      if (completedBytes > highWaterBytes) {
+        highWaterBytes = completedBytes;
+        onProgress(completedBytes / totalBytes);
+      }
       payloads.add(
         QLV2FirmwarePatchPayload(
           patch: patch,
@@ -648,7 +700,124 @@ class ServerQlv2FirmwareSource implements QLV2FirmwareSource {
   }
 }
 
-QLV2FirmwareSource _selectedFirmwareSource() {
+class LocalQlv2FirmwareSource implements QLV2FirmwareSource {
+  LocalQlv2FirmwareSource(this.manifest);
+
+  final LocalPrimeFirmwareManifest manifest;
+
+  @override
+  Future<List<QLV2FirmwarePatch>> fetchPatches(String currentVersion) async {
+    String comparableVersion(String version) => version
+        .replaceFirst(RegExp(r"^v\.?"), "")
+        .replaceAll(RegExp(r"[^\x20-\x7E]"), "")
+        .trim();
+
+    if (comparableVersion(currentVersion) ==
+        comparableVersion(manifest.targetVersion)) {
+      _logQlv2Firmware(
+        "local_source: selected version already installed "
+        "currentVersion=$currentVersion targetVersion=${manifest.targetVersion}",
+      );
+      return const [];
+    }
+
+    final patches = manifest.patches
+        .map(
+          (patch) => QLV2FirmwarePatch(
+            version: patch.version,
+            baseVersion: patch.baseVersion,
+            updateFilename: patch.updateFilename,
+            changelog: patch.changelog,
+            releaseDate: patch.releaseDate,
+            size: patch.size,
+            localPath: patch.path,
+          ),
+        )
+        .toList(growable: false);
+    _logQlv2Firmware(
+      "local_source: fetchPatches currentVersion=$currentVersion "
+      "manifest=${manifest.manifestPath} returned=${patches.length}",
+    );
+    return patches;
+  }
+
+  @override
+  Future<List<QLV2FirmwarePatchPayload>> prepareDownload(
+    String currentVersion,
+    List<QLV2FirmwarePatch> patches, {
+    required DownloadCancellationToken cancellationToken,
+    required void Function(double progress) onProgress,
+  }) async {
+    if (patches.length != manifest.patches.length) {
+      throw StateError("Local firmware patch list changed");
+    }
+
+    final payloads = <QLV2FirmwarePatchPayload>[];
+    final latest = patches.last;
+    final folderName =
+        "prime-patches/${_sanitizePathPart(currentVersion)}-to-${_sanitizePathPart(latest.version)}";
+    final totalBytes = _totalPatchBytes(patches);
+    var completedBytes = 0;
+    for (var index = 0; index < patches.length; index++) {
+      final patch = patches[index];
+      final localPatch = manifest.patches[index];
+      if (patch.updateFilename != localPatch.updateFilename) {
+        throw StateError("Local firmware patch order changed");
+      }
+
+      final fileName = patch.updateFilename.isNotEmpty
+          ? patch.updateFilename
+          : "patch-${index + 1}.bin";
+      final cachePath = "$folderName/${_sanitizePathPart(fileName)}";
+      final destination = LocalStorage().openFileBytes(cachePath);
+      _logQlv2Firmware(
+        "local_source: copying patch ${index + 1}/${patches.length} "
+        "name=${patch.updateFilename} source=${localPatch.path} "
+        "cachePath=$cachePath",
+      );
+      final bytes = await localPatch.copyTo(
+        destination,
+        onProgress: (patchBytes) {
+          onProgress((completedBytes + patchBytes) / totalBytes);
+        },
+      );
+      completedBytes += bytes.length;
+      _logQlv2Firmware(
+        "local_source: copied patch name=${patch.updateFilename} "
+        "bytes=${bytes.length} cachePath=$cachePath",
+      );
+
+      payloads.add(
+        QLV2FirmwarePatchPayload(
+          patch: patch,
+          bytes: bytes,
+        ),
+      );
+    }
+
+    await EnvoyStorage().addNewFirmware(
+      DeviceType.passportPrime.index,
+      latest.version,
+      folderName,
+      currentVersion: sanitizeVersion(currentVersion),
+    );
+    _logQlv2Firmware(
+      "local_source: recorded firmware version=${latest.version} "
+      "folder=$folderName",
+    );
+    return payloads;
+  }
+}
+
+QLV2FirmwareSource selectedQlv2FirmwareSource() {
+  final manifest = LocalPrimeFirmwareUpdateOverride.instance.manifest;
+  if (manifest != null) {
+    _logQlv2Firmware(
+      "source: selected local manifest=${manifest.manifestPath} "
+      "patches=${manifest.patches.length}",
+    );
+    return LocalQlv2FirmwareSource(manifest);
+  }
   _logQlv2Firmware("source: selected server");
   return ServerQlv2FirmwareSource();
 }
@@ -688,20 +857,39 @@ class QLV2FirmwareInstallStatusHandler
   QLV2FirmwareInstallStatusHandler(this._events);
 
   final QLV2FirmwareEvents _events;
+  bool _isFirstEvent = true;
 
   @override
   Future<void> handleEvent(
     qlv2.FirmwareInstallEvent event,
     QLConnection device,
   ) async {
-    _recordFirmwareInstallEvent(_events, event);
+    final subscriptionInitial = _isFirstEvent;
+    _isFirstEvent = false;
+    _recordFirmwareInstallEvent(
+      _events,
+      event,
+      subscriptionInitial: subscriptionInitial,
+    );
   }
 }
 
 void _recordFirmwareInstallEvent(
   QLV2FirmwareEvents events,
-  qlv2.FirmwareInstallEvent event,
-) {
+  qlv2.FirmwareInstallEvent event, {
+  required bool subscriptionInitial,
+}) {
+  if (events._recordInstallEvent(
+    event,
+    subscriptionInitial: subscriptionInitial,
+  )) {
+    _logQlv2Firmware(
+      "install_status: ignoring replayed subscription value $event "
+      "lastStep=${events.lastUpdateStep}",
+    );
+    return;
+  }
+
   event.map(
     installing: (_) {
       _logQlv2Firmware("install_status: installing");
@@ -716,27 +904,46 @@ void _recordFirmwareInstallEvent(
       events.emitUpdateStep(PrimeFwUpdateStep.finished);
     },
     error: (event) {
+      final updateInProgress = switch (events.lastUpdateStep) {
+        PrimeFwUpdateStep.downloading ||
+        PrimeFwUpdateStep.transferring ||
+        PrimeFwUpdateStep.verifying ||
+        PrimeFwUpdateStep.installing ||
+        PrimeFwUpdateStep.rebooting =>
+          true,
+        _ => false,
+      };
+      if (!updateInProgress) {
+        _logQlv2Firmware(
+          "install_status: ignoring stale error ${event.error} "
+          "lastStep=${events.lastUpdateStep}",
+        );
+        return;
+      }
       _logQlv2Firmware("install_status: error ${event.error}");
       events.emitUpdateStep(PrimeFwUpdateStep.error);
     },
   );
 }
 
-qlv2.FirmwareUpdateAvailable _firmwareUpdateAvailable(
-  List<QLV2FirmwarePatch> patches,
-) {
+qlv2.FirmwareUpdateAvailable buildQlv2FirmwareUpdateAvailable(
+    List<QLV2FirmwarePatch> patches,
+    {required bool localOverride}) {
   final latest = patches.last;
   final totalBytes = patches.fold<int>(0, (sum, patch) => sum + patch.size);
-  final changelog = patches.reversed.fold(
-    "",
-    (acc, patch) => "$acc\n${patch.changelog}",
-  );
+  final changelog = localOverride
+      ? patches.reversed.map((patch) => patch.changelog).join("\n")
+      : patches.reversed.fold(
+          "",
+          (acc, patch) => "$acc\n${patch.changelog}",
+        );
+  final timestamp = latest.releaseDate.millisecondsSinceEpoch ~/
+      Duration.millisecondsPerSecond;
 
   return qlv2.FirmwareUpdateAvailable(
     version: latest.version,
     changelog: changelog,
-    timestamp: latest.releaseDate.millisecondsSinceEpoch ~/
-        Duration.millisecondsPerSecond,
+    timestamp: timestamp,
     totalSize: totalBytes,
     patchCount: patches.length,
   );
@@ -749,6 +956,7 @@ String _sanitizePathPart(String value) {
 void _logQlv2Firmware(String message, {StackTrace? stackTrace}) {
   final prefixed =
       "[QLV2Firmware] platform=${Platform.operatingSystem} $message";
+  kPrint(prefixed, stackTrace: stackTrace);
   try {
     unawaited(
       EnvoyReport()
@@ -765,6 +973,7 @@ void _logQlv2Firmware(String message, {StackTrace? stackTrace}) {
 String _firmwareSourceName(QLV2FirmwareSource source) {
   return switch (source) {
     ServerQlv2FirmwareSource() => "server",
+    LocalQlv2FirmwareSource() => "local",
     _ => source.runtimeType.toString(),
   };
 }
@@ -783,6 +992,10 @@ String _describePatches(List<QLV2FirmwarePatch> patches) {
 
 int _totalPayloadBytes(List<QLV2FirmwarePatchPayload> payloads) {
   return payloads.fold<int>(0, (sum, payload) => sum + payload.bytes.length);
+}
+
+int _totalPatchBytes(List<QLV2FirmwarePatch> patches) {
+  return patches.fold<int>(0, (sum, patch) => sum + patch.size);
 }
 
 String _formatBytes(int bytes) {

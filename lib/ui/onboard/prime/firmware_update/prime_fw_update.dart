@@ -94,6 +94,7 @@ class _OnboardPrimeFwUpdateState extends ConsumerState<OnboardPrimeFwUpdate> {
     //TODO: fix rive with databindings.
     // ignore: deprecated_member_use
     _controller!.stateMachine.boolean('indeterminate')?.value = true;
+    _updateAnimState(ref.read(primeUpdateStateProvider));
 
     setState(() => _isInitialized = true);
 
@@ -241,15 +242,10 @@ class _OnboardPrimeFwUpdateState extends ConsumerState<OnboardPrimeFwUpdate> {
   Widget build(BuildContext context) {
     final primeUpdateState = ref.watch(primeUpdateStateProvider);
 
-    ref.listen(primeUpdateStateProvider, (previous, next) async {
-      _updateAnimState(next);
-      if (next == PrimeFwUpdateStep.finished && _isSettingsUpdate) {
-        await clearOnboardingPrimeSession(
-          ProviderScope.containerOf(context),
-        );
-        if (context.mounted) context.go(ROUTE_ACCOUNTS_HOME);
-      }
-    });
+    ref.listen(
+      primeUpdateStateProvider,
+      (previous, next) => _updateAnimState(next),
+    );
 
     Widget downloadImage = Image.asset(
       "assets/images/fw_download.png",
@@ -650,17 +646,28 @@ class _PrimeFwDownloadProgressState
                     final updateStep = ref.watch(primeUpdateStateProvider);
                     final downloadProgress = ref.watch(fwDownloadProgress);
                     final transferProgress = ref.watch(fwTransferProgress);
+                    final isQlv2 = ref.watch(
+                      onboardingDeviceProvider.select(
+                        (connection) => connection?.v2Handler != null,
+                      ),
+                    );
                     final progress = updateStep == PrimeFwUpdateStep.downloading
                         ? downloadProgress
                         : transferProgress?.progress ?? 0.0;
 
                     return Column(
                       children: [
-                        EnvoyGradientProgress(progress: progress),
+                        EnvoyGradientProgress(
+                          progress: progress,
+                          indeterminate:
+                              updateStep == PrimeFwUpdateStep.transferring &&
+                                  isQlv2,
+                        ),
                         const Padding(
                           padding: EdgeInsets.all(EnvoySpacing.small),
                         ),
-                        if (updateStep == PrimeFwUpdateStep.transferring)
+                        if (updateStep == PrimeFwUpdateStep.transferring &&
+                            !isQlv2)
                           Builder(builder: (context) {
                             final remainingTime =
                                 transferProgress?.remainingTime ?? "";
@@ -704,8 +711,54 @@ class PrimeFwFlashProgress extends ConsumerStatefulWidget {
 }
 
 class _PrimeFwFlashProgressState extends ConsumerState<PrimeFwFlashProgress> {
+  ProviderSubscription<(bool, PrimeFwUpdateStep)>? _settingsRebootSubscription;
+  bool _closingForSettingsReboot = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _settingsRebootSubscription = ref.listenManual(
+      primeOnboardingControllerProvider.select(
+        (state) => (
+          state.isSettingsFirmwareUpdate,
+          state.firmwareUpdateStep,
+        ),
+      ),
+      (_, next) {
+        if (next.$1 && next.$2 == PrimeFwUpdateStep.rebooting) {
+          _closeAfterSettingsReboot();
+        }
+      },
+      fireImmediately: true,
+    );
+  }
+
+  void _closeAfterSettingsReboot() {
+    if (_closingForSettingsReboot) return;
+    _closingForSettingsReboot = true;
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      if (!mounted) return;
+      await clearOnboardingPrimeSession(ProviderScope.containerOf(context));
+      if (!mounted) return;
+      context.go(ROUTE_ACCOUNTS_HOME);
+    });
+  }
+
+  @override
+  void dispose() {
+    _settingsRebootSubscription?.close();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
+    final rebootProgress = ref.watch(primeFwRebootStateProvider);
+    final isSettingsUpdate = ref.watch(
+      primeOnboardingControllerProvider.select(
+        (state) => state.isSettingsFirmwareUpdate,
+      ),
+    );
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
@@ -733,27 +786,19 @@ class _PrimeFwFlashProgressState extends ConsumerState<PrimeFwFlashProgress> {
                 SizedBox(height: EnvoySpacing.medium1),
                 EnvoyStepItem(step: ref.watch(primeFwInstallStateProvider)),
                 SizedBox(height: EnvoySpacing.medium1),
-                EnvoyStepItem(step: ref.watch(primeFwRebootStateProvider)),
+                EnvoyStepItem(step: rebootProgress),
                 SizedBox(height: EnvoySpacing.medium3),
               ],
             ),
             const Padding(padding: EdgeInsets.all(EnvoySpacing.small)),
           ],
         ),
-        Consumer(
-          builder: (context, ref, child) {
-            final progress = ref.watch(primeFwRebootStateProvider);
-            if (progress.state == EnvoyStepState.LOADING) {
-              return Text(
-                S().firmware_updatingPrime_content2,
-                textAlign: TextAlign.center,
-                style: EnvoyTypography.body,
-              );
-            } else {
-              return const SizedBox.shrink();
-            }
-          },
-        ),
+        if (!isSettingsUpdate && rebootProgress.state == EnvoyStepState.LOADING)
+          Text(
+            S().firmware_updatingPrime_content2,
+            textAlign: TextAlign.center,
+            style: EnvoyTypography.body,
+          ),
       ],
     );
   }
