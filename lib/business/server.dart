@@ -40,16 +40,15 @@ class Server {
     bool foreground = false,
   }) async {
     final channel = Settings().selectedBetaChannel;
-    final serverAddress = Settings().primeFirmwareServerAddress;
     final channelParam =
         channel != null ? '&channel=${Uri.encodeQueryComponent(channel)}' : '';
     if (channel != null) {
       kPrint(
-          "Fetching beta prime patches, url: '$serverAddress/prime/patches?version=$currentVersion$channelParam'");
+          "Fetching beta prime patches, url: '$_serverAddress/prime/patches?version=$currentVersion$channelParam'");
     }
     final get = foreground ? http!.getForeground : http!.get;
     final response = await get(
-      '$serverAddress/prime/patches?version=$currentVersion$channelParam',
+      '$_serverAddress/prime/patches?version=$currentVersion$channelParam',
     );
 
     if (response.statusCode == 200) {
@@ -74,7 +73,7 @@ class Server {
 
   Future<List<BetaChannel>> fetchBetaChannels() async {
     final response = await http!.get(
-      '${Settings().primeFirmwareServerAddress}/prime/beta-channels',
+      '$_serverAddress/prime/beta-channels',
     );
 
     if (response.statusCode != 200) {
