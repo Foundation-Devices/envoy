@@ -46,7 +46,12 @@ void main() {
     final source = selectedQlv2FirmwareSource();
     expect(source, isA<LocalQlv2FirmwareSource>());
     expect(await source.fetchPatches("v2.2.0\u0000"), isEmpty);
-    final sourcePatches = await source.fetchPatches("2.2.0b1");
+    expect(await source.fetchPatches("1.9.0"), isEmpty);
+    expect(
+      (await source.fetchPatches("2.1.0")).map((patch) => patch.version),
+      ["2.2.0"],
+    );
+    final sourcePatches = await source.fetchPatches("2.0.0");
     expect(sourcePatches.map((patch) => patch.version), ["2.1.0", "2.2.0"]);
     final update = buildQlv2FirmwareUpdateAvailable(
       sourcePatches,
@@ -182,6 +187,22 @@ void main() {
       override.selectFolder(nestedDirectory.path),
       _throwsManifestError(
         "Patch file must be directly inside the selected folder: subfolder/patch.bin",
+      ),
+    );
+  });
+
+  test("rejects a discontinuous patch chain", () async {
+    final first = await _writePatch(directory, "first.patch", [1, 2, 3]);
+    final second = await _writePatch(directory, "second.patch", [4, 5]);
+    await _writeManifest(directory, [
+      _patchJson("2.1.0", "2.0.0", first),
+      _patchJson("2.3.0", "2.2.0", second),
+    ]);
+
+    await expectLater(
+      override.selectFolder(directory.path),
+      _throwsManifestError(
+        "Patch 2 base_version must match patch 1 version",
       ),
     );
   });

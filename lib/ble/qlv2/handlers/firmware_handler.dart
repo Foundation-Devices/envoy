@@ -707,21 +707,8 @@ class LocalQlv2FirmwareSource implements QLV2FirmwareSource {
 
   @override
   Future<List<QLV2FirmwarePatch>> fetchPatches(String currentVersion) async {
-    String comparableVersion(String version) => version
-        .replaceFirst(RegExp(r"^v\.?"), "")
-        .replaceAll(RegExp(r"[^\x20-\x7E]"), "")
-        .trim();
-
-    if (comparableVersion(currentVersion) ==
-        comparableVersion(manifest.targetVersion)) {
-      _logQlv2Firmware(
-        "local_source: selected version already installed "
-        "currentVersion=$currentVersion targetVersion=${manifest.targetVersion}",
-      );
-      return const [];
-    }
-
-    final patches = manifest.patches
+    final localPatches = _applicablePatches(currentVersion);
+    final patches = localPatches
         .map(
           (patch) => QLV2FirmwarePatch(
             version: patch.version,
@@ -748,7 +735,8 @@ class LocalQlv2FirmwareSource implements QLV2FirmwareSource {
     required DownloadCancellationToken cancellationToken,
     required void Function(double progress) onProgress,
   }) async {
-    if (patches.length != manifest.patches.length) {
+    final localPatches = _applicablePatches(currentVersion);
+    if (patches.length != localPatches.length) {
       throw StateError("Local firmware patch list changed");
     }
 
@@ -760,7 +748,7 @@ class LocalQlv2FirmwareSource implements QLV2FirmwareSource {
     var completedBytes = 0;
     for (var index = 0; index < patches.length; index++) {
       final patch = patches[index];
-      final localPatch = manifest.patches[index];
+      final localPatch = localPatches[index];
       if (patch.updateFilename != localPatch.updateFilename) {
         throw StateError("Local firmware patch order changed");
       }
@@ -806,6 +794,27 @@ class LocalQlv2FirmwareSource implements QLV2FirmwareSource {
       "folder=$folderName",
     );
     return payloads;
+  }
+
+  List<LocalPrimeFirmwarePatch> _applicablePatches(String currentVersion) {
+    String comparableVersion(String version) => version
+        .replaceFirst(RegExp(r"^v\.?"), "")
+        .replaceAll(RegExp(r"[^\x20-\x7E]"), "")
+        .trim();
+
+    final comparableCurrentVersion = comparableVersion(currentVersion);
+    if (comparableCurrentVersion == comparableVersion(manifest.targetVersion)) {
+      return const [];
+    }
+
+    final firstPatch = manifest.patches.indexWhere(
+      (patch) =>
+          comparableVersion(patch.baseVersion) == comparableCurrentVersion,
+    );
+    if (firstPatch == -1) {
+      return const [];
+    }
+    return manifest.patches.sublist(firstPatch);
   }
 }
 

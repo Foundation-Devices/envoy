@@ -138,6 +138,11 @@ class LocalPrimeFirmwareManifest {
           "Duplicate patch filename: ${patch.updateFilename}",
         );
       }
+      if (patches.isNotEmpty && patches.last.version != patch.baseVersion) {
+        throw LocalPrimeFirmwareManifestException(
+          "Patch ${index + 1} base_version must match patch $index version",
+        );
+      }
       patches.add(patch);
       _logLocalPrimeFirmware(
         "validate: patch ${index + 1}/${rawPatches.length} ready "
