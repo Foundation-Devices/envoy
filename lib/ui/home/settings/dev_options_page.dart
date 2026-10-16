@@ -2,15 +2,22 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
+import 'dart:io';
+
 import 'package:envoy/business/envoy_seed.dart';
+import 'package:envoy/business/local_prime_firmware_update.dart';
 import 'package:envoy/business/settings.dart';
 import 'package:envoy/ui/home/settings/qlv2_diagnostics_page.dart';
 import 'package:envoy/ui/widgets/toast/envoy_toast.dart';
 import 'package:envoy/util/bug_report_helper.dart';
 import 'package:envoy/util/console.dart';
 import 'package:envoy/util/envoy_storage.dart';
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter/services.dart';
+
+const _envoyPlatform = MethodChannel('envoy');
 
 class DevOptionsPage extends StatefulWidget {
   const DevOptionsPage({super.key});
@@ -21,6 +28,7 @@ class DevOptionsPage extends StatefulWidget {
 
 class _DevOptionsPageState extends State<DevOptionsPage> {
   bool _wipingWallet = false;
+  bool _selectingLocalFirmware = false;
 
   void _showToast(String message, {bool isError = false}) {
     if (!mounted) {
@@ -73,6 +81,81 @@ class _DevOptionsPageState extends State<DevOptionsPage> {
     }
   }
 
+  Future<void> _selectLocalQlv2FirmwareFolder() async {
+    kPrint("[LocalPrimeFirmware] ui: opening folder picker");
+    setState(() {
+      _selectingLocalFirmware = true;
+    });
+
+    try {
+      final folderPath = await _pickLocalFirmwareFolder();
+      if (folderPath == null) {
+        kPrint("[LocalPrimeFirmware] ui: folder selection cancelled");
+        return;
+      }
+      kPrint("[LocalPrimeFirmware] ui: selected folder=$folderPath");
+
+      final manifest =
+          await LocalPrimeFirmwareUpdateOverride.instance.selectFolder(
+        folderPath,
+      );
+      if (!mounted) {
+        return;
+      }
+      setState(() {});
+      _showToast(
+        "Local QLV2 firmware ${manifest.targetVersion} selected "
+        "(${manifest.patches.length} patch(es))",
+      );
+      kPrint(
+        "[LocalPrimeFirmware] ui: selection succeeded "
+        "manifest=${manifest.manifestPath}",
+      );
+    } on LocalPrimeFirmwareManifestException catch (e, stackTrace) {
+      kPrint(
+        "[LocalPrimeFirmware] ui: selection rejected error=$e",
+        stackTrace: stackTrace,
+      );
+      _showToast(e.message, isError: true);
+    } on PlatformException catch (e, stackTrace) {
+      final message = e.message ?? "Failed to read selected firmware folder";
+      kPrint(
+        "[LocalPrimeFirmware] ui: platform selection failed error=$message",
+        stackTrace: stackTrace,
+      );
+      _showToast(message, isError: true);
+    } catch (e, stackTrace) {
+      kPrint(
+        "[LocalPrimeFirmware] ui: selection failed error=$e",
+        stackTrace: stackTrace,
+      );
+      _showToast("Failed to load local QLV2 firmware: $e", isError: true);
+    } finally {
+      if (mounted) {
+        setState(() {
+          _selectingLocalFirmware = false;
+        });
+      }
+    }
+  }
+
+  Future<String?> _pickLocalFirmwareFolder() {
+    if (Platform.isAndroid) {
+      return _envoyPlatform.invokeMethod<String>(
+        'pick_local_prime_firmware_folder',
+      );
+    }
+    return FilePicker.platform.getDirectoryPath(
+      dialogTitle: "Select firmware folder",
+    );
+  }
+
+  Future<void> _clearLocalQlv2FirmwareFolder() async {
+    LocalPrimeFirmwareUpdateOverride.instance.clear();
+    setState(() {});
+    _showToast("Local QLV2 firmware folder cleared");
+  }
+
   @override
   Widget build(BuildContext context) {
     const surfaceColor = Colors.black;
@@ -80,6 +163,11 @@ class _DevOptionsPageState extends State<DevOptionsPage> {
     const titleColor = Colors.white;
     const subtitleColor = Color(0xFFB9BBC1);
     const dangerColor = Color(0xFFE16060);
+    final localFirmware = LocalPrimeFirmwareUpdateOverride.instance.manifest;
+    final localFirmwareSubtitle = localFirmware == null
+        ? "Use a local manifest and patch files for this session."
+        : "Selected: ${localFirmware.targetVersion}, "
+            "${localFirmware.patches.length} patch(es).";
 
     return Theme(
       data: ThemeData.dark(useMaterial3: true).copyWith(
@@ -155,6 +243,41 @@ class _DevOptionsPageState extends State<DevOptionsPage> {
                   Settings().skipPrimeSecurityCheck = enabled;
                 });
               },
+            ),
+            const SizedBox(height: 8),
+            Card(
+              margin: EdgeInsets.zero,
+              color: surfaceColor,
+              elevation: 0,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(18),
+              ),
+              child: Column(
+                children: [
+                  _DevOptionTile(
+                    title: "Select local QLV2 firmware folder",
+                    subtitle: localFirmwareSubtitle,
+                    titleColor: titleColor,
+                    subtitleColor: subtitleColor,
+                    iconColor: subtitleColor,
+                    isLoading: _selectingLocalFirmware,
+                    onTap: _selectingLocalFirmware
+                        ? null
+                        : _selectLocalQlv2FirmwareFolder,
+                  ),
+                  if (localFirmware != null) ...[
+                    const Divider(height: 1, color: dividerColor),
+                    _DevOptionTile(
+                      title: "Clear local QLV2 firmware folder",
+                      subtitle: "Return QLV2 firmware updates to the server.",
+                      titleColor: titleColor,
+                      subtitleColor: subtitleColor,
+                      iconColor: subtitleColor,
+                      onTap: _clearLocalQlv2FirmwareFolder,
+                    ),
+                  ],
+                ],
+              ),
             ),
             const SizedBox(height: 8),
             Card(

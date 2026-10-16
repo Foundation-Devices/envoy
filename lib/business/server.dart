@@ -72,7 +72,9 @@ class Server {
   }
 
   Future<List<BetaChannel>> fetchBetaChannels() async {
-    final response = await http!.get('$_serverAddress/prime/beta-channels');
+    final response = await http!.get(
+      '$_serverAddress/prime/beta-channels',
+    );
 
     if (response.statusCode != 200) {
       throw Exception(
