@@ -992,6 +992,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   SignPsbtResponse dco_decode_sign_psbt_response(dynamic raw);
 
   @protected
+  SubscriptionError dco_decode_subscription_error(dynamic raw);
+
+  @protected
   TimezoneResponse dco_decode_timezone_response(dynamic raw);
 
   @protected
@@ -1944,6 +1947,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   SignPsbtResponse sse_decode_sign_psbt_response(SseDeserializer deserializer);
+
+  @protected
+  SubscriptionError sse_decode_subscription_error(SseDeserializer deserializer);
 
   @protected
   TimezoneResponse sse_decode_timezone_response(SseDeserializer deserializer);
@@ -2905,6 +2911,10 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   @protected
   void sse_encode_sign_psbt_response(
       SignPsbtResponse self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_subscription_error(
+      SubscriptionError self, SseSerializer serializer);
 
   @protected
   void sse_encode_timezone_response(

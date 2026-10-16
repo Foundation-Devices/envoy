@@ -540,6 +540,7 @@ class QLV2ProtocolHandler {
     if (device == null) return;
     _cancelGlobalSubscriptionsRetryTimer();
     kPrint('[$deviceId] QL v2 registering global subscriptions');
+    var retryFiatPreferenceOnDone = true;
     _sessionController.registerSubscriptions(QLV2RouteScopes.global, [
       _listenSessionEvent(
         _session.subscribeAccountUpdated(),
@@ -585,14 +586,20 @@ class QLV2ProtocolHandler {
           ),
         ),
         onError: (Object error, StackTrace stack) {
-          _reportError(
-            'QL v2 fiat preference stream failed',
+          retryFiatPreferenceOnDone = _shouldRetrySubscription(
+            'fiat preference',
             error,
             stack,
           );
-          _scheduleGlobalSubscriptionsRetry();
+          if (retryFiatPreferenceOnDone) {
+            _scheduleGlobalSubscriptionsRetry();
+          }
         },
-        onDone: _scheduleGlobalSubscriptionsRetry,
+        onDone: () {
+          if (retryFiatPreferenceOnDone) {
+            _scheduleGlobalSubscriptionsRetry();
+          }
+        },
       ),
     ]);
   }
@@ -604,6 +611,7 @@ class QLV2ProtocolHandler {
     QLConnection device,
   ) {
     kPrint('[$deviceId] QL v2 subscribing to $label');
+    var retryOnDone = true;
     return stream.listen(
       (event) {
         kPrint('[$deviceId] QL v2 $label event received');
@@ -615,14 +623,31 @@ class QLV2ProtocolHandler {
         );
       },
       onError: (Object error, StackTrace stack) {
-        _reportError('QL v2 $label stream failed', error, stack);
-        _scheduleGlobalSubscriptionsRetry();
+        retryOnDone = _shouldRetrySubscription(label, error, stack);
+        if (retryOnDone) {
+          _scheduleGlobalSubscriptionsRetry();
+        }
       },
       onDone: () {
         kPrint('[$deviceId] QL v2 $label stream ended');
-        _scheduleGlobalSubscriptionsRetry();
+        if (retryOnDone) {
+          _scheduleGlobalSubscriptionsRetry();
+        }
       },
     );
+  }
+
+  bool _shouldRetrySubscription(
+    String label,
+    Object error,
+    StackTrace stack,
+  ) {
+    if (error is qlv2.SubscriptionError_Unsupported) {
+      kPrint('[$deviceId] QL v2 $label subscription is not supported');
+      return false;
+    }
+    _reportError('QL v2 $label stream failed', error, stack);
+    return true;
   }
 
   Future<void> _handleSessionEvent(

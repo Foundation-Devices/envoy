@@ -144,7 +144,7 @@ macro_rules! rpc_subscription {
                     &self,
                     request: $params,
                     sink: $crate::frb_generated::StreamSink<$event>,
-                ) -> anyhow::Result<()> {
+                ) -> Result<(), $crate::api::rpc::SubscriptionError> {
                     log::info!("opening {} subscription", stringify!($route));
                     let mut subscription = match self
                         .handle
@@ -158,7 +158,7 @@ macro_rules! rpc_subscription {
                                 "{} subscription unavailable: {error}",
                                 stringify!($route)
                             );
-                            return Ok(());
+                            return Err(error.into());
                         }
                     };
                     log::info!("{} subscription opened", stringify!($route));
@@ -182,6 +182,9 @@ macro_rules! rpc_subscription {
                                     log::warn!(
                                         "{} subscription ended with error: {error}",
                                         stringify!($route)
+                                    );
+                                    let _ = sink.add_error(
+                                        $crate::api::rpc::SubscriptionError::from(error)
                                     );
                                     return;
                                 }

@@ -5,6 +5,9 @@
 use std::sync::Arc;
 
 use flutter_rust_bridge::frb;
+use ql_common::ResetCode;
+use ql_rpc::RpcError;
+use ql_runtime::QlStreamError;
 
 use crate::frb_generated::StreamSink;
 
@@ -28,6 +31,36 @@ pub use fx::*;
 pub use ql_api::*;
 pub use security_check::*;
 pub use timezone::*;
+
+#[derive(Debug, PartialEq, Eq)]
+pub enum SubscriptionError {
+    Unsupported,
+    Failed(String),
+}
+
+impl std::fmt::Display for SubscriptionError {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        match self {
+            Self::Unsupported => f.write_str("subscription is not supported"),
+            Self::Failed(message) => f.write_str(message),
+        }
+    }
+}
+
+impl std::error::Error for SubscriptionError {}
+
+impl From<RpcError<ql_api::Error, QlStreamError>> for SubscriptionError {
+    fn from(error: RpcError<ql_api::Error, QlStreamError>) -> Self {
+        match error {
+            RpcError::Transport(QlStreamError::StreamReset { code, .. })
+                if code == ResetCode::UNKNOWN_ROUTE =>
+            {
+                Self::Unsupported
+            }
+            error => Self::Failed(error.to_string()),
+        }
+    }
+}
 
 #[frb(non_opaque)]
 pub enum InboundRpc {
@@ -68,4 +101,32 @@ pub enum InboundRpc {
 #[derive(Clone)]
 pub struct RouterState {
     pub inner: Arc<StreamSink<InboundRpc>>,
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn unknown_subscription_route_is_reported_as_unsupported() {
+        let error = RpcError::Transport(QlStreamError::StreamReset {
+            code: ResetCode::UNKNOWN_ROUTE,
+            origin: ql_runtime::ResetOrigin::Peer,
+        });
+
+        assert_eq!(
+            SubscriptionError::from(error),
+            SubscriptionError::Unsupported
+        );
+    }
+
+    #[test]
+    fn other_subscription_failures_remain_retryable() {
+        let error = RpcError::Transport(QlStreamError::NoSession);
+
+        assert_eq!(
+            SubscriptionError::from(error),
+            SubscriptionError::Failed("no session".to_owned())
+        );
+    }
 }

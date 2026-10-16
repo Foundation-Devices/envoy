@@ -1653,4 +1653,284 @@ class _$InboundRpc_DownloadBenchmarkCopyWithImpl<$Res>
   }
 }
 
+/// @nodoc
+mixin _$SubscriptionError {
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType && other is SubscriptionError);
+  }
+
+  @override
+  int get hashCode => runtimeType.hashCode;
+
+  @override
+  String toString() {
+    return 'SubscriptionError()';
+  }
+}
+
+/// @nodoc
+class $SubscriptionErrorCopyWith<$Res> {
+  $SubscriptionErrorCopyWith(
+      SubscriptionError _, $Res Function(SubscriptionError) __);
+}
+
+/// Adds pattern-matching-related methods to [SubscriptionError].
+extension SubscriptionErrorPatterns on SubscriptionError {
+  /// A variant of `map` that fallback to returning `orElse`.
+  ///
+  /// It is equivalent to doing:
+  /// ```dart
+  /// switch (sealedClass) {
+  ///   case final Subclass value:
+  ///     return ...;
+  ///   case _:
+  ///     return orElse();
+  /// }
+  /// ```
+
+  @optionalTypeArgs
+  TResult maybeMap<TResult extends Object?>({
+    TResult Function(SubscriptionError_Unsupported value)? unsupported,
+    TResult Function(SubscriptionError_Failed value)? failed,
+    required TResult orElse(),
+  }) {
+    final _that = this;
+    switch (_that) {
+      case SubscriptionError_Unsupported() when unsupported != null:
+        return unsupported(_that);
+      case SubscriptionError_Failed() when failed != null:
+        return failed(_that);
+      case _:
+        return orElse();
+    }
+  }
+
+  /// A `switch`-like method, using callbacks.
+  ///
+  /// Callbacks receives the raw object, upcasted.
+  /// It is equivalent to doing:
+  /// ```dart
+  /// switch (sealedClass) {
+  ///   case final Subclass value:
+  ///     return ...;
+  ///   case final Subclass2 value:
+  ///     return ...;
+  /// }
+  /// ```
+
+  @optionalTypeArgs
+  TResult map<TResult extends Object?>({
+    required TResult Function(SubscriptionError_Unsupported value) unsupported,
+    required TResult Function(SubscriptionError_Failed value) failed,
+  }) {
+    final _that = this;
+    switch (_that) {
+      case SubscriptionError_Unsupported():
+        return unsupported(_that);
+      case SubscriptionError_Failed():
+        return failed(_that);
+    }
+  }
+
+  /// A variant of `map` that fallback to returning `null`.
+  ///
+  /// It is equivalent to doing:
+  /// ```dart
+  /// switch (sealedClass) {
+  ///   case final Subclass value:
+  ///     return ...;
+  ///   case _:
+  ///     return null;
+  /// }
+  /// ```
+
+  @optionalTypeArgs
+  TResult? mapOrNull<TResult extends Object?>({
+    TResult? Function(SubscriptionError_Unsupported value)? unsupported,
+    TResult? Function(SubscriptionError_Failed value)? failed,
+  }) {
+    final _that = this;
+    switch (_that) {
+      case SubscriptionError_Unsupported() when unsupported != null:
+        return unsupported(_that);
+      case SubscriptionError_Failed() when failed != null:
+        return failed(_that);
+      case _:
+        return null;
+    }
+  }
+
+  /// A variant of `when` that fallback to an `orElse` callback.
+  ///
+  /// It is equivalent to doing:
+  /// ```dart
+  /// switch (sealedClass) {
+  ///   case Subclass(:final field):
+  ///     return ...;
+  ///   case _:
+  ///     return orElse();
+  /// }
+  /// ```
+
+  @optionalTypeArgs
+  TResult maybeWhen<TResult extends Object?>({
+    TResult Function()? unsupported,
+    TResult Function(String field0)? failed,
+    required TResult orElse(),
+  }) {
+    final _that = this;
+    switch (_that) {
+      case SubscriptionError_Unsupported() when unsupported != null:
+        return unsupported();
+      case SubscriptionError_Failed() when failed != null:
+        return failed(_that.field0);
+      case _:
+        return orElse();
+    }
+  }
+
+  /// A `switch`-like method, using callbacks.
+  ///
+  /// As opposed to `map`, this offers destructuring.
+  /// It is equivalent to doing:
+  /// ```dart
+  /// switch (sealedClass) {
+  ///   case Subclass(:final field):
+  ///     return ...;
+  ///   case Subclass2(:final field2):
+  ///     return ...;
+  /// }
+  /// ```
+
+  @optionalTypeArgs
+  TResult when<TResult extends Object?>({
+    required TResult Function() unsupported,
+    required TResult Function(String field0) failed,
+  }) {
+    final _that = this;
+    switch (_that) {
+      case SubscriptionError_Unsupported():
+        return unsupported();
+      case SubscriptionError_Failed():
+        return failed(_that.field0);
+    }
+  }
+
+  /// A variant of `when` that fallback to returning `null`
+  ///
+  /// It is equivalent to doing:
+  /// ```dart
+  /// switch (sealedClass) {
+  ///   case Subclass(:final field):
+  ///     return ...;
+  ///   case _:
+  ///     return null;
+  /// }
+  /// ```
+
+  @optionalTypeArgs
+  TResult? whenOrNull<TResult extends Object?>({
+    TResult? Function()? unsupported,
+    TResult? Function(String field0)? failed,
+  }) {
+    final _that = this;
+    switch (_that) {
+      case SubscriptionError_Unsupported() when unsupported != null:
+        return unsupported();
+      case SubscriptionError_Failed() when failed != null:
+        return failed(_that.field0);
+      case _:
+        return null;
+    }
+  }
+}
+
+/// @nodoc
+
+class SubscriptionError_Unsupported extends SubscriptionError {
+  const SubscriptionError_Unsupported() : super._();
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is SubscriptionError_Unsupported);
+  }
+
+  @override
+  int get hashCode => runtimeType.hashCode;
+
+  @override
+  String toString() {
+    return 'SubscriptionError.unsupported()';
+  }
+}
+
+/// @nodoc
+
+class SubscriptionError_Failed extends SubscriptionError {
+  const SubscriptionError_Failed(this.field0) : super._();
+
+  final String field0;
+
+  /// Create a copy of SubscriptionError
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @pragma('vm:prefer-inline')
+  $SubscriptionError_FailedCopyWith<SubscriptionError_Failed> get copyWith =>
+      _$SubscriptionError_FailedCopyWithImpl<SubscriptionError_Failed>(
+          this, _$identity);
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is SubscriptionError_Failed &&
+            (identical(other.field0, field0) || other.field0 == field0));
+  }
+
+  @override
+  int get hashCode => Object.hash(runtimeType, field0);
+
+  @override
+  String toString() {
+    return 'SubscriptionError.failed(field0: $field0)';
+  }
+}
+
+/// @nodoc
+abstract mixin class $SubscriptionError_FailedCopyWith<$Res>
+    implements $SubscriptionErrorCopyWith<$Res> {
+  factory $SubscriptionError_FailedCopyWith(SubscriptionError_Failed value,
+          $Res Function(SubscriptionError_Failed) _then) =
+      _$SubscriptionError_FailedCopyWithImpl;
+  @useResult
+  $Res call({String field0});
+}
+
+/// @nodoc
+class _$SubscriptionError_FailedCopyWithImpl<$Res>
+    implements $SubscriptionError_FailedCopyWith<$Res> {
+  _$SubscriptionError_FailedCopyWithImpl(this._self, this._then);
+
+  final SubscriptionError_Failed _self;
+  final $Res Function(SubscriptionError_Failed) _then;
+
+  /// Create a copy of SubscriptionError
+  /// with the given fields replaced by the non-null parameter values.
+  @pragma('vm:prefer-inline')
+  $Res call({
+    Object? field0 = null,
+  }) {
+    return _then(SubscriptionError_Failed(
+      null == field0
+          ? _self.field0
+          : field0 // ignore: cast_nullable_to_non_nullable
+              as String,
+    ));
+  }
+}
+
 // dart format on

@@ -17,7 +17,7 @@ import 'rpc/security_check.dart';
 import 'rpc/timezone.dart';
 part 'rpc.freezed.dart';
 
-// These function are ignored because they are on traits that is not defined in current crate (put an empty `#[frb]` on it to unignore): `clone`
+// These function are ignored because they are on traits that is not defined in current crate (put an empty `#[frb]` on it to unignore): `assert_receiver_is_total_eq`, `clone`, `eq`, `fmt`, `fmt`, `from`
 
 // Rust type: RustOpaqueMoi<flutter_rust_bridge::for_generated::RustAutoOpaqueInner<RouterState>>
 abstract class RouterState implements RustOpaqueInterface {
@@ -81,4 +81,16 @@ sealed class InboundRpc with _$InboundRpc {
   const factory InboundRpc.downloadBenchmark(
     InboundDownloadBenchmark field0,
   ) = InboundRpc_DownloadBenchmark;
+}
+
+@freezed
+sealed class SubscriptionError
+    with _$SubscriptionError
+    implements FrbException {
+  const SubscriptionError._();
+
+  const factory SubscriptionError.unsupported() = SubscriptionError_Unsupported;
+  const factory SubscriptionError.failed(
+    String field0,
+  ) = SubscriptionError_Failed;
 }
