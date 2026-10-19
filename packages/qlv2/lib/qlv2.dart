@@ -33,6 +33,12 @@ export 'src/rust/third_party/ql_api/system.dart';
 export 'src/rust/third_party/ql_api/time.dart';
 export 'src/rust/frb_generated.dart';
 
+const _unsupportedSubscriptionStreamError = 'qlv2.unsupported_subscription';
+
+bool isUnsupportedSubscriptionError(Object error) =>
+    error is AnyhowException &&
+    error.message == _unsupportedSubscriptionStreamError;
+
 class Qlv2 {
   const Qlv2._();
 

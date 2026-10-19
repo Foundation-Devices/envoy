@@ -7,6 +7,9 @@ import 'dart:typed_data';
 
 import 'package:envoy/ble/qlv2/protocol_handler.dart';
 import 'package:envoy/channels/ble_status.dart';
+import 'package:envoy/channels/ql_connection.dart';
+import 'package:flutter_rust_bridge/flutter_rust_bridge.dart'
+    show AnyhowException;
 import 'package:flutter_test/flutter_test.dart';
 import 'package:qlv2/qlv2.dart' as qlv2;
 
@@ -200,6 +203,38 @@ void main() {
     handler.dispose();
   });
 
+  test('does not retry an unsupported global subscription after it closes',
+      () async {
+    final transport = _FakeTransport();
+    final session = _FakeSessionDriver();
+    final handler = QLV2ProtocolHandler.createForTransportTest(
+      transport: transport,
+      sessionDriver: session,
+      device: _FakeQLConnection(),
+    );
+    final active = handler.activeStream.firstWhere((value) => value);
+
+    session.peerStatus.add(
+      const qlv2.PeerStatusEvent(
+        status: qlv2.ConnectionStatus.connected,
+      ),
+    );
+    await active;
+    await Future<void>.delayed(Duration.zero);
+    expect(session.accountUpdateSubscriptions, 1);
+    expect(session.accountUpdates.hasListener, isTrue);
+
+    session.accountUpdates.addError(
+      AnyhowException('qlv2.unsupported_subscription'),
+    );
+    await session.accountUpdates.close();
+    await Future<void>.delayed(const Duration(milliseconds: 30));
+
+    expect(session.accountUpdateSubscriptions, 1);
+    handler.dispose();
+    await session.close();
+  });
+
   test('retries a stalled QL handshake without reconnecting BLE', () async {
     final transport = _FakeTransport();
     final session = _FakeSessionDriver();
@@ -387,9 +422,28 @@ class _FakeTransport implements QLBleTransport {
   }
 }
 
+class _FakeQLConnection implements QLConnection {
+  @override
+  dynamic noSuchMethod(Invocation invocation) => super.noSuchMethod(invocation);
+}
+
 class _FakeSessionDriver implements QLV2SessionDriver {
   final peerStatus = StreamController<qlv2.PeerStatusEvent>.broadcast();
   final outgoing = StreamController<QLV2WriteRequest>.broadcast();
+  final accountUpdates = StreamController<qlv2.AccountUpdatedEvent>.broadcast();
+  final activeSeedFingerprints =
+      StreamController<qlv2.ActiveSeedFingerprint>.broadcast();
+  final firmwareInstallEvents =
+      StreamController<qlv2.FirmwareInstallEvent>.broadcast();
+  final magicBackupRestoreResults =
+      StreamController<qlv2.MagicBackupRestoreResult>.broadcast();
+  final onboardingStates = StreamController<qlv2.OnboardingState>.broadcast();
+  final passportDetails =
+      StreamController<qlv2.PassportDetailsResponse>.broadcast();
+  final fiatPreferences =
+      StreamController<qlv2.PassportFiatPreferenceEvent>.broadcast();
+  final magicBackupEnabled =
+      StreamController<qlv2.PassportMagicBackupEnabled>.broadcast();
   final incoming = <int>[];
   var concurrentIncoming = 0;
   var maxConcurrentIncoming = 0;
@@ -399,6 +453,7 @@ class _FakeSessionDriver implements QLV2SessionDriver {
   var connectCount = 0;
   var routerProvisionCount = 0;
   var onboardingSubscriptions = 0;
+  var accountUpdateSubscriptions = 0;
   var routerEnabled = false;
   var disposed = false;
   Object? benchmarkError;
@@ -501,38 +556,41 @@ class _FakeSessionDriver implements QLV2SessionDriver {
       throw UnimplementedError();
 
   @override
-  Stream<qlv2.AccountUpdatedEvent> subscribeAccountUpdated() =>
-      const Stream.empty();
+  Stream<qlv2.AccountUpdatedEvent> subscribeAccountUpdated() {
+    accountUpdateSubscriptions++;
+    return accountUpdates.stream;
+  }
 
   @override
   Stream<qlv2.ActiveSeedFingerprint> subscribePassportActiveSeedFingerprint() =>
-      const Stream.empty();
+      activeSeedFingerprints.stream;
 
   @override
   Stream<qlv2.FirmwareInstallEvent> subscribeFirmwareInstallStatus() =>
-      const Stream.empty();
+      firmwareInstallEvents.stream;
 
   @override
   Stream<qlv2.MagicBackupRestoreResult>
-      subscribeMagicBackupRestoreCompleted() => const Stream.empty();
+      subscribeMagicBackupRestoreCompleted() =>
+          magicBackupRestoreResults.stream;
 
   @override
   Stream<qlv2.OnboardingState> subscribeOnboardingStatus() {
     onboardingSubscriptions++;
-    return const Stream.empty();
+    return onboardingStates.stream;
   }
 
   @override
   Stream<qlv2.PassportDetailsResponse> subscribePassportDetails() =>
-      const Stream.empty();
+      passportDetails.stream;
 
   @override
   Stream<qlv2.PassportFiatPreferenceEvent> subscribePassportFiatPreference() =>
-      const Stream.empty();
+      fiatPreferences.stream;
 
   @override
   Stream<qlv2.PassportMagicBackupEnabled>
-      subscribePassportMagicBackupEnabled() => const Stream.empty();
+      subscribePassportMagicBackupEnabled() => magicBackupEnabled.stream;
 
   @override
   void dispose() {
@@ -540,7 +598,18 @@ class _FakeSessionDriver implements QLV2SessionDriver {
   }
 
   Future<void> close() async {
-    await peerStatus.close();
-    await outgoing.close();
+    await Future.wait<void>([
+      if (!peerStatus.isClosed) peerStatus.close(),
+      if (!outgoing.isClosed) outgoing.close(),
+      if (!accountUpdates.isClosed) accountUpdates.close(),
+      if (!activeSeedFingerprints.isClosed) activeSeedFingerprints.close(),
+      if (!firmwareInstallEvents.isClosed) firmwareInstallEvents.close(),
+      if (!magicBackupRestoreResults.isClosed)
+        magicBackupRestoreResults.close(),
+      if (!onboardingStates.isClosed) onboardingStates.close(),
+      if (!passportDetails.isClosed) passportDetails.close(),
+      if (!fiatPreferences.isClosed) fiatPreferences.close(),
+      if (!magicBackupEnabled.isClosed) magicBackupEnabled.close(),
+    ]);
   }
 }

@@ -3360,7 +3360,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       },
       codec: SseCodec(
         decodeSuccessData: sse_decode_unit,
-        decodeErrorData: sse_decode_AnyhowException,
+        decodeErrorData: sse_decode_subscription_error,
       ),
       constMeta: kCrateApiQlLinkQlSessionSubscribeAccountUpdatedConstMeta,
       argValues: [that, request, sink],
@@ -3392,7 +3392,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       },
       codec: SseCodec(
         decodeSuccessData: sse_decode_unit,
-        decodeErrorData: sse_decode_AnyhowException,
+        decodeErrorData: sse_decode_subscription_error,
       ),
       constMeta:
           kCrateApiQlLinkQlSessionSubscribeFirmwareInstallStatusConstMeta,
@@ -3426,7 +3426,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       },
       codec: SseCodec(
         decodeSuccessData: sse_decode_unit,
-        decodeErrorData: sse_decode_AnyhowException,
+        decodeErrorData: sse_decode_subscription_error,
       ),
       constMeta:
           kCrateApiQlLinkQlSessionSubscribeMagicBackupRestoreCompletedConstMeta,
@@ -3459,7 +3459,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       },
       codec: SseCodec(
         decodeSuccessData: sse_decode_unit,
-        decodeErrorData: sse_decode_AnyhowException,
+        decodeErrorData: sse_decode_subscription_error,
       ),
       constMeta: kCrateApiQlLinkQlSessionSubscribeOnboardingStatusConstMeta,
       argValues: [that, request, sink],
@@ -3492,7 +3492,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       },
       codec: SseCodec(
         decodeSuccessData: sse_decode_unit,
-        decodeErrorData: sse_decode_AnyhowException,
+        decodeErrorData: sse_decode_subscription_error,
       ),
       constMeta:
           kCrateApiQlLinkQlSessionSubscribePassportActiveSeedFingerprintConstMeta,
@@ -3526,7 +3526,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       },
       codec: SseCodec(
         decodeSuccessData: sse_decode_unit,
-        decodeErrorData: sse_decode_AnyhowException,
+        decodeErrorData: sse_decode_subscription_error,
       ),
       constMeta: kCrateApiQlLinkQlSessionSubscribePassportDetailsConstMeta,
       argValues: [that, request, sink],
@@ -3559,7 +3559,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       },
       codec: SseCodec(
         decodeSuccessData: sse_decode_unit,
-        decodeErrorData: sse_decode_AnyhowException,
+        decodeErrorData: sse_decode_subscription_error,
       ),
       constMeta:
           kCrateApiQlLinkQlSessionSubscribePassportFiatPreferenceConstMeta,
@@ -3594,7 +3594,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       },
       codec: SseCodec(
         decodeSuccessData: sse_decode_unit,
-        decodeErrorData: sse_decode_AnyhowException,
+        decodeErrorData: sse_decode_subscription_error,
       ),
       constMeta:
           kCrateApiQlLinkQlSessionSubscribePassportMagicBackupEnabledConstMeta,
@@ -6115,6 +6115,21 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  SubscriptionError dco_decode_subscription_error(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    switch (raw[0]) {
+      case 0:
+        return SubscriptionError_Unsupported();
+      case 1:
+        return SubscriptionError_Failed(
+          dco_decode_String(raw[1]),
+        );
+      default:
+        throw Exception("unreachable");
+    }
+  }
+
+  @protected
   TimezoneResponse dco_decode_timezone_response(dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
     final arr = raw as List<dynamic>;
@@ -8272,6 +8287,23 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       case 2:
         var var_error = sse_decode_String(deserializer);
         return SignPsbtResponse_Error(error: var_error);
+      default:
+        throw UnimplementedError('');
+    }
+  }
+
+  @protected
+  SubscriptionError sse_decode_subscription_error(
+      SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+
+    var tag_ = sse_decode_i_32(deserializer);
+    switch (tag_) {
+      case 0:
+        return SubscriptionError_Unsupported();
+      case 1:
+        var var_field0 = sse_decode_String(deserializer);
+        return SubscriptionError_Failed(var_field0);
       default:
         throw UnimplementedError('');
     }
@@ -10477,6 +10509,19 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       case SignPsbtResponse_Error(error: final error):
         sse_encode_i_32(2, serializer);
         sse_encode_String(error, serializer);
+    }
+  }
+
+  @protected
+  void sse_encode_subscription_error(
+      SubscriptionError self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    switch (self) {
+      case SubscriptionError_Unsupported():
+        sse_encode_i_32(0, serializer);
+      case SubscriptionError_Failed(field0: final field0):
+        sse_encode_i_32(1, serializer);
+        sse_encode_String(field0, serializer);
     }
   }
 

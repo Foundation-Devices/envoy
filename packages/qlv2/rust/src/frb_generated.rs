@@ -4756,7 +4756,7 @@ fn wire__crate__api__ql_link__QlSession_subscribe_account_updated_impl(
             >>::sse_decode(&mut deserializer);
             deserializer.end();
             move |context| async move {
-                transform_result_sse::<_, flutter_rust_bridge::for_generated::anyhow::Error>(
+                transform_result_sse::<_, crate::api::rpc::SubscriptionError>(
                     (move || async move {
                         let mut api_that_guard = None;
                         let decode_indices_ =
@@ -4821,7 +4821,7 @@ fn wire__crate__api__ql_link__QlSession_subscribe_firmware_install_status_impl(
             >>::sse_decode(&mut deserializer);
             deserializer.end();
             move |context| async move {
-                transform_result_sse::<_, flutter_rust_bridge::for_generated::anyhow::Error>(
+                transform_result_sse::<_, crate::api::rpc::SubscriptionError>(
                     (move || async move {
                         let mut api_that_guard = None;
                         let decode_indices_ =
@@ -4867,7 +4867,7 @@ fn wire__crate__api__ql_link__QlSession_subscribe_magic_backup_restore_completed
             let api_that = <RustOpaqueMoi<flutter_rust_bridge::for_generated::RustAutoOpaqueInner<QLSession>>>::sse_decode(&mut deserializer);
 let api_request = <ql_api::codec::Empty>::sse_decode(&mut deserializer);
 let api_sink = <StreamSink<ql_api::backup::MagicBackupRestoreResult,flutter_rust_bridge::for_generated::SseCodec>>::sse_decode(&mut deserializer);deserializer.end(); move |context| async move {
-                    transform_result_sse::<_, flutter_rust_bridge::for_generated::anyhow::Error>((move || async move {
+                    transform_result_sse::<_, crate::api::rpc::SubscriptionError>((move || async move {
                         let mut api_that_guard = None;
 let decode_indices_ = flutter_rust_bridge::for_generated::lockable_compute_decode_order(vec![flutter_rust_bridge::for_generated::LockableOrderInfo::new(&api_that, 0, false)]);
         for i in decode_indices_ {
@@ -4913,7 +4913,7 @@ fn wire__crate__api__ql_link__QlSession_subscribe_onboarding_status_impl(
             >>::sse_decode(&mut deserializer);
             deserializer.end();
             move |context| async move {
-                transform_result_sse::<_, flutter_rust_bridge::for_generated::anyhow::Error>(
+                transform_result_sse::<_, crate::api::rpc::SubscriptionError>(
                     (move || async move {
                         let mut api_that_guard = None;
                         let decode_indices_ =
@@ -4959,7 +4959,7 @@ fn wire__crate__api__ql_link__QlSession_subscribe_passport_active_seed_fingerpri
             let api_that = <RustOpaqueMoi<flutter_rust_bridge::for_generated::RustAutoOpaqueInner<QLSession>>>::sse_decode(&mut deserializer);
 let api_request = <ql_api::codec::Empty>::sse_decode(&mut deserializer);
 let api_sink = <StreamSink<ql_api::bitcoin::ActiveSeedFingerprint,flutter_rust_bridge::for_generated::SseCodec>>::sse_decode(&mut deserializer);deserializer.end(); move |context| async move {
-                    transform_result_sse::<_, flutter_rust_bridge::for_generated::anyhow::Error>((move || async move {
+                    transform_result_sse::<_, crate::api::rpc::SubscriptionError>((move || async move {
                         let mut api_that_guard = None;
 let decode_indices_ = flutter_rust_bridge::for_generated::lockable_compute_decode_order(vec![flutter_rust_bridge::for_generated::LockableOrderInfo::new(&api_that, 0, false)]);
         for i in decode_indices_ {
@@ -5005,7 +5005,7 @@ fn wire__crate__api__ql_link__QlSession_subscribe_passport_details_impl(
             >>::sse_decode(&mut deserializer);
             deserializer.end();
             move |context| async move {
-                transform_result_sse::<_, flutter_rust_bridge::for_generated::anyhow::Error>(
+                transform_result_sse::<_, crate::api::rpc::SubscriptionError>(
                     (move || async move {
                         let mut api_that_guard = None;
                         let decode_indices_ =
@@ -5070,7 +5070,7 @@ fn wire__crate__api__ql_link__QlSession_subscribe_passport_fiat_preference_impl(
             >>::sse_decode(&mut deserializer);
             deserializer.end();
             move |context| async move {
-                transform_result_sse::<_, flutter_rust_bridge::for_generated::anyhow::Error>(
+                transform_result_sse::<_, crate::api::rpc::SubscriptionError>(
                     (move || async move {
                         let mut api_that_guard = None;
                         let decode_indices_ =
@@ -5116,7 +5116,7 @@ fn wire__crate__api__ql_link__QlSession_subscribe_passport_magic_backup_enabled_
             let api_that = <RustOpaqueMoi<flutter_rust_bridge::for_generated::RustAutoOpaqueInner<QLSession>>>::sse_decode(&mut deserializer);
 let api_request = <ql_api::codec::Empty>::sse_decode(&mut deserializer);
 let api_sink = <StreamSink<ql_api::backup::PassportMagicBackupEnabled,flutter_rust_bridge::for_generated::SseCodec>>::sse_decode(&mut deserializer);deserializer.end(); move |context| async move {
-                    transform_result_sse::<_, flutter_rust_bridge::for_generated::anyhow::Error>((move || async move {
+                    transform_result_sse::<_, crate::api::rpc::SubscriptionError>((move || async move {
                         let mut api_that_guard = None;
 let decode_indices_ = flutter_rust_bridge::for_generated::lockable_compute_decode_order(vec![flutter_rust_bridge::for_generated::LockableOrderInfo::new(&api_that, 0, false)]);
         for i in decode_indices_ {
@@ -7714,6 +7714,25 @@ impl SseDecode for ql_api::bitcoin::SignPsbtResponse {
     }
 }
 
+impl SseDecode for crate::api::rpc::SubscriptionError {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        let mut tag_ = <i32>::sse_decode(deserializer);
+        match tag_ {
+            0 => {
+                return crate::api::rpc::SubscriptionError::Unsupported;
+            }
+            1 => {
+                let mut var_field0 = <String>::sse_decode(deserializer);
+                return crate::api::rpc::SubscriptionError::Failed(var_field0);
+            }
+            _ => {
+                unimplemented!("");
+            }
+        }
+    }
+}
+
 impl SseDecode for ql_api::time::TimezoneResponse {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
@@ -10104,6 +10123,31 @@ impl flutter_rust_bridge::IntoIntoDart<FrbWrapper<ql_api::bitcoin::SignPsbtRespo
     }
 }
 // Codec=Dco (DartCObject based), see doc to use other codecs
+impl flutter_rust_bridge::IntoDart for crate::api::rpc::SubscriptionError {
+    fn into_dart(self) -> flutter_rust_bridge::for_generated::DartAbi {
+        match self {
+            crate::api::rpc::SubscriptionError::Unsupported => [0.into_dart()].into_dart(),
+            crate::api::rpc::SubscriptionError::Failed(field0) => {
+                [1.into_dart(), field0.into_into_dart().into_dart()].into_dart()
+            }
+            _ => {
+                unimplemented!("");
+            }
+        }
+    }
+}
+impl flutter_rust_bridge::for_generated::IntoDartExceptPrimitive
+    for crate::api::rpc::SubscriptionError
+{
+}
+impl flutter_rust_bridge::IntoIntoDart<crate::api::rpc::SubscriptionError>
+    for crate::api::rpc::SubscriptionError
+{
+    fn into_into_dart(self) -> crate::api::rpc::SubscriptionError {
+        self
+    }
+}
+// Codec=Dco (DartCObject based), see doc to use other codecs
 impl flutter_rust_bridge::IntoDart for FrbWrapper<ql_api::time::TimezoneResponse> {
     fn into_dart(self) -> flutter_rust_bridge::for_generated::DartAbi {
         [
@@ -11844,6 +11888,24 @@ impl SseEncode for ql_api::bitcoin::SignPsbtResponse {
             ql_api::bitcoin::SignPsbtResponse::Error { error } => {
                 <i32>::sse_encode(2, serializer);
                 <String>::sse_encode(error, serializer);
+            }
+            _ => {
+                unimplemented!("");
+            }
+        }
+    }
+}
+
+impl SseEncode for crate::api::rpc::SubscriptionError {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        match self {
+            crate::api::rpc::SubscriptionError::Unsupported => {
+                <i32>::sse_encode(0, serializer);
+            }
+            crate::api::rpc::SubscriptionError::Failed(field0) => {
+                <i32>::sse_encode(1, serializer);
+                <String>::sse_encode(field0, serializer);
             }
             _ => {
                 unimplemented!("");
