@@ -118,19 +118,26 @@ class BleWriteQueue(
             }
 
             continuation = deferred
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-                val success = gatt.writeCharacteristic(characteristic, data, writeType)
-                if (success != BluetoothStatusCodes.SUCCESS) {
-                    NativeLogStream.error(TAG, "Error writeCharacteristic: $success")
+            // A dead Bluetooth service (adapter toggled off mid-transfer)
+            // makes writeCharacteristic throw instead of returning an error.
+            try {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                    val success = gatt.writeCharacteristic(characteristic, data, writeType)
+                    if (success != BluetoothStatusCodes.SUCCESS) {
+                        NativeLogStream.error(TAG, "Error writeCharacteristic: $success")
+                    }
+                    success == BluetoothStatusCodes.SUCCESS
+                } else {
+                    @Suppress("DEPRECATION")
+                    characteristic.writeType = writeType
+                    @Suppress("DEPRECATION")
+                    characteristic.value = data
+                    @Suppress("DEPRECATION")
+                    gatt.writeCharacteristic(characteristic)
                 }
-                success == BluetoothStatusCodes.SUCCESS
-            } else {
-                @Suppress("DEPRECATION")
-                characteristic.writeType = writeType
-                @Suppress("DEPRECATION")
-                characteristic.value = data
-                @Suppress("DEPRECATION")
-                gatt.writeCharacteristic(characteristic)
+            } catch (e: Exception) {
+                NativeLogStream.error(TAG, "writeCharacteristic threw: $e")
+                false
             }
         }
 
