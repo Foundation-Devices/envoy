@@ -293,18 +293,19 @@ class QLV2ProtocolHandler {
     }
   }
 
-  /// Creates a session over an injected transport without app-service routes.
-  /// This keeps transport ordering and reconnect behavior independently testable.
+  /// Creates a session over an injected transport. Pass [device] only when a
+  /// test needs to exercise global app-service subscriptions.
   static QLV2ProtocolHandler createForTransportTest({
     required QLBleTransport transport,
     required QLV2SessionDriver sessionDriver,
+    QLConnection? device,
     Duration qlRetryInterval = const Duration(milliseconds: 10),
     Duration qlHandshakeTimeout = const Duration(milliseconds: 20),
     Duration bleReadyTimeout = const Duration(milliseconds: 50),
   }) {
     final handler = QLV2ProtocolHandler._(
       transport: transport,
-      device: null,
+      device: device,
       session: sessionDriver,
       qlRetryInterval: qlRetryInterval,
       qlHandshakeTimeout: qlHandshakeTimeout,
@@ -642,7 +643,7 @@ class QLV2ProtocolHandler {
     Object error,
     StackTrace stack,
   ) {
-    if (error is qlv2.SubscriptionError_Unsupported) {
+    if (qlv2.isUnsupportedSubscriptionError(error)) {
       kPrint('[$deviceId] QL v2 $label subscription is not supported');
       return false;
     }

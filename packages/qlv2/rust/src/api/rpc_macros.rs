@@ -158,7 +158,11 @@ macro_rules! rpc_subscription {
                                 "{} subscription unavailable: {error}",
                                 stringify!($route)
                             );
-                            return Err(error.into());
+                            let _ = sink.add_error(
+                                $crate::api::rpc::SubscriptionError::from(error)
+                                    .into_stream_error()
+                            );
+                            return Ok(());
                         }
                     };
                     log::info!("{} subscription opened", stringify!($route));
@@ -185,6 +189,7 @@ macro_rules! rpc_subscription {
                                     );
                                     let _ = sink.add_error(
                                         $crate::api::rpc::SubscriptionError::from(error)
+                                            .into_stream_error()
                                     );
                                     return;
                                 }

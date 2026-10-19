@@ -11,6 +11,8 @@ use ql_runtime::QlStreamError;
 
 use crate::frb_generated::StreamSink;
 
+const UNSUPPORTED_SUBSCRIPTION_STREAM_ERROR: &str = "qlv2.unsupported_subscription";
+
 pub mod app_store;
 pub mod backup;
 pub mod benchmark;
@@ -36,6 +38,15 @@ pub use timezone::*;
 pub enum SubscriptionError {
     Unsupported,
     Failed(String),
+}
+
+impl SubscriptionError {
+    pub(crate) fn into_stream_error(self) -> anyhow::Error {
+        match self {
+            Self::Unsupported => anyhow::Error::msg(UNSUPPORTED_SUBSCRIPTION_STREAM_ERROR),
+            Self::Failed(message) => anyhow::Error::msg(message),
+        }
+    }
 }
 
 impl std::fmt::Display for SubscriptionError {
@@ -114,9 +125,12 @@ mod tests {
             origin: ql_runtime::ResetOrigin::Peer,
         });
 
+        let error = SubscriptionError::from(error);
+
+        assert_eq!(error, SubscriptionError::Unsupported);
         assert_eq!(
-            SubscriptionError::from(error),
-            SubscriptionError::Unsupported
+            format!("{:?}", error.into_stream_error()),
+            UNSUPPORTED_SUBSCRIPTION_STREAM_ERROR
         );
     }
 
@@ -124,9 +138,9 @@ mod tests {
     fn other_subscription_failures_remain_retryable() {
         let error = RpcError::Transport(QlStreamError::NoSession);
 
-        assert_eq!(
-            SubscriptionError::from(error),
-            SubscriptionError::Failed("no session".to_owned())
-        );
+        let error = SubscriptionError::from(error);
+
+        assert_eq!(error, SubscriptionError::Failed("no session".to_owned()));
+        assert_eq!(format!("{:?}", error.into_stream_error()), "no session");
     }
 }
