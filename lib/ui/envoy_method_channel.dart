@@ -2,6 +2,7 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:envoy/business/settings.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -10,16 +11,50 @@ import 'dart:io';
 const _platformChannel = MethodChannel('envoy');
 const _screenSecureMethod = "make_screen_secure";
 
+// Nested seed views (the QR dialog and its words overlay) each hold one
+// claim; the native flag clears only when the last claim is released, so
+// closing a child cannot unprotect a still-visible parent.
+int _secureScreenClaims = 0;
+
+// Test seams: the platform has no handler under `flutter test`, and a
+// widget test tearing down a secure screen must not leave the disable
+// delay pending.
+@visibleForTesting
+Future<void> Function(bool secure) sendScreenSecure = _sendScreenSecure;
+
+@visibleForTesting
+Duration secureScreenDisableDelay = const Duration(milliseconds: 300);
+
+@visibleForTesting
+void resetSecureScreenClaims() {
+  _secureScreenClaims = 0;
+}
+
+Future<void> _sendScreenSecure(bool secure) async {
+  if (Platform.isLinux) return;
+  await _platformChannel.invokeMethod(_screenSecureMethod, {"secure": secure});
+}
+
 Future enableSecureScreen() async {
-  if (!Settings().allowScreenshots() && !Platform.isLinux) {
-    await _platformChannel.invokeMethod(_screenSecureMethod, {"secure": true});
+  _secureScreenClaims++;
+  if (!Settings().allowScreenshots()) {
+    await sendScreenSecure(true);
   }
 }
 
 Future disableSecureScreen() async {
-  if (!Settings().allowScreenshots() && !Platform.isLinux) {
-    await Future.delayed(const Duration(milliseconds: 300));
-    await _platformChannel.invokeMethod(_screenSecureMethod, {"secure": false});
+  if (_secureScreenClaims > 0) {
+    _secureScreenClaims--;
+  }
+  if (_secureScreenClaims > 0 || Settings().allowScreenshots()) {
+    return;
+  }
+  if (secureScreenDisableDelay > Duration.zero) {
+    await Future.delayed(secureScreenDisableDelay);
+  }
+  // A claim taken during the delay keeps the flag on until it is released.
+  if (_secureScreenClaims == 0) {
+    await sendScreenSecure(false);
   }
 }
 
