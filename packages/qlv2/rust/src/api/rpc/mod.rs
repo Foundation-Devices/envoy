@@ -41,10 +41,10 @@ pub enum SubscriptionError {
 }
 
 impl SubscriptionError {
-    pub(crate) fn into_stream_error(self) -> anyhow::Error {
+    pub(crate) fn into_stream_error(self) -> String {
         match self {
-            Self::Unsupported => anyhow::Error::msg(UNSUPPORTED_SUBSCRIPTION_STREAM_ERROR),
-            Self::Failed(message) => anyhow::Error::msg(message),
+            Self::Unsupported => UNSUPPORTED_SUBSCRIPTION_STREAM_ERROR.to_owned(),
+            Self::Failed(message) => message,
         }
     }
 }
@@ -129,7 +129,7 @@ mod tests {
 
         assert_eq!(error, SubscriptionError::Unsupported);
         assert_eq!(
-            format!("{:?}", error.into_stream_error()),
+            error.into_stream_error(),
             UNSUPPORTED_SUBSCRIPTION_STREAM_ERROR
         );
     }
@@ -141,6 +141,6 @@ mod tests {
         let error = SubscriptionError::from(error);
 
         assert_eq!(error, SubscriptionError::Failed("no session".to_owned()));
-        assert_eq!(format!("{:?}", error.into_stream_error()), "no session");
+        assert_eq!(error.into_stream_error(), "no session");
     }
 }
