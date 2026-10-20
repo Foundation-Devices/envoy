@@ -4,6 +4,7 @@
 
 import 'package:backup/backup.dart';
 import 'package:envoy/business/envoy_seed.dart';
+import 'package:envoy/business/restore_account_metadata.dart';
 import 'package:envoy/business/settings.dart';
 import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/components/pop_up.dart';
@@ -246,6 +247,30 @@ class _ManualSetupImportBackupState extends State<ManualSetupImportBackup> {
           await showRestoreFailedDialog(context);
         }
       }
+    } on AccountRestoreException catch (e) {
+      setState(() {
+        _isRecoveryInProgress = false;
+      });
+      if (context.mounted) {
+        final navigator = Navigator.of(context);
+        await showRestoreFailedDialog(
+          context,
+          accountRestoreFailed: true,
+          onContinueWithRestored: e.anyRestored
+              ? (dialogContext) {
+                  Navigator.pop(dialogContext);
+                  // Restored devices need their sessions prepared, same as
+                  // the full-success paths.
+                  EnvoySeed().deferDeviceReconnect();
+                  navigator.push(
+                    MaterialPageRoute(
+                      builder: (context) => const WalletSetupSuccess(),
+                    ),
+                  );
+                }
+              : null,
+        );
+      }
     } catch (e, stack) {
       debugPrintStack(stackTrace: stack);
       setState(() {
@@ -384,12 +409,62 @@ Future<void> tryMagicRecover(
   final navigator = Navigator.of(context);
   navigator.pop();
 
-  bool success = await EnvoySeed().processRecoveryData(
-    seed,
-    data,
-    null,
-    isMagicBackup: true,
-  );
+  bool success;
+  try {
+    success = await EnvoySeed().processRecoveryData(
+      seed,
+      data,
+      null,
+      isMagicBackup: true,
+    );
+  } on AccountRestoreException catch (e) {
+    if (!e.anyRestored) {
+      // Nothing survived, so no seed wallet exists yet: take the normal
+      // manual path, then explain that the found backup failed.
+      final created = await EnvoySeed().create(seedList, requireScan: true);
+      if (created && navigator.mounted) {
+        navigator.push(
+          MaterialPageRoute(
+            builder: (_) => const ManualSetupImportBackup(),
+          ),
+        );
+        await showRestoreFailedDialog(
+          navigator.context,
+          accountRestoreFailed: true,
+        );
+      } else if (!created && navigator.mounted) {
+        // context belongs to the popup popped before recovery started.
+        showInvalidSeedDialog(context: navigator.context);
+      }
+      return;
+    }
+    // Some accounts already exist. Do not take the no-backup create path.
+    if (navigator.mounted) {
+      navigator.push(
+        MaterialPageRoute(
+          builder: (_) => const ManualSetupImportBackup(),
+        ),
+      );
+      await showRestoreFailedDialog(
+        navigator.context,
+        accountRestoreFailed: true,
+        // The import screen cannot be backed out of; offer a way forward
+        // with the accounts that did restore.
+        onContinueWithRestored: (dialogContext) {
+          Navigator.pop(dialogContext);
+          // Restored devices need their sessions prepared, same as
+          // the full-success paths.
+          EnvoySeed().deferDeviceReconnect();
+          navigator.push(
+            MaterialPageRoute(
+              builder: (context) => const WalletSetupSuccess(),
+            ),
+          );
+        },
+      );
+    }
+    return;
+  }
 
   if (success) {
     Settings().setSyncToCloud(true);
@@ -411,8 +486,8 @@ Future<void> tryMagicRecover(
           builder: (context) => const ManualSetupImportBackup(),
         ),
       );
-    } else if (context.mounted) {
-      showInvalidSeedDialog(context: context);
+    } else if (navigator.mounted) {
+      showInvalidSeedDialog(context: navigator.context);
     }
   }
 }

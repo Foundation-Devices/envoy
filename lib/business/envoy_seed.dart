@@ -19,6 +19,7 @@ import 'package:envoy/business/exchange_rate.dart';
 import 'package:envoy/business/local_storage.dart';
 import 'package:envoy/business/magic_backup_storage.dart';
 import 'package:envoy/business/notifications.dart';
+import 'package:envoy/business/restore_account_metadata.dart';
 import 'package:envoy/business/settings.dart';
 import 'package:envoy/business/updates_manager.dart';
 import 'package:envoy/business/video.dart';
@@ -33,6 +34,7 @@ import 'package:envoy/util/list_utils.dart';
 import 'package:file_saver/file_saver.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
+import 'package:http_tor/http_tor.dart' show HttpTor;
 import 'package:ngwallet/ngwallet.dart';
 import 'package:tor/tor.dart';
 import 'package:uuid/uuid.dart';
@@ -89,6 +91,9 @@ class EnvoySeed {
   }
 
   static const _platform = MethodChannel('envoy');
+
+  // Matches ConnectivityManager's Tor start budget.
+  static const _recoveryTorReadyTimeout = Duration(seconds: 90);
 
   static String encryptedBackupFileExtension = "mla";
   static String encryptedBackupFileName = "envoy_backup";
@@ -556,7 +561,13 @@ class EnvoySeed {
     if (filePath == null) {
       try {
         if (Settings().usingTor) {
-          await Tor.instance.isReady();
+          // Recovery screens lock back while retained accounts exist, so a
+          // Tor that never bootstraps must surface as a failure, not a hang.
+          try {
+            await HttpTor().waitUntilTorReady(_recoveryTorReadyTimeout);
+          } on TimeoutException {
+            throw GetBackupException.serverUnreachable;
+          }
         }
         List<(String, String)> backupPayload;
         try {
@@ -622,6 +633,9 @@ class EnvoySeed {
           deferDeviceReconnect();
         }
         return success;
+      } on AccountRestoreException {
+        // A found-but-unrestorable backup must not read as "no backup".
+        rethrow;
       } catch (e, st) {
         debugPrintStack(stackTrace: st);
         return false;
@@ -742,7 +756,25 @@ class EnvoySeed {
             "Magic Backup",
             "restoring v2 accounts",
           );
-          await restoreAccounts(data, seed, passphrase);
+          if (!await restoreAccounts(data, seed, passphrase)) {
+            // The database restore above dropped the migration marker. Record
+            // it before throwing, or the next launch's v2 migration deletes
+            // every wallet kept or created after this partial restore.
+            // A failed write must not replace the typed exception below.
+            try {
+              await MigrationManager().setMigrationComplete();
+            } catch (e) {
+              EnvoyReport().log(
+                "Magic Backup",
+                "could not record migration marker after partial restore: $e",
+              );
+            }
+            // False means no backup to the cloud-recovery callers. A backup
+            // that was found but could not be restored needs an error instead.
+            throw AccountRestoreException(
+              anyRestored: NgAccountManager().hotAccountsExist(),
+            );
+          }
         }
       }
 
@@ -964,7 +996,7 @@ class EnvoySeed {
     return MagicBackupStorage().getLastBackupTimestamp();
   }
 
-  Future restoreAccounts(
+  Future<bool> restoreAccounts(
     Map<String, String> data,
     String seed,
     String? passphrase,
@@ -997,65 +1029,81 @@ class EnvoySeed {
         }
       }
 
-      for (var backup in ngAccountBackups) {
-        final config = backup.ngAccountConfig;
-        String fingerprint = backup.xfp;
-        if (config.descriptors.isEmpty &&
-            backup.publicDescriptors.isEmpty &&
-            fingerprint.isEmpty) {
-          //pre 2.0.1 wallets doesnt include xfp. also if descriptors are empty, derive from seed
-          await deriveAndAddWallets(
-            seed,
-            passphrase: passphrase,
-            requireScan: true,
+      final restoredAll = await restoreAccountBackups(
+        backups: ngAccountBackups,
+        restore: (backup) async {
+          final config = backup.ngAccountConfig;
+          String fingerprint = backup.xfp;
+          if (config.descriptors.isEmpty &&
+              backup.publicDescriptors.isEmpty &&
+              fingerprint.isEmpty) {
+            //pre 2.0.1 wallets doesnt include xfp. also if descriptors are empty, derive from seed
+            await deriveAndAddWallets(
+              seed,
+              passphrase: passphrase,
+              requireScan: true,
+            );
+            return;
+          }
+          if (fingerprint.isEmpty) {
+            String? descriptor;
+            if (backup.publicDescriptors.isNotEmpty) {
+              descriptor = backup.publicDescriptors.first.$2;
+            } else if (config.descriptors.isNotEmpty) {
+              descriptor = config.descriptors.first.internal;
+            } else {
+              throw const FormatException('Backup account has no descriptor');
+            }
+            try {
+              fingerprint = NgAccountManager.getFingerprint(descriptor) ?? "";
+            } catch (e) {
+              //ignore
+            }
+          }
+          if (fingerprint.isEmpty) {
+            throw const FormatException('Backup account has no fingerprint');
+          }
+          Directory dir = NgAccountManager.getAccountDirectory(
+            deviceSerial: config.deviceSerial ?? "envoy",
+            network: config.network.toString(),
+            number: config.index,
+            fingerprint: fingerprint,
           );
-          continue;
-        }
-        if (fingerprint.isEmpty) {
-          String? descriptor;
-          if (backup.publicDescriptors.isNotEmpty) {
-            descriptor = backup.publicDescriptors.first.$2;
-          } else if (config.descriptors.isNotEmpty) {
-            descriptor = config.descriptors.first.internal;
-          } else {
-            continue;
+          // Manual recovery creates the hot wallet before importing this file.
+          // Reuse its open handler, but still restore the backed-up metadata.
+          final migrated = await restoreExistingAccountMetadata(
+            handlers: NgAccountManager().handlers,
+            directoryPath: dir.path,
+            backup: backup,
+          );
+          if (migrated != null) {
+            // During onboarding nothing subscribes to the update stream yet,
+            // so refresh the manager's cached state directly.
+            NgAccountManager().updateAccountState(await migrated.state());
+            return;
           }
-          try {
-            fingerprint = NgAccountManager.getFingerprint(descriptor) ?? "";
-          } catch (e) {
-            //ignore
-          }
-        }
-        if (fingerprint.isEmpty) {
-          continue;
-        }
-        Directory dir = NgAccountManager.getAccountDirectory(
-          deviceSerial: config.deviceSerial ?? "envoy",
-          network: config.network.toString(),
-          number: config.index,
-          fingerprint: fingerprint,
-        );
-        if (await dir.exists()) {
-          bool existInAccountManager = NgAccountManager().accounts.any(
-                (element) => element.getWalletDir()?.path == dir.path,
-              );
-          if (existInAccountManager) {
-            continue;
-          }
-        }
-        await dir.create(recursive: true);
+          await dir.create(recursive: true);
 
-        //both hot and cold wallets are restored from backup,
-        //hot wallet descriptors will be derived from seed.
-        final handler = await EnvoyAccountHandler.restoreFromBackup(
-          backup: backup,
-          dbPath: dir.path,
-          seed: seed,
-          passphrase: passphrase,
-        );
-        final state = await handler.state();
-        await NgAccountManager().addAccount(state, handler);
-      }
+          //both hot and cold wallets are restored from backup,
+          //hot wallet descriptors will be derived from seed.
+          final handler = await EnvoyAccountHandler.restoreFromBackup(
+            backup: backup,
+            dbPath: dir.path,
+            seed: seed,
+            passphrase: passphrase,
+          );
+          final state = await handler.state();
+          await NgAccountManager().addAccount(state, handler);
+        },
+        onError: (error, stack) {
+          // Do not log the backup or FFI error payload: it can contain keys.
+          EnvoyReport().log(
+            "EnvoySeed",
+            "Failed to restore a backup account (${error.runtimeType}); continuing with remaining accounts",
+            stackTrace: stack,
+          );
+        },
+      );
 
       if (!NgAccountManager().hotAccountsExist()) {
         //pre 2.0.1 wallets doesnt include xfp. also if descriptors are empty, derive from seed
@@ -1065,13 +1113,16 @@ class EnvoySeed {
           requireScan: true,
         );
       }
+      if (!restoredAll) return false;
       await EnvoyReport().log("Magic Backup", "restored v2 accounts");
+      return true;
     } catch (e, stack) {
       EnvoyReport().log(
         "EnvoySeed",
         "Error restoring accounts: $e",
         stackTrace: stack,
       );
+      return false;
     }
   }
 

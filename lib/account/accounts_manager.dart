@@ -426,6 +426,18 @@ class NgAccountManager extends ChangeNotifier {
     }
   }
 
+  /// Replaces the cached state of an already-registered account, for
+  /// changes made while no handler stream subscriber was attached.
+  void updateAccountState(EnvoyAccount state) {
+    final index =
+        _accountsHandler.indexWhere((element) => element.$1.id == state.id);
+    if (index == -1) {
+      return;
+    }
+    _accountsHandler[index] = (state, _accountsHandler[index].$2);
+    notifyListeners();
+  }
+
   Future<void> addAccount(
       EnvoyAccount state, EnvoyAccountHandler handler) async {
     if (_accountsHandler.any((element) => element.$1.id == state.id)) {
