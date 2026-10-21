@@ -53,10 +53,7 @@ dependencies:
       ref: 973ac30a242486df799f426c4258cdf7ce25a32f
 
   video_player: ^2.10.1
-  tor:
-    git:
-      url: https://github.com/Foundation-Devices/tor.git
-      ref: 0fd3c25066cf9a4611ecd68bdd23a2de47d4746f
+  tor: 0.2.2
   qr_flutter: ^4.1.0
   dots_indicator: ^4.0.1
   flutter_secure_storage: ^9.2.2

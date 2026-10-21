@@ -4,6 +4,7 @@
 
 import 'dart:async';
 import 'package:collection/collection.dart';
+import 'package:envoy/business/tor_failure_recovery.dart';
 import 'package:envoy/business/tor_restart_policy.dart';
 import 'package:envoy/util/bug_report_helper.dart';
 import 'package:envoy/util/console.dart';
@@ -66,9 +67,9 @@ class ConnectivityManager {
   // Number of failed attempts before restarting Tor.
   static const int maxFailedTorAttempts = 5;
   static const Duration _torStopTimeout = Duration(seconds: 15);
-  static const Duration _torStartTimeout = Duration(seconds: 90);
   final TorRestartPolicy _torRestartPolicy =
       TorRestartPolicy(failureThreshold: maxFailedTorAttempts);
+  late final TorFailureRecoveryCoordinator _torFailureRecovery;
   bool _restartSuppressionReported = false;
   String? _lastTorProbeFailure;
 
@@ -97,12 +98,13 @@ class ConnectivityManager {
     return DateTime.now().difference(_torEnabledTimestamp!) < _torGracePeriod;
   }
 
-  /// Flag to prevent concurrent restartTor() calls
-  bool _isRestartingTor = false;
+  Future<void>? _torRestartInFlight;
 
   /// Coalesces overlapping Tor health checks into one probe.
   Future<void>? _torCheckInFlight;
   Timer? _torRecoveryTimer;
+  Timer? _nativeTorRecoveryTimer;
+  late final StreamSubscription<TorProxyFailure> _torFailureSubscription;
 
   DateTime? torTemporarilyDisabledTimeStamp;
 
@@ -138,6 +140,22 @@ class ConnectivityManager {
   ConnectivityManager._internal() {
     kPrint("Instance of ConnectivityManager created!");
 
+    _torFailureRecovery = TorFailureRecoveryCoordinator(
+      activeOperation: () {
+        final restart = _torRestartInFlight;
+        if (restart != null) return restart;
+        return Tor.instance.starting ? Tor.instance.start() : null;
+      },
+      recover: () async {
+        if (!torEnabled ||
+            Tor.instance.bootstrapped ||
+            _nativeTorRecoveryTimer != null) {
+          return;
+        }
+        await _recordTorFailure(confirmed: true, nativeProxyExit: true);
+      },
+    );
+
     Tor.instance.events.stream.listen((event) {
       kPrint('[ElectrumSync] tor-state eventPort=$event '
           'currentPort=${Tor.instance.port} generation=${Tor.instance.routeGeneration} '
@@ -145,11 +163,41 @@ class ConnectivityManager {
       // Nudge listeners
       events.add(ConnectivityManagerEvent.torStatusChange);
     });
+    _torFailureSubscription =
+        Tor.instance.failures.stream.listen(_handleTorProxyFailure);
   }
 
   void dispose() {
     _torRecoveryTimer?.cancel();
+    _nativeTorRecoveryTimer?.cancel();
+    unawaited(_torFailureSubscription.cancel());
     events.close();
+  }
+
+  void _handleTorProxyFailure(TorProxyFailure failure) {
+    if (!torEnabled) return;
+
+    _lastTorProbeFailure = _summarizeError(failure);
+    unawaited(EnvoyReport().log(
+      "Tor recovery",
+      "Native Tor proxy exited unexpectedly; starting recovery immediately. "
+          "error=$_lastTorProbeFailure",
+    ));
+
+    _queueConfirmedTorFailure();
+  }
+
+  /// Feeds an asynchronous initial-start failure into the same recovery path
+  /// as a native proxy exit, preventing the two signals from racing.
+  void handleTorStartFailure(Object failure) {
+    if (!torEnabled) return;
+
+    _lastTorProbeFailure = _summarizeError(failure);
+    _queueConfirmedTorFailure();
+  }
+
+  void _queueConfirmedTorFailure() {
+    unawaited(_torFailureRecovery.queue());
   }
 
   /// Start a grace period after enabling Tor to allow circuits to stabilize.
@@ -188,7 +236,7 @@ class ConnectivityManager {
 
   void electrumSuccess({required bool viaTor}) {
     if (viaTor) {
-      _recordTorSuccess();
+      _recordTorRouteSuccess();
     }
     failedFoundationServerAttempts = 0;
     _consecutiveElectrumFailures = 0;
@@ -221,7 +269,7 @@ class ConnectivityManager {
     // NGU uses HttpTor, so a success while Tor is enabled proves that the
     // current Tor route works and starts a new failure episode.
     if (torEnabled) {
-      _recordTorSuccess();
+      _recordTorRouteSuccess();
     }
     _consecutiveNguFailures = 0;
     nguConnected = true;
@@ -272,38 +320,57 @@ class ConnectivityManager {
     if (_shouldSkipTorCheck()) return;
 
     if (reachable) {
-      _recordTorSuccess();
+      _recordTorRouteSuccess();
       return;
     }
 
+    await _recordTorFailure(confirmed: !Tor.instance.bootstrapped);
+  }
+
+  Future<void> _recordTorFailure({
+    required bool confirmed,
+    bool nativeProxyExit = false,
+  }) async {
+    final restartCooldown = nativeProxyExit
+        ? TorRestartPolicy.nativeFailureCooldown
+        : TorRestartPolicy.restartCooldown;
     final restartWasAlreadyAttempted = _torRestartPolicy.restartAttempted;
-    final shouldRestart = Tor.instance.bootstrapped
-        ? _torRestartPolicy.recordFailure()
-        : _torRestartPolicy.recordConfirmedFailure();
+    final shouldRestart = nativeProxyExit
+        ? _torRestartPolicy.recordNativeProxyFailure()
+        : confirmed
+            ? _torRestartPolicy.recordConfirmedFailure()
+            : _torRestartPolicy.recordFailure();
     events.add(ConnectivityManagerEvent.torConnectedDoesntWork);
 
     if (shouldRestart) {
       _restartSuppressionReported = false;
       unawaited(EnvoyReport().log(
         "Tor recovery",
-        "Tor health probe reached $maxFailedTorAttempts consecutive failures; "
+        "${nativeProxyExit ? 'Native Tor proxy exit' : 'Tor health probe'} "
+            "triggered automatic recovery; "
             "starting an automatic restart. "
-            "restartCooldown=${TorRestartPolicy.restartCooldown.inSeconds}s; "
+            "restartCooldown=${restartCooldown.inSeconds}s; "
             "port=${Tor.instance.port}; "
             "NGU=${nguConnected ? 'reachable' : 'unreachable'}; "
             "Electrum=${electrumConnected ? 'reachable' : 'unreachable'}; "
             "lastError=${_lastTorProbeFailure ?? 'unknown'}",
       ));
-      await _restartTor();
+      await _restartTor(nativeProxyExit: nativeProxyExit);
     } else if (restartWasAlreadyAttempted) {
-      _scheduleTorRecovery();
+      final retryDelay = nativeProxyExit
+          ? _torRestartPolicy.nativeFailureCooldownRemaining
+          : _torRestartPolicy.restartCooldownRemaining;
+      _scheduleTorRecovery(
+        delay: retryDelay,
+        nativeProxyExit: nativeProxyExit,
+      );
       if (!_restartSuppressionReported) {
         _restartSuppressionReported = true;
         unawaited(EnvoyReport().log(
           "Tor recovery",
           "Tor remains unreachable after the automatic restart attempt; "
               "suppressing another automatic restart during the "
-              "${TorRestartPolicy.restartCooldown.inSeconds}s cooldown. "
+              "${retryDelay.inSeconds}s remaining cooldown. "
               "port=${Tor.instance.port}; "
               "lastError=${_lastTorProbeFailure ?? 'unknown'}",
         ));
@@ -347,41 +414,77 @@ class ConnectivityManager {
     }
   }
 
+  // Only a published route can prove Tor works; a late success from a dead
+  // one must not cancel its scheduled recovery or reset the cooldown.
+  void _recordTorRouteSuccess() {
+    if (Tor.instance.bootstrapped) _recordTorSuccess();
+  }
+
   void _recordTorSuccess() {
     _torRecoveryTimer?.cancel();
     _torRecoveryTimer = null;
+    _nativeTorRecoveryTimer?.cancel();
+    _nativeTorRecoveryTimer = null;
     _torRestartPolicy.recordSuccess();
     _restartSuppressionReported = false;
     _lastTorProbeFailure = null;
   }
 
   void _deferTorRecoveryIfNeeded() {
-    if (_torRecoveryTimer != null) return;
+    if (_torRecoveryTimer != null || _nativeTorRecoveryTimer != null) return;
 
     if (_torRestartPolicy.restartAttempted && torEnabled) {
       _scheduleTorRecovery(delay: TorRestartPolicy.restartCooldown);
     }
   }
 
-  void _scheduleTorRecovery({Duration? delay}) {
-    _torRecoveryTimer?.cancel();
-    _torRecoveryTimer = Timer(
+  void _scheduleTorRecovery({
+    Duration? delay,
+    bool nativeProxyExit = false,
+  }) {
+    if (nativeProxyExit) {
+      _nativeTorRecoveryTimer?.cancel();
+    } else {
+      _torRecoveryTimer?.cancel();
+    }
+
+    final timer = Timer(
       delay ?? _torRestartPolicy.restartCooldownRemaining,
       () {
-        _torRecoveryTimer = null;
+        if (nativeProxyExit) {
+          _nativeTorRecoveryTimer = null;
+        } else {
+          _torRecoveryTimer = null;
+        }
 
         final disablementRemaining = torTemporaryDisablementRemaining(
           torTemporarilyDisabledTimeStamp,
           DateTime.now(),
         );
         if (disablementRemaining != null) {
-          _scheduleTorRecovery(delay: disablementRemaining);
+          _scheduleTorRecovery(
+            delay: disablementRemaining,
+            nativeProxyExit: nativeProxyExit,
+          );
           return;
         }
 
-        unawaited(checkTor());
+        if (nativeProxyExit) {
+          if (Tor.instance.bootstrapped) {
+            unawaited(checkTor());
+          } else {
+            _queueConfirmedTorFailure();
+          }
+        } else {
+          unawaited(checkTor());
+        }
       },
     );
+    if (nativeProxyExit) {
+      _nativeTorRecoveryTimer = timer;
+    } else {
+      _torRecoveryTimer = timer;
+    }
   }
 
   String _summarizeError(Object error) {
@@ -402,12 +505,26 @@ class ConnectivityManager {
     }
   }
 
-  Future<void> _restartTor() async {
-    if (_isRestartingTor || !torEnabled || Tor.instance.starting) {
-      return;
-    }
+  Future<void> _restartTor({bool nativeProxyExit = false}) {
+    final inFlight = _torRestartInFlight;
+    if (inFlight != null) return inFlight;
+    if (!torEnabled || Tor.instance.starting) return Future<void>.value();
 
-    _isRestartingTor = true;
+    late final Future<void> restart;
+    restart =
+        _restartTorOnce(nativeProxyExit: nativeProxyExit).whenComplete(() {
+      if (identical(_torRestartInFlight, restart)) {
+        _torRestartInFlight = null;
+      }
+    });
+    _torRestartInFlight = restart;
+    return restart;
+  }
+
+  Future<void> _restartTorOnce({required bool nativeProxyExit}) async {
+    final restartCooldown = nativeProxyExit
+        ? TorRestartPolicy.nativeFailureCooldown
+        : TorRestartPolicy.restartCooldown;
     final previousPort = Tor.instance.port;
     try {
       // stop() clears the route before it can fail, so skipping the start
@@ -435,62 +552,43 @@ class ConnectivityManager {
         return;
       }
 
-      final start = Tor.instance.start();
-      try {
-        await start.timeout(_torStartTimeout);
-      } on TimeoutException catch (e, stackTrace) {
-        _beginTorGracePeriod();
-        unawaited(EnvoyReport().log(
-          "Tor recovery",
-          "Automatic Tor restart is still bootstrapping after "
-              "${_torStartTimeout.inSeconds}s. oldPort=$previousPort; "
-              "currentPort=${Tor.instance.port}; error=${_summarizeError(e)}",
-          stackTrace: stackTrace,
-        ));
-        unawaited(_observeTorStart(start, previousPort));
-        return;
-      }
+      // The native Tor package owns the cancellable bootstrap deadline. Await
+      // that single lifecycle result instead of abandoning the Dart future
+      // while native work continues in the background.
+      await Tor.instance.start();
 
       unawaited(EnvoyReport().log(
         "Tor recovery",
         "Automatic Tor restart completed. oldPort=$previousPort; "
             "stoppedPort=$stoppedPort; newPort=${Tor.instance.port}; "
             "another automatic restart is allowed after the "
-            "${TorRestartPolicy.restartCooldown.inSeconds}s cooldown unless "
+            "${restartCooldown.inSeconds}s cooldown unless "
             "Tor-backed traffic succeeds first",
       ));
       _beginTorGracePeriod();
     } catch (e, stackTrace) {
-      _handleTorRestartFailure(e, stackTrace, previousPort);
-    } finally {
-      _isRestartingTor = false;
-    }
-  }
-
-  Future<void> _observeTorStart(Future<void> start, int previousPort) async {
-    try {
-      await start;
-      if (!torEnabled) return;
-
-      unawaited(EnvoyReport().log(
-        "Tor recovery",
-        "Automatic Tor restart completed after the foreground timeout. "
-            "oldPort=$previousPort; newPort=${Tor.instance.port}",
-      ));
-      _beginTorGracePeriod();
-    } catch (e, stackTrace) {
-      if (!torEnabled) return;
-      _handleTorRestartFailure(e, stackTrace, previousPort);
+      _handleTorRestartFailure(
+        e,
+        stackTrace,
+        previousPort,
+        nativeProxyExit: nativeProxyExit,
+      );
     }
   }
 
   void _handleTorRestartFailure(
     Object error,
     StackTrace stackTrace,
-    int previousPort,
-  ) {
+    int previousPort, {
+    required bool nativeProxyExit,
+  }) {
     _lastTorProbeFailure = _summarizeError(error);
-    _scheduleTorRecovery();
+    _scheduleTorRecovery(
+      delay: nativeProxyExit
+          ? TorRestartPolicy.nativeFailureCooldown
+          : _torRestartPolicy.restartCooldownRemaining,
+      nativeProxyExit: nativeProxyExit,
+    );
     unawaited(EnvoyReport().log(
       "Tor recovery",
       "Automatic Tor restart failed. oldPort=$previousPort; "

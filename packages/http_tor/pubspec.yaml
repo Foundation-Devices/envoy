@@ -41,10 +41,7 @@ dependencies:
   rust_lib_http_tor:
     path: rust_builder
   flutter_rust_bridge: 2.11.1
-  tor:
-    git:
-      url: https://github.com/Foundation-Devices/tor.git
-      ref: 0fd3c25066cf9a4611ecd68bdd23a2de47d4746f
+  tor: 0.2.2
   schedulers:
     git:
       url: https://github.com/foundation-devices/schedulers_dart.git

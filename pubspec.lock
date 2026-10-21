@@ -1617,12 +1617,11 @@ packages:
   tor:
     dependency: "direct main"
     description:
-      path: "."
-      ref: "0fd3c25066cf9a4611ecd68bdd23a2de47d4746f"
-      resolved-ref: "0fd3c25066cf9a4611ecd68bdd23a2de47d4746f"
-      url: "https://github.com/Foundation-Devices/tor.git"
-    source: git
-    version: "0.2.4"
+      name: tor
+      sha256: f97c9f4587515287a19473cdf1fd691df3721bbf54624383d48bf5b36ac3eba0
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.2.2"
   typed_data:
     dependency: "direct main"
     description:
