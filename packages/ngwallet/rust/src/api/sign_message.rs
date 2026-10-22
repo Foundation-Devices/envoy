@@ -35,3 +35,27 @@ impl EnvoySignMessage {
             .map_err(|e| anyhow::anyhow!("{}", e))
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use super::EnvoySignMessage;
+
+    // BIP-322 basic test vector "No prefix fallback". With the `smp` prefix the
+    // finalized BIP requires, it is the exact shape Passport Core emits for a
+    // taproot address. Without it, it is the form taproot signatures took
+    // before the prefix existed, including Envoy's own earlier hot-wallet
+    // signatures. The ngwallet Envoy links must accept both.
+    const ADDRESS: &str = "bc1pss0zhytly75awhm6x2hhvd5lnzv3vssgrf9axfheq8ldyzn88ges79fler";
+    const MESSAGE: &str = "No prefix fallback";
+    const WITNESS: &str =
+        "AUCJYOwOjxYAvatTAGYaVlNXBVyFuc4MwNQkOuK2tl8xhfKDONd0NjfYyNSYcRqeCp8hsAnCEPHAVEkO9h6vbQ/R";
+
+    #[test]
+    fn verifies_taproot_signature_with_and_without_prefix() {
+        let prefixed = format!("smp{WITNESS}");
+        for signature in [prefixed.as_str(), WITNESS] {
+            assert!(EnvoySignMessage::verify_message(MESSAGE, ADDRESS, signature).unwrap());
+            assert!(!EnvoySignMessage::verify_message("tampered", ADDRESS, signature).unwrap());
+        }
+    }
+}
