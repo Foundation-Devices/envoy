@@ -11,6 +11,8 @@ on:
 
 jobs:
   bump-version:
+    # Fork PRs get a read-only token and could not push the bump anyway.
+    if: github.event.pull_request.head.repo.full_name == github.repository
     runs-on: ubuntu-latest
     permissions:
       contents: write
@@ -22,27 +24,23 @@ jobs:
 
       - name: Increment build number
         run: |
-          # Extract current version line
-          CURRENT_VERSION=$(grep '^version:' pubspec.yaml)
-          echo "Current: $CURRENT_VERSION"
-          
-          # Extract version name and build number
-          VERSION_NAME=$(echo $CURRENT_VERSION | sed -E 's/version: ([0-9]+\.[0-9]+\.[0-9]+)\+([0-9]+)/\1/')
-          BUILD_NUMBER=$(echo $CURRENT_VERSION | sed -E 's/version: ([0-9]+\.[0-9]+\.[0-9]+)\+([0-9]+)/\2/')
-          
-          # Increment build number
-          NEW_BUILD_NUMBER=$((BUILD_NUMBER + 1))
-          NEW_VERSION="version: ${VERSION_NAME}+${NEW_BUILD_NUMBER}"
-          
-          echo "New: $NEW_VERSION"
-          
-          # Update pubspec.yaml
-          sed -i "s/^version: .*/version: ${VERSION_NAME}+${NEW_BUILD_NUMBER}/" pubspec.yaml
-          
+          # The version line is PR-controlled: only a complete X.Y.Z+N line is
+          # rewritten, with the same grammar as scripts/bump_version.sh, and
+          # nothing from it reaches shell evaluation.
+          perl -i -pe 's/^(version:\s+\d+\.\d+\.\d+\+)(\d{1,9})$/$1.($2+1)/e' pubspec.yaml
+          if git diff --quiet -- pubspec.yaml; then
+            echo "::error::pubspec.yaml has no plain 'version: X.Y.Z+N' line"
+            exit 1
+          fi
+          grep '^version:' pubspec.yaml
+
       - name: Commit and push
+        env:
+          # Branch names may contain shell syntax; pass it as data.
+          HEAD_REF: ${{ github.head_ref }}
         run: |
           git config --local user.email "github-actions[bot]@users.noreply.github.com"
           git config --local user.name "github-actions[bot]"
           git add pubspec.yaml
-          git diff --staged --quiet || git commit -m "chore: bump build number"
-          git push origin HEAD:${{ github.head_ref }}
+          git commit -m "chore: bump build number"
+          git push origin "HEAD:refs/heads/${HEAD_REF}"
