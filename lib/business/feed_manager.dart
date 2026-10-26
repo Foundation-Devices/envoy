@@ -16,7 +16,7 @@ import 'package:envoy/business/blog_post.dart';
 class FeedManager {
   static const _clearnetFeed = 'https://foundation.xyz/feed';
   static const _onionFeed =
-      'http://wmkivkyzuekkp54zhnt6jdn776xxymxs6oevzcgvbjoe5ovp2og2nlqd.onion/feed/';
+      'http://cyvvcadakurbyybon5zyk3kxch3rdt5h4sawsqkugdmqe5shnevjmlad.onion/feed/';
 
   List<Video> videos = [];
   List<BlogPost> blogs = [];
