@@ -102,7 +102,7 @@ class Fees {
 
   static String get mempoolFoundationInstance {
     return Settings().usingTor
-        ? "http://3pd56qzgyg7p4sk7rlcxrrsbx7nfucdckautxjqbre7uw7kr3ah53byd.onion"
+        ? "http://pim4rymgtxbbtsbldhxhqlpoaqrf2ekasx3mmbrygxc6o2442mwb7wqd.onion"
         : mempoolFoundationUrl;
   }
 
