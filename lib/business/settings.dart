@@ -68,18 +68,18 @@ class Settings extends ChangeNotifier {
 
   // FD testnet4 server
   static const String TESTNET4_ONION_ELECTRUM_SERVER =
-      "7gohqoo7du3l3p72gld33hd5d6xtciych6plli6fwrixi2tsmyqc33yd.onion:50001";
+      "u2m7gb5ngutygyfe2n4xvaywf7lv573drcyzab3v7vguyu6ph7basoqd.onion:50001";
 
   // FD signet server
   static const String SIGNET_ONION_ELECTRUM_SERVER =
-      "qkpvnm3gn7x7yzxp7pddlcpn5h4tyxve7yx4olvi437fzw4gz3sxbmad.onion:50001";
+      "t2jtyafezkzamsd6vmx7enkgkmz36uzlzh77msobcw2swb2ixmvznaad.onion:50001";
 
   static final List<String> defaultServers = getDefaultFulcrumServers();
   static String currentDefaultServer = selectRandomServerFrom(defaultServers);
 
   static final List<String> defaultTorServers = [
-    "mocmguuik7rws4bclpcoz2ldfzesjolatrzggaxfl37hjpreap777yqd.onion:50001",
-    "l7wsl4yghqvdgp4ullod67ydb54ttxs3nnvctblbofl7umw6j72e5did.onion:50001",
+    "z6yhif2qfxcs336bjbqvvuqid3jvffemzxlasq34zzmd3o242ndr6wqd.onion:50001",
+    "wglrke3zfndeylxsmpzanbdcx26xoimektk7cb6ehemuq4gsrzh7aoid.onion:50001",
   ];
   static String currentDefaultTorServer = selectRandomServerFrom(
     defaultTorServers,
@@ -340,7 +340,7 @@ class Settings extends ChangeNotifier {
         return "https://staging.envoy.foundation.xyz";
       case Environment.production:
         return usingTor
-            ? "http://pcwglac5cacmdgviitf3mkyvrpcx4tkpeew7gyf4ipp4enskr37gquqd.onion"
+            ? "http://fgkicj7w3crfvmtrqssfjeixelrdarbzcofxhaffqce42gu2cqhea7ad.onion"
             : "https://envoy.foundation.xyz";
     }
   }
@@ -348,7 +348,7 @@ class Settings extends ChangeNotifier {
   @JsonKey(includeFromJson: false, includeToJson: false)
   String get primeFirmwareServerAddress {
     return usingTor
-        ? "http://2i4lfw43nncbqfzcogzeq4fn5kal7z5svzecydka3riyf5xonknwpwad.onion"
+        ? "http://bdaflgz3cpxttbpoflx66srrlrgyfrtwxouly3ulgjrd6cbla5yun3id.onion"
         : "https://firmware.foundation.xyz";
   }
 
@@ -363,7 +363,7 @@ class Settings extends ChangeNotifier {
         return "https://staging.backup.foundation.xyz";
       case Environment.production:
         return usingTor
-            ? "http://sqyx2dozvzqkuwokh5lhcrcxhkavbdnf65c7n6aezorcztxhgn63f3ad.onion"
+            ? "http://ba4zofa5gj4a7rofj6q5viu4xs7kzwfcvo3o3nrwu3kfb2fwwcyld6ad.onion"
             : "https://backup.foundation.xyz";
     }
   }
@@ -371,7 +371,7 @@ class Settings extends ChangeNotifier {
   @JsonKey(includeFromJson: false, includeToJson: false)
   String get nguServerAddress {
     return usingTor
-        ? "http://sz6grlqwcmxw5rxqc7jtep76gn4psaei2tdxcd4kxdfwjg3xdoaiqvqd.onion"
+        ? "http://jx5qk3ryqh2u3logjmmkixhcmc4hypyxynnh5ft7voi57sysqna6x3qd.onion"
         : "https://ngu.foundation.xyz";
   }
 
