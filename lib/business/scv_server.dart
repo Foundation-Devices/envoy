@@ -7,6 +7,8 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 import 'dart:typed_data';
+import 'package:collection/collection.dart';
+import 'package:crypto/crypto.dart';
 import 'package:envoy/business/settings.dart';
 import 'package:envoy/util/bug_report_helper.dart';
 import 'package:envoy/util/console.dart';
@@ -14,6 +16,13 @@ import 'package:http_tor/http_tor.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:envoy/business/local_storage.dart';
 import 'package:foundation_api/foundation_api.dart';
+import 'package:pointycastle/export.dart'
+    show
+        ECCurve_secp256r1,
+        ECDSASigner,
+        ECPublicKey,
+        ECSignature,
+        PublicKeyParameter;
 
 // Generated
 part 'scv_server.g.dart';
@@ -42,6 +51,11 @@ class ScvServer implements PrimeSecurityCheckService {
   static String primeSecurityCheckUrl = "https://security-check.foundation.xyz";
   static String primeSecurityCheckOnion =
       "http://oqddiudwag2hnt7kmt4nvhrsdfmi4noar7c3fuusf4ld3yegh3teyaid.onion";
+
+  /// Security-check server key (compressed P-256). It signs every /verify
+  /// answer, and Passport Prime checks challenges against the same key.
+  static const String primeSecurityCheckPubkey =
+      "0356C31C74AD5CFA2481C12CB2BDD86EE2B1AF423FD1720D6F7FE1D55448B66183";
 
   final LocalStorage _ls = LocalStorage();
   static const String SCV_CHALLENGE_PREFS = "scv_challenge";
@@ -159,19 +173,42 @@ class ScvServer implements PrimeSecurityCheckService {
         ? ScvServer.primeSecurityCheckOnion
         : ScvServer.primeSecurityCheckUrl;
     final uri = Uri.parse(baseUrl);
+    final transport = torEnabled ? "tor" : "clearnet";
+    _report("Prime server connectivity check started transport=$transport");
 
-    if (torEnabled) {
-      kPrint("Tor enabled, checking connectivity...");
+    try {
+      if (torEnabled) {
+        kPrint("Tor enabled, checking connectivity...");
+        final response = await http
+            .getForeground('$baseUrl/challenge')
+            .timeout(HttpTor.foregroundTorRequestTimeout);
+        final reachable = response.statusCode == 200;
+        _report(
+          "Prime server connectivity check completed transport=$transport "
+          "status=${response.statusCode} reachable=$reachable",
+        );
+        return reachable;
+      }
+
+      await InternetAddress.lookup(uri.host)
+          .timeout(const Duration(seconds: 15));
       final response = await http
-          .getForeground('$baseUrl/challenge')
-          .timeout(HttpTor.foregroundTorRequestTimeout);
-      return response.statusCode == 200;
+          .get('$baseUrl/challenge')
+          .timeout(_clearnetChallengeTimeout);
+      final reachable = response.statusCode == 200;
+      _report(
+        "Prime server connectivity check completed transport=$transport "
+        "status=${response.statusCode} reachable=$reachable",
+      );
+      return reachable;
+    } catch (e, stackTrace) {
+      _report(
+        "Prime server connectivity check failed transport=$transport "
+        "error=${e.runtimeType}",
+        stackTrace: stackTrace,
+      );
+      rethrow;
     }
-
-    await InternetAddress.lookup(uri.host).timeout(const Duration(seconds: 15));
-    final response =
-        await http.get('$baseUrl/challenge').timeout(_clearnetChallengeTimeout);
-    return response.statusCode == 200;
   }
 
   @override
@@ -180,21 +217,33 @@ class ScvServer implements PrimeSecurityCheckService {
     final baseUrl = torEnabled
         ? ScvServer.primeSecurityCheckOnion
         : ScvServer.primeSecurityCheckUrl;
+    final transport = torEnabled ? "tor" : "clearnet";
+    _report("Prime challenge request started transport=$transport");
     try {
       final response = torEnabled
           ? await http.getForeground('$baseUrl/challenge')
           : await http.get('$baseUrl/challenge');
 
       kPrint("response status code: ${response.statusCode}");
+      _report(
+        "Prime challenge response transport=$transport "
+        "status=${response.statusCode}",
+      );
       if (response.statusCode != 200) {
         return null;
       }
       final data = Uint8List.fromList(response.bodyBytes);
 
       kPrint("Received security challenge payload");
+      _report("Prime challenge received sizeBytes=${data.length}");
 
       return ChallengeRequest(data: data);
-    } catch (e) {
+    } catch (e, stackTrace) {
+      _report(
+        "Prime challenge request failed transport=$transport "
+        "error=${e.runtimeType}",
+        stackTrace: stackTrace,
+      );
       return null;
     }
   }
@@ -208,6 +257,7 @@ class ScvServer implements PrimeSecurityCheckService {
   @override
   Future<ScvVerificationResult> verifyProof(Uint8List data) async {
     if (Settings().skipPrimeSecurityCheck) {
+      _report("Prime proof verification skipped by settings");
       return ScvVerificationResult.success;
     }
 
@@ -216,6 +266,11 @@ class ScvServer implements PrimeSecurityCheckService {
         ? ScvServer.primeSecurityCheckOnion
         : ScvServer.primeSecurityCheckUrl;
     final uri = '$baseUrl/verify';
+    final transport = torEnabled ? "tor" : "clearnet";
+    _report(
+      "Prime proof verification request started transport=$transport "
+      "sizeBytes=${data.length}",
+    );
     try {
       kPrint("Received proof verification payload");
       final response = await http.postBytes(
@@ -226,31 +281,138 @@ class ScvServer implements PrimeSecurityCheckService {
       );
 
       kPrint("response status code: ${response.statusCode}");
+      _report(
+        "Prime proof verification response transport=$transport "
+        "status=${response.statusCode}",
+      );
       if (response.statusCode == 200) {
-        List<int> rawVerificationMessage = response.bodyBytes;
-        kPrint("response status data 32: ${rawVerificationMessage[32]}");
         kPrint("Received raw verification message");
-        // Error code is the 33rd byte in the response
-        final errorCode = rawVerificationMessage.length > 32
-            ? rawVerificationMessage[32]
-            : -1;
-        kPrint('Error code: $errorCode');
-        if (errorCode == 0) {
-          return ScvVerificationResult.success;
-        } else {
-          // Server responded but verification failed - device may be tampered
-          return ScvVerificationResult.verificationFailed;
-        }
+        final result = resultFromVerifyResponse(data, response.bodyBytes);
+        _report("Prime proof verification result=${result.name}");
+        return result;
       } else {
         kPrint('Error: ${response.statusCode}');
         // Server returned non-200 status - treat as network/server error
+        _report("Prime proof verification result=networkError");
         return ScvVerificationResult.networkError;
       }
-    } catch (e) {
+    } catch (e, stackTrace) {
       kPrint("failed to verify proof {$e}");
+      _report(
+        "Prime proof verification request failed transport=$transport "
+        "error=${e.runtimeType}",
+        stackTrace: stackTrace,
+      );
       // Exception occurred - likely network error
       return ScvVerificationResult.networkError;
     }
+  }
+
+  // Allowance for the phone clock when checking the proof's deadline.
+  static const Duration _proofDeadlineGrace = Duration(minutes: 10);
+
+  // sc-server error codes about the challenge's timing, not the device.
+  static const int _deadlineExpired = 4;
+  static const int _unknownChallenge = 6;
+
+  /// Maps a /verify answer to a result. The answer is sha256(proof) | error
+  /// code | P-256 signature over sha256 of the first two fields. An answer
+  /// the server did not sign for [proof], or a pass for a proof past its
+  /// deadline (a replay), is a network error: it must never pass a device,
+  /// nor report it as tampered.
+  static ScvVerificationResult resultFromVerifyResponse(
+    Uint8List proof,
+    List<int> response, {
+    String serverPubkey = primeSecurityCheckPubkey,
+    DateTime? now,
+    void Function(String message)? logger,
+  }) {
+    final rejection =
+        _answerRejection(proof, response, serverPubkey, now ?? DateTime.now());
+    if (rejection != null) {
+      (logger ?? _report)("Rejected /verify answer: $rejection");
+      return ScvVerificationResult.networkError;
+    }
+    final errorCode = response[32];
+    if (errorCode == 0) {
+      return ScvVerificationResult.success;
+    }
+    (logger ?? _report)("Signed /verify error code $errorCode");
+    switch (errorCode) {
+      case _deadlineExpired:
+      case _unknownChallenge:
+        return ScvVerificationResult.networkError;
+      default:
+        // Signed rejection of the proof - device may be tampered
+        return ScvVerificationResult.verificationFailed;
+    }
+  }
+
+  static void _report(String message, {StackTrace? stackTrace}) {
+    unawaited(
+      EnvoyReport()
+          .log("scv", message, stackTrace: stackTrace)
+          .catchError((Object _, StackTrace __) {}),
+    );
+  }
+
+  static String? _answerRejection(
+    Uint8List proof,
+    List<int> response,
+    String serverPubkey,
+    DateTime now,
+  ) {
+    if (response.length != 97) {
+      return "length ${response.length}";
+    }
+    if (!const ListEquality<int>()
+        .equals(response.sublist(0, 32), sha256.convert(proof).bytes)) {
+      return "proof hash";
+    }
+    if (!_isSignedBy(
+        serverPubkey, response.sublist(0, 33), response.sublist(33))) {
+      return "signature";
+    }
+    // Bytes 32..40 of the proof are the server-issued challenge deadline
+    // (u64 LE Unix seconds), which the signed proof hash covers. Only a pass
+    // can be a replay; a signed failure stands whatever the deadline says.
+    if (response[32] == 0 && proof.length >= 40) {
+      final deadline = DateTime.fromMillisecondsSinceEpoch(
+        ByteData.sublistView(proof, 32, 40).getUint64(0, Endian.little) * 1000,
+        isUtc: true,
+      );
+      if (now.isAfter(deadline.add(_proofDeadlineGrace))) {
+        return "proof deadline $deadline passed";
+      }
+    }
+    return null;
+  }
+
+  static bool _isSignedBy(
+    String pubkeyHex,
+    List<int> message,
+    List<int> signature,
+  ) {
+    final params = ECCurve_secp256r1();
+    final pubkey = ECPublicKey(
+      params.curve.decodePoint([
+        for (var i = 0; i < pubkeyHex.length; i += 2)
+          int.parse(pubkeyHex.substring(i, i + 2), radix: 16),
+      ]),
+      params,
+    );
+    BigInt toBigInt(List<int> bytes) => bytes.fold(
+        BigInt.zero, (value, byte) => (value << 8) | BigInt.from(byte));
+    // No digest in the signer: it verifies the sha256 prehash as given.
+    final verifier = ECDSASigner()
+      ..init(false, PublicKeyParameter<ECPublicKey>(pubkey));
+    return verifier.verifySignature(
+      Uint8List.fromList(sha256.convert(message).bytes),
+      ECSignature(
+        toBigInt(signature.sublist(0, 32)),
+        toBigInt(signature.sublist(32)),
+      ),
+    );
   }
 }
 
