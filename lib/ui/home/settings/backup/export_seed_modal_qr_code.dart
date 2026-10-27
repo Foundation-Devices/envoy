@@ -122,7 +122,8 @@ class _ExportSeedModalQrCodeState extends State<ExportSeedModalQrCode> {
                     onTap: () {
                       EnvoySeed().get().then((seedString) async {
                         if (context.mounted) {
-                          enableSecureScreen();
+                          // The words overlay takes its own claim in initState;
+                          // this screen's claim keeps the QR protected behind it.
                           List<String> seed = seedString!.split(" ");
 
                           await showEnvoyDialog(
