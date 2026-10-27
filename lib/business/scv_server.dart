@@ -41,7 +41,7 @@ class ScvServer implements PrimeSecurityCheckService {
   static String serverAddress = "https://validate.foundation.xyz";
   static String primeSecurityCheckUrl = "https://security-check.foundation.xyz";
   static String primeSecurityCheckOnion =
-      "http://rmaxv6sivzvw2agnnl3uuyukrkgqjqsnudlq75tbqj5m6hmej4ybp2ad.onion";
+      "http://oqddiudwag2hnt7kmt4nvhrsdfmi4noar7c3fuusf4ld3yegh3teyaid.onion";
 
   final LocalStorage _ls = LocalStorage();
   static const String SCV_CHALLENGE_PREFS = "scv_challenge";
