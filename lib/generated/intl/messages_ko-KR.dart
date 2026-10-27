@@ -72,8 +72,7 @@ class MessageLookup extends MessageLookupByLibrary {
 
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
-        "_": MessageLookupByLibrary.simpleMessage(
-            "https://blockstream.info/api/"),
+        "_": MessageLookupByLibrary.simpleMessage("6:15"),
         "about_appVersion": MessageLookupByLibrary.simpleMessage("App Version"),
         "about_openSourceLicences": MessageLookupByLibrary.simpleMessage(
           "Open Source Licences",
@@ -2125,7 +2124,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "onboarding_migrating_xOfYSynced": m12,
         "onboarding_modalBluetoothUnableConnect_content":
             MessageLookupByLibrary.simpleMessage(
-          "Ensure sure Bluetooth is enabled on Passport and your phone, and that both devices are nearby.",
+          "Ensure Bluetooth is enabled on Passport and your phone, and that both devices are nearby.",
         ),
         "onboarding_modalBluetoothUnableConnect_header":
             MessageLookupByLibrary.simpleMessage("Unable to Connect"),

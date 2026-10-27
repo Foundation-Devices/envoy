@@ -106,6 +106,7 @@ class QLConnection(
     private var connectedDevice: BluetoothDevice? = null
     private var writeCharacteristic: BluetoothGattCharacteristic? = null
     private var readCharacteristic: BluetoothGattCharacteristic? = null
+    private var notificationsEnabled = false
 
     // Write operation state
     @Volatile
@@ -141,7 +142,11 @@ class QLConnection(
         get() = connectedDevice?.bondState == BluetoothDevice.BOND_BONDED
 
     private fun isReady(): Boolean {
-        return isConnected() && writeCharacteristic != null
+        return isConnected() && writeCharacteristic != null && notificationsEnabled
+    }
+
+    private fun isCurrentGatt(gatt: BluetoothGatt?): Boolean {
+        return gatt != null && gatt === bluetoothGatt
     }
 
     init {
@@ -209,15 +214,24 @@ class QLConnection(
      */
     @SuppressLint("MissingPermission")
     fun connect(device: BluetoothDevice) {
+        val previousGatt = bluetoothGatt
+        val previousWriteQueue = bleWriteQueue
+        bluetoothGatt = null
+        bleWriteQueue = null
+        previousWriteQueue?.cancel()
+        connectedDevice = null
+        writeCharacteristic = null
+        readCharacteristic = null
+        notificationsEnabled = false
+        pendingWriteData = null
+        writeRetryCount = 0
+
         // Close existing connection if any
-        bluetoothGatt?.let { existingGatt ->
+        previousGatt?.let { existingGatt ->
             Log.d(TAG, "[$deviceId] Closing existing GATT connection")
             existingGatt.disconnect()
             existingGatt.close()
         }
-
-        bluetoothGatt?.close()
-        bluetoothGatt = null
 
         Log.d(TAG, "[$deviceId] Connecting to: ${device.name ?: "Unknown"} (${device.address})")
 
@@ -646,6 +660,7 @@ class QLConnection(
         connectedDevice = null
         writeCharacteristic = null
         readCharacteristic = null
+        notificationsEnabled = false
         bleWriteQueue = null
         connectionEventSink = null
         writeProgressEventSink = null
@@ -685,6 +700,7 @@ class QLConnection(
 
         override fun onMtuChanged(gatt: BluetoothGatt?, mtu: Int, status: Int) {
             super.onMtuChanged(gatt, mtu, status)
+            if (!isCurrentGatt(gatt)) return
             Log.d(TAG, "[$deviceId] ════════════════════════════════════════")
             Log.d(TAG, "[$deviceId] MTU CHANGED: $mtu bytes (was $currentMtu)")
             if (status == BluetoothGatt.GATT_SUCCESS) {
@@ -698,10 +714,16 @@ class QLConnection(
 
         @SuppressLint("MissingPermission")
         override fun onConnectionStateChange(gatt: BluetoothGatt?, status: Int, newState: Int) {
+            if (!isCurrentGatt(gatt)) {
+                NativeLogStream.log(context, TAG, "[$deviceId] Ignoring connection state from stale GATT")
+                return
+            }
+
             when (newState) {
                 BluetoothProfile.STATE_CONNECTED -> {
                     Log.d(TAG, "[$deviceId] ✓ CONNECTED TO GATT SERVER")
                     connectedDevice = gatt?.device
+                    notificationsEnabled = false
 
                     if (connectedDevice?.bondState == BluetoothDevice.BOND_BONDED) {
                         sendConnectionEvent(BluetoothConnectionEventType.DEVICE_CONNECTED)
@@ -740,6 +762,7 @@ class QLConnection(
                     connectedDevice = null
                     writeCharacteristic = null
                     readCharacteristic = null
+                    notificationsEnabled = false
                     callback.onDeviceDisconnected(this@QLConnection)
                 }
             }
@@ -747,6 +770,11 @@ class QLConnection(
 
         @SuppressLint("MissingPermission")
         override fun onServicesDiscovered(gatt: BluetoothGatt?, status: Int) {
+            if (!isCurrentGatt(gatt)) {
+                NativeLogStream.log(context, TAG, "[$deviceId] Ignoring services from stale GATT")
+                return
+            }
+
             if (status == BluetoothGatt.GATT_SUCCESS) {
                 Log.d(TAG, "[$deviceId] Services discovered successfully")
 
@@ -817,6 +845,7 @@ class QLConnection(
             characteristic: BluetoothGattCharacteristic?,
             status: Int
         ) {
+            if (!isCurrentGatt(gatt)) return
             if (characteristic?.uuid == writeCharacteristic?.uuid) {
                 bleWriteQueue?.onCharacteristicWrite(status)
             }
@@ -871,6 +900,7 @@ class QLConnection(
             characteristic: BluetoothGattCharacteristic?,
             status: Int
         ) {
+            if (!isCurrentGatt(gatt)) return
             if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) {
                 @Suppress("DEPRECATION")
                 if (status == BluetoothGatt.GATT_SUCCESS) {
@@ -891,6 +921,7 @@ class QLConnection(
             status: Int
         ) {
             super.onCharacteristicRead(gatt, characteristic, value, status)
+            if (!isCurrentGatt(gatt)) return
             if (value.isNotEmpty()) {
                 sendBinaryData(value)
             }
@@ -902,6 +933,7 @@ class QLConnection(
             value: ByteArray
         ) {
             super.onCharacteristicChanged(gatt, characteristic, value)
+            if (!isCurrentGatt(gatt)) return
             if (value.isEmpty()) {
                 Log.w(TAG, "[$deviceId] Notification received but data is empty")
                 return
@@ -914,6 +946,7 @@ class QLConnection(
             gatt: BluetoothGatt?,
             characteristic: BluetoothGattCharacteristic?
         ) {
+            if (!isCurrentGatt(gatt)) return
             if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) {
                 @Suppress("DEPRECATION")
                 characteristic?.value?.let { data ->
@@ -927,12 +960,25 @@ class QLConnection(
             descriptor: BluetoothGattDescriptor?,
             status: Int
         ) {
-            if (descriptor?.uuid == CCCD_UUID) {
-                if (status == BluetoothGatt.GATT_SUCCESS) {
-                    Log.d(TAG, "[$deviceId] CCCD write successful - Notifications enabled")
-                } else {
-                    NativeLogStream.error(TAG, "[$deviceId] CCCD write failed with status: $status")
-                }
+            if (!isCurrentGatt(gatt) ||
+                !isConnected() ||
+                descriptor?.uuid != CCCD_UUID ||
+                descriptor.characteristic.uuid != readCharacteristic?.uuid
+            ) {
+                NativeLogStream.log(
+                    context,
+                    TAG,
+                    "[$deviceId] Ignoring descriptor write from stale or unexpected GATT"
+                )
+                return
+            }
+
+            notificationsEnabled = status == BluetoothGatt.GATT_SUCCESS
+            if (notificationsEnabled) {
+                Log.d(TAG, "[$deviceId] CCCD write successful - Notifications enabled")
+                sendConnectionEvent(BluetoothConnectionEventType.DEVICE_CONNECTED)
+            } else {
+                NativeLogStream.error(TAG, "[$deviceId] CCCD write failed with status: $status")
             }
         }
     }

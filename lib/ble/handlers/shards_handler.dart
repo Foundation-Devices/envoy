@@ -36,7 +36,7 @@ class ShardsHandler extends PassportMessageHandler {
           ),
         );
         kPrint("Shard backed up!");
-      } catch (e, _) {
+      } catch (e) {
         kPrint("Shard backup failure: $e");
         qlConnection.writeMessage(
           api.QuantumLinkMessage.backupShardResponse(
@@ -61,7 +61,7 @@ class ShardsHandler extends PassportMessageHandler {
           ),
         );
         kPrint("Shard health checked! found ? ${shard != null}");
-      } catch (e, _) {
+      } catch (e) {
         kPrint("Shard health check failure: $e");
         await qlConnection.writeMessage(
           api.QuantumLinkMessage.primeMagicBackupStatusResponse(
@@ -97,7 +97,7 @@ class ShardsHandler extends PassportMessageHandler {
         );
 
         kPrint("Shard restored! success ? $result");
-      } catch (e, _) {
+      } catch (e) {
         kPrint("Shard restore failure: $e");
         await qlConnection.writeMessage(
           api.QuantumLinkMessage.backupShardResponse(

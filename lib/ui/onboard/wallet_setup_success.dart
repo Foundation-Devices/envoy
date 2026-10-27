@@ -10,7 +10,6 @@ import 'package:envoy/ui/onboard/prime/state/ble_onboarding_state.dart';
 import 'package:envoy/ui/routes/accounts_router.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:foundation_api/foundation_api.dart';
 import 'package:go_router/go_router.dart';
 import 'package:envoy/ui/onboard/onboard_welcome.dart';
 import 'package:envoy/ui/theme/envoy_spacing.dart';
@@ -31,31 +30,50 @@ class WalletSetupSuccess extends ConsumerStatefulWidget {
 }
 
 class _WalletSetupSuccessState extends ConsumerState<WalletSetupSuccess> {
+  ProviderSubscription<PrimeOnboardingStep?>? _onboardingStepSubscription;
+
   @override
   void initState() {
+    super.initState();
+    _onboardingStepSubscription = ref.listenManual<PrimeOnboardingStep?>(
+      primeOnboardingStepProvider,
+      (_, next) => _routeFromOnboardingStep(next),
+      fireImmediately: true,
+    );
     Future.delayed(const Duration(milliseconds: 100)).then((_) {
       ref.read(successfulSetupWallet.notifier).state = true;
     });
     EnvoyStorage().setBool(PREFS_ONBOARDED, true);
+  }
 
-    super.initState();
+  @override
+  void dispose() {
+    _onboardingStepSubscription?.close();
+    super.dispose();
+  }
+
+  void _routeFromOnboardingStep(PrimeOnboardingStep? state) {
+    if (state == null || !mounted) return;
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) return;
+      switch (state) {
+        case PrimeOnboardingStep.firmwareUpdateScreen:
+          context.goNamed(ONBOARD_PRIME_FIRMWARE_UPDATE);
+          break;
+        case PrimeOnboardingStep.securingDevice:
+          context.goNamed(ONBOARD_PRIME_CONTINUING_SETUP);
+          break;
+        case PrimeOnboardingStep.completed:
+          context.go(ROUTE_ACCOUNTS_HOME);
+          break;
+        default:
+          break;
+      }
+    });
   }
 
   @override
   Widget build(BuildContext context) {
-    ref.listen(onboardingStateStreamProvider, (prev, next) {
-      next.whenData((state) {
-        if (state == OnboardingState.firmwareUpdateScreen) {
-          context.goNamed(ONBOARD_PRIME_FIRMWARE_UPDATE);
-        } else if (state == OnboardingState.securingDevice) {
-          context.goNamed(ONBOARD_PRIME_CONTINUING_SETUP);
-        } else if (state == OnboardingState.walletConected) {
-          context.goNamed(ONBOARD_PRIME_CONNECTED_SUCCESS);
-        } else if (state == OnboardingState.completed) {
-          context.go(ROUTE_ACCOUNTS_HOME);
-        }
-      });
-    });
     return PopScope(
       canPop: false,
       child: OnboardPageBackground(

@@ -5,6 +5,7 @@
 import 'dart:io';
 
 import 'package:envoy/business/envoy_seed.dart';
+import 'package:envoy/business/restore_account_metadata.dart';
 import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/components/pop_up.dart';
 import 'package:envoy/ui/onboard/wallet_setup_success.dart';
@@ -14,15 +15,33 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:path_provider/path_provider.dart';
 
-Future showRestoreFailedDialog(BuildContext context) async {
+Future showRestoreFailedDialog(
+  BuildContext context, {
+  bool accountRestoreFailed = false,
+  Function(BuildContext context)? onContinueWithRestored,
+}) async {
+  // When some accounts were recovered before the failure, the primary
+  // action continues with them so they are not left unreachable.
   await showEnvoyPopUp(
     context,
-    S().manual_setup_import_backup_fails_modal_subheading,
+    accountRestoreFailed
+        ? S().menu_toast_unexpectedError
+        : S().manual_setup_import_backup_fails_modal_subheading,
     S().component_continue,
-    (context) {
-      Navigator.pop(context);
-    },
-    title: S().manual_setup_import_backup_fails_modal_heading,
+    onContinueWithRestored ??
+        (context) {
+          Navigator.pop(context);
+        },
+    title: accountRestoreFailed
+        ? S().magic_setup_recovery_fail_heading
+        : S().manual_setup_import_backup_fails_modal_heading,
+    secondaryButtonLabel:
+        onContinueWithRestored != null ? S().component_back : null,
+    onSecondaryButtonTap: onContinueWithRestored != null
+        ? (context) {
+            Navigator.pop(context);
+          }
+        : null,
     dismissible: false,
     showCloseButton: false,
     typeOfMessage: PopUpState.warning,
@@ -30,7 +49,11 @@ Future showRestoreFailedDialog(BuildContext context) async {
   );
 }
 
-Future<bool> openBackupFile(BuildContext buildContext, {String? seed}) async {
+Future<bool> openBackupFile(
+  BuildContext buildContext, {
+  String? seed,
+  String? passphrase,
+}) async {
   var success = false;
   final file = await openFile();
   if (file != null) {
@@ -38,7 +61,12 @@ Future<bool> openBackupFile(BuildContext buildContext, {String? seed}) async {
       success = await EnvoySeed().restoreData(
         filePath: file.path,
         seed: seed,
+        passphrase: passphrase,
       );
+    } on AccountRestoreException {
+      // Callers must distinguish a found-but-unrestorable backup from a
+      // simply unreadable file.
+      rethrow;
     } catch (e) {
       success = false;
     }

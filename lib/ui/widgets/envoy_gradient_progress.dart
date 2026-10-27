@@ -10,11 +10,13 @@ class EnvoyGradientProgress extends StatefulWidget {
   final List<Color> colors;
   final double progress;
   final Color backgroundColor;
+  final bool indeterminate;
   const EnvoyGradientProgress({
     super.key,
     required this.progress,
     this.colors = const [Color(0xff232728), Color(0xff6D7576)],
     this.backgroundColor = EnvoyColors.gray500,
+    this.indeterminate = false,
   });
 
   @override
@@ -23,8 +25,80 @@ class EnvoyGradientProgress extends StatefulWidget {
 
 class _EnvoyGradientProgressState extends State<EnvoyGradientProgress>
     with SingleTickerProviderStateMixin {
+  late final AnimationController _indeterminateController;
+
+  @override
+  void initState() {
+    super.initState();
+    _indeterminateController = AnimationController(
+      duration: LinearProgressIndicator.defaultAnimationDuration,
+      vsync: this,
+    );
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    _syncIndeterminateAnimation();
+  }
+
+  @override
+  void didUpdateWidget(covariant EnvoyGradientProgress oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    _syncIndeterminateAnimation();
+  }
+
+  void _syncIndeterminateAnimation() {
+    if (!widget.indeterminate) {
+      _indeterminateController.stop();
+    } else if (MediaQuery.maybeDisableAnimationsOf(context) ?? false) {
+      _indeterminateController
+        ..stop()
+        ..value = 0.5;
+    } else if (!_indeterminateController.isAnimating) {
+      _indeterminateController.repeat();
+    }
+  }
+
+  @override
+  void dispose() {
+    _indeterminateController.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
+    if (widget.indeterminate) {
+      return SizedBox(
+        height: 12,
+        width: double.infinity,
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(12),
+          child: Stack(
+            fit: StackFit.expand,
+            children: [
+              ColoredBox(color: widget.backgroundColor),
+              ShaderMask(
+                blendMode: BlendMode.srcIn,
+                shaderCallback: (bounds) => LinearGradient(
+                  colors: widget.colors,
+                ).createShader(bounds),
+                child: LinearProgressIndicator(
+                  controller: _indeterminateController,
+                  backgroundColor: Colors.transparent,
+                  color: Colors.white,
+                  minHeight: 12,
+                  borderRadius: BorderRadius.circular(12),
+                  stopIndicatorRadius: 0,
+                  trackGap: 0,
+                ),
+              ),
+            ],
+          ),
+        ),
+      );
+    }
+
     return TweenAnimationBuilder(
       tween: Tween<double>(begin: 0, end: widget.progress),
       curve: EnvoyEasing.defaultEasing,

@@ -43,6 +43,8 @@ dependencies:
     path: packages/ngwallet
   shards:
     path: packages/shards
+  qlv2:
+    path: packages/qlv2
 
   #  # qr_code_scanner fork
   qr_code_scanner_plus:
@@ -51,10 +53,7 @@ dependencies:
       ref: 973ac30a242486df799f426c4258cdf7ce25a32f
 
   video_player: ^2.10.1
-  tor:
-    git:
-      url: https://github.com/Foundation-Devices/tor.git
-      ref: 91a4cd5a7e6edf9d2da02aa8425aba562996fc7d
+  tor: 0.2.2
   qr_flutter: ^4.1.0
   dots_indicator: ^4.0.1
   flutter_secure_storage: ^9.2.2
@@ -85,6 +84,7 @@ dependencies:
   local_auth: ^2.3.0
   rive: ^0.14.0-dev.8
   file_saver: ^0.3.1
+  file_picker: ^10.3.1
   file_selector: ^1.1.0
   intl_utils: 2.8.14
   schedulers:

@@ -602,7 +602,7 @@ class _CancelTransactionProgressState
 
       /// get the raw transaction from the database
       await EnvoyAccountHandler.broadcast(
-        draftTransaction: cancelTx,
+        psbt: cancelTx.psbt,
         electrumServer: server,
         torPort: port,
         validateDomain: Settings().validateDomain(

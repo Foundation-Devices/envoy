@@ -24,9 +24,9 @@ import 'package:envoy/ui/theme/envoy_typography.dart';
 import 'package:envoy/ui/widgets/blur_dialog.dart';
 import 'package:envoy/ui/widgets/envoy_step_item.dart';
 import 'package:envoy/util/bug_report_helper.dart';
+import 'package:envoy/util/console.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:foundation_api/foundation_api.dart';
 import 'package:go_router/go_router.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -43,10 +43,47 @@ class PrimeOnboardParing extends ConsumerStatefulWidget {
 class _PrimeOnboardParingState extends ConsumerState<PrimeOnboardParing> {
   //TODO: use provider to get firmware update status
   bool updateAvailable = false;
+  ProviderSubscription<PrimeOnboardingStep?>? _onboardingStepSubscription;
 
   @override
   void initState() {
     super.initState();
+    _onboardingStepSubscription = ref.listenManual<PrimeOnboardingStep?>(
+      primeOnboardingStepProvider,
+      (_, next) => _routeFromOnboardingStep(next),
+      fireImmediately: true,
+    );
+  }
+
+  @override
+  void dispose() {
+    _onboardingStepSubscription?.close();
+    super.dispose();
+  }
+
+  void _routeFromOnboardingStep(PrimeOnboardingStep? state) {
+    kPrint("[PrimeOnboarding] route_listener(pairing): step=$state");
+    if (state == null || !mounted) return;
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) return;
+      switch (state) {
+        case PrimeOnboardingStep.firmwareUpdateScreen:
+          context.goNamed(ONBOARD_PRIME_FIRMWARE_UPDATE);
+          break;
+        case PrimeOnboardingStep.securingDevice:
+          context.goNamed(ONBOARD_PRIME_CONTINUING_SETUP);
+          break;
+        case PrimeOnboardingStep.walletConnected:
+          context.goNamed(ONBOARD_PRIME_CONNECTED_SUCCESS);
+          break;
+        case PrimeOnboardingStep.completed:
+          context.go(ROUTE_ACCOUNTS_HOME);
+          break;
+        default:
+          break;
+      }
+    });
   }
 
   Future<bool> showExitWarning(BuildContext context) {
@@ -101,20 +138,6 @@ class _PrimeOnboardParingState extends ConsumerState<PrimeOnboardParing> {
     final firmWareCheck = ref.watch(firmWareUpdateProvider);
     final deviceCheck = ref.watch(deviceSecurityProvider);
     startBluetoothDisconnectionListener(context, ref);
-
-    ref.listen(onboardingStateStreamProvider, (prev, next) {
-      next.whenData((state) {
-        if (state == OnboardingState.firmwareUpdateScreen) {
-          context.goNamed(ONBOARD_PRIME_FIRMWARE_UPDATE);
-        } else if (state == OnboardingState.securingDevice) {
-          context.goNamed(ONBOARD_PRIME_CONTINUING_SETUP);
-        } else if (state == OnboardingState.walletConected) {
-          context.goNamed(ONBOARD_PRIME_CONNECTED_SUCCESS);
-        } else if (state == OnboardingState.completed) {
-          context.go(ROUTE_ACCOUNTS_HOME);
-        }
-      });
-    });
 
     return PopScope(
       canPop: false,

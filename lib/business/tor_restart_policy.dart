@@ -6,6 +6,7 @@ class TorRestartPolicy {
   /// How long after an automatic restart before another may be attempted, so
   /// a restart that didn't fix Tor cannot wedge recovery permanently.
   static const Duration restartCooldown = Duration(minutes: 10);
+  static const Duration nativeFailureCooldown = Duration(seconds: 30);
 
   static final Stopwatch _monotonicClock = Stopwatch()..start();
 
@@ -32,10 +33,18 @@ class TorRestartPolicy {
   int get consecutiveFailures => _consecutiveFailures;
   bool get restartAttempted => _lastRestartAt != null;
   Duration get restartCooldownRemaining {
+    return _cooldownRemaining(restartCooldown);
+  }
+
+  Duration get nativeFailureCooldownRemaining {
+    return _cooldownRemaining(nativeFailureCooldown);
+  }
+
+  Duration _cooldownRemaining(Duration cooldown) {
     final lastRestart = _lastRestartAt;
     if (lastRestart == null) return Duration.zero;
 
-    final remaining = restartCooldown - (_elapsed() - lastRestart);
+    final remaining = cooldown - (_elapsed() - lastRestart);
     return remaining.isNegative ? Duration.zero : remaining;
   }
 
@@ -48,18 +57,23 @@ class TorRestartPolicy {
       return false;
     }
 
-    return _claimRestartIfAllowed();
+    return _claimRestartIfAllowed(restartCooldown);
   }
 
   bool recordConfirmedFailure() {
     _consecutiveFailures = failureThreshold;
-    return _claimRestartIfAllowed();
+    return _claimRestartIfAllowed(restartCooldown);
   }
 
-  bool _claimRestartIfAllowed() {
+  bool recordNativeProxyFailure() {
+    _consecutiveFailures = failureThreshold;
+    return _claimRestartIfAllowed(nativeFailureCooldown);
+  }
+
+  bool _claimRestartIfAllowed(Duration cooldown) {
     final now = _elapsed();
     final lastRestart = _lastRestartAt;
-    if (lastRestart != null && now - lastRestart < restartCooldown) {
+    if (lastRestart != null && now - lastRestart < cooldown) {
       return false;
     }
 

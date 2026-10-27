@@ -5,7 +5,6 @@
 import 'dart:async';
 import 'dart:io';
 
-import 'package:envoy/ble/handlers/fw_update_handler.dart';
 import 'package:envoy/ble/quantum_link_router.dart';
 import 'package:envoy/business/devices.dart';
 import 'package:envoy/channels/ble_status.dart';
@@ -42,10 +41,8 @@ final onboardingDeviceConnectionStatusStream =
 final isPrimeConnectedProvider = Provider.family<bool, Device?>((ref, device) {
   if (device?.type != DeviceType.passportPrime) return false;
   if (device == null) return false;
-  DeviceStatus? status =
-      ref.watch(deviceConnectionStatusStreamProvider(device)).valueOrNull;
-  status ??= device.qlConnection().lastDeviceStatus;
-  return status.connected;
+  ref.watch(deviceConnectionStatusStreamProvider(device));
+  return device.qlConnection().lastDeviceStatus.connected;
 });
 
 final _qlActiveStreamProvider =
@@ -57,8 +54,8 @@ final _qlActiveStreamProvider =
 
 final primeQLActivityProvider = Provider.family<bool, Device?>((ref, device) {
   if (device == null) return false;
-  final qlActive = ref.watch(_qlActiveStreamProvider(device)).valueOrNull;
-  return qlActive ?? false;
+  ref.watch(_qlActiveStreamProvider(device));
+  return device.qlConnection().isQLActive();
 });
 
 final connectedDeviceProvider = StreamProvider.family<DeviceStatus, String>((
@@ -69,16 +66,12 @@ final connectedDeviceProvider = StreamProvider.family<DeviceStatus, String>((
   return qlConnection.deviceStatusStream;
 });
 
-final fwTransferProgress = StreamProvider<FwTransferProgress>((ref) {
-  final device = ref.watch(onboardingDeviceProvider);
-  if (device == null) return const Stream.empty();
-  return device.qlHandler.fwUpdateHandler.transferProgress;
+final fwTransferProgress = Provider<PrimeFirmwareTransferProgress?>((ref) {
+  return ref.watch(primeOnboardingControllerProvider).firmwareTransferProgress;
 });
 
-final fwDownloadProgress = StreamProvider<double>((ref) {
-  final device = ref.watch(onboardingDeviceProvider);
-  if (device == null) return const Stream.empty();
-  return device.qlHandler.fwUpdateHandler.downloadProgress;
+final fwDownloadProgress = Provider<double>((ref) {
+  return ref.watch(primeOnboardingControllerProvider).firmwareDownloadProgress;
 });
 
 class BluetoothManager extends WidgetsBindingObserver {

@@ -224,7 +224,7 @@ class HttpTor {
       resolveRoute: () async {
         final remaining = _verifiedDownloadTimeRemaining(elapsed);
         if (requiresTor) {
-          await _waitForTorReadiness(remaining);
+          await waitUntilTorReady(remaining);
         }
         return resolveScheduledProxyPort(
           requiresTor: requiresTor,
@@ -244,7 +244,7 @@ class HttpTor {
     );
   }
 
-  Future<void> _waitForTorReadiness(Duration timeout) async {
+  Future<void> waitUntilTorReady(Duration timeout) async {
     // Tor.isReady polls after Future.timeout has stopped listening. Waiting on
     // state events lets a timeout cancel its subscription without an orphan.
     await waitForTorReadiness(

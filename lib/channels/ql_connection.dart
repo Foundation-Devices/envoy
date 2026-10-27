@@ -7,6 +7,7 @@ import 'dart:io';
 
 import 'package:crypto/crypto.dart';
 import 'package:envoy/ble/ql_handlers.dart';
+import 'package:envoy/ble/qlv2/protocol_handler.dart';
 import 'package:envoy/ble/quantum_link_router.dart';
 import 'package:envoy/business/devices.dart';
 import 'package:envoy/channels/ble_status.dart';
@@ -32,7 +33,9 @@ import 'package:foundation_api/foundation_api.dart' as api;
 /// - Connection stream: envoy/bluetooth/connection/stream/{deviceId}
 /// - Write progress stream: envoy/ble/write/progress/{deviceId}
 ///
-class QLConnection with EnvoyMessageWriter {
+/// QLConnection will support both v2 and v1 protocol
+///
+class QLConnection with EnvoyMessageWriter implements QLBleTransport {
   // Threshold for considering the QL connection active based on last heartbeat, in seconds
   // Prime sends heartbeat every 6 seconds. Give the app enough slack to avoid
   // flapping while it is doing work like firmware checks or queued writes.
@@ -42,6 +45,7 @@ class QLConnection with EnvoyMessageWriter {
   static const Duration _pairingResponseTimeout = Duration(seconds: 2);
 
   //Mac address on android, Device UUID on iOS
+  @override
   final String deviceId;
 
   // Device-specific method channel for BLE operations
@@ -62,6 +66,7 @@ class QLConnection with EnvoyMessageWriter {
 
   var _lastDeviceStatus = DeviceStatus(connected: false);
 
+  @override
   DeviceStatus get lastDeviceStatus => _lastDeviceStatus;
 
   final _readController = StreamController<Uint8List>.broadcast();
@@ -74,6 +79,8 @@ class QLConnection with EnvoyMessageWriter {
       );
 
   StreamSubscription? _deviceStatusSubscription;
+  StreamSubscription<Uint8List>? _dataSubscription;
+  StreamSubscription<bool>? _qlv2ActiveSubscription;
   Timer? _qlActivityMonitorTimer;
   Timer? _autoReconnectTimer;
   Timer? _postTransferLivenessTimer;
@@ -89,12 +96,38 @@ class QLConnection with EnvoyMessageWriter {
   api.QuantumLinkIdentity? _qlIdentity;
   api.XidDocument? _recipientXid;
 
+  QLV2ProtocolHandler? _v2Handler;
+  final _v2HandlerChanges =
+      StreamController<QLV2ProtocolHandler?>.broadcast(sync: true);
+
+  QLV2ProtocolHandler? get v2Handler => _v2Handler;
+  Stream<QLV2ProtocolHandler?> get v2HandlerChanges => _v2HandlerChanges.stream;
+
+  set v2Handler(QLV2ProtocolHandler? handler) {
+    if (identical(_v2Handler, handler)) return;
+    unawaited(_qlv2ActiveSubscription?.cancel());
+    _qlv2ActiveSubscription = null;
+    _v2Handler?.dispose();
+    _v2Handler = handler;
+    if (handler != null) {
+      _cancelPairingRetry();
+      _qlv2ActiveSubscription = handler.activeStream.listen((active) {
+        _emitQLActive(active);
+      });
+      _emitQLActive(handler.isActive);
+    } else {
+      _emitQLActiveIfChanged();
+    }
+    if (!_v2HandlerChanges.isClosed) _v2HandlerChanges.add(handler);
+  }
+
   api.XidDocument? get recipientXid => _recipientXid;
 
   api.QuantumLinkIdentity? get senderXid => _qlIdentity;
 
   /// Replay stream for device status with latest value caching.
   /// New subscribers immediately receive the last known status.
+  @override
   Stream<DeviceStatus> get deviceStatusStream =>
       _deviceStatusStream.replayLatest(_lastDeviceStatus);
 
@@ -203,6 +236,7 @@ class QLConnection with EnvoyMessageWriter {
           qlHandler.bleAccountHandler.resetSendingState();
           _sendingExRate = false;
           _abortFirmwareTransferOnDisconnect();
+          _v2Handler?.markTransportDisconnected();
           _emitQLActiveIfChanged();
           if (shouldAutoReconnect) {
             _startAutoReconnect();
@@ -220,8 +254,13 @@ class QLConnection with EnvoyMessageWriter {
       );
     });
 
-    dataStream.asBroadcastStream().listen((data) {
-      _handleData(data);
+    _dataSubscription = dataStream.listen((data) {
+      final handler = _v2Handler;
+      if (handler != null) {
+        unawaited(handler.handleBleData(data));
+      } else {
+        unawaited(_handleData(data));
+      }
     });
   }
 
@@ -271,6 +310,7 @@ class QLConnection with EnvoyMessageWriter {
   // send exchange rate history on ble connect.
   void onQLConnected() async {
     kPrint("[$deviceId] onQLConnected ");
+    if (_v2Handler != null) return;
     if (getDevice()?.onboardingComplete == true && !_sendingExRate) {
       try {
         _sendingExRate = true;
@@ -295,6 +335,8 @@ class QLConnection with EnvoyMessageWriter {
   }
 
   bool isQLActive() {
+    final handler = _v2Handler;
+    if (handler != null) return handler.isActive;
     final lastHeartbeat = qlHandler.heartbeatHandler.lastHeartbeat;
     if (lastHeartbeat == null) {
       return false;
@@ -324,15 +366,18 @@ class QLConnection with EnvoyMessageWriter {
   }
 
   void _emitQLActiveIfChanged() {
+    _emitQLActive(isQLActive());
+  }
+
+  void _emitQLActive(bool isActive) {
     final wasActive = _lastQLActive;
-    final isActive = isQLActive();
     if (wasActive == isActive) {
       return;
     }
     _lastQLActive = isActive;
     _qlActiveController.add(isActive);
 
-    if (wasActive && !isActive) {
+    if (_v2Handler == null && wasActive && !isActive) {
       unawaited(_reconnectAfterQLStall());
     }
   }
@@ -343,7 +388,7 @@ class QLConnection with EnvoyMessageWriter {
   void setFirmwareTransferInProgress(bool inProgress) {
     _firmwareTransferInProgress = inProgress;
     _postTransferLivenessTimer?.cancel();
-    if (!inProgress) {
+    if (!inProgress && _v2Handler == null) {
       _postTransferLivenessTimer = Timer(
         const Duration(seconds: _heartbeatActiveThreshold),
         () {
@@ -365,6 +410,9 @@ class QLConnection with EnvoyMessageWriter {
   }
 
   Future<void> _reconnectAfterQLStall() async {
+    if (_v2Handler != null) {
+      return;
+    }
     if (_autoReconnectInFlight) {
       return;
     }
@@ -419,7 +467,9 @@ class QLConnection with EnvoyMessageWriter {
       return;
     }
 
-    if (getDevice() == null && (_qlIdentity == null || _recipientXid == null)) {
+    if (getDevice() == null &&
+        _v2Handler == null &&
+        (_qlIdentity == null || _recipientXid == null)) {
       kPrint("[$deviceId] Skipping auto-reconnect, QL identity not found");
       return;
     }
@@ -439,7 +489,9 @@ class QLConnection with EnvoyMessageWriter {
     }
 
     final device = getDevice();
-    if (device == null && (_qlIdentity == null || _recipientXid == null)) {
+    if (device == null &&
+        _v2Handler == null &&
+        (_qlIdentity == null || _recipientXid == null)) {
       kPrint("[$deviceId] Skipping auto-reconnect, QL identity not found");
       return;
     }
@@ -448,10 +500,11 @@ class QLConnection with EnvoyMessageWriter {
     var nativeReconnectStarted = false;
     try {
       kPrint("[$deviceId] Auto-reconnecting BLE");
-      if (device != null) {
+      if (device != null && device.protocol == PrimeConnectionProtocol.qlV1) {
         await reconnect(device);
       }
-      if (_qlIdentity == null || _recipientXid == null) {
+      if (_v2Handler == null &&
+          (_qlIdentity == null || _recipientXid == null)) {
         return;
       }
       await BluetoothChannel().reconnect(deviceId);
@@ -503,8 +556,11 @@ class QLConnection with EnvoyMessageWriter {
 
       if (result != null && result.lengthInBytes > 0) {
         final successByte = result.getUint8(0);
-        kPrint("[$deviceId] BLE binary write result: success=$successByte");
-        return successByte == 1;
+        final success = successByte == 1;
+        if (!success) {
+          kPrint("[$deviceId] BLE binary write result: success=$successByte");
+        }
+        return success;
       }
 
       return false;
@@ -642,7 +698,37 @@ class QLConnection with EnvoyMessageWriter {
   }
 
   @override
+  Future<bool> writeBleChunk(Uint8List data) {
+    return _writeQueue.enqueue(
+      () async {
+        if (_readController.isClosed) return false;
+        return writeAll([data]);
+      },
+      timeout: const Duration(seconds: 10),
+      onTimeout: () => _handleWriteTimeout("QL v2 chunk"),
+    );
+  }
+
+  @override
+  Future<bool> isBleConnected() => isConnected();
+
+  @override
+  Future<void> reconnectBle() => BluetoothChannel().reconnect(deviceId);
+
+  @override
+  Future<bool> requestHighBlePriority() => requestHighConnectionPriority();
+
+  @override
+  Future<bool> requestBalancedBlePriority() =>
+      requestBalancedConnectionPriority();
+
+  @override
   Future<bool> writeMessage(api.QuantumLinkMessage message) async {
+    if (_v2Handler != null) {
+      throw StateError(
+        'Cannot send a QL v1 message through an active QL v2 session',
+      );
+    }
     return _writeQueue.enqueue(
       () async {
         if (_readController.isClosed) return false;
@@ -664,41 +750,46 @@ class QLConnection with EnvoyMessageWriter {
         }
       },
       timeout: const Duration(seconds: 10),
-      onTimeout: () async {
-        EnvoyReport().log(
-          "QLConnection",
-          "Timeout writing message of type ${message.runtimeType} to device $deviceId",
-        );
-        kPrint(
-            "[$deviceId] Timeout writing message of type ${message.runtimeType}");
-        // The native write queue is shared by device ID and can outlive this
-        // Dart instance. Always reset a stalled native write, but do not emit
-        // firmware events into a handler that has already been disposed.
-        if (!_readController.isClosed) {
-          _abortFirmwareTransferOnDisconnect();
-        }
-        _writeQueue.completePending(false);
-        try {
-          await _methodChannel
-              .invokeMethod<void>('resetAfterWriteTimeout')
-              .timeout(const Duration(seconds: 2));
-        } catch (e, stack) {
-          debugPrintStack(
-            label: "[$deviceId] Failed to reset BLE after write timeout: $e",
-            stackTrace: stack,
-          );
-        }
-        // Also reject anything queued while native recovery was in flight.
-        _writeQueue.completePending(false);
-        return false;
-      },
+      onTimeout: () =>
+          _handleWriteTimeout("message of type ${message.runtimeType}"),
     );
+  }
+
+  Future<bool> _handleWriteTimeout(String operation) async {
+    unawaited(
+      EnvoyReport().log(
+        "QLConnection",
+        "Timeout writing $operation to device $deviceId",
+      ),
+    );
+    kPrint("[$deviceId] Timeout writing $operation");
+    if (!_readController.isClosed) {
+      _abortFirmwareTransferOnDisconnect();
+    }
+    _writeQueue.completePending(false);
+    try {
+      await _methodChannel
+          .invokeMethod<void>('resetAfterWriteTimeout')
+          .timeout(const Duration(seconds: 2));
+    } catch (e, stack) {
+      debugPrintStack(
+        label: "[$deviceId] Failed to reset BLE after write timeout: $e",
+        stackTrace: stack,
+      );
+    }
+    _writeQueue.completePending(false);
+    return false;
   }
 
   @override
   Future<Stream<double>> writeMessageWithProgress(
     api.QuantumLinkMessage message,
   ) async {
+    if (_v2Handler != null) {
+      throw StateError(
+        'Cannot send a QL v1 message through an active QL v2 session',
+      );
+    }
     final data = await encodeMessage(message: message);
     await writeAll(data);
     return Stream.empty();
@@ -742,6 +833,11 @@ class QLConnection with EnvoyMessageWriter {
     _writeQueue.completePending(false);
     _cancelPairingRetry();
     _deviceStatusSubscription?.cancel();
+    _dataSubscription?.cancel();
+    _qlv2ActiveSubscription?.cancel();
+    _v2Handler?.dispose();
+    _v2Handler = null;
+    unawaited(_v2HandlerChanges.close());
     _qlActivityMonitorTimer?.cancel();
     _autoReconnectTimer?.cancel();
     _postTransferLivenessTimer?.cancel();
@@ -872,6 +968,9 @@ class QLConnection with EnvoyMessageWriter {
   /// Set up the QuantumLink identity for an existing connection.
   /// The actual BLE connection is handled by BluetoothChannel.reconnect().
   Future<void> reconnect(Device device) async {
+    if (device.protocol != PrimeConnectionProtocol.qlV1) {
+      return;
+    }
     _qlIdentity = await device.getQlIdentity();
     _recipientXid = await device.getXidDocument();
 

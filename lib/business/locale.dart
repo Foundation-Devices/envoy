@@ -40,7 +40,8 @@ String? getTranslationByKey(String key) {
   }();
 
   try {
-    return lookup[key]();
+    final message = lookup[key] as String Function()?;
+    return message?.call();
   } catch (_) {
     return null;
   }

@@ -10,7 +10,8 @@ members = [
     "packages/backup/rust",
     "packages/shards/rust",
     "packages/foundation_api/rust",
-    "packages/ngwallet/rust"
+    "packages/ngwallet/rust",
+    "packages/qlv2/rust"
 ]
 exclude = ["passport2/extmod/foundation-rust"]
 

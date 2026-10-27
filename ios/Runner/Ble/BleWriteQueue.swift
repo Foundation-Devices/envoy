@@ -37,12 +37,14 @@ class BleWriteQueue {
         self.gatt = peripheral
         self.characteristic = characteristic
 
-        log("Initialized for characteristic=\(characteristic.uuid.uuidString)")
         startProcessingQueue()
     }
 
-    private func log(_ message: String) {
-        print("\(Self.TAG): \(message)")
+    private func logFailure(_ message: String) {
+        NativeLogStream.shared.log(
+            category: Self.TAG,
+            message: "[\(gatt.identifier.uuidString)] \(message)"
+        )
     }
 
     private func startProcessingQueue() {
@@ -58,7 +60,6 @@ class BleWriteQueue {
 
             while self.isActive {
                 guard !self.writeQueue.isEmpty else {
-                    self.log("Queue drained")
                     self.isProcessing = false
                     return
                 }
@@ -67,7 +68,6 @@ class BleWriteQueue {
                 let request = self.writeQueue.removeFirst()
                 self.currentRequest = request
                 let generation = self.queueGeneration
-                self.log("Dequeued write size=\(request.data.count) remaining=\(self.writeQueue.count)")
 
                 Task {
                     let success = await self.performWrite(data: request.data, generation: generation)
@@ -79,19 +79,19 @@ class BleWriteQueue {
 
                         // Ignore completions that belong to a cancelled/restarted queue instance.
                         guard self.queueGeneration == generation else {
-                            self.log("Ignoring stale write completion for generation=\(generation)")
                             return
                         }
 
                         if !success {
-                            self.log("ERROR write failed size=\(request.data.count); clearing queue")
+                            self.logFailure(
+                                "Write failed size=\(request.data.count) peripheralState=\(self.gatt.state.rawValue); clearing queue"
+                            )
                             self.isActive = false
                             request.completion(false)
                             self.clearQueue()
                             self.isProcessing = false
                             return
                         }
-                        self.log("Write completed size=\(request.data.count)")
                         request.completion(true)
                         self.currentRequest = nil
 
@@ -113,7 +113,6 @@ class BleWriteQueue {
         queue.async { [weak self] in
             guard let self = self else { return }
             if !self.isActive {
-                self.log("Restarting queue")
                 self.queueGeneration &+= 1
                 self.resetPendingWrite(result: false)
                 self.isActive = true
@@ -133,7 +132,7 @@ class BleWriteQueue {
                 }
 
                 if !self.isActive {
-                    self.log("WARNING rejecting write size=\(data.count); queue inactive")
+                    self.logFailure("Write rejected size=\(data.count); queue inactive")
                     continuation.resume(returning: false)
                     return
                 }
@@ -147,11 +146,9 @@ class BleWriteQueue {
                 }
 
                 self.writeQueue.append(request)
-                self.log("Enqueued write size=\(data.count)")
 
                 if !self.isProcessing {
                     self.isProcessing = true
-                    self.log("Starting queue processing")
                     self.processQueue()
                 }
             }
@@ -168,7 +165,6 @@ class BleWriteQueue {
             self.clearQueue()
             self.isActive = false
             self.isProcessing = false
-            self.log("Write queue cancelled")
         }
     }
 
@@ -180,18 +176,15 @@ class BleWriteQueue {
                     return
                 }
                 guard self.isActive, self.queueGeneration == generation else {
-                    self.log("Rejecting write size=\(data.count); stale or inactive generation=\(generation)")
                     continuation.resume(returning: false)
                     return
                 }
                 if self.gatt.state == .disconnected {
-                    self.log("Device disconnected; cannot write size=\(data.count)")
                     continuation.resume(returning: false)
                     return
                 }
                 if !self.gatt.canSendWriteWithoutResponse {
                     // Buffer full — suspend until peripheralIsReady(toSendWriteWithoutResponse:) fires
-                    self.log("Backpressure active for size=\(data.count); waiting for peripheralIsReady")
                     self.resetPendingWrite(result: false)
                     self.writeContinuation = continuation
                     self.pendingWriteData = data
@@ -199,7 +192,6 @@ class BleWriteQueue {
                     self.scheduleReadyTimeout(generation: generation)
 
                 } else {
-                    self.log("Writing immediately size=\(data.count)")
                     self.gatt.writeValue(data, for: self.characteristic, type: .withoutResponse)
                     continuation.resume(returning: true)
                 }
@@ -211,19 +203,15 @@ class BleWriteQueue {
     func notifyReady() {
         queue.async { [weak self] in
             guard let self = self else { return }
-            self.log("Received peripheralIsReady callback")
             guard self.isActive else {
-                self.log("Ignoring peripheralIsReady; queue inactive")
                 return
             }
             guard let continuation = self.writeContinuation,
                   let data = self.pendingWriteData,
                   let generation = self.pendingWriteGeneration else {
-                self.log("Ignoring peripheralIsReady; no pending write")
                 return
             }
             guard self.queueGeneration == generation else {
-                self.log("Discarding stale pending write size=\(data.count) generation=\(generation)")
                 self.resetPendingWrite(result: false)
                 return
             }
@@ -233,11 +221,9 @@ class BleWriteQueue {
             self.pendingWriteData = nil
             self.pendingWriteGeneration = nil
             guard self.gatt.state != .disconnected else {
-                self.log("Peripheral disconnected before pending write flush size=\(data.count)")
                 continuation.resume(returning: false)
                 return
             }
-            self.log("Flushing pending write size=\(data.count)")
             self.gatt.writeValue(data, for: self.characteristic, type: .withoutResponse)
             continuation.resume(returning: true)
         }
@@ -255,17 +241,14 @@ class BleWriteQueue {
                 return
             }
             guard self.queueGeneration == generation, pendingGeneration == generation else {
-                self.log("Discarding stale timeout write size=\(data.count) generation=\(generation)")
                 self.resetPendingWrite(result: false)
                 return
             }
             guard self.gatt.state != .disconnected else {
-                self.log("Peripheral disconnected before timeout write size=\(data.count)")
                 self.resetPendingWrite(result: false)
                 return
             }
 
-            self.log("Timeout elapsed; forcing pending write size=\(data.count)")
             self.readyTimeoutWorkItem = nil
             self.writeContinuation = nil
             self.pendingWriteData = nil
@@ -291,7 +274,6 @@ class BleWriteQueue {
             return
         }
 
-        self.log("Resetting pending write size=\(pendingWriteData?.count ?? 0) result=\(result)")
         writeContinuation = nil
         pendingWriteData = nil
         pendingWriteGeneration = nil
@@ -299,7 +281,6 @@ class BleWriteQueue {
     }
 
     private func clearQueue() {
-        self.log("Clearing write queue (\(writeQueue.count) items)")
         for request in writeQueue {
             request.completion(false)
         }
