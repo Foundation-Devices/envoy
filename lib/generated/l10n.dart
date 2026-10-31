@@ -56,9 +56,14 @@ class S {
 
   // skipped getter for the ':' key
 
-  /// `6:15`
+  /// `https://blockstream.info/api/`
   String get _ {
-    return Intl.message('6:15', name: '_', desc: '', args: []);
+    return Intl.message(
+      'https://blockstream.info/api/',
+      name: '_',
+      desc: '',
+      args: [],
+    );
   }
 
   /// `App Version`
@@ -2631,10 +2636,10 @@ class S {
     );
   }
 
-  /// `Accessory removed, please reconnect Prime.`
+  /// `Accessory removed, reconnect Passport.`
   String get device_deviceDetailsPrimeRemoved_accessoryRemoved {
     return Intl.message(
-      'Accessory removed, please reconnect Prime.',
+      'Accessory removed, reconnect Passport.',
       name: 'device_deviceDetailsPrimeRemoved_accessoryRemoved',
       desc: '',
       args: [],
@@ -6811,11 +6816,31 @@ class S {
     );
   }
 
+  /// `Security Check Incomplete`
+  String get onboarding_connectionIntroErrorInternet_securityCheckIncomplete {
+    return Intl.message(
+      'Security Check Incomplete',
+      name: 'onboarding_connectionIntroErrorInternet_securityCheckIncomplete',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Security Check Pending`
   String get onboarding_connectionIntroErrorInternet_securityCheckPending {
     return Intl.message(
       'Security Check Pending',
       name: 'onboarding_connectionIntroErrorInternet_securityCheckPending',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Keep Passport nearby, check your internet connection, and make sure your phone’s date and time are set automatically. Then try again.`
+  String get onboarding_connectionIntroErrorSecurityIncomplete_content {
+    return Intl.message(
+      'Keep Passport nearby, check your internet connection, and make sure your phone’s date and time are set automatically. Then try again.',
+      name: 'onboarding_connectionIntroErrorSecurityIncomplete_content',
       desc: '',
       args: [],
     );
