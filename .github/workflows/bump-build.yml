@@ -4,43 +4,114 @@
 
 name: Auto-increment Build Number
 
+# Bump after merge, not on PR open: PR branches then never edit the version
+# line, so they stop conflicting with each other on every merge.
 on:
-  pull_request:
-    types:
-      - opened
+  push:
+    branches:
+      - main
+      - '[0-9]+.[0-9]+'
+      - '[0-9]+.[0-9]+.[0-9]+'
+  # A merge whose message carries a skip-ci marker starts no push run.
+  workflow_dispatch:
+
+concurrency:
+  group: bump-build-number-${{ github.ref_name }}
+  cancel-in-progress: false
 
 jobs:
   bump-version:
-    # Fork PRs get a read-only token and could not push the bump anyway.
-    if: github.event.pull_request.head.repo.full_name == github.repository
+    # Skip branch deletions and the bump itself (its squash title on main).
+    if: >-
+      !github.event.deleted &&
+      !startsWith(github.event.head_commit.message, 'chore: bump build number')
     runs-on: ubuntu-latest
     permissions:
       contents: write
+      # Main only: open the bump PR and start its CI.
+      pull-requests: write
+      actions: write
+    env:
+      BRANCH: ${{ github.ref_name }}
+      BUMP_BRANCH: bot/bump-build-number
     steps:
+      - name: Only bump main and numbered release branches
+        run: |
+          # A manual dispatch can target any branch.
+          if [[ ! "$BRANCH" =~ ^(main|[0-9]+\.[0-9]+(\.[0-9]+)?)$ ]]; then
+            echo "::error::$BRANCH is not main or a numbered release branch"
+            exit 1
+          fi
+
       - uses: actions/checkout@v3
         with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          ref: ${{ github.head_ref }}
+          # The branch tip, not the pushed commit: one run covers every merge
+          # that landed while it was queued.
+          ref: ${{ github.ref_name }}
+          # Enough first-parent history to find the previous bump.
+          fetch-depth: 300
+
+      - name: Refuse to bump below the previous bump
+        run: |
+          # A wrongly resolved version conflict can bring back an older line,
+          # even in a push that started no run of its own.
+          build_of() {
+            perl -ne 'print $1 if /^version:\s+\d+\.\d+\.\d+\+(\d{1,9})$/'
+          }
+          last=$(git log --first-parent -1 --format=%H \
+            --grep='^chore: bump build number' HEAD)
+          if [ -z "$last" ]; then
+            echo "::warning::no previous bump in recent history; skipping check"
+            exit 0
+          fi
+          before=$(git show "$last:pubspec.yaml" | build_of)
+          tip=$(build_of < pubspec.yaml)
+          if [ -n "$before" ] && [ -n "$tip" ] && [ "$tip" -lt "$before" ]; then
+            echo "::error::build number went down from $before to $tip; fix pubspec.yaml"
+            exit 1
+          fi
 
       - name: Increment build number
         run: |
-          # The version line is PR-controlled: only a complete X.Y.Z+N line is
-          # rewritten, with the same grammar as scripts/bump_version.sh, and
-          # nothing from it reaches shell evaluation.
+          # Only a complete X.Y.Z+N line is rewritten, with the same grammar as
+          # scripts/bump_version.sh, and nothing from it reaches the shell.
           perl -i -pe 's/^(version:\s+\d+\.\d+\.\d+\+)(\d{1,9})$/$1.($2+1)/e' pubspec.yaml
           if git diff --quiet -- pubspec.yaml; then
             echo "::error::pubspec.yaml has no plain 'version: X.Y.Z+N' line"
             exit 1
           fi
           grep '^version:' pubspec.yaml
-
-      - name: Commit and push
-        env:
-          # Branch names may contain shell syntax; pass it as data.
-          HEAD_REF: ${{ github.head_ref }}
-        run: |
           git config --local user.email "github-actions[bot]@users.noreply.github.com"
           git config --local user.name "github-actions[bot]"
-          git add pubspec.yaml
-          git commit -m "chore: bump build number"
-          git push origin "HEAD:refs/heads/${HEAD_REF}"
+          git commit -am "chore: bump build number"
+
+      # Main lands the bump as an auto-merged PR, so nothing needs a ruleset
+      # bypass and no long-lived credential exists.
+      - name: Open or refresh the auto-merging bump PR
+        if: github.ref_name == 'main'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          # A pending bump PR is replaced by this one, rebased on the new tip.
+          git push --force origin "HEAD:refs/heads/${BUMP_BRANCH}"
+          if ! gh pr view "$BUMP_BRANCH" --json state -q .state | grep -qx OPEN; then
+            gh pr create --base main --head "$BUMP_BRANCH" \
+              --title "chore: bump build number" \
+              --body "Automatic build-number bump after a merge into main."
+          fi
+          # GITHUB_TOKEN pushes start no runs, but a dispatch does, and its
+          # nix-check satisfies the required check on this commit.
+          gh workflow run ci.yml --ref "$BUMP_BRANCH"
+          gh pr merge "$BUMP_BRANCH" --auto --squash
+
+      - name: Push the bump to the release branch
+        if: github.ref_name != 'main'
+        run: |
+          # Release branches are unprotected. A merge that lands meanwhile
+          # rejects the push; replay the bump on top, which always applies.
+          for attempt in 1 2 3; do
+            git push origin "HEAD:refs/heads/${BRANCH}" && exit 0
+            git pull --rebase origin "${BRANCH}"
+          done
+          echo "::error::could not push the build-number bump to ${BRANCH}"
+          exit 1
