@@ -26,6 +26,8 @@ jobs:
       !github.event.deleted &&
       !startsWith(github.event.head_commit.message, 'chore: bump build number')
     runs-on: ubuntu-latest
+    outputs:
+      bumped_sha: ${{ steps.bumped-commit.outputs.sha }}
     permissions:
       contents: write
       # Main only: open the bump PR and start its CI.
@@ -115,3 +117,15 @@ jobs:
           done
           echo "::error::could not push the build-number bump to ${BRANCH}"
           exit 1
+
+      - name: Export the bumped commit
+        id: bumped-commit
+        run: echo "sha=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
+
+  android-build:
+    name: Android build
+    needs: bump-version
+    uses: ./.github/workflows/android-nix.yml
+    with:
+      ref: ${{ needs.bump-version.outputs.bumped_sha }}
+    secrets: inherit
