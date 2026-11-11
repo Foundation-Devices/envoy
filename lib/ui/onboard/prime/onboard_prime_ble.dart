@@ -7,6 +7,8 @@ import 'dart:io';
 
 import 'package:animations/animations.dart';
 import 'package:envoy/ble/bluetooth_manager.dart';
+import 'package:envoy/ble/qlv2/pairing_invite.dart';
+import 'package:envoy/ble/qlv2/protocol_handler.dart';
 import 'package:envoy/business/devices.dart';
 import 'package:envoy/business/settings.dart';
 import 'package:envoy/channels/ble_device_info.dart';
@@ -21,6 +23,8 @@ import 'package:envoy/ui/onboard/onboarding_page.dart';
 import 'package:envoy/ui/onboard/prime/connection_lost_dialog.dart';
 import 'package:envoy/ui/onboard/prime/prime_routes.dart';
 import 'package:envoy/ui/onboard/prime/state/ble_onboarding_state.dart';
+import 'package:envoy/ui/onboard/prime/state/qlv2/prime_onboarding_qlv2_device_storage.dart';
+import 'package:envoy/ui/routes/accounts_router.dart';
 import 'package:envoy/ui/theme/envoy_colors.dart';
 import 'package:envoy/ui/theme/envoy_icons.dart';
 import 'package:envoy/ui/theme/envoy_spacing.dart';
@@ -67,8 +71,10 @@ class _OnboardPrimeBluetoothState extends ConsumerState<OnboardPrimeBluetooth>
   bool scanForPayload = false;
   bool onboardingCompleted = false;
   BleConnectState bleConnectState = BleConnectState.idle;
+  bool _connectInFlight = false;
   int colorWay = 1;
   String? bleDeviceName;
+  String? qlv2PairingToken;
 
   Completer<QuantumLinkMessage_BroadcastTransaction>? _completer;
 
@@ -76,10 +82,12 @@ class _OnboardPrimeBluetoothState extends ConsumerState<OnboardPrimeBluetooth>
       _completer;
 
   StreamSubscription<PassportMessage>? _passportMessagesSubscription;
+  ProviderSubscription<PrimeOnboardingStep?>? _onboardingStepSubscription;
 
   @override
   void initState() {
     super.initState();
+    unawaited(_listenForOnboardingSteps());
     WidgetsBinding.instance.addPostFrameCallback((_) {
       final params = GoRouter.of(context).state.uri.queryParameters;
       setState(() {
@@ -88,6 +96,8 @@ class _OnboardPrimeBluetoothState extends ConsumerState<OnboardPrimeBluetooth>
         colorWay = int.tryParse(param) ?? 1;
         final name = params["n"]?.trim();
         bleDeviceName = (name == null || name.isEmpty) ? null : name;
+        qlv2PairingToken =
+            params.containsKey("k") ? (params["k"] ?? "").trim() : null;
       });
       if (GoRouter.of(context).state.extra is bool) {
         onboardingCompleted = GoRouter.of(context).state.extra as bool;
@@ -95,8 +105,25 @@ class _OnboardPrimeBluetoothState extends ConsumerState<OnboardPrimeBluetooth>
     });
   }
 
+  Future<void> _listenForOnboardingSteps() async {
+    if (ref.read(primeOnboardingStepProvider) ==
+        PrimeOnboardingStep.completed) {
+      await ref.read(primeOnboardingControllerProvider.notifier).clearSession();
+      if (!mounted) return;
+      ref.read(onboardingDeviceProvider.notifier).state = null;
+    }
+
+    if (!mounted) return;
+    _onboardingStepSubscription = ref.listenManual<PrimeOnboardingStep?>(
+      primeOnboardingStepProvider,
+      (_, next) => _routeFromOnboardingStep(next),
+      fireImmediately: true,
+    );
+  }
+
   @override
   void dispose() {
+    _onboardingStepSubscription?.close();
     _passportMessagesSubscription?.cancel();
     _connectionMonitorSubscription?.cancel();
     super.dispose();
@@ -104,7 +131,24 @@ class _OnboardPrimeBluetoothState extends ConsumerState<OnboardPrimeBluetooth>
 
   StreamSubscription? _connectionMonitorSubscription;
 
+  void _routeFromOnboardingStep(PrimeOnboardingStep? step) {
+    if (step != PrimeOnboardingStep.completed || !mounted) return;
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted) context.go(ROUTE_ACCOUNTS_HOME);
+    });
+  }
+
   Future<void> _connectToPrime() async {
+    if (_connectInFlight) return;
+    _connectInFlight = true;
+    try {
+      await _connectToPrimeOnce();
+    } finally {
+      _connectInFlight = false;
+    }
+  }
+
+  Future<void> _connectToPrimeOnce() async {
     // Check Bluetooth permissions
     bool isDenied = false;
     if (Platform.isAndroid) {
@@ -240,22 +284,29 @@ class _OnboardPrimeBluetoothState extends ConsumerState<OnboardPrimeBluetooth>
             bleConnectState = BleConnectState.connected;
           });
           if (context.mounted && mounted) {
-            showQLScanner(context);
+            final token = qlv2PairingToken;
+            if (selectPrimeQrProtocol(token) == PrimeQrProtocolSelection.qlV1) {
+              await setOnboardingPrimeQlv1Session(
+                container: ProviderScope.containerOf(context),
+                device: _onboardingDevice!,
+              );
+              if (!mounted) return;
+              showQLScanner(context);
+            } else {
+              await _pairWithPrimeQlv2(context, token!);
+            }
           }
         }
       } else {
         throw Exception("Invalid Prime Serial");
       }
     } catch (e, stack) {
-      setState(() {
-        bleConnectState = BleConnectState.idle;
-      });
-      String message = "";
+      String message = S().onboarding_modalBluetoothUnableConnect_content;
       if (e is PlatformException) {
         if (e.code == "BLUETOOTH_DISABLED") {
           final bool? allowed = await BluetoothChannel().requestEnableBle();
           if (allowed == true) {
-            return _connectToPrime();
+            return _connectToPrimeOnce();
           } else {
             message = "Unable to connect to device, Error code ${e.code}";
           }
@@ -491,6 +542,9 @@ class _OnboardPrimeBluetoothState extends ConsumerState<OnboardPrimeBluetooth>
                           : 1,
                       child: EnvoyButton(
                         S().onboarding_bluetoothIntro_connect,
+                        enabled:
+                            bleConnectState != BleConnectState.connecting &&
+                                bleConnectState != BleConnectState.invalidId,
                         onTap: () {
                           _connectToPrime();
                         },
@@ -510,6 +564,63 @@ class _OnboardPrimeBluetoothState extends ConsumerState<OnboardPrimeBluetooth>
 
   Future<bool> pairWithPrime(XidDocument payload) async {
     return await _onboardingDevice?.pair(payload) ?? false;
+  }
+
+  Future<void> _pairWithPrimeQlv2(
+    BuildContext context,
+    String pairingToken,
+  ) async {
+    final device = _onboardingDevice;
+    if (device == null) {
+      throw StateError('No onboarding device available for QL v2 pairing.');
+    }
+
+    QLV2ProtocolHandler? handler;
+    try {
+      final invite = decodeQlv2PairingInvite(pairingToken);
+      handler = await QLV2ProtocolHandler.create(
+        transport: device,
+        autoConnect: false,
+      );
+      if (!context.mounted) {
+        handler.dispose();
+        return;
+      }
+      await setOnboardingPrimeQlv2Session(
+        container: ProviderScope.containerOf(context),
+        device: device,
+        handler: handler,
+      );
+      await handler.pair(invite);
+      await _waitForQlv2Active(handler);
+      final alreadyOnboarded = await prepareQlv2PassportDeviceAfterPairing(
+        device: device,
+        handler: handler,
+      );
+
+      if (alreadyOnboarded) {
+        stopOnboardingPrimeQlv2Scope(device);
+        if (context.mounted) context.goNamed(ONBOARD_REPAIRING);
+      } else if (context.mounted) {
+        context.goNamed(ONBOARD_PRIME_PAIR);
+      }
+    } catch (_) {
+      if (device.v2Handler == handler) device.v2Handler = null;
+      handler?.dispose();
+      if (context.mounted) {
+        await ProviderScope.containerOf(context)
+            .read(primeOnboardingControllerProvider.notifier)
+            .clearSession();
+      }
+      rethrow;
+    }
+  }
+
+  Future<void> _waitForQlv2Active(QLV2ProtocolHandler handler) async {
+    if (handler.isActive) return;
+    await handler.activeStream
+        .firstWhere((active) => active)
+        .timeout(const Duration(seconds: 30));
   }
 
   Future<void> showCommunicationModal(BuildContext context) async {

@@ -838,18 +838,18 @@ extension QLConnection: CBPeripheralDelegate {
             sendConnectionEvent()
         }
 
-        // Mark device as ready for communication
-        if writeCharacteristic != nil || readCharacteristic != nil {
-            deviceReady = true
-            isServiceDiscoveryInProgress = false
-            print("\(Self.TAG) [\(deviceId)] Device is ready for communication")
-
-            // Notify Flutter that device is ready for communication
-            sendConnectionEvent(type: "device_connected")
-        } else {
+        if writeCharacteristic == nil {
             print("\(Self.TAG) [\(deviceId)] No usable characteristics found")
             deviceReady = false
             isServiceDiscoveryInProgress = false
+        } else if !characteristics.contains(where: {
+            $0.properties.contains(.notify) || $0.properties.contains(.indicate)
+        }) {
+            print("\(Self.TAG) [\(deviceId)] No notification characteristic found")
+            deviceReady = false
+            isServiceDiscoveryInProgress = false
+        } else {
+            print("\(Self.TAG) [\(deviceId)] Waiting for notifications to be enabled")
         }
     }
 
@@ -867,12 +867,55 @@ extension QLConnection: CBPeripheralDelegate {
         sendBinaryData(data)
     }
 
+    private func failNotificationSetup(
+        peripheral: CBPeripheral,
+        message: String
+    ) {
+        NativeLogStream.shared.log(
+            category: Self.TAG,
+            message: "[\(deviceId)] Notification setup failed: \(message); peripheralState=\(peripheral.state.rawValue)"
+        )
+        deviceReady = false
+        isServiceDiscoveryInProgress = false
+        bleWriteQueue?.cancel()
+        bleWriteQueue = nil
+        sendConnectionEvent(type: "connection_error", error: message)
+
+        if peripheral.state == .connected {
+            delegate?.getCentralManager()?.cancelPeripheralConnection(peripheral)
+        }
+    }
+
     func peripheral(_ peripheral: CBPeripheral, didUpdateNotificationStateFor characteristic: CBCharacteristic, error: Error?) {
+        guard connectedPeripheral?.identifier == peripheral.identifier,
+            characteristic.properties.contains(.notify)
+                || characteristic.properties.contains(.indicate)
+        else {
+            return
+        }
+
         if let error = error {
             print("\(Self.TAG) [\(deviceId)] Error updating notification state: \(error.localizedDescription)")
+            failNotificationSetup(
+                peripheral: peripheral,
+                message: "Failed to enable notifications: \(error.localizedDescription)"
+            )
             return
         }
         print("\(Self.TAG) [\(deviceId)] Notification state updated for \(characteristic.uuid): \(characteristic.isNotifying)")
+
+        guard characteristic.isNotifying, writeCharacteristic != nil else {
+            failNotificationSetup(
+                peripheral: peripheral,
+                message: "Notification characteristic is not active"
+            )
+            return
+        }
+
+        deviceReady = true
+        isServiceDiscoveryInProgress = false
+        print("\(Self.TAG) [\(deviceId)] Device is ready for communication")
+        sendConnectionEvent(type: "device_connected")
     }
 
     func peripheralIsReady(toSendWriteWithoutResponse peripheral: CBPeripheral) {
@@ -902,7 +945,7 @@ extension QLConnection {
         readCharacteristic = nil
         bleWriteQueue?.cancel()
         bleWriteQueue = nil
-        deviceReady = false  // Will be set to true once characteristics are discovered
+        deviceReady = false  // Will be set once notifications are enabled
         isServiceDiscoveryInProgress = true
 
         // Discover services

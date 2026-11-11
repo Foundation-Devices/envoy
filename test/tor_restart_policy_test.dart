@@ -35,6 +35,24 @@ void main() {
     expect(policy.recordConfirmedFailure(), isFalse);
   });
 
+  test('a native proxy exit uses the shorter route-loss cooldown', () {
+    var elapsed = Duration.zero;
+    final policy = TorRestartPolicy(
+      failureThreshold: 5,
+      elapsed: () => elapsed,
+    );
+
+    expect(policy.recordConfirmedFailure(), isTrue);
+    expect(policy.recordNativeProxyFailure(), isFalse);
+    expect(
+      policy.nativeFailureCooldownRemaining,
+      TorRestartPolicy.nativeFailureCooldown,
+    );
+
+    elapsed += TorRestartPolicy.nativeFailureCooldown;
+    expect(policy.recordNativeProxyFailure(), isTrue);
+  });
+
   test('a success re-arms the threshold and clears the cooldown', () {
     final policy = TorRestartPolicy(failureThreshold: 2);
 

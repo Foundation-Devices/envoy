@@ -1,0 +1,12 @@
+# SPDX-FileCopyrightText: 2026 Foundation Devices Inc.
+#
+# SPDX-License-Identifier: GPL-3.0-or-later
+
+include: package:flutter_lints/flutter.yaml
+
+analyzer:
+  exclude:
+    - 'lib/src/rust/**'
+    - '**/frb_generated*'
+    - '**/*.freezed.dart'
+    - 'rust_builder/**'

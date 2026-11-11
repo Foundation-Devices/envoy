@@ -2,7 +2,6 @@
 
 set -euo pipefail
 
-FLUTTER_VERSION="3.44.2"
 FLUTTER_DIR="$HOME/flutter"
 IOS_RUST_TARGET="aarch64-apple-ios"
 CARGOKIT_TOOLCHAIN="stable"
@@ -11,6 +10,7 @@ CARGOKIT_TOOLCHAIN="stable"
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 REPO_ROOT="${CI_WORKSPACE:-$(cd "$SCRIPT_DIR/../.." && pwd)}"
 cd "$REPO_ROOT"
+FLUTTER_VERSION="$(<flutter-version)"
 
 RUST_TOOLCHAIN="$(awk -F '"' '/^channel =/ { print $2; exit }' rust-toolchain.toml)"
 if [[ -z "$RUST_TOOLCHAIN" ]]; then
@@ -18,7 +18,7 @@ if [[ -z "$RUST_TOOLCHAIN" ]]; then
   exit 1
 fi
 
-# Install Flutter using the same pinned version as the repo's Nix environment.
+# Install the Flutter version shared with the repo's Nix environments.
 if [[ -d "$FLUTTER_DIR/.git" ]]; then
   git -C "$FLUTTER_DIR" fetch --depth 1 origin "$FLUTTER_VERSION"
   git -C "$FLUTTER_DIR" checkout --force FETCH_HEAD

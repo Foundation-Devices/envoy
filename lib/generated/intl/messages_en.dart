@@ -786,7 +786,7 @@ class MessageLookup extends MessageLookupByLibrary {
         ),
         "device_deviceDetailsPrimeRemoved_accessoryRemoved":
             MessageLookupByLibrary.simpleMessage(
-          "Accessory removed, please reconnect Prime.",
+          "Accessory removed, reconnect Passport.",
         ),
         "device_deviceDetailsPrimeRemoved_completeAccessorySetup":
             MessageLookupByLibrary.simpleMessage("Complete Accessory Set Up"),
@@ -2045,8 +2045,14 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage(
           "Unable to communicate with the security server. Check your internet connection and try again.",
         ),
+        "onboarding_connectionIntroErrorInternet_securityCheckIncomplete":
+            MessageLookupByLibrary.simpleMessage("Security Check Incomplete"),
         "onboarding_connectionIntroErrorInternet_securityCheckPending":
             MessageLookupByLibrary.simpleMessage("Security Check Pending"),
+        "onboarding_connectionIntroErrorSecurityIncomplete_content":
+            MessageLookupByLibrary.simpleMessage(
+          "Keep Passport nearby, check your internet connection, and make sure your phone’s date and time are set automatically. Then try again.",
+        ),
         "onboarding_connectionIntroError_content":
             MessageLookupByLibrary.simpleMessage(
           "This device may not be genuine or may have been tampered with during shipping. Contact support for assistance.",
@@ -2131,7 +2137,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "onboarding_migrating_xOfYSynced": m12,
         "onboarding_modalBluetoothUnableConnect_content":
             MessageLookupByLibrary.simpleMessage(
-          "Ensure sure Bluetooth is enabled on Passport and your phone, and that both devices are nearby.",
+          "Ensure Bluetooth is enabled on Passport and your phone, and that both devices are nearby.",
         ),
         "onboarding_modalBluetoothUnableConnect_header":
             MessageLookupByLibrary.simpleMessage("Unable to Connect"),

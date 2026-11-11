@@ -534,7 +534,7 @@ class TransactionModeNotifier extends StateNotifier<TransactionModel> {
       int? port = Settings().getTorPort(account.network, server);
 
       final _ = await EnvoyAccountHandler.broadcast(
-        draftTransaction: state.draftTransaction!,
+        psbt: state.draftTransaction!.psbt,
         electrumServer: server,
         torPort: port,
         validateDomain: Settings().validateDomain(

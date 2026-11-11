@@ -2636,10 +2636,10 @@ class S {
     );
   }
 
-  /// `Accessory removed, please reconnect Prime.`
+  /// `Accessory removed, reconnect Passport.`
   String get device_deviceDetailsPrimeRemoved_accessoryRemoved {
     return Intl.message(
-      'Accessory removed, please reconnect Prime.',
+      'Accessory removed, reconnect Passport.',
       name: 'device_deviceDetailsPrimeRemoved_accessoryRemoved',
       desc: '',
       args: [],
@@ -6816,11 +6816,31 @@ class S {
     );
   }
 
+  /// `Security Check Incomplete`
+  String get onboarding_connectionIntroErrorInternet_securityCheckIncomplete {
+    return Intl.message(
+      'Security Check Incomplete',
+      name: 'onboarding_connectionIntroErrorInternet_securityCheckIncomplete',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Security Check Pending`
   String get onboarding_connectionIntroErrorInternet_securityCheckPending {
     return Intl.message(
       'Security Check Pending',
       name: 'onboarding_connectionIntroErrorInternet_securityCheckPending',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Keep Passport nearby, check your internet connection, and make sure your phone’s date and time are set automatically. Then try again.`
+  String get onboarding_connectionIntroErrorSecurityIncomplete_content {
+    return Intl.message(
+      'Keep Passport nearby, check your internet connection, and make sure your phone’s date and time are set automatically. Then try again.',
+      name: 'onboarding_connectionIntroErrorSecurityIncomplete_content',
       desc: '',
       args: [],
     );
@@ -7116,10 +7136,10 @@ class S {
     );
   }
 
-  /// `Ensure sure Bluetooth is enabled on Passport and your phone, and that both devices are nearby.`
+  /// `Ensure Bluetooth is enabled on Passport and your phone, and that both devices are nearby.`
   String get onboarding_modalBluetoothUnableConnect_content {
     return Intl.message(
-      'Ensure sure Bluetooth is enabled on Passport and your phone, and that both devices are nearby.',
+      'Ensure Bluetooth is enabled on Passport and your phone, and that both devices are nearby.',
       name: 'onboarding_modalBluetoothUnableConnect_content',
       desc: '',
       args: [],

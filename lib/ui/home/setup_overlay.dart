@@ -396,7 +396,10 @@ Future<void> pairWithDevice(BuildContext context, XidDocument xid) async {
     final qlConnection = BluetoothChannel().getDeviceChannel(
       connected.deviceId,
     );
-    container.read(onboardingDeviceProvider.notifier).state = qlConnection;
+    await setOnboardingPrimeQlv1Session(
+      container: container,
+      device: qlConnection,
+    );
     if (context.mounted) {
       _showPairingProgressDialog(context);
     }

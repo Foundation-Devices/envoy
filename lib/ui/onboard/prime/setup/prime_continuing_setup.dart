@@ -24,7 +24,6 @@ import 'package:envoy/util/console.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:foundation_api/foundation_api.dart';
 import 'package:go_router/go_router.dart';
 import 'package:rive/rive.dart' as rive;
 
@@ -41,11 +40,45 @@ class _PrimeContinuingSetupState extends ConsumerState<PrimeContinuingSetup> {
   rive.File? _riveFile;
   rive.RiveWidgetController? _controller;
   bool _isInitialized = false;
+  ProviderSubscription<PrimeOnboardingStep?>? _onboardingStepSubscription;
 
   @override
   void initState() {
     super.initState();
+    _onboardingStepSubscription = ref.listenManual<PrimeOnboardingStep?>(
+      primeOnboardingStepProvider,
+      (_, next) => _routeFromOnboardingStep(next),
+      fireImmediately: true,
+    );
     _loadRiveAnimation();
+  }
+
+  @override
+  void dispose() {
+    _onboardingStepSubscription?.close();
+    super.dispose();
+  }
+
+  void _routeFromOnboardingStep(PrimeOnboardingStep? state) {
+    kPrint("[PrimeOnboarding] route_listener(continuing): step=$state");
+    if (state == null || !mounted) return;
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) return;
+      switch (state) {
+        case PrimeOnboardingStep.firmwareUpdateScreen:
+          context.goNamed(ONBOARD_PRIME_FIRMWARE_UPDATE);
+          break;
+        case PrimeOnboardingStep.walletConnected:
+          context.goNamed(ONBOARD_PRIME_CONNECTED_SUCCESS);
+          break;
+        case PrimeOnboardingStep.completed:
+          context.go(ROUTE_ACCOUNTS_HOME);
+          break;
+        default:
+          break;
+      }
+    });
   }
 
   void _loadRiveAnimation() async {
@@ -122,20 +155,6 @@ class _PrimeContinuingSetupState extends ConsumerState<PrimeContinuingSetup> {
   @override
   Widget build(BuildContext context) {
     startBluetoothDisconnectionListener(context, ref);
-
-    ref.listen(onboardingStateStreamProvider, (prev, next) {
-      next.whenData((state) {
-        if (state == OnboardingState.firmwareUpdateScreen) {
-          context.goNamed(ONBOARD_PRIME_FIRMWARE_UPDATE);
-        } else if (state == OnboardingState.securingDevice) {
-          context.goNamed(ONBOARD_PRIME_CONTINUING_SETUP);
-        } else if (state == OnboardingState.walletConected) {
-          context.goNamed(ONBOARD_PRIME_CONNECTED_SUCCESS);
-        } else if (state == OnboardingState.completed) {
-          context.go(ROUTE_ACCOUNTS_HOME);
-        }
-      });
-    });
 
     return PopScope(
       canPop: canPop,

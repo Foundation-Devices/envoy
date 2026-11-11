@@ -1,0 +1,11 @@
+# SPDX-FileCopyrightText: 2026 Foundation Devices Inc.
+#
+# SPDX-License-Identifier: GPL-3.0-or-later
+
+rust_input: crate::api,ql-api
+rust_root: rust/
+dart_output: lib/src/rust
+rust_preamble: |
+  use ql_keyos::{AppId, PeerPermissions, RouteId, ServiceId};
+  use ql_rpc::*;
+  use ql_runtime::QlStreamError;

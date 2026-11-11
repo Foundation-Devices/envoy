@@ -69,6 +69,41 @@ final signTransactionStateProvider =
   );
 });
 
+Future<void> sendPrimePsbtWithProgress({
+  required Future<void> Function() sendPsbt,
+  required bool waitsForSigningResponse,
+  required StepNotifier transferStep,
+  required StepNotifier signingStep,
+  required String transferringLabel,
+  required String transferredLabel,
+  required String signingLabel,
+}) async {
+  transferStep.updateStep(transferringLabel, EnvoyStepState.LOADING);
+  var signingStarted = false;
+
+  try {
+    final request = sendPsbt();
+    if (waitsForSigningResponse) {
+      signingStarted = true;
+      transferStep.updateStep(transferredLabel, EnvoyStepState.FINISHED);
+      signingStep.updateStep(signingLabel, EnvoyStepState.LOADING);
+    }
+
+    await request;
+    if (!signingStarted) {
+      transferStep.updateStep(transferredLabel, EnvoyStepState.FINISHED);
+      signingStep.updateStep(signingLabel, EnvoyStepState.LOADING);
+    }
+  } catch (error, stackTrace) {
+    if (signingStarted) {
+      signingStep.updateStep(signingLabel, EnvoyStepState.ERROR);
+    } else {
+      transferStep.updateStep(transferringLabel, EnvoyStepState.ERROR);
+    }
+    kPrint("Prime transaction signing failed: $error", stackTrace: stackTrace);
+  }
+}
+
 //ignore: must_be_immutable
 class TxReview extends ConsumerStatefulWidget {
   TxReview() : super(key: UniqueKey());
@@ -206,23 +241,19 @@ class _TxReviewState extends ConsumerState<TxReview> {
         return;
       }
 
-      ref.read(transferTransactionStateProvider.notifier).updateStep(
-            S().send_quantumReview_transferringTransaction,
-            EnvoyStepState.LOADING,
-          );
-
-      await device.qlConnection().qlHandler.txHandler.sendPsbt(
-            account.id,
-            psbt,
-          );
-      ref.read(transferTransactionStateProvider.notifier).updateStep(
-            S().send_quantumReview_transactionTransferred,
-            EnvoyStepState.FINISHED,
-          );
-      ref.read(signTransactionStateProvider.notifier).updateStep(
-            S().send_quantumReview_waitingForSigning,
-            EnvoyStepState.LOADING,
-          );
+      final connection = device.qlConnection();
+      await sendPrimePsbtWithProgress(
+        sendPsbt: () => connection.qlHandler.txHandler.sendPsbt(
+          account.id,
+          psbt,
+        ),
+        waitsForSigningResponse: connection.v2Handler != null,
+        transferStep: ref.read(transferTransactionStateProvider.notifier),
+        signingStep: ref.read(signTransactionStateProvider.notifier),
+        transferringLabel: S().send_quantumReview_transferringTransaction,
+        transferredLabel: S().send_quantumReview_transactionTransferred,
+        signingLabel: S().send_quantumReview_waitingForSigning,
+      );
     } else {
       TransactionModeNotifier transactionModeNotifier = ref.read(
         spendTransactionProvider.notifier,
@@ -678,6 +709,10 @@ class _TransactionReviewScreenState
         } catch (e, stack) {
           debugPrintStack(stackTrace: stack);
           kPrint(e);
+          ref.read(signTransactionStateProvider.notifier).updateStep(
+                S().send_quantumReview_waitingForSigning,
+                EnvoyStepState.ERROR,
+              );
         }
       });
       // TODO: fix quantum link with Uint8List psbt

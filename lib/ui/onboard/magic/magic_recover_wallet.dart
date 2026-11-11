@@ -6,6 +6,7 @@ import 'dart:io';
 
 import 'package:backup/backup.dart';
 import 'package:envoy/business/envoy_seed.dart';
+import 'package:envoy/business/restore_account_metadata.dart';
 import 'package:envoy/business/settings.dart';
 import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/components/pop_up.dart';
@@ -51,6 +52,7 @@ enum MagicRecoveryWalletState {
   seedNotFound,
   unableToDecryptBackup,
   failure,
+  accountRestoreFailed,
   validSeedNoBackup,
   readingBackup,
 }
@@ -60,15 +62,47 @@ class _MagicRecoverWalletState extends ConsumerState<MagicRecoverWallet> {
   rive.RiveWidgetController? _controller;
   bool _isInitialized = false;
 
-  MagicRecoveryWalletState _magicRecoverWalletState =
-      MagicRecoveryWalletState.recovering;
+  MagicRecoveryWalletState _state = MagicRecoveryWalletState.recovering;
+
+  MagicRecoveryWalletState get _magicRecoverWalletState => _state;
+
+  // While partial-restore accounts are retained, every failure lands in the
+  // one state that can continue with them, never a Scan/Retry-only screen.
+  set _magicRecoverWalletState(MagicRecoveryWalletState next) {
+    _state = _preserveRecoveredAccounts && _isFailureState(next)
+        ? MagicRecoveryWalletState.accountRestoreFailed
+        : next;
+  }
+
+  static bool _isFailureState(MagicRecoveryWalletState state) => !{
+        MagicRecoveryWalletState.recovering,
+        MagicRecoveryWalletState.readingBackup,
+        MagicRecoveryWalletState.success,
+        MagicRecoveryWalletState.accountRestoreFailed,
+      }.contains(state);
 
   String? _seed;
+
+  // Kept alongside the seed so a retry after a partial recovery can rerun
+  // the same restore; it only lived in a local before.
+  String? _passphrase;
+  bool _preserveRecoveredAccounts = false;
+
+  // Every seed scanned on this screen: any of them may have been stored
+  // locally by a restore that then failed with no account created.
+  final Set<String> _scannedSeeds = {};
+
+  // What storage held before the first scanned restore, so cleanup removes
+  // only a copy this screen stored, never a pre-existing one.
+  String? _seedBeforeScan;
 
   @override
   void initState() {
     super.initState();
     _initRive();
+    // Hot accounts present on entry survived an earlier partial restore (no
+    // entry point derives one first); back must never delete them.
+    _preserveRecoveredAccounts = EnvoySeed().walletDerived();
 
     Future.delayed(const Duration(milliseconds: 100)).then((_) {
       if (!ref.read(triedAutomaticRecovery) &&
@@ -123,6 +157,22 @@ class _MagicRecoverWalletState extends ConsumerState<MagicRecoverWallet> {
     } catch (e) {
       if (mounted) {
         _setUnhappyState();
+        if (e is AccountRestoreException) {
+          // Only a partial recovery has accounts worth preserving; with
+          // nothing restored, the plain failure state is the honest one.
+          if (e.anyRestored) {
+            _preserveRecoveredAccounts = true;
+            setState(() {
+              _magicRecoverWalletState =
+                  MagicRecoveryWalletState.accountRestoreFailed;
+            });
+          } else {
+            setState(() {
+              _magicRecoverWalletState = MagicRecoveryWalletState.failure;
+            });
+          }
+          return;
+        }
         if (e is GetBackupException) {
           if (e == GetBackupException.backupNotFound) {
             setState(() {
@@ -187,9 +237,19 @@ class _MagicRecoverWalletState extends ConsumerState<MagicRecoverWallet> {
   }
 
   Future<bool> _handleBackPress() async {
-    if (_magicRecoverWalletState == MagicRecoveryWalletState.recovering ||
-        _magicRecoverWalletState == MagicRecoveryWalletState.readingBackup) {
+    final inFlight =
+        _magicRecoverWalletState == MagicRecoveryWalletState.recovering ||
+            _magicRecoverWalletState == MagicRecoveryWalletState.readingBackup;
+    // Retained partial-restore accounts must not leak into a different
+    // recovery started from the welcome flow, and a retry in flight must
+    // settle before its buttons unlock: two restores must never overlap.
+    if (_preserveRecoveredAccounts) {
       return false;
+    }
+    // An attempt can take minutes over Tor, so back must still leave; the
+    // attempt finishes in the background, as it always has.
+    if (inFlight) {
+      return true;
     }
     //remove seed that recovered from qr
     if (EnvoySeed().walletDerived()) {
@@ -204,6 +264,29 @@ class _MagicRecoverWalletState extends ConsumerState<MagicRecoverWallet> {
       }
       return true;
     }
+    // A restore can store the scanned seed and then fail before creating
+    // any account. Undo that local write (never the remote backup): put back
+    // the seed storage held before the first scan, or clear it if none.
+    final stored = _scannedSeeds.isEmpty ? null : await EnvoySeed().get();
+    // Whichever scan last wrote storage, not just the latest scan.
+    if (stored != null &&
+        stored != _seedBeforeScan &&
+        _scannedSeeds.contains(stored)) {
+      final previous = _seedBeforeScan;
+      if (previous != null) {
+        await EnvoyReport().log(
+          "Magic Backup",
+          "recovery screen restored the seed an unused scan replaced",
+        );
+        await EnvoySeed().store(previous);
+      } else {
+        await EnvoyReport().log(
+          "Magic Backup",
+          "recovery screen cleared an unused scanned seed",
+        );
+        await EnvoySeed().removeSeed();
+      }
+    }
     return true;
   }
 
@@ -211,8 +294,17 @@ class _MagicRecoverWalletState extends ConsumerState<MagicRecoverWallet> {
   Widget build(BuildContext context) {
     bool isThereBottomButtons = getBottomButtons() != null;
     return PopScope(
-      onPopInvokedWithResult: (_, __) {
-        _handleBackPress();
+      // The pop only proceeds when _handleBackPress allows it; without
+      // canPop false its verdicts were never enforced.
+      canPop: false,
+      onPopInvokedWithResult: (didPop, _) async {
+        if (didPop) {
+          return;
+        }
+        final router = GoRouter.of(context);
+        if (await _handleBackPress()) {
+          router.pop();
+        }
       },
       child: Material(
         color: Colors.transparent,
@@ -293,12 +385,12 @@ class _MagicRecoverWalletState extends ConsumerState<MagicRecoverWallet> {
   }
 
   Future _onSeedDetected(String seed, BuildContext context) async {
+    _setIndeterminateState();
+    setState(() {
+      _magicRecoverWalletState = MagicRecoveryWalletState.recovering;
+    });
+    String? passphrase;
     try {
-      _setIndeterminateState();
-      setState(() {
-        _magicRecoverWalletState = MagicRecoveryWalletState.recovering;
-      });
-      String? passphrase;
       List<String> seedList = seed.split(" ");
       if (seedList.length == 13 || seedList.length == 25) {
         seedList.removeLast();
@@ -319,8 +411,27 @@ class _MagicRecoverWalletState extends ConsumerState<MagicRecoverWallet> {
           passphrase = passphrase0;
         });
       }
+    } catch (e) {
+      _setUnhappyState();
+      if (mounted) {
+        setState(() {
+          _magicRecoverWalletState = MagicRecoveryWalletState.failure;
+        });
+      }
+      return;
+    }
+    await _recoverFromSeed(seed, passphrase);
+  }
+
+  Future _recoverFromSeed(String seed, String? passphrase) async {
+    try {
       bool isValidSeed = await EnvoyBip39.validateSeed(seedWords: seed);
+      if (_scannedSeeds.isEmpty) {
+        _seedBeforeScan = await EnvoySeed().get();
+      }
       _seed = seed;
+      _passphrase = passphrase;
+      _scannedSeeds.add(seed);
 
       bool success = await EnvoySeed().restoreData(
         seed: seed,
@@ -331,7 +442,7 @@ class _MagicRecoverWalletState extends ConsumerState<MagicRecoverWallet> {
       Settings().setSyncToCloud(true);
       if (success) {
         Settings().updateAccountsViewSettings();
-        if (context.mounted) {
+        if (mounted) {
           context.pushNamed(WALLET_SUCCESS).then((_) {
             //Try automatic recovery if the user press back button
             if (mounted && !ref.read(triedAutomaticRecovery)) {
@@ -353,6 +464,20 @@ class _MagicRecoverWalletState extends ConsumerState<MagicRecoverWallet> {
     } catch (e) {
       _setUnhappyState();
       if (mounted) {
+        if (e is AccountRestoreException) {
+          if (e.anyRestored) {
+            _preserveRecoveredAccounts = true;
+            setState(() {
+              _magicRecoverWalletState =
+                  MagicRecoveryWalletState.accountRestoreFailed;
+            });
+          } else {
+            setState(() {
+              _magicRecoverWalletState = MagicRecoveryWalletState.failure;
+            });
+          }
+          return;
+        }
         if (e is GetBackupException) {
           if (e == GetBackupException.backupNotFound) {
             setState(() {
@@ -394,6 +519,8 @@ class _MagicRecoverWalletState extends ConsumerState<MagicRecoverWallet> {
     }
     if (_magicRecoverWalletState == MagicRecoveryWalletState.backupNotFound ||
         _magicRecoverWalletState ==
+            MagicRecoveryWalletState.accountRestoreFailed ||
+        _magicRecoverWalletState ==
             MagicRecoveryWalletState.unableToDecryptBackup) {
       return _backupNotFound(context);
     }
@@ -412,6 +539,75 @@ class _MagicRecoverWalletState extends ConsumerState<MagicRecoverWallet> {
     if (_magicRecoverWalletState == MagicRecoveryWalletState.recovering ||
         _magicRecoverWalletState == MagicRecoveryWalletState.readingBackup) {
       return null;
+    }
+    if (_magicRecoverWalletState ==
+        MagicRecoveryWalletState.accountRestoreFailed) {
+      return Padding(
+        padding: const EdgeInsets.all(20),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            OnboardingButton(
+              label: S().component_continue,
+              type: EnvoyButtonTypes.tertiary,
+              onTap: () async {
+                _seed ??= await EnvoySeed().get();
+                if (_seed == null) {
+                  return;
+                }
+                if (mounted) {
+                  showContinueWarningDialog(context, _seed,
+                      passphrase: _passphrase);
+                }
+              },
+            ),
+            OnboardingButton(
+              label: S().manual_setup_import_backup_CTA2,
+              type: EnvoyButtonTypes.secondary,
+              onTap: () {
+                // A partial offline restore is retried by re-importing. The
+                // spinner state keeps the other actions out of reach until
+                // the import settles, so operations cannot overlap.
+                setState(() {
+                  _magicRecoverWalletState =
+                      MagicRecoveryWalletState.readingBackup;
+                });
+                _setIndeterminateState();
+                _openExternalBackUpFile(
+                  context,
+                  seed: _seed,
+                  passphrase: _passphrase,
+                  onFailure: () {
+                    showRestoreFailedDialog(context);
+                    _setUnhappyState();
+                    setState(() {
+                      _magicRecoverWalletState =
+                          MagicRecoveryWalletState.accountRestoreFailed;
+                    });
+                  },
+                );
+              },
+            ),
+            OnboardingButton(
+              label: S().component_retry,
+              onTap: () {
+                setState(() {
+                  _magicRecoverWalletState =
+                      MagicRecoveryWalletState.recovering;
+                });
+                _setIndeterminateState();
+                // Rerun the recovery that actually failed: a scanned seed
+                // keeps its passphrase, which automatic recovery lacks.
+                if (_seed != null) {
+                  _recoverFromSeed(_seed!, _passphrase);
+                } else {
+                  _tryAutomaticRecovery();
+                }
+              },
+            ),
+          ],
+        ),
+      );
     }
     if (_magicRecoverWalletState == MagicRecoveryWalletState.success) {
       return Consumer(
@@ -455,7 +651,8 @@ class _MagicRecoverWalletState extends ConsumerState<MagicRecoverWallet> {
                   return;
                 }
                 if (mounted) {
-                  showContinueWarningDialog(context, _seed);
+                  showContinueWarningDialog(context, _seed,
+                      passphrase: _passphrase);
                 }
               },
             ),
@@ -469,6 +666,7 @@ class _MagicRecoverWalletState extends ConsumerState<MagicRecoverWallet> {
                     showRestoreFailedDialog(context);
                   },
                   seed: _seed,
+                  passphrase: _passphrase,
                 );
               },
             ),
@@ -540,7 +738,13 @@ class _MagicRecoverWalletState extends ConsumerState<MagicRecoverWallet> {
                       _magicRecoverWalletState =
                           MagicRecoveryWalletState.recovering;
                     });
-                    _tryAutomaticRecovery();
+                    // A scanned seed must retry with its passphrase;
+                    // automatic recovery would derive without one.
+                    if (_seed != null) {
+                      _recoverFromSeed(_seed!, _passphrase);
+                    } else {
+                      _tryAutomaticRecovery();
+                    }
                   },
                 );
               },
@@ -569,7 +773,8 @@ class _MagicRecoverWalletState extends ConsumerState<MagicRecoverWallet> {
               onTap: () async {
                 _seed ??= await EnvoySeed().get();
                 if (mounted) {
-                  showContinueWarningDialog(context, _seed!);
+                  showContinueWarningDialog(context, _seed!,
+                      passphrase: _passphrase);
                 }
               },
             ),
@@ -588,6 +793,7 @@ class _MagicRecoverWalletState extends ConsumerState<MagicRecoverWallet> {
                       _openExternalBackUpFile(
                         context,
                         seed: _seed,
+                        passphrase: _passphrase,
                         onFailure: () {
                           showRestoreFailedDialog(context);
                           setState(() {
@@ -704,6 +910,8 @@ class _MagicRecoverWalletState extends ConsumerState<MagicRecoverWallet> {
   }
 
   Widget _backupNotFound(BuildContext context) {
+    final accountRestoreFailed = _magicRecoverWalletState ==
+        MagicRecoveryWalletState.accountRestoreFailed;
     return Column(
       mainAxisSize: MainAxisSize.min,
       mainAxisAlignment: MainAxisAlignment.center,
@@ -711,7 +919,9 @@ class _MagicRecoverWalletState extends ConsumerState<MagicRecoverWallet> {
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 24),
           child: Text(
-            S().magic_setup_recovery_fail_backup_heading,
+            accountRestoreFailed
+                ? S().magic_setup_recovery_fail_heading
+                : S().magic_setup_recovery_fail_backup_heading,
             textAlign: TextAlign.center,
             style: EnvoyTypography.heading,
           ),
@@ -720,7 +930,9 @@ class _MagicRecoverWalletState extends ConsumerState<MagicRecoverWallet> {
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 24),
           child: Text(
-            S().magic_setup_recovery_fail_backup_subheading,
+            accountRestoreFailed
+                ? S().menu_toast_unexpectedError
+                : S().magic_setup_recovery_fail_backup_subheading,
             textAlign: TextAlign.center,
             style: Theme.of(
               context,
@@ -804,11 +1016,16 @@ class _MagicRecoverWalletState extends ConsumerState<MagicRecoverWallet> {
   Future<void> _openExternalBackUpFile(
     BuildContext context, {
     String? seed,
+    String? passphrase,
     required VoidCallback onFailure,
   }) async {
     try {
       final navigator = Navigator.of(context);
-      bool success = await openBackupFile(context, seed: seed);
+      bool success = await openBackupFile(
+        context,
+        seed: seed,
+        passphrase: passphrase,
+      );
       if (success && seed != null) {
         if (context.mounted) {
           context.pushNamed(ONBOARD_ENVOY_MAGIC_GENERATE_SETUP);
@@ -825,12 +1042,47 @@ class _MagicRecoverWalletState extends ConsumerState<MagicRecoverWallet> {
       } else {
         onFailure();
       }
+    } on AccountRestoreException catch (e) {
+      if (mounted) {
+        _setUnhappyState();
+        _preserveRecoveredAccounts =
+            _preserveRecoveredAccounts || e.anyRestored;
+        // Leave readingBackup as its launcher's onFailure would, and
+        // re-assign either way so retained accounts remap the state to the
+        // partial-failure screen (Continue, re-import, Retry).
+        setState(() {
+          _magicRecoverWalletState =
+              _magicRecoverWalletState == MagicRecoveryWalletState.readingBackup
+                  ? MagicRecoveryWalletState.validSeedNoBackup
+                  : _magicRecoverWalletState;
+        });
+      }
+      if (context.mounted) {
+        await showRestoreFailedDialog(
+          context,
+          accountRestoreFailed: true,
+          onContinueWithRestored: e.anyRestored
+              ? (dialogContext) {
+                  Navigator.pop(dialogContext);
+                  showContinueWarningDialog(
+                    context,
+                    seed ?? _seed,
+                    passphrase: _passphrase,
+                  );
+                }
+              : null,
+        );
+      }
     } catch (e) {
       onFailure();
     }
   }
 
-  void showContinueWarningDialog(BuildContext context, String? seed) {
+  void showContinueWarningDialog(
+    BuildContext context,
+    String? seed, {
+    String? passphrase,
+  }) {
     showEnvoyDialog(
       context: context,
       dismissible: false,
@@ -846,8 +1098,11 @@ class _MagicRecoverWalletState extends ConsumerState<MagicRecoverWallet> {
         ),
         primaryButtonLabel: S().component_continue,
         onPrimaryButtonTap: (context) async {
+          // Restored devices need their sessions prepared, same as the
+          // full-success paths.
+          EnvoySeed().deferDeviceReconnect();
           if (seed != null) {
-            await EnvoySeed().deriveAndAddWallets(seed);
+            await EnvoySeed().deriveAndAddWallets(seed, passphrase: passphrase);
           } else {
             EnvoyReport().log(
               "MagicRecoverWallet",
