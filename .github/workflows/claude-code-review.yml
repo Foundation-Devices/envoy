@@ -69,7 +69,7 @@ jobs:
 
             ### Review scope
 
-            First, check whether you have reviewed this PR before. The last commit you reviewed on this PR is `${{ steps.last-review.outputs.sha }}`; if that is blank, this is your first review. Go by that commit, not by your earlier reviews, because a clean review leaves only a reaction. Get what changed since then with `gh api repos/${{ github.repository }}/compare/<that commit>...${{ github.event.pull_request.head.sha }}`.
+            First, check whether you have reviewed this PR before. The last commit you reviewed on this PR is `${{ steps.last-review.outputs.sha }}`; if that is blank, this is your first review. Go by that commit, not by your earlier reviews, because a clean review leaves only a reaction. Get what changed since then with `gh api repos/${{ github.repository }}/compare/${{ steps.last-review.outputs.sha }}...${{ github.event.pull_request.head.sha }}`.
 
             - If this is your first review: review the entire diff and raise every issue you find. Be thorough; this is the moment to surface everything about the existing code, because later reviews will not revisit it.
             - If you have reviewed this PR before: review only what changed in the commits pushed since your last review, and comment only on new problems those commits introduce. Do not raise issues about code that was already present at your previous review, even if you only noticed it now, and do not restate, summarise, or reply to findings you raised earlier — whether or not the new commits resolved them. If one of your earlier findings is now genuinely fixed you may silently resolve its thread, but post no reply on it; leave threads that still stand untouched.
@@ -129,22 +129,28 @@ jobs:
 
             Skip preamble. Skip "great work!". Skip emoji.
 
-            Deliver the whole review as a single GitHub pull request review, so the summary and every finding render together as one threaded review instead of scattered comments. Do not post findings one at a time, and do not post a separate top-level summary comment — assemble everything and submit it in one `gh api` call.
+            ### Delivering the review
+
+            You can't write to GitHub yourself. Put the whole review in one file, `review.json` in the working directory, then run `.github/scripts/post-claude-review.sh ${{ github.repository }} ${{ github.event.pull_request.number }}` exactly as written, once. The script posts it as a single pull request review, so the summary and every finding render together; there is no other way to post findings or a summary comment.
 
             - Gather every inline finding into a `comments` array. Each entry needs `path`, `line`, `side` (`RIGHT` for added or context lines, `LEFT` for removed lines), and `body`. For a finding that spans a multi-line range, also set `start_line` and `start_side` (the side of the start line) — GitHub 422s a multi-line comment that omits `start_side`, and because the review is submitted atomically that one error sinks the whole review; when in doubt, keep the comment single-line. Anchor each to the exact line it concerns and write it in the `[Priority] Prefix: ...` format above: the problem, then the fix, in one short paragraph. Only anchor to lines that actually appear in the diff; if a finding can't be tied to a changed line, fold it into the summary instead of dropping it.
             - The review `body` is one short paragraph: the overall verdict, optionally a count of findings by priority. Do not restate the individual findings there — they live in the inline comments.
-            - Submit once, with `event` set to `COMMENT` (never `APPROVE` or `REQUEST_CHANGES`). Write the payload to a file and post it: `gh api --method POST repos/${{ github.repository }}/pulls/${{ github.event.pull_request.number }}/reviews --input review.json`. The payload shape is `{"event":"COMMENT","body":"<verdict>","comments":[{"path":"lib/foo.dart","line":42,"side":"RIGHT","body":"[High] <problem>. <fix>."}]}`.
+            - The file's shape is `{"body":"<verdict>","comments":[{"path":"lib/foo.dart","line":42,"side":"RIGHT","body":"[High] <problem>. <fix>."}]}`. The script always posts it as a comment review: a review from you never approves or requests changes.
+            - If the script prints an error from GitHub, fix `review.json` and run it again.
 
             ### When there is nothing to flag
 
-            Your 👍 on the PR description says the latest commit has nothing to comment on, so the reaction and a review are mutually exclusive:
-
-            1. Before you review, delete any 👍 you left earlier. List them with `gh api repos/${{ github.repository }}/issues/${{ github.event.pull_request.number }}/reactions --jq '.[] | select(.user.login == "claude[bot]" and .content == "+1") | .id'` and delete each with `gh api --method DELETE repos/${{ github.repository }}/issues/${{ github.event.pull_request.number }}/reactions/<id>`.
-            2. If you have findings, submit the review as described above.
-            3. If you have none, on a first review or a re-review, submit no review and post no comment. Add the reaction instead with `gh api --method POST repos/${{ github.repository }}/issues/${{ github.event.pull_request.number }}/reactions -f content=+1`. It is the only emoji you post.
+            A 👍 on the PR description says the latest commit has nothing to comment on, so the reaction and a review are mutually exclusive. If you have no findings, on a first review or a re-review, don't create `review.json`; run the script anyway and it reacts with 👍 instead. Either way, it first removes any 👍 left on an earlier commit.
+          # Untrusted PR text reaches the bot, so it only reads; the script makes its one write.
           claude_args: |
             --model claude-opus-5-5
             --effort max
-            --allowedTools "Read,Grep,Glob,LS,Write,Bash(gh pr diff:*),Bash(gh pr view:*),Bash(gh api:*)"
+            --allowedTools
+            "Read" "Grep" "Glob" "LS"
+            "Edit(review.json)"
+            "Bash(gh pr diff *)" "Bash(gh pr view *)"
+            "Bash(gh api repos/${{ github.repository }}/compare/${{ steps.last-review.outputs.sha }}...${{ github.event.pull_request.head.sha }} *)"
+            "Bash(.github/scripts/post-claude-review.sh ${{ github.repository }} ${{ github.event.pull_request.number }} *)"
+            "Bash(./.github/scripts/post-claude-review.sh ${{ github.repository }} ${{ github.event.pull_request.number }} *)"
           # See https://github.com/anthropics/claude-code-action/blob/main/docs/usage.md
           # or https://code.claude.com/docs/en/cli-reference for available options
