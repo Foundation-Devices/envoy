@@ -72,7 +72,8 @@ class MessageLookup extends MessageLookupByLibrary {
 
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
-        "_": MessageLookupByLibrary.simpleMessage("6:15"),
+        "_": MessageLookupByLibrary.simpleMessage(
+            "https://blockstream.info/api/"),
         "about_appVersion": MessageLookupByLibrary.simpleMessage("App Version"),
         "about_openSourceLicences": MessageLookupByLibrary.simpleMessage(
           "Open Source Licences",
@@ -785,7 +786,7 @@ class MessageLookup extends MessageLookupByLibrary {
         ),
         "device_deviceDetailsPrimeRemoved_accessoryRemoved":
             MessageLookupByLibrary.simpleMessage(
-          "Accessory removed, please reconnect Prime.",
+          "Accessory removed, reconnect Passport.",
         ),
         "device_deviceDetailsPrimeRemoved_completeAccessorySetup":
             MessageLookupByLibrary.simpleMessage("Complete Accessory Set Up"),
@@ -2044,8 +2045,14 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage(
           "Unable to communicate with the security server. Check your internet connection and try again.",
         ),
+        "onboarding_connectionIntroErrorInternet_securityCheckIncomplete":
+            MessageLookupByLibrary.simpleMessage("Security Check Incomplete"),
         "onboarding_connectionIntroErrorInternet_securityCheckPending":
             MessageLookupByLibrary.simpleMessage("Security Check Pending"),
+        "onboarding_connectionIntroErrorSecurityIncomplete_content":
+            MessageLookupByLibrary.simpleMessage(
+          "Keep Passport nearby, check your internet connection, and make sure your phone’s date and time are set automatically. Then try again.",
+        ),
         "onboarding_connectionIntroError_content":
             MessageLookupByLibrary.simpleMessage(
           "This device may not be genuine or may have been tampered with during shipping. Contact support for assistance.",
