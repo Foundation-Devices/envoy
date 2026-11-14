@@ -19,6 +19,9 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
+      - name: Record runner environment
+        run: bash scripts/ci/runner_diagnostics.sh
+
       - name: Check if Nix is installed
         id: check-nix
         run: |
